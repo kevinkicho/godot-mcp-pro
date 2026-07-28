@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.28.0**  
+Plugin version: **1.29.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 562
-- **Command modules:** 53
+- **Registered plugin commands:** 570
+- **Command modules:** 54
 
 ## Commands by module
 
@@ -287,7 +287,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `load_po_translation`
 - `list_translations`
 
-### import_commands (12)
+### import_commands (15)
 
 - `reimport_files`
 - `wait_for_import`
@@ -301,6 +301,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `scan_filesystem`
 - `is_filesystem_scanning`
 - `get_filesystem_hash`
+- `ensure_imported`
+- `import_paths`
+- `stage_files_into_res`
 
 ### input_commands (5)
 
@@ -439,6 +442,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 - `create_editor_plugin`
 - `list_project_plugins`
+
+### production_commands (5)
+
+- `scaffold_project_defaults`
+- `wire_signal_to_new_method`
+- `playtest_report`
+- `agent_production_status`
+- `create_input_map_preset`
 
 ### profiling_commands (6)
 

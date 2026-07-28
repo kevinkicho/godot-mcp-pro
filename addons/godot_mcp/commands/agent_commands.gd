@@ -112,39 +112,71 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			"Use health_check first when anything looks offline.",
 		],
 		"production_loop": [
-			{"step": 1, "action": "health_check", "why": "Confirm editor + MCP link"},
-			{"step": 2, "action": "get_project_info + get_filesystem_tree", "why": "Orient to project structure"},
-			{"step": 3, "action": "get_scene_tree / open_scene", "why": "Target the right scene"},
-			{"step": 4, "action": "create_scene / add_node / update_property / create_script / attach_script", "why": "Build content"},
-			{"step": 5, "action": "save_scene + validate_script", "why": "Persist and check compile"},
-			{"step": 6, "action": "play_scene → get_game_screenshot / get_editor_errors", "why": "Playtest"},
-			{"step": 7, "action": "simulate_action / get_game_node_properties", "why": "Interact and assert runtime state"},
-			{"step": 8, "action": "stop_scene → fix → repeat", "why": "Close the feedback loop"},
+			{"step": 1, "action": "health_check / agent_production_status", "why": "Confirm editor + MCP link + import idle"},
+			{"step": 2, "action": "scaffold_project_defaults (once per new project)", "why": "Folders, viewport, layers, input preset, main scene — human first-hour setup"},
+			{"step": 3, "action": "stage_files_into_res / ensure_imported / import_paths", "why": "Drop assets + wait until loadable (Import dock)"},
+			{"step": 4, "action": "get_project_info + get_filesystem_tree + get_scene_tree / open_scene", "why": "Orient before mutate"},
+			{"step": 5, "action": "create_scene / add_node / update_property / create_script / attach_script", "why": "Build content like the Scene/Inspector docks"},
+			{"step": 6, "action": "wire_signal_to_new_method (or connect_signal)", "why": "Signal dock: create method + persistent connect"},
+			{"step": 7, "action": "save_scene + validate_script", "why": "Persist and check compile"},
+			{"step": 8, "action": "playtest_report (or play_scene → screenshot/errors)", "why": "Hit Play, inspect Output, optional asserts"},
+			{"step": 9, "action": "simulate_action / get_game_node_properties", "why": "Interact and assert runtime state"},
+			{"step": 10, "action": "stop_scene → fix → repeat", "why": "Close the feedback loop"},
 		],
+		"headless_principle": "Agents work as if a human uses the Godot IDE. Prefer MCP tools over raw filesystem edits of .tscn / project.godot. Full import/playtest needs editor + plugin; file scaffolding works when plugin is up.",
 		"when_editor_offline": [
 			"launch_editor with project_path",
 			"CLI: run_project / get_debug_output / create_scene (headless) as fallback",
-			"Prefer reconnecting the plugin for production quality (UndoRedo, screenshots, runtime)",
+			"Prefer reconnecting the plugin for production quality (UndoRedo, screenshots, runtime, ensure_imported)",
 		],
 		"topic": topic,
 	}
 
 	match topic:
 		"2d":
-			guide["focus"] = ["create_scene root CharacterBody2D/Node2D", "add_node Sprite2D/CollisionShape2D", "load_sprite", "set_input_action", "tilemap_*"]
+			guide["focus"] = [
+				"scaffold_project_defaults genre=2d",
+				"create_scene root CharacterBody2D/Node2D",
+				"add_node Sprite2D/CollisionShape2D",
+				"load_sprite / ensure_imported",
+				"create_input_map_preset platformer_2d|topdown_2d",
+				"tilemap_*",
+			]
 		"3d":
-			guide["focus"] = ["create_scene root Node3D/CharacterBody3D", "add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_collision", "export_mesh_library"]
+			guide["focus"] = [
+				"scaffold_project_defaults genre=3d",
+				"create_scene root Node3D/CharacterBody3D",
+				"stage_files_into_res for .glb → ensure_imported",
+				"add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_collision",
+			]
 		"ui":
-			guide["focus"] = ["Control roots", "set_anchor_preset", "set_theme_*", "connect_signal", "click_button_by_text"]
+			guide["focus"] = [
+				"scaffold_project_defaults genre=ui",
+				"Control roots", "set_anchor_preset", "set_theme_*",
+				"wire_signal_to_new_method for Button.pressed",
+				"click_button_by_text",
+			]
 		"playtest":
-			guide["focus"] = ["play_scene", "get_game_screenshot", "simulate_key/action", "get_game_scene_tree", "assert_node_state", "stop_scene"]
+			guide["focus"] = [
+				"playtest_report (one-shot play + errors + optional screenshot/asserts)",
+				"play_scene", "get_game_screenshot", "simulate_key/action",
+				"get_game_scene_tree", "assert_node_state", "stop_scene",
+			]
+		"assets", "import":
+			guide["focus"] = [
+				"stage_files_into_res files=[{from,to}] dest_dir=res://assets",
+				"ensure_imported paths=[…] / import_paths",
+				"wait_for_import / reimport_files",
+				"apply_texture_import_preset / apply_scene_import_preset",
+				"get_import_info / set_import_options",
+			]
 		"inspector", "tune", "properties":
 			guide["focus"] = [
 				"select_nodes / get_editor_selection",
 				"inspect_node or list_property_info (see enums/ranges)",
 				"update_property or update_properties (batch fine-tune)",
 				"Nested: add_resource then update_property property='shape.radius'",
-				"connect_signal / disconnect_signal / get_signals",
+				"wire_signal_to_new_method or connect_signal / disconnect_signal / get_signals",
 				"add_mesh_instance / set_material_3d / clear_property",
 				"set_meta / list_meta",
 				"save_scene",
@@ -152,12 +184,16 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["human_parity"] = {
 				"tune_transform": "update_properties node_path=Player properties={position, rotation, scale}",
 				"tune_collision": "add_resource property=shape resource_type=CircleShape2D → update_property property=shape.radius value=16",
-				"wire_button": "connect_signal source_path=UI/Button signal_name=pressed target_path=. method=_on_button_pressed",
+				"wire_button": "wire_signal_to_new_method source_path=UI/Button signal_name=pressed target_path=.",
 				"swap_mesh": "add_mesh_instance or update_property mesh / set_material_3d",
 				"script_exports": "list_property_info shows @export vars; edit_script to add/remove @export lines then reload",
 			}
 		_:
-			guide["focus"] = ["Full production_loop above", "topic=inspector for fine-tuning objects like a human"]
+			guide["focus"] = [
+				"Full production_loop above",
+				"Macros: scaffold_project_defaults, ensure_imported, wire_signal_to_new_method, playtest_report",
+				"topic=inspector|assets|playtest for specialized human docks",
+			]
 
 	return success(guide)
 
@@ -170,7 +206,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 		"getting_started": {
 			"status": "strong",
 			"tools": [
-				"health_check", "launch_editor", "get_project_info", "create_scene", "add_node", "create_script", "play_scene",
+				"health_check", "agent_production_status", "scaffold_project_defaults",
+				"launch_editor", "get_project_info", "create_scene", "add_node", "create_script",
+				"play_scene", "playtest_report",
 				"create_scene_transition_script", "create_loading_screen_scene", "set_main_scene",
 			],
 			"gaps": [],
@@ -225,8 +263,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["visual Bezier handle editor", "full retarget wizard UI"],
 		},
 		"tutorials/assets_pipeline": {
-			"status": "partial",
+			"status": "strong",
 			"tools": [
+				"stage_files_into_res", "ensure_imported", "import_paths",
 				"reimport_files", "wait_for_import", "get_import_info", "set_import_option", "set_import_options",
 				"apply_texture_import_preset", "apply_scene_import_preset", "create_atlas_texture",
 				"create_gradient_texture", "create_noise_texture", "create_placeholder_texture",
@@ -244,8 +283,11 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["interactive music graphs", "AudioStreamGenerator procedural"],
 		},
 		"tutorials/inputs": {
-			"status": "partial",
-			"tools": ["get_input_actions", "set_input_action", "remove_input_action", "list_input_action_events", "add_input_action_event", "simulate_*"],
+			"status": "strong",
+			"tools": [
+				"create_input_map_preset", "get_input_actions", "set_input_action", "remove_input_action",
+				"list_input_action_events", "add_input_action_event", "simulate_*",
+			],
 			"gaps": ["joypad mapping wizard", "InputEventAction strength tooling"],
 		},
 		"tutorials/io": {

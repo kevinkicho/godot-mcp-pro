@@ -207,10 +207,14 @@ func guard_offline_scene_save(path: String) -> Dictionary:
 ## Helper: create the parent directory of a res:// path if missing.
 ## Returns {} on success, an error dictionary on failure.
 func ensure_parent_dir(path: String) -> Dictionary:
+	## Accepts res:// or absolute OS paths; creates parent directory if missing.
 	var dir := path.get_base_dir()
-	if dir.is_empty() or DirAccess.dir_exists_absolute(dir):
+	if dir.is_empty():
 		return {}
-	var derr := DirAccess.make_dir_recursive_absolute(dir)
+	var abs_dir := ProjectSettings.globalize_path(dir) if dir.begins_with("res://") or dir.begins_with("user://") else dir
+	if DirAccess.dir_exists_absolute(abs_dir):
+		return {}
+	var derr := DirAccess.make_dir_recursive_absolute(abs_dir)
 	if derr != OK:
 		return error_internal("Cannot create directory '%s': %s" % [dir, error_string(derr)])
 	return {}

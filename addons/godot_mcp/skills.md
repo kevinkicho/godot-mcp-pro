@@ -9,17 +9,35 @@
 
 This is the control plane for **agent-driven game production**: create scenes, write scripts, playtest, simulate input, inspect runtime state, and iterate—without the user leaving the conversation. When the editor plugin is connected, mutations go through UndoRedo (Ctrl+Z). Prefer MCP tools over raw filesystem edits of `.tscn` / `project.godot`.
 
-**Start every session with `health_check`.** Use `agent_workflow_guide` for the production loop.
+**Start every session with `health_check`.** Use `agent_production_status` / `agent_workflow_guide` for the production loop.
 
-You have access to a large set of editor tools (180+) when connected, plus CLI tools when the editor is offline.
+**Headless principle:** work as if a human is using the Godot IDE. MCP surfaces the docks (FileSystem, Import, Inspector, Signals, Play). Prefer tools over hand-editing `.tscn` / `project.godot`.
+
+You have access to a large set of editor tools (500+) when connected, plus CLI tools when the editor is offline.
 
 ## Essential Workflows
+
+### 0. New project / first hour (human Project Settings)
+
+```
+scaffold_project_defaults  → folders, viewport, layers, input preset, main scene
+create_input_map_preset    → platformer_2d | fps_basic | ui_menu (if not via scaffold)
+```
+
+### 0b. Asset intake (human FileSystem + Import)
+
+```
+stage_files_into_res  → copy OS files into res://assets (or dest_dir)
+ensure_imported       → wait until ResourceLoader-ready
+import_paths          → one-shot stage-or-ensure
+```
 
 ### 1. Explore a Project
 
 Always start by understanding the project before making changes:
 
 ```
+agent_production_status   → dashboard: import idle, open scene, command count
 get_project_info          → project name, Godot version, renderer, viewport size
 get_filesystem_tree       → directory structure (use filter: "*.tscn" or "*.gd")
 get_scene_tree            → node hierarchy of the currently open scene
@@ -72,9 +90,18 @@ validate_script → check for syntax errors without running
 read_script    → read current content before editing
 ```
 
-### 5. Playtest & Debug
+### 5. Signals (human Signal dock)
 
 ```
+wire_signal_to_new_method  → connect + create method on target script (preferred)
+connect_signal             → connect existing method only
+get_signals                → list signals + connections on a node
+```
+
+### 6. Playtest & Debug
+
+```
+playtest_report        → one-shot: play → settle → errors/tree/asserts/screenshot → stop
 play_scene             → launch the game (mode: "current", "main", or file path)
 get_game_screenshot    → see what the game looks like right now
 capture_frames         → capture multiple frames to observe motion/animation

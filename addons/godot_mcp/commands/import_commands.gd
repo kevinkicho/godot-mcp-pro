@@ -18,6 +18,10 @@ func get_commands() -> Dictionary:
 		"scan_filesystem": _scan_filesystem,
 		"is_filesystem_scanning": _is_filesystem_scanning,
 		"get_filesystem_hash": _get_filesystem_hash,
+		# Headless-agent asset pipeline (human FileSystem + Import dock)
+		"ensure_imported": _ensure_imported,
+		"import_paths": _import_paths,
+		"stage_files_into_res": _stage_files_into_res,
 	}
 
 
@@ -171,6 +175,187 @@ func _get_filesystem_hash(_params: Dictionary) -> Dictionary:
 	if fs.has_method("get_filesystem_hash"):
 		hash_val = str(fs.call("get_filesystem_hash"))
 	return success({"hash": hash_val, "scanning": fs.is_scanning()})
+
+
+func _normalize_res(path: String) -> String:
+	var s := path.strip_edges()
+	if s.is_empty():
+		return s
+	if s.begins_with("res://"):
+		return s
+	return "res://" + s.trim_prefix("/")
+
+
+func _path_is_ready(path: String) -> Dictionary:
+	## Check file exists and is loadable (import finished for engine resources).
+	var p := _normalize_res(path)
+	var out := {
+		"path": p,
+		"file_exists": FileAccess.file_exists(p),
+		"import_file_exists": FileAccess.file_exists(p + ".import"),
+		"resource_loader_exists": ResourceLoader.exists(p),
+		"ready": false,
+		"error": "",
+	}
+	if not out["file_exists"]:
+		out["error"] = "file_missing"
+		return out
+	# Text scripts / tscn often don't need .import
+	var ext := p.get_extension().to_lower()
+	if ext in ["gd", "cs", "txt", "json", "cfg", "md", "godot", "tscn", "scn", "tres", "res", "shader", "gdshader"]:
+		out["ready"] = true
+		if ext in ["gd", "cs", "shader", "gdshader", "tscn", "scn", "tres", "res"]:
+			out["resource_loader_exists"] = ResourceLoader.exists(p)
+		return out
+	# Imported assets: prefer loadable via ResourceLoader
+	if ResourceLoader.exists(p):
+		var res = load(p)
+		if res != null:
+			out["ready"] = true
+			out["type"] = res.get_class()
+			return out
+		out["error"] = "load_returned_null"
+		return out
+	if out["import_file_exists"]:
+		out["error"] = "import_pending_or_failed"
+	else:
+		out["error"] = "no_import_file_yet"
+	return out
+
+
+func _ensure_imported(params: Dictionary) -> Dictionary:
+	## Headless-friendly: scan, wait, optionally reimport until paths are loadable.
+	var paths: Array = []
+	if params.has("paths") and params["paths"] is Array:
+		paths = params["paths"]
+	elif params.has("path"):
+		paths = [params["path"]]
+	else:
+		return error_invalid_params("path or paths[] required")
+	var timeout_sec: float = float(params.get("timeout_sec", 90.0))
+	var reimport: bool = optional_bool(params, "reimport", false)
+	var fs := _fs()
+	if fs == null:
+		return error_internal("EditorFileSystem unavailable — open Godot editor with plugin for import")
+	var normalized: Array = []
+	for p in paths:
+		normalized.append(_normalize_res(str(p)))
+	fs.scan()
+	# Wait for scan
+	var start := Time.get_ticks_msec()
+	var attempts := int(timeout_sec / 0.1)
+	while attempts > 0 and fs.is_scanning():
+		await get_tree().create_timer(0.1).timeout
+		attempts -= 1
+	if reimport:
+		var packed := PackedStringArray()
+		for p2 in normalized:
+			if FileAccess.file_exists(p2):
+				packed.append(p2)
+		if packed.size() > 0:
+			fs.reimport_files(packed)
+	# Wait again + poll readiness
+	var results: Array = []
+	var all_ready := false
+	while attempts > 0:
+		if not fs.is_scanning():
+			results.clear()
+			all_ready = true
+			for p3 in normalized:
+				var st: Dictionary = _path_is_ready(p3)
+				results.append(st)
+				if not st.get("ready", false):
+					all_ready = false
+			if all_ready:
+				break
+		await get_tree().create_timer(0.15).timeout
+		attempts -= 1
+	if results.is_empty():
+		for p4 in normalized:
+			results.append(_path_is_ready(p4))
+		all_ready = true
+		for st2 in results:
+			if not st2.get("ready", false):
+				all_ready = false
+	return success({
+		"ready": all_ready,
+		"paths": results,
+		"elapsed_ms": Time.get_ticks_msec() - start,
+		"scanning": fs.is_scanning(),
+		"hint": "If not ready: check broken assets in editor Output; call reimport_files or fix paths",
+	})
+
+
+func _stage_files_into_res(params: Dictionary) -> Dictionary:
+	## Copy OS/files into res:// (batch). Human "drop into project folder".
+	if not params.has("files") or not params["files"] is Array:
+		return error_invalid_params("files: array of {from, to} or from strings with dest_dir")
+	var dest_dir: String = optional_string(params, "dest_dir", "res://assets")
+	if not dest_dir.begins_with("res://"):
+		dest_dir = "res://" + dest_dir.trim_prefix("/")
+	dest_dir = dest_dir.rstrip("/")
+	var copied: Array = []
+	var failed: Array = []
+	for item in params["files"]:
+		var from_path := ""
+		var to_path := ""
+		if item is Dictionary:
+			from_path = str(item.get("from", item.get("source", "")))
+			to_path = str(item.get("to", item.get("dest", "")))
+		else:
+			from_path = str(item)
+		if from_path.is_empty():
+			failed.append({"from": from_path, "error": "empty_from"})
+			continue
+		if to_path.is_empty():
+			var base := from_path.get_file()
+			to_path = dest_dir + "/" + base
+		if not to_path.begins_with("res://"):
+			to_path = "res://" + to_path.trim_prefix("/")
+		var abs_from := from_path
+		if from_path.begins_with("res://"):
+			abs_from = ProjectSettings.globalize_path(from_path)
+		if not FileAccess.file_exists(abs_from) and not FileAccess.file_exists(from_path):
+			failed.append({"from": from_path, "error": "source_missing"})
+			continue
+		if not FileAccess.file_exists(abs_from):
+			abs_from = from_path
+		var derr := ensure_parent_dir(to_path)
+		if not derr.is_empty():
+			failed.append({"from": from_path, "to": to_path, "error": "parent_dir"})
+			continue
+		var abs_to := ProjectSettings.globalize_path(to_path)
+		var err := DirAccess.copy_absolute(abs_from, abs_to)
+		if err != OK:
+			failed.append({"from": from_path, "to": to_path, "error": error_string(err)})
+			continue
+		EditorInterface.get_resource_filesystem().update_file(to_path)
+		copied.append({"from": from_path, "to": to_path})
+	var wait_import: bool = optional_bool(params, "wait_import", true)
+	var ensure_result := {}
+	if wait_import and copied.size() > 0:
+		var paths: Array = []
+		for c in copied:
+			paths.append(c["to"])
+		ensure_result = await _ensure_imported({
+			"paths": paths,
+			"timeout_sec": float(params.get("timeout_sec", 90.0)),
+			"reimport": optional_bool(params, "reimport", false),
+		})
+	return success({
+		"copied": copied,
+		"failed": failed,
+		"copied_count": copied.size(),
+		"failed_count": failed.size(),
+		"import": ensure_result.get("result", ensure_result) if ensure_result is Dictionary else ensure_result,
+	})
+
+
+func _import_paths(params: Dictionary) -> Dictionary:
+	## Alias pipeline: stage optional + ensure_imported (agent one-shot).
+	if params.has("files"):
+		return await _stage_files_into_res(params)
+	return await _ensure_imported(params)
 
 
 func _set_import_options(params: Dictionary) -> Dictionary:

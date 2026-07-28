@@ -35,7 +35,7 @@ import {
 const DEBUG = process.env.DEBUG === 'true';
 const PREFERRED_PORT = parseInt(process.env.GODOT_MCP_PORT || '6505', 10);
 const LITE = parseLiteMode(process.argv);
-const SERVER_VERSION = '1.28.0';
+const SERVER_VERSION = '1.29.0';
 
 function log(msg: string): void {
   if (DEBUG) console.error(`[SERVER] ${msg}`);
@@ -310,18 +310,21 @@ class GodotMcpProServer {
       purpose: 'Agent-driven game production with Godot MCP (offline summary)',
       topic,
       principles: [
-        'Connect the editor plugin for production quality (UndoRedo, playtest, screenshots).',
+        'Agents work headless as if using the Godot IDE; MCP surfaces human dock workflows.',
+        'Connect the editor plugin for production quality (UndoRedo, import, playtest, screenshots).',
         'Explore before mutate.',
         'Keep writes under res://.',
-        'Loop: build → save → play → inspect → fix.',
+        'Loop: scaffold → import → build → wire → playtest → fix.',
       ],
       production_loop: [
-        'health_check',
-        'get_project_info / get_filesystem_tree',
-        'get_scene_tree / open_scene',
+        'health_check / agent_production_status',
+        'scaffold_project_defaults (new projects)',
+        'stage_files_into_res / ensure_imported',
+        'get_project_info / get_filesystem_tree / open_scene',
         'create_scene / add_node / create_script / attach_script',
+        'wire_signal_to_new_method',
         'save_scene / validate_script',
-        'play_scene → get_game_screenshot / get_editor_errors',
+        'playtest_report (or play_scene → screenshot/errors)',
         'simulate_action → stop_scene → fix',
       ],
       note: this.offlineHint(),

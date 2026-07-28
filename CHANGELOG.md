@@ -4,6 +4,33 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.29.0 — 2026-07-28
+
+**Headless production macros** — MCP surfaces high-frequency human IDE actions so agents can build end-to-end without a person in the docks.
+
+### Added (production_commands)
+- `scaffold_project_defaults` — folders, viewport/stretch, physics layers, input preset, main scene shell
+- `create_input_map_preset` — platformer_2d / fps_basic / ui_menu (+ live InputMap sync)
+- `wire_signal_to_new_method` — Signal dock: create method + persistent connect (infers signal args)
+- `playtest_report` — play → settle → debugger errors / tree / asserts / screenshot → stop
+- `agent_production_status` — single dashboard + recommended loop
+
+### Added (import_commands)
+- `ensure_imported` — scan/wait until paths are ResourceLoader-ready
+- `stage_files_into_res` — batch copy OS files into res:// (+ optional import wait)
+- `import_paths` — one-shot stage-or-ensure alias for agents
+
+### Server / discovery
+- LITE schemas for all production + import macros (always listed)
+- `agent_workflow_guide` loop updated (scaffold → import → build → wire → playtest)
+- docs coverage: assets_pipeline / inputs / getting_started upgraded with macros
+
+### Philosophy
+- Prefer editor+plugin automation (not raw CLI-only) for human-parity import and playtest.
+- Agents should treat MCP as the full IDE control plane for content work.
+
+---
+
 ## v1.28.0 — 2026-07-28
 
 **Surface expansion** — Control polish widgets, audio 2D/3D players + polyphony, layer names.

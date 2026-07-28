@@ -29,13 +29,13 @@ export const CLI_TOOLS: ToolDef[] = [
   {
     name: 'agent_workflow_guide',
     description:
-      'Project-neutral guide for agent-driven game production loops (explore → build → playtest → fix). Optional topic: production|2d|3d|ui|playtest.',
+      'Project-neutral guide for agent-driven game production loops (explore → build → playtest → fix). Optional topic: production|2d|3d|ui|playtest|assets|inspector.',
     inputSchema: {
       type: 'object',
       properties: {
         topic: {
           type: 'string',
-          description: 'production (default) | 2d | 3d | ui | playtest',
+          description: 'production (default) | 2d | 3d | ui | playtest | assets | inspector',
         },
       },
       required: [],
@@ -438,8 +438,149 @@ export const CLI_TOOLS: ToolDef[] = [
 /**
  * Core editor commands exposed even in --lite mode (with schemas when known).
  * Everything else is available via call_editor(method, params).
+ * Headless production macros are first-class: agents should not need a human in the IDE docks.
  */
 export const LITE_EDITOR_TOOLS: ToolDef[] = [
+  {
+    name: 'agent_production_status',
+    description:
+      'Dashboard: plugin version, command count, open scene, import scanning, play state, recommended production loop. Prefer after health_check.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'scaffold_project_defaults',
+    description:
+      'Human first-hour project setup: folders, viewport/stretch, physics layer names, input map preset, main scene shell. Call once on new projects.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        genre: { type: 'string', description: '2d | 3d | ui | generic' },
+        project_name: { type: 'string' },
+        viewport_width: { type: 'number' },
+        viewport_height: { type: 'number' },
+        main_scene: { type: 'string', description: 'res://scenes/main.tscn' },
+        root_type: { type: 'string', description: 'Node2D | Node3D | Control (auto from genre)' },
+        input_preset: { type: 'string', description: 'platformer_2d | topdown_2d | fps_basic | ui_menu' },
+        setup_input: { type: 'boolean' },
+        force_main_scene: { type: 'boolean' },
+        folders: { type: 'array', items: { type: 'string' } },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_input_map_preset',
+    description:
+      'Apply a named InputMap pack (WASD/jump/shoot or FPS) to Project Settings + live InputMap — human Project → Input Map dock.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        preset: { type: 'string', description: 'platformer_2d | topdown_2d | fps_basic | ui_menu' },
+        actions: { type: 'object', description: 'Custom action→events map (alternative to preset)' },
+        deadzone: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'stage_files_into_res',
+    description:
+      'Copy OS/files into res:// (batch). Human "drop into FileSystem dock". Optionally waits for import.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          description: 'Array of {from, to} or source path strings (uses dest_dir + filename)',
+          items: {},
+        },
+        dest_dir: { type: 'string', description: 'Default res://assets' },
+        wait_import: { type: 'boolean' },
+        timeout_sec: { type: 'number' },
+        reimport: { type: 'boolean' },
+      },
+      required: ['files'],
+    },
+  },
+  {
+    name: 'ensure_imported',
+    description:
+      'Scan/wait until res:// paths are ResourceLoader-ready (Import dock wait). Use after copying assets.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        paths: { type: 'array', items: { type: 'string' } },
+        timeout_sec: { type: 'number' },
+        reimport: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'import_paths',
+    description:
+      'One-shot asset pipeline: if files[] present → stage_files_into_res; else ensure_imported. Prefer for agent asset intake.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        files: { type: 'array', items: {} },
+        path: { type: 'string' },
+        paths: { type: 'array', items: { type: 'string' } },
+        dest_dir: { type: 'string' },
+        timeout_sec: { type: 'number' },
+        reimport: { type: 'boolean' },
+        wait_import: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'wire_signal_to_new_method',
+    description:
+      'Human Signal dock: connect source signal → create method on target script (creates script if needed) + persistent connection.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source_path: { type: 'string', description: 'Node path of signal emitter' },
+        signal_name: { type: 'string', description: 'e.g. pressed, body_entered' },
+        target_path: { type: 'string', description: 'Node that receives the method' },
+        method_name: { type: 'string', description: 'Default _on_<source>_<signal>' },
+        script_path: { type: 'string', description: 'If target has no script' },
+        method_args: { type: 'string', description: 'Override param list; else inferred from signal' },
+        print_debug: { type: 'boolean' },
+        deferred: { type: 'boolean' },
+        force: { type: 'boolean' },
+      },
+      required: ['source_path', 'signal_name', 'target_path'],
+    },
+  },
+  {
+    name: 'playtest_report',
+    description:
+      'Human "hit Play, glance at Output": play main/current/custom, settle, collect debugger errors, optional game tree/asserts/screenshot, then stop.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: { type: 'string', description: 'main | current | custom' },
+        path: { type: 'string', description: 'Scene path when mode=custom' },
+        settle_sec: { type: 'number', description: 'Wait after play starts (default 1.5)' },
+        stop_after: { type: 'boolean', description: 'Stop play after report (default true)' },
+        screenshot: { type: 'boolean' },
+        include_screenshot_data: {
+          type: 'boolean',
+          description: 'Include base64 image (large). Default false — path/meta only',
+        },
+        asserts: {
+          type: 'array',
+          description: '[{node_path, property, equals?}] runtime checks via game IPC',
+          items: { type: 'object' },
+        },
+        max_depth: { type: 'number' },
+      },
+      required: [],
+    },
+  },
   {
     name: 'get_filesystem_tree',
     description: 'Project file tree with optional filter (e.g. *.tscn, *.gd)',

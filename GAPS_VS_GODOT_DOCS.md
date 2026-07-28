@@ -199,21 +199,21 @@ These matter as much as missing tools:
 
 ## 4. Recommended priority (agent production, project-neutral)
 
-### P0 — Unblocks everyday “human editor” work
+### P0 — Unblocks everyday “human editor” work — largely done in 1.29
 
-1. **Asset import control** — reimport, wait, read/write critical `.import` keys  
-2. **Property/schema discovery** — already improved (`list_property_info`); add **ClassDB method/signal list** tool (`describe_class`)  
-3. **InputMap completeness** — remove action, list events, bind multiple keys  
-4. **Expose inspector tools in default tool list** — done in 1.17.1 lite set; keep expanding schemas  
-5. **Wait for filesystem** — `await_import` / poll EditorFileSystem  
+1. **Asset import control** — `ensure_imported` / `stage_files_into_res` / `import_paths` + reimport/wait/options  
+2. **Property/schema discovery** — `list_property_info` + `describe_class`  
+3. **InputMap completeness** — `create_input_map_preset` + set/remove/list events  
+4. **Expose inspector tools in default tool list** — lite set + production macros always listed  
+5. **Wait for filesystem** — `wait_for_import` / `ensure_imported`  
+6. **Scaffold + signal wire + playtest macro** — `scaffold_project_defaults` / `wire_signal_to_new_method` / `playtest_report`  
 
 ### P1 — Production depth
 
-6. **TileSet authoring** (atlas source, tile collision)  
-7. **Animation method tracks + SpriteFrames**  
-8. **Physics joints + Area helpers**  
-9. **Export run + log capture** as one tool  
-10. **Scene unique names** + owner tools  
+7. **TileSet authoring** (atlas source, tile paint depth)  
+8. **3D import depth** (extract meshes, inherited import scenes)  
+9. **Physics joints + Area helpers**  
+10. **Genre scaffolds** (platformer/fps templates beyond defaults)  
 
 ### P2 — Verticals
 
@@ -240,12 +240,12 @@ Relative to “human making a typical 2D/3D game from docs tutorials”:
 
 | Layer | Score |
 |-------|-------|
-| Scene / node / inspector / signals / scripts | **~80–85%** |
-| Playtest / debug loop | **~75%** |
-| 2D/3D content depth (tiles, anim, physics joints) | **~40–55%** |
-| Assets import pipeline | **~20%** |
-| Multiplayer / i18n / XR | **~5–15%** |
-| Agent discovery of existing tools | **~50%** (main practical bottleneck) |
+| Scene / node / inspector / signals / scripts | **~85%** |
+| Playtest / debug loop | **~85%** (`playtest_report` macro) |
+| 2D/3D content depth (tiles, anim, physics joints) | **~45–60%** |
+| Assets import pipeline | **~70%** (`ensure_imported` / stage / presets) |
+| Multiplayer / i18n / XR | **~15–30%** |
+| Agent discovery of existing tools | **~70%** (lite schemas + macros + list_mcp_commands) |
 
 ---
 

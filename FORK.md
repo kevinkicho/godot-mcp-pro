@@ -29,7 +29,20 @@ Install plugin into any project:
 Upstream Pro’s public repo only ships the **Godot editor plugin**. The commercial
 Node MCP server is paid. This fork adds:
 
-### 0. Agent production tools (plugin)
+### 0. Headless production macros (plugin) — human IDE parity
+
+| Tool | Human equivalent |
+| --- | --- |
+| `scaffold_project_defaults` | First-hour Project Settings + folders + main scene |
+| `create_input_map_preset` | Project → Input Map presets |
+| `stage_files_into_res` / `ensure_imported` / `import_paths` | Drop assets + Import dock wait |
+| `wire_signal_to_new_method` | Signal dock → connect + create method |
+| `playtest_report` | Hit Play, glance Output/game, stop |
+| `agent_production_status` | “Is the editor ready to work?” dashboard |
+
+Agents should treat the MCP as the full content-production control plane (editor+plugin automation). CLI-only is fallback for launch/run when the plugin is offline.
+
+### 0b. Agent production tools (plugin)
 
 `addons/godot_mcp/commands/agent_commands.gd`
 
