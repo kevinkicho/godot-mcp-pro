@@ -14,6 +14,10 @@ func get_commands() -> Dictionary:
 		"project_path_to_uid": _project_path_to_uid,
 		"add_autoload": _add_autoload,
 		"remove_autoload": _remove_autoload,
+		"list_autoloads": _list_autoloads,
+		"set_window_settings": _set_window_settings,
+		"set_physics_ticks": _set_physics_ticks,
+		"list_project_settings_keys": _list_project_settings_keys,
 	}
 
 
@@ -388,3 +392,95 @@ func _remove_autoload(params: Dictionary) -> Dictionary:
 		"old_path": old_value,
 		"removed": true,
 	})
+
+
+func _list_autoloads(_params: Dictionary) -> Dictionary:
+	var autoloads: Array = []
+	for prop in ProjectSettings.get_property_list():
+		var pname: String = prop.get("name", "")
+		if pname.begins_with("autoload/"):
+			var raw := str(ProjectSettings.get_setting(pname))
+			var singleton := raw.begins_with("*")
+			var path := raw.trim_prefix("*")
+			autoloads.append({
+				"name": pname.trim_prefix("autoload/"),
+				"path": path,
+				"singleton": singleton,
+				"raw": raw,
+			})
+	autoloads.sort_custom(func(a, b): return str(a["name"]) < str(b["name"]))
+	return success({"autoloads": autoloads, "count": autoloads.size()})
+
+
+func _set_window_settings(params: Dictionary) -> Dictionary:
+	var applied := {}
+	if params.has("viewport_width"):
+		ProjectSettings.set_setting("display/window/size/viewport_width", int(params["viewport_width"]))
+		applied["viewport_width"] = int(params["viewport_width"])
+	if params.has("viewport_height"):
+		ProjectSettings.set_setting("display/window/size/viewport_height", int(params["viewport_height"]))
+		applied["viewport_height"] = int(params["viewport_height"])
+	if params.has("mode"):
+		# 0=windowed 1=minimized 2=maximized 3=fullscreen 4=exclusive fullscreen (varies)
+		var mode = params["mode"]
+		if mode is String:
+			match str(mode).to_lower():
+				"windowed":
+					ProjectSettings.set_setting("display/window/size/mode", 0)
+				"fullscreen":
+					ProjectSettings.set_setting("display/window/size/mode", 3)
+				"exclusive_fullscreen":
+					ProjectSettings.set_setting("display/window/size/mode", 4)
+				_:
+					ProjectSettings.set_setting("display/window/size/mode", int(mode) if str(mode).is_valid_int() else 0)
+		else:
+			ProjectSettings.set_setting("display/window/size/mode", int(mode))
+		applied["mode"] = ProjectSettings.get_setting("display/window/size/mode")
+	if params.has("stretch_mode"):
+		ProjectSettings.set_setting("display/window/stretch/mode", str(params["stretch_mode"]))
+		applied["stretch_mode"] = str(params["stretch_mode"])
+	if params.has("stretch_aspect"):
+		ProjectSettings.set_setting("display/window/stretch/aspect", str(params["stretch_aspect"]))
+		applied["stretch_aspect"] = str(params["stretch_aspect"])
+	if params.has("vsync"):
+		# 0=disabled 1=enabled 2=adaptive 3=mailbox
+		ProjectSettings.set_setting("display/window/vsync/vsync_mode", int(params["vsync"]))
+		applied["vsync"] = int(params["vsync"])
+	if applied.is_empty():
+		return error_invalid_params("Provide viewport_width/height, mode, stretch_mode/aspect, and/or vsync")
+	ProjectSettings.save()
+	return success({"applied": applied})
+
+
+func _set_physics_ticks(params: Dictionary) -> Dictionary:
+	var applied := {}
+	if params.has("ticks_per_second"):
+		ProjectSettings.set_setting("physics/common/physics_ticks_per_second", int(params["ticks_per_second"]))
+		applied["physics_ticks_per_second"] = int(params["ticks_per_second"])
+	if params.has("max_physics_steps_per_frame"):
+		ProjectSettings.set_setting("physics/common/max_physics_steps_per_frame", int(params["max_physics_steps_per_frame"]))
+		applied["max_physics_steps_per_frame"] = int(params["max_physics_steps_per_frame"])
+	if params.has("physics_jitter_fix"):
+		ProjectSettings.set_setting("physics/common/physics_jitter_fix", float(params["physics_jitter_fix"]))
+		applied["physics_jitter_fix"] = float(params["physics_jitter_fix"])
+	if applied.is_empty():
+		return error_invalid_params("Provide ticks_per_second and/or related physics common settings")
+	ProjectSettings.save()
+	return success({"applied": applied})
+
+
+func _list_project_settings_keys(params: Dictionary) -> Dictionary:
+	var filter: String = optional_string(params, "filter", "").to_lower()
+	var max_n: int = optional_int(params, "max_results", 200)
+	var keys: Array = []
+	for prop in ProjectSettings.get_property_list():
+		var pname: String = prop.get("name", "")
+		if pname.is_empty():
+			continue
+		if not filter.is_empty() and not pname.to_lower().contains(filter):
+			continue
+		keys.append(pname)
+		if keys.size() >= max_n:
+			break
+	keys.sort()
+	return success({"keys": keys, "count": keys.size(), "filter": filter, "capped": keys.size() >= max_n})

@@ -1844,6 +1844,77 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  // ── 1.27 ──
+  {
+    name: 'set_sprite_texture',
+    description: 'Assign texture on Sprite2D/3D, TextureRect, or TextureButton',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        texture_path: { type: 'string' },
+      },
+      required: ['node_path', 'texture_path'],
+    },
+  },
+  {
+    name: 'setup_label',
+    description: 'Create a Label node with text',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        text: { type: 'string' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_button',
+    description: 'Create a Button node',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        text: { type: 'string' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'list_groups_in_scene',
+    description: 'List non-internal groups and member node paths',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_autoloads',
+    description: 'List project autoloads (name, path, singleton)',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'setup_spring_arm_3d',
+    description: 'Add SpringArm3D (optional camera child)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        spring_length: { type: 'number' },
+        with_camera: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_state_machine_script',
+    description: 'Generic gameplay FSM script (enter/exit/update states)',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' } },
+      required: [],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */

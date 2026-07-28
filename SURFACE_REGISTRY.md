@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.26.0**  
+Plugin version: **1.27.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 514
-- **Command modules:** 50
+- **Registered plugin commands:** 540
+- **Command modules:** 52
 
 ## Commands by module
 
@@ -307,6 +307,21 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `user_write_text`
 - `user_delete_path`
 
+### material_2d_commands (12)
+
+- `set_canvas_item_modulate`
+- `set_canvas_item_self_modulate`
+- `set_canvas_item_visibility`
+- `set_sprite_texture`
+- `set_sprite_region`
+- `create_canvas_item_material`
+- `assign_canvas_item_material`
+- `set_label_text`
+- `set_button_text`
+- `setup_label`
+- `setup_button`
+- `setup_texture_rect`
+
 ### multiplayer_commands (10)
 
 - `setup_multiplayer_spawner`
@@ -411,7 +426,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_render_info`
 - `list_performance_monitor_names`
 
-### project_commands (10)
+### project_commands (14)
 
 - `get_project_info`
 - `get_filesystem_tree`
@@ -423,6 +438,10 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `project_path_to_uid`
 - `add_autoload`
 - `remove_autoload`
+- `list_autoloads`
+- `set_window_settings`
+- `set_physics_ticks`
+- `list_project_settings_keys`
 
 ### resource_commands (6)
 
@@ -650,6 +669,19 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_video_stream_player`
 - `setup_progress_bar`
 - `setup_texture_progress_bar`
+
+### utility_node_commands (10)
+
+- `setup_spring_arm_3d`
+- `setup_remote_transform_3d`
+- `setup_visible_on_screen_notifier_3d`
+- `setup_marker_2d`
+- `setup_marker_3d`
+- `setup_ray_cast_query_script`
+- `list_groups_in_scene`
+- `add_node_to_group`
+- `remove_node_from_group`
+- `create_state_machine_script`
 
 ### visual_shader_commands (7)
 

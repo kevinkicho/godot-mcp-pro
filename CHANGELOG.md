@@ -4,6 +4,20 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.27.0 — 2026-07-28
+
+**Surface expansion** — CanvasItem materials / sprites / Label-Button, utility nodes, project settings helpers.
+
+### Added
+- `material_2d_commands`: modulate, sprite texture/region, CanvasItemMaterial, Label/Button/TextureRect setup
+- `utility_node_commands`: SpringArm3D, RemoteTransform3D, screen notifiers, markers, groups list/add/remove, FSM script, raycast util
+- Project: `list_autoloads`, `set_window_settings`, `set_physics_ticks`, `list_project_settings_keys`
+
+### Registry
+- Regenerate with `scripts/export-surface-registry.ps1` → `SURFACE_REGISTRY.md`
+
+---
+
 ## v1.26.0 — 2026-07-28 (fork: agent production surface)
 
 **Major fork expansion** toward human-worker tool surfaces + open MCP server.  
