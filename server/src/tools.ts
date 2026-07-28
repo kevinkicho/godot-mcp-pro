@@ -581,6 +581,254 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  // ── Modern game systems (sophisticated games need these composed tools) ──
+  {
+    name: 'setup_character_2d',
+    description:
+      'Full CharacterBody2D stack: collision + optional sprite/camera + platformer|topdown controller script. Prefer over assembling nodes by hand.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        controller: { type: 'string', description: 'platformer | topdown | none' },
+        shape: { type: 'string', description: 'capsule | circle | rect' },
+        add_sprite: { type: 'boolean' },
+        add_camera: { type: 'boolean' },
+        texture_path: { type: 'string' },
+        script_path: { type: 'string' },
+        speed: { type: 'number' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_character_3d',
+    description:
+      'Full CharacterBody3D stack: capsule collision + mesh + FPS controller (Head/Camera) script.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        controller: { type: 'string', description: 'fps | none' },
+        add_camera: { type: 'boolean' },
+        add_mesh: { type: 'boolean' },
+        speed: { type: 'number' },
+        script_path: { type: 'string' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_ai_agent_2d',
+    description:
+      'Enemy CharacterBody2D + NavigationAgent2D + chase|patrol AI script + optional detection area.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        behavior: { type: 'string', description: 'chase | patrol | none' },
+        speed: { type: 'number' },
+        target_group: { type: 'string', description: 'Default player' },
+        add_detection: { type: 'boolean' },
+        detect_radius: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_ai_agent_3d',
+    description: 'Enemy CharacterBody3D + NavigationAgent3D + chase|patrol AI script.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        behavior: { type: 'string', description: 'chase | patrol | none' },
+        speed: { type: 'number' },
+        target_group: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_hitbox',
+    description: 'Damage-dealing Area2D/3D with optional damage script (combat hitbox).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        dimension: { type: 'string', description: '2d | 3d' },
+        damage: { type: 'number' },
+        radius: { type: 'number' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_hurtbox',
+    description: 'Damage-receiving Area2D/3D (combat hurtbox for HealthComponent targets).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        dimension: { type: 'string' },
+        radius: { type: 'number' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_hud',
+    description: 'CanvasLayer HUD: health label/bar + score with set_health/set_score API.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        max_health: { type: 'number' },
+        attach_script: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_pause_menu',
+    description: 'Always-process pause overlay (dimmer + resume/quit). Uses pause/ui_cancel actions.',
+    inputSchema: {
+      type: 'object',
+      properties: { parent_path: { type: 'string' }, layer: { type: 'number' } },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_inventory_ui',
+    description: 'Inventory grid UI (slot panels) with toggle + set_item API.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        columns: { type: 'number' },
+        slots: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_dialogue_box_ui',
+    description: 'Bottom dialogue panel with show_lines([{speaker,text}]) API.',
+    inputSchema: {
+      type: 'object',
+      properties: { parent_path: { type: 'string' } },
+      required: [],
+    },
+  },
+  {
+    name: 'apply_environment_preset',
+    description:
+      'One-shot modern WorldEnvironment look: cinematic|outdoor_day|outdoor_night|indoor|stylized|horror|clean (glow/SSAO/SSR/SDFGI/fog).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        preset: { type: 'string' },
+        sdfgi: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_camera_follow_2d',
+    description: 'Camera2D that follows a target node (smoothing + optional limits).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        target_path: { type: 'string' },
+        smoothing: { type: 'boolean' },
+        zoom: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_third_person_camera',
+    description: 'SpringArm3D + Camera3D pivot with mouse-look script for third-person games.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        arm_length: { type: 'number' },
+        height: { type: 'number' },
+        fov: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_health_component_script',
+    description: 'HealthComponent (class_name) with take_damage/heal and health_changed/died signals.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        max_health: { type: 'number' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_game_state_script',
+    description: 'GameState autoload: score, flags, pause helpers.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_audio_manager_script',
+    description: 'AudioManager autoload: play_sfx + music crossfade; ensures SFX/Music buses.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'list_character_templates',
+    description: 'List character/combat template tools available for modern game scaffolding.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_ai_templates',
+    description: 'List AI/NPC template tools (chase, patrol, FSM, interactable).',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_game_ui_templates',
+    description: 'List game UI template tools (HUD, pause, inventory, dialogue, audio).',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_render_presets',
+    description: 'List environment presets and camera system tools.',
+    inputSchema: emptyProps,
+  },
   {
     name: 'get_filesystem_tree',
     description: 'Project file tree with optional filter (e.g. *.tscn, *.gd)',

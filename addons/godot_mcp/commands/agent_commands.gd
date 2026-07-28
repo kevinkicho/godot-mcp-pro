@@ -235,23 +235,40 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 		"tutorials/2d": {
 			"status": "strong",
 			"tools": [
-				"setup_camera_2d", "setup_parallax_background", "add_parallax_layer", "add_light_occluder_2d",
-				"setup_point_light_2d", "setup_line_2d", "setup_path_2d", "setup_polygon_2d", "set_y_sort_enabled",
-				"tilemap_*", "tileset_* incl terrains", "sprite_frames_*",
+				"setup_character_2d", "create_platformer_controller_script", "create_topdown_controller_script",
+				"setup_camera_follow_2d", "setup_camera_2d", "setup_parallax_background", "add_parallax_layer",
+				"add_light_occluder_2d", "setup_point_light_2d", "setup_line_2d", "setup_path_2d", "setup_polygon_2d",
+				"set_y_sort_enabled", "tilemap_* incl paint_line/erase_rect/paint_cells", "tileset_* incl terrains",
+				"sprite_frames_*", "setup_ai_agent_2d", "setup_hitbox/hurtbox",
 			],
-			"gaps": ["advanced tile atlas region tools"],
+			"gaps": ["advanced tile atlas region tools", "full TileMap editor terrain painting GUI"],
 		},
 		"tutorials/3d": {
 			"status": "strong",
 			"tools": [
-				"add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_environment", "setup_world_environment",
-				"set_material_3d", "add_gridmap", "export_mesh_library", "add_reflection_probe",
-				"add_decal", "add_voxel_gi", "bake_voxel_gi", "add_lightmap_gi", "request_lightmap_bake",
-				"setup_csg_box/sphere/cylinder", "setup_path_3d", "set_render_layers",
+				"setup_character_3d", "create_fps_controller_script", "setup_third_person_camera", "setup_orbit_camera_3d",
+				"apply_environment_preset", "add_mesh_instance", "setup_lighting", "setup_camera_3d",
+				"setup_environment", "setup_world_environment", "set_material_3d", "add_gridmap", "export_mesh_library",
+				"add_reflection_probe", "add_decal", "add_voxel_gi", "bake_voxel_gi", "add_lightmap_gi",
+				"request_lightmap_bake", "setup_csg_box/sphere/cylinder", "setup_path_3d", "set_render_layers",
 				"add_fog_volume", "set_environment_fog", "add_occluder_instance_3d",
-				"find_skeletons", "list_skeleton_bones", "create_bone_map", "add_bone_attachment",
+				"find_skeletons", "list_skeleton_bones", "create_bone_map", "add_bone_attachment", "setup_ai_agent_3d",
 			],
-			"gaps": ["full lightmap UV2 auto-unwrap"],
+			"gaps": ["full lightmap UV2 auto-unwrap", "auto LOD generation"],
+		},
+		"gameplay_systems": {
+			"status": "strong",
+			"tools": [
+				"setup_character_2d/3d", "create_*_controller_script", "create_health_component_script",
+				"setup_hitbox", "setup_hurtbox", "create_projectile_script",
+				"setup_ai_agent_2d/3d", "create_chase_ai_script", "create_patrol_ai_script",
+				"create_gameplay_state_machine_script", "create_interactable_script",
+				"setup_hud", "setup_pause_menu", "setup_inventory_ui", "setup_dialogue_box_ui",
+				"create_game_state_script", "create_audio_manager_script",
+				"create_save_manager_script", "create_signal_bus_script", "create_object_pool_script",
+				"apply_environment_preset", "create_minimap_viewport",
+			],
+			"gaps": ["full quest graph editor", "dialogue tree visual editor", "behavior tree designer UI"],
 		},
 		"tutorials/animation": {
 			"status": "strong",
@@ -277,7 +294,8 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 		"tutorials/audio": {
 			"status": "strong",
 			"tools": [
-				"add_audio_player", "set_audio_player_stream", "add_audio_bus", "remove_audio_bus", "set_audio_bus",
+				"create_audio_manager_script", "add_audio_player", "set_audio_player_stream",
+				"add_audio_bus", "remove_audio_bus", "set_audio_bus",
 				"add_audio_bus_effect", "get_audio_bus_layout", "save_audio_bus_layout", "load_audio_bus_layout",
 			],
 			"gaps": ["interactive music graphs", "AudioStreamGenerator procedural"],
@@ -305,6 +323,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"tools": [
 				"setup_navigation_region", "bake_navigation_mesh", "setup_navigation_agent",
 				"setup_navigation_link", "setup_navigation_obstacle", "set_navigation_agent_target", "set_navigation_layers",
+				"setup_ai_agent_2d/3d", "create_chase_ai_script", "create_patrol_ai_script",
 			],
 			"gaps": ["path debug draw overlay", "NavigationServer query helpers"],
 		},

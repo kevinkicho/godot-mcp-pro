@@ -24,6 +24,19 @@ scaffold_project_defaults  → folders, viewport, layers, input preset, main sce
 create_input_map_preset    → platformer_2d | fps_basic | ui_menu (if not via scaffold)
 ```
 
+### 0c. Modern game systems (prefer over raw add_node stacks)
+
+```
+setup_character_2d / setup_character_3d   → player with controller script
+setup_ai_agent_2d / setup_ai_agent_3d     → nav + chase/patrol AI
+setup_hitbox / setup_hurtbox / health     → combat
+setup_hud / setup_pause_menu / inventory  → game UI
+apply_environment_preset                  → cinematic/outdoor/horror look
+setup_camera_follow_2d / third_person     → cameras
+create_game_state_script / audio_manager  → autoloads
+list_*_templates / list_render_presets    → discovery
+```
+
 ### 0b. Asset intake (human FileSystem + Import)
 
 ```

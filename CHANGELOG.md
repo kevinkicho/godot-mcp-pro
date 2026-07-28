@@ -4,6 +4,39 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.30.0 — 2026-07-28
+
+**Modern game systems** — composed tools agents need for sophisticated 2D/3D games (not only raw node CRUD).
+
+### Character & combat (`character_system_commands`)
+- `setup_character_2d` / `setup_character_3d` — body + collision + controller script (+ camera/mesh)
+- Controllers: `create_platformer_controller_script`, `create_topdown_controller_script`, `create_fps_controller_script`
+- Combat: `create_health_component_script`, `setup_hitbox`, `setup_hurtbox`, `create_projectile_script`
+- `list_character_templates`
+
+### AI (`ai_system_commands`)
+- `setup_ai_agent_2d` / `setup_ai_agent_3d` — nav agent + chase|patrol + detection
+- `create_chase_ai_script`, `create_patrol_ai_script`, `create_gameplay_state_machine_script`
+- `setup_detection_area`, `create_interactable_script`, `list_ai_templates`
+
+### Game UI & systems (`game_ui_system_commands`)
+- `setup_hud`, `setup_pause_menu`, `setup_inventory_ui`, `setup_dialogue_box_ui`
+- `create_game_state_script`, `create_audio_manager_script`, `set_scene_tree_paused`
+- `list_game_ui_templates`
+
+### Modern render / camera (`modern_render_commands`)
+- `apply_environment_preset` — cinematic|outdoor_day|night|indoor|stylized|horror|clean
+- `setup_camera_follow_2d`, `setup_third_person_camera`, `setup_orbit_camera_3d`
+- `create_minimap_viewport`, `list_render_presets`
+
+### TileMap paint depth
+- `tilemap_erase_rect`, `tilemap_paint_line`, `tilemap_paint_cells`
+
+### Server
+- LITE schemas for all high-level modern-game tools (always discoverable)
+
+---
+
 ## v1.29.0 — 2026-07-28
 
 **Headless production macros** — MCP surfaces high-frequency human IDE actions so agents can build end-to-end without a person in the docks.

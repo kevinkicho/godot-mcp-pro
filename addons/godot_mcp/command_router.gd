@@ -71,6 +71,11 @@ func _register_commands() -> void:
 		preload("res://addons/godot_mcp/commands/control_extra_commands.gd"),
 		# Headless production macros (human IDE high-frequency actions)
 		preload("res://addons/godot_mcp/commands/production_commands.gd"),
+		# Modern game systems (controllers, AI, HUD, combat, render presets)
+		preload("res://addons/godot_mcp/commands/character_system_commands.gd"),
+		preload("res://addons/godot_mcp/commands/ai_system_commands.gd"),
+		preload("res://addons/godot_mcp/commands/game_ui_system_commands.gd"),
+		preload("res://addons/godot_mcp/commands/modern_render_commands.gd"),
 	]
 
 	for cmd_class in command_classes:

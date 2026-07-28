@@ -12,6 +12,9 @@ func get_commands() -> Dictionary:
 		"tilemap_get_used_cells": _tilemap_get_used_cells,
 		"tilemap_set_cells_terrain_connect": _tilemap_set_cells_terrain_connect,
 		"tilemap_set_cells_terrain_path": _tilemap_set_cells_terrain_path,
+		"tilemap_erase_rect": _tilemap_erase_rect,
+		"tilemap_paint_line": _tilemap_paint_line,
+		"tilemap_paint_cells": _tilemap_paint_cells,
 	}
 
 
@@ -477,3 +480,126 @@ func _tilemap_set_cells_terrain_path(params: Dictionary) -> Dictionary:
 		"terrain": terrain,
 		"mode": "path",
 	})
+
+
+func _tilemap_erase_rect(params: Dictionary) -> Dictionary:
+	## Erase all cells in a rectangle (source_id = -1).
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tilemap := _find_tilemap_node(result[0])
+	if tilemap == null:
+		return _not_found_result(result[0])
+	var layer_result := _get_single_layer(tilemap, params)
+	if layer_result[1] != null:
+		return layer_result[1]
+	var layer: int = layer_result[0]
+	var x1: int = int(params.get("x1", 0))
+	var y1: int = int(params.get("y1", 0))
+	var x2: int = int(params.get("x2", 0))
+	var y2: int = int(params.get("y2", 0))
+	var old_cells: Array = []
+	var new_cells: Array = []
+	var count := 0
+	for cx in range(mini(x1, x2), maxi(x1, x2) + 1):
+		for cy in range(mini(y1, y2), maxi(y1, y2) + 1):
+			var coords := Vector2i(cx, cy)
+			old_cells.append(_capture_cell(tilemap, layer, coords))
+			new_cells.append(_make_cell(layer, coords, -1, Vector2i(-1, -1), 0))
+			count += 1
+	var undo_redo := get_undo_redo()
+	undo_redo.create_action("MCP: Erase TileMap rect")
+	_add_do_set_cells(undo_redo, tilemap, new_cells)
+	_add_undo_set_cells(undo_redo, tilemap, old_cells)
+	undo_redo.commit_action()
+	return success({"erased": count, "rect": [x1, y1, x2, y2], "layer": layer})
+
+
+func _tilemap_paint_line(params: Dictionary) -> Dictionary:
+	## Bresenham line paint between (x1,y1)-(x2,y2).
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tilemap := _find_tilemap_node(result[0])
+	if tilemap == null:
+		return _not_found_result(result[0])
+	var layer_result := _get_single_layer(tilemap, params)
+	if layer_result[1] != null:
+		return layer_result[1]
+	var layer: int = layer_result[0]
+	var x0: int = int(params.get("x1", params.get("x0", 0)))
+	var y0: int = int(params.get("y1", params.get("y0", 0)))
+	var x1: int = int(params.get("x2", 0))
+	var y1: int = int(params.get("y2", 0))
+	var source_id: int = int(params.get("source_id", 0))
+	var atlas_x: int = int(params.get("atlas_x", 0))
+	var atlas_y: int = int(params.get("atlas_y", 0))
+	var alternative: int = int(params.get("alternative", 0))
+	var points := _bresenham(x0, y0, x1, y1)
+	var old_cells: Array = []
+	var new_cells: Array = []
+	for p in points:
+		old_cells.append(_capture_cell(tilemap, layer, p))
+		new_cells.append(_make_cell(layer, p, source_id, Vector2i(atlas_x, atlas_y), alternative))
+	var undo_redo := get_undo_redo()
+	undo_redo.create_action("MCP: Paint TileMap line")
+	_add_do_set_cells(undo_redo, tilemap, new_cells)
+	_add_undo_set_cells(undo_redo, tilemap, old_cells)
+	undo_redo.commit_action()
+	return success({"painted": points.size(), "from": [x0, y0], "to": [x1, y1], "layer": layer})
+
+
+func _tilemap_paint_cells(params: Dictionary) -> Dictionary:
+	## Batch paint arbitrary cells [[x,y],...] with same atlas tile.
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tilemap := _find_tilemap_node(result[0])
+	if tilemap == null:
+		return _not_found_result(result[0])
+	var layer_result := _get_single_layer(tilemap, params)
+	if layer_result[1] != null:
+		return layer_result[1]
+	var layer: int = layer_result[0]
+	var cells := _parse_cell_coords(params)
+	if cells.is_empty():
+		return error_invalid_params("Provide cells=[[x,y],...]")
+	var source_id: int = int(params.get("source_id", 0))
+	var atlas_x: int = int(params.get("atlas_x", 0))
+	var atlas_y: int = int(params.get("atlas_y", 0))
+	var alternative: int = int(params.get("alternative", 0))
+	var old_cells: Array = []
+	var new_cells: Array = []
+	for c in cells:
+		var coords: Vector2i = c as Vector2i
+		old_cells.append(_capture_cell(tilemap, layer, coords))
+		new_cells.append(_make_cell(layer, coords, source_id, Vector2i(atlas_x, atlas_y), alternative))
+	var undo_redo := get_undo_redo()
+	undo_redo.create_action("MCP: Paint TileMap cells")
+	_add_do_set_cells(undo_redo, tilemap, new_cells)
+	_add_undo_set_cells(undo_redo, tilemap, old_cells)
+	undo_redo.commit_action()
+	return success({"painted": cells.size(), "layer": layer, "source_id": source_id})
+
+
+func _bresenham(x0: int, y0: int, x1: int, y1: int) -> Array:
+	var points: Array = []
+	var dx := absi(x1 - x0)
+	var dy := -absi(y1 - y0)
+	var sx := 1 if x0 < x1 else -1
+	var sy := 1 if y0 < y1 else -1
+	var err := dx + dy
+	var x := x0
+	var y := y0
+	while true:
+		points.append(Vector2i(x, y))
+		if x == x1 and y == y1:
+			break
+		var e2 := 2 * err
+		if e2 >= dy:
+			err += dy
+			x += sx
+		if e2 <= dx:
+			err += dx
+			y += sy
+	return points

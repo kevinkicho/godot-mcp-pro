@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.29.0**  
+Plugin version: **1.30.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 570
-- **Command modules:** 54
+- **Registered plugin commands:** 605
+- **Command modules:** 58
 
 ## Commands by module
 
@@ -21,6 +21,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `agent_workflow_guide`
 - `list_docs_coverage`
 - `list_surface_registry`
+
+### ai_system_commands (8)
+
+- `setup_ai_agent_2d`
+- `setup_ai_agent_3d`
+- `create_chase_ai_script`
+- `create_patrol_ai_script`
+- `setup_detection_area`
+- `create_gameplay_state_machine_script`
+- `create_interactable_script`
+- `list_ai_templates`
 
 ### analysis_commands (6)
 
@@ -123,6 +134,19 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `find_node_references`
 - `get_scene_dependencies`
 - `cross_scene_set_property`
+
+### character_system_commands (10)
+
+- `setup_character_2d`
+- `setup_character_3d`
+- `create_platformer_controller_script`
+- `create_topdown_controller_script`
+- `create_fps_controller_script`
+- `create_health_component_script`
+- `setup_hitbox`
+- `setup_hurtbox`
+- `create_projectile_script`
+- `list_character_templates`
 
 ### class_commands (17)
 
@@ -260,6 +284,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `res_read_text`
 - `res_write_text`
 
+### game_ui_system_commands (8)
+
+- `setup_hud`
+- `setup_pause_menu`
+- `setup_inventory_ui`
+- `setup_dialogue_box_ui`
+- `create_game_state_script`
+- `create_audio_manager_script`
+- `set_scene_tree_paused`
+- `list_game_ui_templates`
+
 ### gameplay_template_commands (5)
 
 - `create_save_manager_script`
@@ -347,6 +382,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_label`
 - `setup_button`
 - `setup_texture_rect`
+
+### modern_render_commands (6)
+
+- `apply_environment_preset`
+- `setup_camera_follow_2d`
+- `setup_third_person_camera`
+- `setup_orbit_camera_3d`
+- `create_minimap_viewport`
+- `list_render_presets`
 
 ### multiplayer_commands (10)
 
@@ -655,7 +699,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_control_size_flags`
 - `set_control_mouse_filter`
 
-### tilemap_commands (10)
+### tilemap_commands (13)
 
 - `tilemap_set_cell`
 - `tilemap_fill_rect`
@@ -665,6 +709,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tilemap_get_used_cells`
 - `tilemap_set_cells_terrain_connect`
 - `tilemap_set_cells_terrain_path`
+- `tilemap_erase_rect`
+- `tilemap_paint_line`
+- `tilemap_paint_cells`
 - `used_cells`
 - `used_cells`
 

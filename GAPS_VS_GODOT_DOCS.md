@@ -208,12 +208,21 @@ These matter as much as missing tools:
 5. **Wait for filesystem** — `wait_for_import` / `ensure_imported`  
 6. **Scaffold + signal wire + playtest macro** — `scaffold_project_defaults` / `wire_signal_to_new_method` / `playtest_report`  
 
-### P1 — Production depth
+### P1 — largely addressed in 1.30 (composed modern game systems)
 
-7. **TileSet authoring** (atlas source, tile paint depth)  
-8. **3D import depth** (extract meshes, inherited import scenes)  
-9. **Physics joints + Area helpers**  
-10. **Genre scaffolds** (platformer/fps templates beyond defaults)  
+7. **Character/FPS/platformer stacks** — `setup_character_2d/3d` + controllers  
+8. **AI chase/patrol** — `setup_ai_agent_*` + nav  
+9. **Combat** — hitbox/hurtbox/health/projectile  
+10. **Game UI** — HUD, pause, inventory, dialogue  
+11. **Render presets + cameras** — `apply_environment_preset`, third-person, follow, orbit  
+12. **Tile paint** — line/erase/cells (+ existing terrain)
+
+### P1 remaining
+
+13. **3D import depth** (extract meshes, inherited import scenes)  
+14. **Quest/dialogue graph** (beyond linear dialogue box)  
+15. **Behavior trees / GOAP** beyond simple FSM  
+16. **Multiplayer lobby/runtime host-join polish**  
 
 ### P2 — Verticals
 
