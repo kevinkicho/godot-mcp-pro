@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.30.0**  
+Plugin version: **1.31.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 605
-- **Command modules:** 58
+- **Registered plugin commands:** 627
+- **Command modules:** 61
 
 ## Commands by module
 
@@ -322,6 +322,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `load_po_translation`
 - `list_translations`
 
+### import_3d_commands (8)
+
+- `list_imported_scene_contents`
+- `extract_meshes_from_scene`
+- `extract_materials_from_scene`
+- `instance_scene_as_inherited`
+- `pack_mesh_library_from_scene`
+- `create_scene_from_gltf`
+- `set_gltf_import_flags`
+- `list_3d_import_tools`
+
 ### import_commands (15)
 
 - `reimport_files`
@@ -404,6 +415,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_multiplayer_project_settings`
 - `setup_http_request`
 - `list_rpc_config`
+
+### multiplayer_runtime_commands (6)
+
+- `create_multiplayer_lobby_ui`
+- `create_multiplayer_game_manager_script`
+- `create_websocket_multiplayer_template`
+- `setup_multiplayer_player_scene`
+- `setup_multiplayer_spawn_stack`
+- `list_multiplayer_recipes`
 
 ### navigation_commands (8)
 
@@ -522,6 +542,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_project_settings_keys`
 - `set_layer_names`
 - `get_layer_names`
+
+### quest_system_commands (8)
+
+- `create_quest_resource`
+- `create_quest_log_script`
+- `create_dialogue_graph_resource`
+- `validate_dialogue_graph`
+- `merge_dialogue_lines`
+- `create_quest_giver_script`
+- `create_objective_tracker_script`
+- `list_quest_recipes`
 
 ### resource_commands (6)
 

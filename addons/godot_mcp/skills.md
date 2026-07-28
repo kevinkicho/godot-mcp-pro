@@ -37,6 +37,16 @@ create_game_state_script / audio_manager  → autoloads
 list_*_templates / list_render_presets    → discovery
 ```
 
+### 0d. 3D import / quests / multiplayer
+
+```
+list_imported_scene_contents → extract_meshes_from_scene → instance_scene_as_inherited
+set_gltf_import_flags / apply_scene_import_preset
+create_quest_resource + create_quest_log_script + create_dialogue_graph_resource
+create_multiplayer_game_manager_script + create_multiplayer_lobby_ui
+setup_multiplayer_player_scene + setup_multiplayer_spawn_stack
+```
+
 ### 0b. Asset intake (human FileSystem + Import)
 
 ```

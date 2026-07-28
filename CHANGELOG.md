@@ -4,6 +4,35 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.31.0 — 2026-07-28
+
+**3D import depth + quest graphs + multiplayer host/join runtime.**
+
+### 3D import (`import_3d_commands`)
+- `list_imported_scene_contents` — inventory meshes/skeletons/anims in .glb/.tscn
+- `extract_meshes_from_scene` / `extract_materials_from_scene`
+- `instance_scene_as_inherited` — New Inherited Scene workflow
+- `create_scene_from_gltf` — inherited or editable pack
+- `pack_mesh_library_from_scene` — GridMap MeshLibrary
+- `set_gltf_import_flags` — animations/lods/tangents/root_type + reimport
+- `list_3d_import_tools`
+
+### Quest / dialogue graphs (`quest_system_commands`)
+- `create_quest_resource`, `create_quest_log_script` (autoload)
+- `create_dialogue_graph_resource`, `validate_dialogue_graph`, `merge_dialogue_lines`
+- `create_quest_giver_script`, `create_objective_tracker_script`
+- `list_quest_recipes`
+
+### Multiplayer runtime (`multiplayer_runtime_commands`)
+- `create_multiplayer_game_manager_script` — ENet host/join + roster + start_game RPC
+- `create_multiplayer_lobby_ui` — name/address/port/host/join/start + player list
+- `create_websocket_multiplayer_template`
+- `setup_multiplayer_player_scene` — networked pawn + MultiplayerSynchronizer
+- `setup_multiplayer_spawn_stack` — spawner + spawn points + host spawn script
+- `list_multiplayer_recipes`
+
+---
+
 ## v1.30.0 — 2026-07-28
 
 **Modern game systems** — composed tools agents need for sophisticated 2D/3D games (not only raw node CRUD).

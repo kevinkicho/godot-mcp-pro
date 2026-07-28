@@ -284,12 +284,14 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"tools": [
 				"stage_files_into_res", "ensure_imported", "import_paths",
 				"reimport_files", "wait_for_import", "get_import_info", "set_import_option", "set_import_options",
-				"apply_texture_import_preset", "apply_scene_import_preset", "create_atlas_texture",
-				"create_gradient_texture", "create_noise_texture", "create_placeholder_texture",
+				"apply_texture_import_preset", "apply_scene_import_preset", "set_gltf_import_flags",
+				"list_imported_scene_contents", "extract_meshes_from_scene", "extract_materials_from_scene",
+				"instance_scene_as_inherited", "create_scene_from_gltf", "pack_mesh_library_from_scene",
+				"create_atlas_texture", "create_gradient_texture", "create_noise_texture", "create_placeholder_texture",
 				"create_custom_resource_script", "duplicate_resource",
 				"create_bone_map", "auto_map_bones_by_name", "scan_filesystem", "res_copy_file",
 			],
-			"gaps": ["per-importer full option schemas", "extract meshes UI", "imported scene inheritance wizard"],
+			"gaps": ["per-importer full option schemas", "FBX-specific advanced dialog parity"],
 		},
 		"tutorials/audio": {
 			"status": "strong",
@@ -328,12 +330,25 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["path debug draw overlay", "NavigationServer query helpers"],
 		},
 		"tutorials/networking": {
-			"status": "partial",
+			"status": "strong",
 			"tools": [
+				"create_multiplayer_game_manager_script", "create_multiplayer_lobby_ui",
+				"setup_multiplayer_player_scene", "setup_multiplayer_spawn_stack",
+				"create_websocket_multiplayer_template", "create_multiplayer_template_script",
 				"setup_multiplayer_spawner/synchronizer", "add_spawnable_scene", "add_replication_property",
-				"create_multiplayer_template_script", "setup_http_request", "list_rpc_config", "set_multiplayer_authority",
+				"setup_http_request", "list_rpc_config", "set_multiplayer_authority", "list_multiplayer_recipes",
 			],
-			"gaps": ["WebRTC peer tools", "full lobby/matchmaking", "runtime host/join without template script"],
+			"gaps": ["WebRTC peer tools", "full matchmaking/relay services", "rollback netcode"],
+		},
+		"narrative_quests": {
+			"status": "strong",
+			"tools": [
+				"create_quest_resource", "create_quest_log_script", "create_quest_giver_script",
+				"create_objective_tracker_script", "create_dialogue_graph_resource",
+				"validate_dialogue_graph", "merge_dialogue_lines", "setup_dialogue_box_ui",
+				"create_dialogue_resource", "create_dialogue_runner_script", "list_quest_recipes",
+			],
+			"gaps": ["visual dialogue graph editor", "localization-aware dialogue tables"],
 		},
 		"tutorials/performance": {
 			"status": "strong",

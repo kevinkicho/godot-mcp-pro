@@ -829,6 +829,207 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     description: 'List environment presets and camera system tools.',
     inputSchema: emptyProps,
   },
+  // ── 3D import depth / quests / multiplayer runtime ──
+  {
+    name: 'list_imported_scene_contents',
+    description: 'Inventory MeshInstance3D/Skeleton/AnimationPlayer inside an imported .glb/.gltf/.tscn.',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string', description: 'res:// model path' } },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'extract_meshes_from_scene',
+    description: 'Save unique meshes from an imported 3D scene into res://assets/meshes (or dest_dir).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        dest_dir: { type: 'string' },
+        name_filter: { type: 'string' },
+        text: { type: 'boolean', description: 'Save as .tres instead of .res' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'instance_scene_as_inherited',
+    description: 'Create a New Inherited Scene (.tscn) from imported glTF/PackedScene (human Scene → New Inherited Scene).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source_path: { type: 'string' },
+        path: { type: 'string', description: 'Alias for source_path' },
+        save_path: { type: 'string' },
+        open: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_scene_from_gltf',
+    description: 'Turn imported glTF into inherited or fully editable .tscn.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        save_path: { type: 'string' },
+        mode: { type: 'string', description: 'inherited | editable' },
+        open: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'set_gltf_import_flags',
+    description: 'Set glTF/FBX .import flags (animations, lods, tangents, root_type) and reimport.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        import_animations: { type: 'boolean' },
+        fps: { type: 'number' },
+        ensure_tangents: { type: 'boolean' },
+        generate_lods: { type: 'boolean' },
+        create_shadow_meshes: { type: 'boolean' },
+        root_type: { type: 'string' },
+        reimport: { type: 'boolean' },
+        extra: { type: 'object' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'create_quest_resource',
+    description: 'JSON quest with objectives/rewards/next_quests for QuestLog.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        id: { type: 'string' },
+        title: { type: 'string' },
+        description: { type: 'string' },
+        objectives: { type: 'array' },
+        rewards: { type: 'object' },
+        auto_start: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_quest_log_script',
+    description: 'QuestLog autoload: load_quest_file, start_quest, report(type,target), progress signals.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_dialogue_graph_resource',
+    description: 'Node-keyed dialogue graph JSON with choices, quest_start, set_flag.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        start: { type: 'string' },
+        nodes: { type: 'object' },
+        lines: { type: 'array' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'validate_dialogue_graph',
+    description: 'Validate dialogue JSON: missing next links, unreachable nodes.',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' } },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'create_multiplayer_game_manager_script',
+    description: 'MultiplayerManager autoload: ENet host/join, roster, start_game RPC scene change.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        port: { type: 'number' },
+        max_clients: { type: 'number' },
+        game_scene: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_multiplayer_lobby_ui',
+    description: 'Lobby UI: name/address/port, Host/Join/Start, player list (needs MultiplayerManager).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        port: { type: 'number' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_multiplayer_player_scene',
+    description: 'Networked player .tscn with MultiplayerSynchronizer (position) + authority-only input.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        is_3d: { type: 'boolean' },
+        script_path: { type: 'string' },
+        speed: { type: 'number' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_multiplayer_spawn_stack',
+    description: 'MultiplayerSpawner + spawn markers + host spawn script for player pawns.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        player_scene: { type: 'string' },
+        spawn_point_count: { type: 'number' },
+        is_3d: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'list_3d_import_tools',
+    description: 'List 3D import-depth tools and recommended pipeline.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_quest_recipes',
+    description: 'List quest/dialogue graph recipes.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_multiplayer_recipes',
+    description: 'List multiplayer host/join/spawn recipes.',
+    inputSchema: emptyProps,
+  },
   {
     name: 'get_filesystem_tree',
     description: 'Project file tree with optional filter (e.g. *.tscn, *.gd)',

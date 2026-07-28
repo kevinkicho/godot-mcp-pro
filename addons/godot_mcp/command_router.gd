@@ -76,6 +76,10 @@ func _register_commands() -> void:
 		preload("res://addons/godot_mcp/commands/ai_system_commands.gd"),
 		preload("res://addons/godot_mcp/commands/game_ui_system_commands.gd"),
 		preload("res://addons/godot_mcp/commands/modern_render_commands.gd"),
+		# 3D import depth, quests/dialogue graphs, multiplayer host-join runtime
+		preload("res://addons/godot_mcp/commands/import_3d_commands.gd"),
+		preload("res://addons/godot_mcp/commands/quest_system_commands.gd"),
+		preload("res://addons/godot_mcp/commands/multiplayer_runtime_commands.gd"),
 	]
 
 	for cmd_class in command_classes:
