@@ -4,6 +4,17 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.28.0 — 2026-07-28
+
+**Surface expansion** — Control polish widgets, audio 2D/3D players + polyphony, layer names.
+
+### Added
+- `control_extra_commands`: tooltip, cursor, clip, min size, ColorRect, NinePatch, separators, CheckBox/Button, SpinBox, HSlider, LineEdit, TextEdit
+- Audio: `set_audio_player_props`, `setup_audio_stream_player_2d/3d`, `set_bus_volume_db`, `remove_audio_bus_effect`
+- Project: `get_layer_names` / `set_layer_names` (physics/render/navigation 2D+3D)
+
+---
+
 ## v1.27.0 — 2026-07-28
 
 **Surface expansion** — CanvasItem materials / sprites / Label-Button, utility nodes, project settings helpers.

@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.27.0**  
+Plugin version: **1.28.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 540
-- **Command modules:** 52
+- **Registered plugin commands:** 562
+- **Command modules:** 53
 
 ## Commands by module
 
@@ -96,7 +96,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_tree_parameter`
 - `list_tree_parameters`
 
-### audio_commands (10)
+### audio_commands (15)
 
 - `get_audio_bus_layout`
 - `add_audio_bus`
@@ -108,6 +108,11 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `save_audio_bus_layout`
 - `load_audio_bus_layout`
 - `set_audio_player_stream`
+- `set_audio_player_props`
+- `setup_audio_stream_player_2d`
+- `setup_audio_stream_player_3d`
+- `set_bus_volume_db`
+- `remove_audio_bus_effect`
 
 ### batch_commands (7)
 
@@ -160,6 +165,24 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_panel_container`
 - `apply_container_recipe`
 - `list_container_recipes`
+
+### control_extra_commands (15)
+
+- `set_control_tooltip`
+- `set_control_cursor`
+- `set_control_clip_contents`
+- `set_control_custom_minimum_size`
+- `set_control_modulate`
+- `setup_color_rect`
+- `setup_nine_patch_rect`
+- `setup_hseparator`
+- `setup_vseparator`
+- `setup_check_box`
+- `setup_check_button`
+- `setup_spin_box`
+- `setup_hslider`
+- `setup_line_edit`
+- `setup_text_edit`
 
 ### csharp_commands (13)
 
@@ -426,7 +449,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_render_info`
 - `list_performance_monitor_names`
 
-### project_commands (14)
+### project_commands (16)
 
 - `get_project_info`
 - `get_filesystem_tree`
@@ -442,6 +465,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_window_settings`
 - `set_physics_ticks`
 - `list_project_settings_keys`
+- `set_layer_names`
+- `get_layer_names`
 
 ### resource_commands (6)
 

@@ -14,6 +14,11 @@ func get_commands() -> Dictionary:
 		"save_audio_bus_layout": _save_audio_bus_layout,
 		"load_audio_bus_layout": _load_audio_bus_layout,
 		"set_audio_player_stream": _set_audio_player_stream,
+		"set_audio_player_props": _set_audio_player_props,
+		"setup_audio_stream_player_2d": _setup_audio_stream_player_2d,
+		"setup_audio_stream_player_3d": _setup_audio_stream_player_3d,
+		"set_bus_volume_db": _set_bus_volume_db,
+		"remove_audio_bus_effect": _remove_audio_bus_effect,
 	}
 
 
@@ -504,3 +509,114 @@ func _set_audio_player_stream(params: Dictionary) -> Dictionary:
 		node.set("bus", str(params["bus"]))
 	mark_current_scene_unsaved()
 	return success({"node_path": r0[0], "stream_path": stream_r[0]})
+
+
+func _set_audio_player_props(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null:
+		return error_not_found("Node")
+	if not (node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D):
+		return error_invalid_params("Node must be AudioStreamPlayer*")
+	var applied := {}
+	for key in ["volume_db", "pitch_scale", "max_polyphony", "autoplay"]:
+		if params.has(key):
+			node.set(key, params[key])
+			applied[key] = node.get(key)
+	if params.has("bus"):
+		node.set("bus", str(params["bus"]))
+		applied["bus"] = node.get("bus")
+	if params.has("max_distance") and "max_distance" in node:
+		node.set("max_distance", float(params["max_distance"]))
+		applied["max_distance"] = node.get("max_distance")
+	if params.has("attenuation") and "attenuation" in node:
+		node.set("attenuation", float(params["attenuation"]))
+		applied["attenuation"] = node.get("attenuation")
+	if params.has("unit_size") and "unit_size" in node:
+		node.set("unit_size", float(params["unit_size"]))
+		applied["unit_size"] = node.get("unit_size")
+	if applied.is_empty():
+		return error_invalid_params("Provide volume_db, pitch_scale, max_polyphony, bus, etc.")
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "applied": applied})
+
+
+func _setup_audio_stream_player_2d(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var p := AudioStreamPlayer2D.new()
+	p.name = optional_string(params, "name", "AudioStreamPlayer2D")
+	p.volume_db = float(params.get("volume_db", 0))
+	p.max_distance = float(params.get("max_distance", 2000))
+	p.bus = optional_string(params, "bus", "Master")
+	p.autoplay = optional_bool(params, "autoplay", false)
+	if params.has("max_polyphony"):
+		p.max_polyphony = int(params["max_polyphony"])
+	var stream_path: String = optional_string(params, "stream_path", "")
+	if not stream_path.is_empty():
+		if not stream_path.begins_with("res://"):
+			stream_path = "res://" + stream_path.trim_prefix("/")
+		if ResourceLoader.exists(stream_path):
+			p.stream = load(stream_path)
+	add_child_with_undo(parent, p, root, "MCP: Add AudioStreamPlayer2D")
+	return success({"node_path": str(root.get_path_to(p)), "stream_path": stream_path})
+
+
+func _setup_audio_stream_player_3d(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var p := AudioStreamPlayer3D.new()
+	p.name = optional_string(params, "name", "AudioStreamPlayer3D")
+	p.volume_db = float(params.get("volume_db", 0))
+	p.max_distance = float(params.get("max_distance", 0))  # 0 = no max in some versions; engine default
+	p.unit_size = float(params.get("unit_size", 10))
+	p.bus = optional_string(params, "bus", "Master")
+	p.autoplay = optional_bool(params, "autoplay", false)
+	if params.has("max_polyphony"):
+		p.max_polyphony = int(params["max_polyphony"])
+	var stream_path: String = optional_string(params, "stream_path", "")
+	if not stream_path.is_empty():
+		if not stream_path.begins_with("res://"):
+			stream_path = "res://" + stream_path.trim_prefix("/")
+		if ResourceLoader.exists(stream_path):
+			p.stream = load(stream_path)
+	add_child_with_undo(parent, p, root, "MCP: Add AudioStreamPlayer3D")
+	return success({"node_path": str(root.get_path_to(p)), "stream_path": stream_path})
+
+
+func _set_bus_volume_db(params: Dictionary) -> Dictionary:
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var idx := AudioServer.get_bus_index(name_r[0])
+	if idx < 0:
+		return error_not_found("Bus '%s'" % name_r[0])
+	var vol := float(params.get("volume_db", 0))
+	AudioServer.set_bus_volume_db(idx, vol)
+	return success({"bus": name_r[0], "volume_db": AudioServer.get_bus_volume_db(idx)})
+
+
+func _remove_audio_bus_effect(params: Dictionary) -> Dictionary:
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var idx := AudioServer.get_bus_index(name_r[0])
+	if idx < 0:
+		return error_not_found("Bus '%s'" % name_r[0])
+	var effect_index: int = optional_int(params, "effect_index", -1)
+	if effect_index < 0:
+		return error_invalid_params("effect_index required (>=0)")
+	if effect_index >= AudioServer.get_bus_effect_count(idx):
+		return error_invalid_params("effect_index out of range")
+	AudioServer.remove_bus_effect(idx, effect_index)
+	return success({"bus": name_r[0], "removed_effect_index": effect_index, "effect_count": AudioServer.get_bus_effect_count(idx)})

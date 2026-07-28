@@ -35,7 +35,7 @@ import {
 const DEBUG = process.env.DEBUG === 'true';
 const PREFERRED_PORT = parseInt(process.env.GODOT_MCP_PORT || '6505', 10);
 const LITE = parseLiteMode(process.argv);
-const SERVER_VERSION = '1.27.0';
+const SERVER_VERSION = '1.28.0';
 
 function log(msg: string): void {
   if (DEBUG) console.error(`[SERVER] ${msg}`);

@@ -18,6 +18,8 @@ func get_commands() -> Dictionary:
 		"set_window_settings": _set_window_settings,
 		"set_physics_ticks": _set_physics_ticks,
 		"list_project_settings_keys": _list_project_settings_keys,
+		"set_layer_names": _set_layer_names,
+		"get_layer_names": _get_layer_names,
 	}
 
 
@@ -484,3 +486,68 @@ func _list_project_settings_keys(params: Dictionary) -> Dictionary:
 			break
 	keys.sort()
 	return success({"keys": keys, "count": keys.size(), "filter": filter, "capped": keys.size() >= max_n})
+
+
+func _layer_setting_prefix(kind: String) -> String:
+	match kind:
+		"2d_physics", "physics_2d":
+			return "layer_names/2d_physics/layer_"
+		"3d_physics", "physics_3d":
+			return "layer_names/3d_physics/layer_"
+		"2d_render", "render_2d":
+			return "layer_names/2d_render/layer_"
+		"3d_render", "render_3d":
+			return "layer_names/3d_render/layer_"
+		"2d_navigation", "navigation_2d":
+			return "layer_names/2d_navigation/layer_"
+		"3d_navigation", "navigation_3d":
+			return "layer_names/3d_navigation/layer_"
+		_:
+			return ""
+
+
+func _get_layer_names(params: Dictionary) -> Dictionary:
+	var kind: String = optional_string(params, "kind", "2d_physics")
+	var prefix := _layer_setting_prefix(kind)
+	if prefix.is_empty():
+		return error_invalid_params("kind: 2d_physics|3d_physics|2d_render|3d_render|2d_navigation|3d_navigation")
+	var layers: Array = []
+	for i in range(1, 33):
+		var key := prefix + str(i)
+		var name := ""
+		if ProjectSettings.has_setting(key):
+			name = str(ProjectSettings.get_setting(key))
+		layers.append({"layer": i, "name": name, "setting": key})
+	return success({"kind": kind, "layers": layers})
+
+
+func _set_layer_names(params: Dictionary) -> Dictionary:
+	## Set named collision/render/navigation layers. names: { "1": "player", "2": "world" } or array.
+	var kind: String = optional_string(params, "kind", "2d_physics")
+	var prefix := _layer_setting_prefix(kind)
+	if prefix.is_empty():
+		return error_invalid_params("kind required: 2d_physics|3d_physics|2d_render|3d_render|2d_navigation|3d_navigation")
+	if not params.has("names"):
+		return error_invalid_params("names dict or array required")
+	var applied: Array = []
+	var names = params["names"]
+	if names is Dictionary:
+		for k in names:
+			var layer_i := int(k)
+			if layer_i < 1 or layer_i > 32:
+				continue
+			var key := prefix + str(layer_i)
+			ProjectSettings.set_setting(key, str(names[k]))
+			applied.append({"layer": layer_i, "name": str(names[k])})
+	elif names is Array:
+		for i in names.size():
+			var layer_i2 := i + 1
+			if layer_i2 > 32:
+				break
+			var key2 := prefix + str(layer_i2)
+			ProjectSettings.set_setting(key2, str(names[i]))
+			applied.append({"layer": layer_i2, "name": str(names[i])})
+	else:
+		return error_invalid_params("names must be Dictionary or Array")
+	ProjectSettings.save()
+	return success({"kind": kind, "applied": applied, "count": applied.size()})

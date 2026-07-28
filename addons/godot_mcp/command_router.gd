@@ -68,6 +68,7 @@ func _register_commands() -> void:
 		preload("res://addons/godot_mcp/commands/gameplay_template_commands.gd"),
 		preload("res://addons/godot_mcp/commands/material_2d_commands.gd"),
 		preload("res://addons/godot_mcp/commands/utility_node_commands.gd"),
+		preload("res://addons/godot_mcp/commands/control_extra_commands.gd"),
 	]
 
 	for cmd_class in command_classes:

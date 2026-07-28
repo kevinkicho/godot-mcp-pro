@@ -1915,6 +1915,71 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  // ── 1.28 ──
+  {
+    name: 'setup_line_edit',
+    description: 'Create LineEdit (text field)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        text: { type: 'string' },
+        placeholder: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_check_box',
+    description: 'Create CheckBox control',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        text: { type: 'string' },
+        pressed: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_audio_stream_player_2d',
+    description: 'Add AudioStreamPlayer2D with optional stream and polyphony',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        stream_path: { type: 'string' },
+        max_polyphony: { type: 'number' },
+        volume_db: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'set_layer_names',
+    description: 'Name physics/render/navigation layers (kind + names map)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        kind: { type: 'string', description: '2d_physics|3d_physics|2d_render|3d_render|…' },
+        names: { type: 'object' },
+      },
+      required: ['kind', 'names'],
+    },
+  },
+  {
+    name: 'set_control_tooltip',
+    description: 'Set Control.tooltip_text',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        tooltip: { type: 'string' },
+      },
+      required: ['node_path'],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */
