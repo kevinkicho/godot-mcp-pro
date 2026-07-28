@@ -10,8 +10,18 @@ func get_commands() -> Dictionary:
 		"set_physics_layers": _set_physics_layers,
 		"get_physics_layers": _get_physics_layers,
 		"add_raycast": _add_raycast,
+		"add_shape_cast": _add_shape_cast,
 		"setup_physics_body": _setup_physics_body,
 		"get_collision_info": _get_collision_info,
+		"setup_area": _setup_area,
+		"set_area_monitoring": _set_area_monitoring,
+		"setup_joint": _setup_joint,
+		"set_physics_material": _set_physics_material,
+		"create_physics_body": _create_physics_body,
+		"add_vehicle_wheel": _add_vehicle_wheel,
+		"setup_soft_body": _setup_soft_body,
+		"add_physical_bone": _add_physical_bone,
+		"setup_physical_bone_simulator": _setup_physical_bone_simulator,
 	}
 
 
@@ -755,3 +765,373 @@ func _get_collision_info(params: Dictionary) -> Dictionary:
 	info["raycasts"] = raycasts
 
 	return success(info)
+
+
+func _setup_area(params: Dictionary) -> Dictionary:
+	## Create Area2D/Area3D with optional collision shape (monitoring helpers).
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var dim: String = optional_string(params, "dimension", "2d")  # 2d | 3d
+	var name: String = optional_string(params, "name", "Area")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var area: Node
+	if dim == "3d":
+		area = Area3D.new()
+	else:
+		area = Area2D.new()
+	area.name = name
+	if "monitoring" in area:
+		area.set("monitoring", optional_bool(params, "monitoring", true))
+	if "monitorable" in area:
+		area.set("monitorable", optional_bool(params, "monitorable", true))
+	add_child_with_undo(parent, area, root, "MCP: Add Area")
+	# Optional shape child
+	var shape_type: String = optional_string(params, "shape_type", "")
+	if not shape_type.is_empty():
+		var col: Node
+		if dim == "3d":
+			col = CollisionShape3D.new()
+			col.name = "CollisionShape3D"
+		else:
+			col = CollisionShape2D.new()
+			col.name = "CollisionShape2D"
+		if ClassDB.class_exists(shape_type) and ClassDB.is_parent_class(shape_type, "Shape2D" if dim != "3d" else "Shape3D"):
+			var shape: Resource = ClassDB.instantiate(shape_type)
+			col.set("shape", shape)
+		area.add_child(col)
+		col.owner = root
+	return success({
+		"node_path": str(root.get_path_to(area)),
+		"type": area.get_class(),
+		"dimension": dim,
+	})
+
+
+func _setup_joint(params: Dictionary) -> Dictionary:
+	## Add a physics joint node between two bodies.
+	var result := require_string(params, "joint_type")
+	if result[1] != null:
+		return result[1]
+	var joint_type: String = result[0]
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var name: String = optional_string(params, "name", joint_type)
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	if not ClassDB.class_exists(joint_type):
+		return error_invalid_params("Unknown joint type: %s (e.g. PinJoint2D, HingeJoint3D, Generic6DOFJoint3D)" % joint_type)
+	if not (ClassDB.is_parent_class(joint_type, "Joint2D") or ClassDB.is_parent_class(joint_type, "Joint3D") or joint_type.ends_with("Joint2D") or joint_type.ends_with("Joint3D")):
+		# Still allow if instantiable
+		if not ClassDB.can_instantiate(joint_type):
+			return error_invalid_params("Cannot instantiate %s" % joint_type)
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var joint: Node = ClassDB.instantiate(joint_type)
+	if joint == null:
+		return error_internal("Failed to create %s" % joint_type)
+	joint.name = name
+	var node_a: String = optional_string(params, "node_a", "")
+	var node_b: String = optional_string(params, "node_b", "")
+	if not node_a.is_empty() and "node_a" in joint:
+		joint.set("node_a", NodePath(node_a))
+	if not node_b.is_empty() and "node_b" in joint:
+		joint.set("node_b", NodePath(node_b))
+	add_child_with_undo(parent, joint, root, "MCP: Add joint")
+	return success({
+		"node_path": str(root.get_path_to(joint)),
+		"type": joint_type,
+		"node_a": node_a,
+		"node_b": node_b,
+	})
+
+
+func _add_shape_cast(params: Dictionary) -> Dictionary:
+	## ShapeCast2D/3D — human "cast shape" probes (not only rays).
+	var parent_path: String = optional_string(params, "parent_path", optional_string(params, "node_path", "."))
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var dim := _detect_dimension(parent)
+	if dim.is_empty():
+		dim = optional_string(params, "dimension", "2d")
+	var cast_name: String = optional_string(params, "name", "ShapeCast")
+	var enabled: bool = optional_bool(params, "enabled", true)
+	var collision_mask: int = optional_int(params, "collision_mask", 1)
+	var undo_redo := get_undo_redo()
+	if dim == "3d":
+		var sc := ShapeCast3D.new()
+		sc.name = cast_name
+		sc.enabled = enabled
+		sc.collision_mask = collision_mask
+		sc.target_position = Vector3(
+			float(params.get("target_x", 0.0)),
+			float(params.get("target_y", -1.0)),
+			float(params.get("target_z", 0.0))
+		)
+		var shape_type: String = optional_string(params, "shape_type", "SphereShape3D")
+		if ClassDB.class_exists(shape_type) and ClassDB.can_instantiate(shape_type):
+			sc.shape = ClassDB.instantiate(shape_type)
+		undo_redo.create_action("MCP: Add ShapeCast3D")
+		undo_redo.add_do_method(parent, "add_child", sc)
+		undo_redo.add_do_method(sc, "set_owner", root)
+		undo_redo.add_do_reference(sc)
+		undo_redo.add_undo_method(parent, "remove_child", sc)
+		undo_redo.commit_action()
+		return success({"node_path": str(root.get_path_to(sc)), "type": "ShapeCast3D"})
+	else:
+		var sc2 := ShapeCast2D.new()
+		sc2.name = cast_name
+		sc2.enabled = enabled
+		sc2.collision_mask = collision_mask
+		sc2.target_position = Vector2(
+			float(params.get("target_x", 0.0)),
+			float(params.get("target_y", 50.0))
+		)
+		var shape_type2: String = optional_string(params, "shape_type", "CircleShape2D")
+		if ClassDB.class_exists(shape_type2) and ClassDB.can_instantiate(shape_type2):
+			sc2.shape = ClassDB.instantiate(shape_type2)
+		undo_redo.create_action("MCP: Add ShapeCast2D")
+		undo_redo.add_do_method(parent, "add_child", sc2)
+		undo_redo.add_do_method(sc2, "set_owner", root)
+		undo_redo.add_do_reference(sc2)
+		undo_redo.add_undo_method(parent, "remove_child", sc2)
+		undo_redo.commit_action()
+		return success({"node_path": str(root.get_path_to(sc2)), "type": "ShapeCast2D"})
+
+
+func _set_area_monitoring(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null:
+		return error_not_found("Node '%s'" % r0[0])
+	if not (node is Area2D or node is Area3D):
+		return error_invalid_params("Node must be Area2D/Area3D")
+	var applied := {}
+	if params.has("monitoring"):
+		node.set("monitoring", bool(params["monitoring"]))
+		applied["monitoring"] = node.get("monitoring")
+	if params.has("monitorable"):
+		node.set("monitorable", bool(params["monitorable"]))
+		applied["monitorable"] = node.get("monitorable")
+	if params.has("priority") and "priority" in node:
+		node.set("priority", int(params["priority"]))
+		applied["priority"] = node.get("priority")
+	if params.has("gravity") and "gravity" in node:
+		node.set("gravity", float(params["gravity"]))
+		applied["gravity"] = node.get("gravity")
+	if params.has("gravity_space_override") and "gravity_space_override" in node:
+		node.set("gravity_space_override", int(params["gravity_space_override"]))
+		applied["gravity_space_override"] = node.get("gravity_space_override")
+	if applied.is_empty():
+		return error_invalid_params("Provide monitoring, monitorable, priority, and/or gravity")
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "type": node.get_class(), "applied": applied})
+
+
+func _set_physics_material(params: Dictionary) -> Dictionary:
+	## Assign PhysicsMaterial (friction/bounce) like inspector material override.
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null:
+		return error_not_found("Node '%s'" % r0[0])
+	if not ("physics_material_override" in node):
+		return error_invalid_params("%s has no physics_material_override" % node.get_class())
+	var mat := PhysicsMaterial.new()
+	if params.has("friction"):
+		mat.friction = float(params["friction"])
+	if params.has("bounce"):
+		mat.bounce = float(params["bounce"])
+	if params.has("absorbent"):
+		mat.absorbent = bool(params["absorbent"])
+	if params.has("rough"):
+		mat.rough = bool(params["rough"])
+	var old = node.get("physics_material_override")
+	var undo := get_undo_redo()
+	undo.create_action("MCP: Set physics material")
+	undo.add_do_property(node, "physics_material_override", mat)
+	undo.add_do_reference(mat)
+	undo.add_undo_property(node, "physics_material_override", old)
+	undo.commit_action()
+	mark_current_scene_unsaved()
+	return success({
+		"node_path": r0[0],
+		"friction": mat.friction,
+		"bounce": mat.bounce,
+		"absorbent": mat.absorbent,
+		"rough": mat.rough,
+	})
+
+
+func _create_physics_body(params: Dictionary) -> Dictionary:
+	## Create CharacterBody/RigidBody/StaticBody/VehicleBody with optional shape — one-shot human setup.
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var body_type: String = optional_string(params, "body_type", "CharacterBody2D")
+	var name: String = optional_string(params, "name", body_type)
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	if not ClassDB.class_exists(body_type) or not ClassDB.can_instantiate(body_type):
+		return error_invalid_params("Unknown body_type: %s" % body_type)
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var body: Node = ClassDB.instantiate(body_type)
+	body.name = name
+	add_child_with_undo(parent, body, root, "MCP: Create physics body")
+	var shape_name: String = optional_string(params, "shape", "")
+	var shape_path := ""
+	if not shape_name.is_empty():
+		var setup := _setup_collision({
+			"node_path": str(root.get_path_to(body)),
+			"shape": shape_name,
+			"width": params.get("width", 32.0),
+			"height": params.get("height", 32.0),
+			"radius": params.get("radius", 16.0),
+			"size_x": params.get("size_x", 1.0),
+			"size_y": params.get("size_y", 1.0),
+			"size_z": params.get("size_z", 1.0),
+		})
+		if setup.has("result"):
+			shape_path = str(setup["result"].get("node_path", ""))
+	return success({
+		"node_path": str(root.get_path_to(body)),
+		"type": body_type,
+		"collision_shape": shape_path,
+	})
+
+
+func _add_vehicle_wheel(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var body := find_node_by_path(r0[0])
+	if body == null:
+		return error_not_found("Node '%s'" % r0[0])
+	if not body is VehicleBody3D:
+		return error_invalid_params("Parent must be VehicleBody3D")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var wheel := VehicleWheel3D.new()
+	wheel.name = optional_string(params, "name", "Wheel")
+	if params.has("use_as_traction"):
+		wheel.use_as_traction = bool(params["use_as_traction"])
+	if params.has("use_as_steering"):
+		wheel.use_as_steering = bool(params["use_as_steering"])
+	if params.has("wheel_radius"):
+		wheel.wheel_radius = float(params["wheel_radius"])
+	if params.has("suspension_stiffness"):
+		wheel.suspension_stiffness = float(params["suspension_stiffness"])
+	if params.has("position"):
+		var p = params["position"]
+		if p is Dictionary:
+			wheel.position = Vector3(float(p.get("x", 0)), float(p.get("y", 0)), float(p.get("z", 0)))
+	add_child_with_undo(body, wheel, root, "MCP: Add VehicleWheel3D")
+	return success({"node_path": str(root.get_path_to(wheel)), "type": "VehicleWheel3D"})
+
+
+func _setup_soft_body(params: Dictionary) -> Dictionary:
+	## SoftBody3D attachment to a mesh parent path.
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var soft := SoftBody3D.new()
+	soft.name = optional_string(params, "name", "SoftBody")
+	if params.has("simulation_precision"):
+		soft.simulation_precision = int(params["simulation_precision"])
+	if params.has("total_mass"):
+		soft.total_mass = float(params["total_mass"])
+	var mesh_path: String = optional_string(params, "mesh_path", "")
+	if not mesh_path.is_empty() and ResourceLoader.exists(mesh_path):
+		soft.mesh = load(mesh_path)
+	add_child_with_undo(parent, soft, root, "MCP: Add SoftBody3D")
+	return success({"node_path": str(root.get_path_to(soft)), "type": "SoftBody3D", "mesh_path": mesh_path})
+
+
+func _setup_physical_bone_simulator(params: Dictionary) -> Dictionary:
+	## PhysicalBoneSimulator3D under Skeleton3D (Godot 4 ragdoll helper).
+	var r0 := require_string(params, "skeleton_path")
+	if r0[1] != null:
+		return r0[1]
+	var sk := find_node_by_path(r0[0])
+	if sk == null or not sk is Skeleton3D:
+		return error_not_found("Skeleton3D at '%s'" % r0[0])
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	if not ClassDB.class_exists("PhysicalBoneSimulator3D"):
+		return error_internal("PhysicalBoneSimulator3D not in this Godot build — use add_physical_bone under skeleton")
+	var sim: Node = ClassDB.instantiate("PhysicalBoneSimulator3D")
+	sim.name = optional_string(params, "name", "PhysicalBoneSimulator3D")
+	add_child_with_undo(sk, sim, root, "MCP: Add PhysicalBoneSimulator3D")
+	return success({
+		"node_path": str(root.get_path_to(sim)),
+		"type": "PhysicalBoneSimulator3D",
+		"hint": "Add PhysicalBone3D children and call physical_bones_start_simulation at runtime",
+	})
+
+
+func _add_physical_bone(params: Dictionary) -> Dictionary:
+	var parent_path: String = optional_string(params, "parent_path", "")
+	if parent_path.is_empty():
+		return error_invalid_params("parent_path (Skeleton3D or simulator) required")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent")
+	if not ClassDB.class_exists("PhysicalBone3D"):
+		return error_internal("PhysicalBone3D unavailable")
+	var bone: Node = ClassDB.instantiate("PhysicalBone3D")
+	bone.name = optional_string(params, "name", "PhysicalBone3D")
+	var bone_name: String = optional_string(params, "bone_name", "")
+	if not bone_name.is_empty() and "bone_name" in bone:
+		bone.set("bone_name", bone_name)
+	# Optional collision shape child
+	var shape_type: String = optional_string(params, "shape", "capsule")
+	if not shape_type.is_empty():
+		var col := CollisionShape3D.new()
+		col.name = "CollisionShape3D"
+		match shape_type:
+			"sphere":
+				var s := SphereShape3D.new()
+				s.radius = float(params.get("radius", 0.1))
+				col.shape = s
+			"box":
+				var b := BoxShape3D.new()
+				b.size = Vector3(
+					float(params.get("size_x", 0.1)),
+					float(params.get("size_y", 0.2)),
+					float(params.get("size_z", 0.1))
+				)
+				col.shape = b
+			_:
+				var c := CapsuleShape3D.new()
+				c.radius = float(params.get("radius", 0.05))
+				c.height = float(params.get("height", 0.3))
+				col.shape = c
+		bone.add_child(col)
+		col.owner = root
+	add_child_with_undo(parent, bone, root, "MCP: Add PhysicalBone3D")
+	return success({
+		"node_path": str(root.get_path_to(bone)),
+		"type": "PhysicalBone3D",
+		"bone_name": bone_name,
+	})

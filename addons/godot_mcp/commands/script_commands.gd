@@ -103,10 +103,10 @@ func _read_script(params: Dictionary) -> Dictionary:
 
 
 func _create_script(params: Dictionary) -> Dictionary:
-	var result := require_string(params, "path")
-	if result[1] != null:
-		return result[1]
-	var path: String = result[0]
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
 	var path_guard := _guard_script_file_path(path, "create_script")
 	if not path_guard.is_empty():
 		return path_guard
@@ -157,10 +157,10 @@ func _create_script(params: Dictionary) -> Dictionary:
 
 
 func _edit_script(params: Dictionary) -> Dictionary:
-	var result := require_string(params, "path")
-	if result[1] != null:
-		return result[1]
-	var path: String = result[0]
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
 	var path_guard := _guard_script_file_path(path, "edit_script")
 	if not path_guard.is_empty():
 		return path_guard

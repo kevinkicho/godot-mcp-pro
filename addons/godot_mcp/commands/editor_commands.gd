@@ -427,14 +427,19 @@ func _guard_editor_script_file_io(code: String, allow_unsafe_editor_io: bool) ->
 		unsafe_patterns.append("FileAccess.open WRITE")
 	if _contains_any(compact, ["DirAccess.remove_absolute(", "DirAccess.rename_absolute(", "DirAccess.copy_absolute(", "DirAccess.make_dir_absolute(", "DirAccess.make_dir_recursive_absolute("]):
 		unsafe_patterns.append("DirAccess filesystem mutation")
+	# Process / shell escape hatches — require explicit allow_unsafe_editor_io
+	if _contains_any(compact, ["OS.execute(", "OS.create_process(", "OS.create_instance(", "OS.shell_open(", "OS.execute_with_pipe("]):
+		unsafe_patterns.append("OS process execution")
+	if _contains_any(compact, ["JavaScriptBridge", "ClassDB.instantiate(\"HTTPRequest\")"]):
+		unsafe_patterns.append("network/JS bridge")
 	if unsafe_patterns.is_empty():
 		return {}
 	return error_conflict(
-		"Refusing to execute editor script with direct file/resource write APIs",
+		"Refusing to execute editor script with direct file/resource write APIs or process execution",
 		{
 			"unsafe_patterns": unsafe_patterns,
 			"open_scenes": get_open_scene_paths(),
-			"suggestion": "Use dedicated MCP commands and save_scene for editor-owned resources, or pass allow_unsafe_editor_io=true only when no open editor resource can be overwritten.",
+			"suggestion": "Use dedicated MCP commands and save_scene for editor-owned resources, or pass allow_unsafe_editor_io=true only when intentional and safe.",
 		}
 	)
 

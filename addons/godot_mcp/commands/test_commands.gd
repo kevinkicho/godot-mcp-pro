@@ -309,7 +309,7 @@ func _run_stress_test(params: Dictionary) -> Dictionary:
 			"sequence_events": batch,
 			"frame_delay": 1,
 		})
-		var file := FileAccess.open("user://mcp_input_commands", FileAccess.WRITE)
+		var file := FileAccess.open(get_game_user_dir().path_join("mcp_input_commands"), FileAccess.WRITE)
 		if file:
 			file.store_string(json)
 			file.close()
@@ -423,7 +423,7 @@ func _execute_input_step(step: Dictionary) -> Dictionary:
 		"sequence_events": events,
 		"frame_delay": int(step.get("frame_delay", 1)),
 	})
-	var file := FileAccess.open("user://mcp_input_commands", FileAccess.WRITE)
+	var file := FileAccess.open(get_game_user_dir().path_join("mcp_input_commands"), FileAccess.WRITE)
 	if file == null:
 		return {"error": "Failed to write input commands"}
 	file.store_string(json)

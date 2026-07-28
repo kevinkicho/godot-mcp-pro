@@ -1,0 +1,428 @@
+@tool
+extends "res://addons/godot_mcp/commands/base_command.gd"
+
+## Agent-facing diagnostics and production workflow guidance (project-neutral).
+
+
+func get_commands() -> Dictionary:
+	return {
+		"health_check": _health_check,
+		"agent_workflow_guide": _agent_workflow_guide,
+		"list_docs_coverage": _list_docs_coverage,
+		"list_surface_registry": _list_surface_registry,
+	}
+
+
+func _health_check(_params: Dictionary) -> Dictionary:
+	var cfg := ConfigFile.new()
+	var plugin_version := "unknown"
+	if cfg.load("res://addons/godot_mcp/plugin.cfg") == OK:
+		plugin_version = str(cfg.get_value("plugin", "version", "unknown"))
+
+	var ws = null
+	var connected_ports: Array = []
+	var client_count := 0
+	if editor_plugin != null and editor_plugin.get("websocket_server") != null:
+		ws = editor_plugin.websocket_server
+	# Walk siblings under plugin for websocket server
+	if editor_plugin != null:
+		for child in editor_plugin.get_children():
+			if child.has_method("get_connected_ports"):
+				ws = child
+				break
+
+	if ws != null:
+		if ws.has_method("get_connected_ports"):
+			connected_ports = ws.get_connected_ports()
+		if ws.has_method("get_client_count"):
+			client_count = ws.get_client_count()
+
+	var root := get_edited_root()
+	var playing := false
+	var ei := get_editor()
+	if ei:
+		playing = ei.is_playing_scene()
+
+	var router = get_parent()
+	var command_count := 0
+	if router != null and router.has_method("get_available_methods"):
+		command_count = router.get_available_methods().size()
+
+	var ready_for_agents := client_count > 0 and command_count > 0
+	var issues: Array = []
+	if client_count == 0:
+		issues.append({
+			"severity": "warning",
+			"message": "No MCP client connected on WebSocket ports 6505-6509",
+			"suggestion": "Start the open MCP server (Grok/Claude mcp_servers.godot) and keep this editor open.",
+		})
+	if command_count == 0:
+		issues.append({
+			"severity": "error",
+			"message": "No commands registered — plugin failed to load command modules",
+		})
+	if root == null:
+		issues.append({
+			"severity": "info",
+			"message": "No scene open in editor — open or create a scene before node tools",
+		})
+
+	var has_hard_error := false
+	for issue in issues:
+		if issue is Dictionary and str(issue.get("severity", "")) == "error":
+			has_hard_error = true
+			break
+
+	return success({
+		"ok": ready_for_agents and not has_hard_error,
+		"ready_for_agent_production": ready_for_agents and not has_hard_error,
+		"plugin_version": plugin_version,
+		"godot_version": Engine.get_version_info(),
+		"project_name": ProjectSettings.get_setting("application/config/name", ""),
+		"project_path": ProjectSettings.globalize_path("res://"),
+		"main_scene": ProjectSettings.get_setting("application/run/main_scene", ""),
+		"command_count": command_count,
+		"websocket": {
+			"connected_ports": connected_ports,
+			"client_count": client_count,
+			"port_range": "6505-6509",
+		},
+		"editor": {
+			"has_open_scene": root != null,
+			"open_scene": root.scene_file_path if root else "",
+			"open_scenes": get_open_scene_paths(),
+			"playing": playing,
+		},
+		"issues": issues,
+		"agent_hint": "Call agent_workflow_guide for the recommended production loop.",
+	})
+
+
+func _agent_workflow_guide(params: Dictionary) -> Dictionary:
+	var topic: String = optional_string(params, "topic", "production")
+	# Project-neutral loops for agent-driven game production
+	var guide := {
+		"purpose": "Use Godot MCP as the primary control plane for agent-driven game production.",
+		"principles": [
+			"Prefer live editor tools (UndoRedo) when the plugin is connected.",
+			"Explore before mutate: get_project_info → get_filesystem_tree / get_scene_tree → read_script.",
+			"Mutate via MCP tools, not raw project.godot edits.",
+			"After significant script/scene work: save_scene, validate_script, play_scene, inspect errors.",
+			"Keep paths under res:// for all writes.",
+			"Use health_check first when anything looks offline.",
+		],
+		"production_loop": [
+			{"step": 1, "action": "health_check", "why": "Confirm editor + MCP link"},
+			{"step": 2, "action": "get_project_info + get_filesystem_tree", "why": "Orient to project structure"},
+			{"step": 3, "action": "get_scene_tree / open_scene", "why": "Target the right scene"},
+			{"step": 4, "action": "create_scene / add_node / update_property / create_script / attach_script", "why": "Build content"},
+			{"step": 5, "action": "save_scene + validate_script", "why": "Persist and check compile"},
+			{"step": 6, "action": "play_scene → get_game_screenshot / get_editor_errors", "why": "Playtest"},
+			{"step": 7, "action": "simulate_action / get_game_node_properties", "why": "Interact and assert runtime state"},
+			{"step": 8, "action": "stop_scene → fix → repeat", "why": "Close the feedback loop"},
+		],
+		"when_editor_offline": [
+			"launch_editor with project_path",
+			"CLI: run_project / get_debug_output / create_scene (headless) as fallback",
+			"Prefer reconnecting the plugin for production quality (UndoRedo, screenshots, runtime)",
+		],
+		"topic": topic,
+	}
+
+	match topic:
+		"2d":
+			guide["focus"] = ["create_scene root CharacterBody2D/Node2D", "add_node Sprite2D/CollisionShape2D", "load_sprite", "set_input_action", "tilemap_*"]
+		"3d":
+			guide["focus"] = ["create_scene root Node3D/CharacterBody3D", "add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_collision", "export_mesh_library"]
+		"ui":
+			guide["focus"] = ["Control roots", "set_anchor_preset", "set_theme_*", "connect_signal", "click_button_by_text"]
+		"playtest":
+			guide["focus"] = ["play_scene", "get_game_screenshot", "simulate_key/action", "get_game_scene_tree", "assert_node_state", "stop_scene"]
+		"inspector", "tune", "properties":
+			guide["focus"] = [
+				"select_nodes / get_editor_selection",
+				"inspect_node or list_property_info (see enums/ranges)",
+				"update_property or update_properties (batch fine-tune)",
+				"Nested: add_resource then update_property property='shape.radius'",
+				"connect_signal / disconnect_signal / get_signals",
+				"add_mesh_instance / set_material_3d / clear_property",
+				"set_meta / list_meta",
+				"save_scene",
+			]
+			guide["human_parity"] = {
+				"tune_transform": "update_properties node_path=Player properties={position, rotation, scale}",
+				"tune_collision": "add_resource property=shape resource_type=CircleShape2D → update_property property=shape.radius value=16",
+				"wire_button": "connect_signal source_path=UI/Button signal_name=pressed target_path=. method=_on_button_pressed",
+				"swap_mesh": "add_mesh_instance or update_property mesh / set_material_3d",
+				"script_exports": "list_property_info shows @export vars; edit_script to add/remove @export lines then reload",
+			}
+		_:
+			guide["focus"] = ["Full production_loop above", "topic=inspector for fine-tuning objects like a human"]
+
+	return success(guide)
+
+
+func _list_docs_coverage(_params: Dictionary) -> Dictionary:
+	## Honest map of docs areas → MCP depth. Status values:
+	## strong | partial | thin | classdb_only
+	## NOTE: This is NOT "100% of the SDK". ClassDB lookup ≠ workflow tools.
+	var areas := {
+		"getting_started": {
+			"status": "strong",
+			"tools": [
+				"health_check", "launch_editor", "get_project_info", "create_scene", "add_node", "create_script", "play_scene",
+				"create_scene_transition_script", "create_loading_screen_scene", "set_main_scene",
+			],
+			"gaps": [],
+		},
+		"tutorials/editor": {
+			"status": "strong",
+			"tools": [
+				"inspect_node", "list_property_info", "select_nodes", "get_scene_tree", "get_editor_errors",
+				"reload_project", "scan_filesystem",
+				"debugger_get_status", "debugger_continue", "debugger_step_over/into/out",
+				"set_source_breakpoint", "list_source_breakpoints", "open_script_at_line",
+			],
+			"gaps": ["native editor gutter breakpoint list (engine-limited)", "full call stack variables"],
+		},
+		"tutorials/scripting": {
+			"status": "strong",
+			"tools": [
+				"create_script", "edit_script", "attach_script", "validate_script", "describe_class",
+				"get_global_class_list", "set_scene_unique_name", "add_autoload",
+				"get_csharp_project_info", "create_csharp_script", "ensure_csharp_csproj", "attach_csharp_script", "list_csharp_scripts",
+			],
+			"gaps": ["visual script N/A", "IDE-integrated debugger for C++"],
+		},
+		"tutorials/2d": {
+			"status": "strong",
+			"tools": [
+				"setup_camera_2d", "setup_parallax_background", "add_parallax_layer", "add_light_occluder_2d",
+				"setup_point_light_2d", "setup_line_2d", "setup_path_2d", "setup_polygon_2d", "set_y_sort_enabled",
+				"tilemap_*", "tileset_* incl terrains", "sprite_frames_*",
+			],
+			"gaps": ["advanced tile atlas region tools"],
+		},
+		"tutorials/3d": {
+			"status": "strong",
+			"tools": [
+				"add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_environment", "setup_world_environment",
+				"set_material_3d", "add_gridmap", "export_mesh_library", "add_reflection_probe",
+				"add_decal", "add_voxel_gi", "bake_voxel_gi", "add_lightmap_gi", "request_lightmap_bake",
+				"setup_csg_box/sphere/cylinder", "setup_path_3d", "set_render_layers",
+				"add_fog_volume", "set_environment_fog", "add_occluder_instance_3d",
+				"find_skeletons", "list_skeleton_bones", "create_bone_map", "add_bone_attachment",
+			],
+			"gaps": ["full lightmap UV2 auto-unwrap"],
+		},
+		"tutorials/animation": {
+			"status": "strong",
+			"tools": [
+				"list_animations", "create_animation", "add_animation_track", "set_animation_keyframe",
+				"insert_method_key", "insert_audio_key", "animation_player_play", "ensure_reset_animation",
+				"create_animation_tree", "travel_animation_state", "add_blend_space_point", "sprite_frames_*",
+			],
+			"gaps": ["visual Bezier handle editor", "full retarget wizard UI"],
+		},
+		"tutorials/assets_pipeline": {
+			"status": "partial",
+			"tools": [
+				"reimport_files", "wait_for_import", "get_import_info", "set_import_option", "set_import_options",
+				"apply_texture_import_preset", "apply_scene_import_preset", "create_atlas_texture",
+				"create_gradient_texture", "create_noise_texture", "create_placeholder_texture",
+				"create_custom_resource_script", "duplicate_resource",
+				"create_bone_map", "auto_map_bones_by_name", "scan_filesystem", "res_copy_file",
+			],
+			"gaps": ["per-importer full option schemas", "extract meshes UI", "imported scene inheritance wizard"],
+		},
+		"tutorials/audio": {
+			"status": "strong",
+			"tools": [
+				"add_audio_player", "set_audio_player_stream", "add_audio_bus", "remove_audio_bus", "set_audio_bus",
+				"add_audio_bus_effect", "get_audio_bus_layout", "save_audio_bus_layout", "load_audio_bus_layout",
+			],
+			"gaps": ["interactive music graphs", "AudioStreamGenerator procedural"],
+		},
+		"tutorials/inputs": {
+			"status": "partial",
+			"tools": ["get_input_actions", "set_input_action", "remove_input_action", "list_input_action_events", "add_input_action_event", "simulate_*"],
+			"gaps": ["joypad mapping wizard", "InputEventAction strength tooling"],
+		},
+		"tutorials/io": {
+			"status": "partial",
+			"tools": ["res_*", "config_file_get/set", "json_read/write", "user_list_dir", "user_read_text", "user_write_text"],
+			"gaps": ["encrypted save helpers", "HTTPRequest tools"],
+		},
+		"tutorials/i18n": {
+			"status": "strong",
+			"tools": ["get_locale", "set_locale", "add_translation", "translate_string", "load_csv_translations", "load_po_translation", "list_translations"],
+			"gaps": ["extract strings from scenes/scripts automatically"],
+		},
+		"tutorials/navigation": {
+			"status": "strong",
+			"tools": [
+				"setup_navigation_region", "bake_navigation_mesh", "setup_navigation_agent",
+				"setup_navigation_link", "setup_navigation_obstacle", "set_navigation_agent_target", "set_navigation_layers",
+			],
+			"gaps": ["path debug draw overlay", "NavigationServer query helpers"],
+		},
+		"tutorials/networking": {
+			"status": "partial",
+			"tools": [
+				"setup_multiplayer_spawner/synchronizer", "add_spawnable_scene", "add_replication_property",
+				"create_multiplayer_template_script", "setup_http_request", "list_rpc_config", "set_multiplayer_authority",
+			],
+			"gaps": ["WebRTC peer tools", "full lobby/matchmaking", "runtime host/join without template script"],
+		},
+		"tutorials/performance": {
+			"status": "strong",
+			"tools": [
+				"get_performance_monitors", "get_editor_performance", "capture_performance_sample",
+				"capture_performance_timeline", "get_render_info", "list_performance_monitor_names",
+				"analyze_scene_complexity", "run_stress_test",
+				"debugger_get_status", "list_debugger_errors", "set_debug_project_settings",
+			],
+			"gaps": ["GPU frame debugger UI export", "CPU profiler flame charts"],
+		},
+		"tutorials/physics": {
+			"status": "strong",
+			"tools": [
+				"setup_physics_body", "create_physics_body", "setup_collision", "setup_area", "set_area_monitoring",
+				"setup_joint", "add_raycast", "add_shape_cast", "set_physics_material", "add_vehicle_wheel",
+				"setup_soft_body", "add_physical_bone", "setup_physical_bone_simulator",
+			],
+			"gaps": ["joint limit fine UI", "test_move debug viz", "full ragdoll auto-generate from skeleton"],
+		},
+		"tutorials/export": {
+			"status": "strong",
+			"tools": [
+				"list_export_presets", "create_export_preset", "set_export_preset_option", "remove_export_preset",
+				"get_export_preset", "export_project", "run_export", "deploy_to_android", "get_export_info",
+			],
+			"gaps": ["signing/notarization wizards", "export template install automation"],
+		},
+		"tutorials/platform": {
+			"status": "partial",
+			"tools": ["deploy_to_android", "list_android_devices", "create_export_preset platform=Web|iOS|Android", "run_export"],
+			"gaps": ["console platforms", "full iOS Xcode pipeline"],
+		},
+		"tutorials/rendering": {
+			"status": "partial",
+			"tools": ["setup_environment", "setup_lighting", "set_material_3d", "add_reflection_probe", "add_decal", "add_voxel_gi", "set_render_layers"],
+			"gaps": ["SDFGI bake controls", "compositor effects", "lightmap bake automation"],
+		},
+		"tutorials/shaders": {
+			"status": "strong",
+			"tools": [
+				"create_shader", "edit_shader", "assign_shader_material", "set_shader_param", "get_shader_params",
+				"set_shader_global", "get_shader_global", "list_shader_globals",
+				"create_visual_shader", "visual_shader_add_node", "visual_shader_connect", "visual_shader_get_info",
+				"assign_visual_shader_material", "visual_shader_add_preset_fresnel",
+			],
+			"gaps": ["full VisualShader node catalog UI parity", "shader include libraries"],
+		},
+		"tutorials/ui": {
+			"status": "strong",
+			"tools": [
+				"set_anchor_preset", "set_theme_*", "create_theme", "setup_control", "set_focus_neighbors",
+				"set_control_size_flags", "item_list_*", "tree_*", "option_button_set_items", "popup_menu_set_items",
+				"richtext_set_bbcode", "setup_window", "setup_accept_dialog", "setup_file_dialog",
+				"setup_subviewport", "setup_video_stream_player", "setup_progress_bar", "setup_texture_progress_bar",
+				"connect_signal",
+			],
+			"gaps": ["theme type full resource editor"],
+		},
+		"tutorials/plugins": {
+			"status": "partial",
+			"tools": [
+				"create_editor_plugin", "list_project_plugins", "create_gdextension_project",
+				"list_gdextension_files", "execute_editor_script", "describe_class EditorPlugin",
+			],
+			"gaps": ["plugin marketplace packaging", "automated godot-cpp clone/build"],
+		},
+		"tutorials/xr": {
+			"status": "strong",
+			"tools": [
+				"setup_xr_origin", "add_xr_controller", "set_xr_project_settings", "get_xr_info", "list_xr_interfaces",
+				"create_openxr_action_map", "openxr_add_action_set", "openxr_add_action", "openxr_get_action_map_info",
+				"set_openxr_action_map_path", "add_xr_hand_modifier",
+				"list_openxr_interaction_profiles", "openxr_add_interaction_profile", "openxr_bind_action",
+				"openxr_create_default_controller_bindings",
+			],
+			"gaps": ["passthrough", "composition layers", "vendor-specific profile verification"],
+		},
+		"tutorials/math": {
+			"status": "classdb_only",
+			"tools": ["update_property Vector*/Transform*", "execute_editor_script"],
+			"gaps": ["not a dock — intentional"],
+		},
+		"tutorials/best_practices": {
+			"status": "partial",
+			"tools": ["agent_workflow_guide", "analyze_*", "health_check"],
+			"gaps": [],
+		},
+		"tutorials/migrating": {
+			"status": "thin",
+			"tools": ["get_godot_version", "search_in_files", "edit_script"],
+			"gaps": ["automated 3→4 migrator"],
+		},
+		"classes/* (class reference)": {
+			"status": "strong",
+			"tools": ["describe_class", "list_classes", "list_class_methods", "list_class_signals", "list_class_properties", "list_class_constants", "get_class_inheritance"],
+			"note": "Lookup of any ClassDB type — NOT a dedicated tool per method of every class",
+			"gaps": ["offline docs RST text", "example snippets from docs"],
+		},
+	}
+	var counts := {"strong": 0, "partial": 0, "thin": 0, "classdb_only": 0}
+	for k in areas:
+		var st: String = str(areas[k].get("status", "thin"))
+		if counts.has(st):
+			counts[st] = int(counts[st]) + 1
+	var weighted := float(counts["strong"]) * 1.0 + float(counts["partial"]) * 0.55 + float(counts["thin"]) * 0.25 + float(counts["classdb_only"]) * 0.35
+	var max_w := float(areas.size())
+	return success({
+		"docs_source": "https://github.com/godotengine/godot-docs",
+		"areas": areas,
+		"area_count": areas.size(),
+		"status_counts": counts,
+		"honest_depth_score_percent": round((weighted / max_w) * 1000.0) / 10.0,
+		"claim": "HONEST: docs-area workflow depth is improved (many strong/partial). This is still NOT 100% of ClassDB methods, every editor dock pixel, or VisualShader/C#/console SDKs. See gaps.",
+		"previous_false_claim": "Older builds reported coverage_percent:100 by counting any tool path as 'covered'. That metric is retired.",
+		"sdk_note": "Full ClassDB *lookup* via describe_class; dedicated *workflow tools* track human docks, not every engine method.",
+	})
+
+
+func _list_surface_registry(_params: Dictionary) -> Dictionary:
+	## Live inventory of registered plugin commands by module (progress registry).
+	var router = get_parent()
+	var all_methods: Array = []
+	if router != null and router.has_method("get_available_methods"):
+		all_methods = router.get_available_methods()
+	all_methods.sort()
+	# Group by heuristic prefixes / known modules
+	var by_module := {}
+	var cmd_dir := "res://addons/godot_mcp/commands"
+	var dir := DirAccess.open(cmd_dir)
+	if dir:
+		dir.list_dir_begin()
+		var fname := dir.get_next()
+		while not fname.is_empty():
+			if fname.ends_with(".gd") and not dir.current_is_dir():
+				var path := cmd_dir.path_join(fname)
+				# Count registrations by loading script is heavy; report file presence
+				by_module[fname.get_basename()] = {"source": path}
+			fname = dir.get_next()
+		dir.list_dir_end()
+	var cfg := ConfigFile.new()
+	var plugin_version := "unknown"
+	if cfg.load("res://addons/godot_mcp/plugin.cfg") == OK:
+		plugin_version = str(cfg.get_value("plugin", "version", "unknown"))
+	return success({
+		"plugin_version": plugin_version,
+		"command_count": all_methods.size(),
+		"commands": all_methods,
+		"module_files": by_module.keys(),
+		"module_file_count": by_module.size(),
+		"registry_doc": "SURFACE_REGISTRY.md (repo root) — regenerate via scripts/export-surface-registry.ps1",
+		"honest_note": "Workflow surface inventory — not 100% ClassDB. Use list_docs_coverage for area depth/gaps.",
+	})

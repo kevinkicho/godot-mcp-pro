@@ -1,0 +1,27 @@
+{
+  "name": "godot-mcp-pro-server",
+  "version": "1.26.0",
+  "description": "Open MCP server for agent-driven Godot game production: WebSocket editor bridge, CLI tools, health_check, lite mode.",
+  "type": "module",
+  "bin": {
+    "godot-mcp-pro": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc && node scripts/copy-assets.js",
+    "start": "node build/index.js",
+    "watch": "tsc --watch"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/ws": "^8.5.12",
+    "typescript": "^5.3.3"
+  },
+  "license": "MIT"
+}

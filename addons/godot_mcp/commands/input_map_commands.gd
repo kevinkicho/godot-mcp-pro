@@ -6,6 +6,10 @@ func get_commands() -> Dictionary:
 	return {
 		"get_input_actions": _get_input_actions,
 		"set_input_action": _set_input_action,
+		"remove_input_action": _remove_input_action,
+		"list_input_action_events": _list_input_action_events,
+		"add_input_action_event": _add_input_action_event,
+		"clear_input_action_events": _clear_input_action_events,
 	}
 
 
@@ -88,6 +92,86 @@ func _set_input_action(params: Dictionary) -> Dictionary:
 		"events_count": events.size(),
 		"saved": true,
 	})
+
+
+func _remove_input_action(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "action")
+	if result[1] != null:
+		return result[1]
+	var action_name: String = result[0]
+	var setting_key := "input/" + action_name
+	if not ProjectSettings.has_setting(setting_key):
+		return error_not_found("Input action '%s'" % action_name)
+	ProjectSettings.set_setting(setting_key, null)
+	var err := ProjectSettings.save()
+	if err != OK:
+		return error_internal("Failed to save project settings: %s" % error_string(err))
+	if InputMap.has_action(action_name):
+		InputMap.erase_action(action_name)
+	return success({"action": action_name, "removed": true})
+
+
+func _list_input_action_events(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "action")
+	if result[1] != null:
+		return result[1]
+	var action_name: String = result[0]
+	if not InputMap.has_action(action_name):
+		return error_not_found("Input action '%s'" % action_name)
+	var events: Array = []
+	for event: InputEvent in InputMap.action_get_events(action_name):
+		events.append(_serialize_event(event))
+	return success({
+		"action": action_name,
+		"deadzone": InputMap.action_get_deadzone(action_name),
+		"events": events,
+		"count": events.size(),
+	})
+
+
+func _add_input_action_event(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "action")
+	if result[1] != null:
+		return result[1]
+	var action_name: String = result[0]
+	if not params.has("event") or not params["event"] is Dictionary:
+		return error_invalid_params("'event' dictionary is required")
+	var event := _parse_event(params["event"])
+	if event == null:
+		return error_invalid_params("Could not parse event")
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	InputMap.action_add_event(action_name, event)
+	# Persist
+	var events: Array = []
+	for e in InputMap.action_get_events(action_name):
+		events.append(e)
+	ProjectSettings.set_setting("input/" + action_name, {
+		"deadzone": InputMap.action_get_deadzone(action_name),
+		"events": events,
+	})
+	var err := ProjectSettings.save()
+	if err != OK:
+		return error_internal("Failed to save: %s" % error_string(err))
+	return success({"action": action_name, "event": _serialize_event(event), "saved": true})
+
+
+func _clear_input_action_events(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "action")
+	if result[1] != null:
+		return result[1]
+	var action_name: String = result[0]
+	if not InputMap.has_action(action_name):
+		return error_not_found("Input action '%s'" % action_name)
+	InputMap.action_erase_events(action_name)
+	ProjectSettings.set_setting("input/" + action_name, {
+		"deadzone": InputMap.action_get_deadzone(action_name),
+		"events": [],
+	})
+	var err := ProjectSettings.save()
+	if err != OK:
+		return error_internal("Failed to save: %s" % error_string(err))
+	return success({"action": action_name, "cleared": true})
 
 
 func _serialize_event(event: InputEvent) -> Dictionary:

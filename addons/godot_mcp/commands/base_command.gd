@@ -127,6 +127,35 @@ func normalize_project_path(path: String) -> String:
 	return ProjectSettings.localize_path(path).simplify_path()
 
 
+## Require a project-relative res:// path for mutating file operations.
+## Rejects empty paths, absolute OS paths that don't localize, and ".." traversal.
+## Returns [normalized_path, null] on success or [null, error_dict] on failure.
+func require_res_path(params: Dictionary, key: String = "path") -> Array:
+	var result := require_string(params, key)
+	if result[1] != null:
+		return result
+	return validate_res_path(result[0] as String)
+
+
+func validate_res_path(path: String) -> Array:
+	var normalized := normalize_project_path(path)
+	if normalized.is_empty():
+		return [null, error_invalid_params("Path is empty after normalization")]
+	if normalized.contains(".."):
+		return [null, error_invalid_params("Path must not contain '..': %s" % normalized)]
+	if not normalized.begins_with("res://"):
+		# Allow bare relative paths by prefixing res://
+		if not normalized.begins_with("user://") and not normalized.contains("://"):
+			normalized = normalize_project_path("res://" + normalized.trim_prefix("/"))
+		if not normalized.begins_with("res://"):
+			return [null, error_invalid_params(
+				"Mutating tools require a res:// project path (got '%s'). Refuse absolute/OS paths." % path
+			)]
+	if normalized.contains(".."):
+		return [null, error_invalid_params("Path must not contain '..': %s" % normalized)]
+	return [normalized, null]
+
+
 func is_scene_resource_path(path: String) -> bool:
 	var ext := path.get_extension().to_lower()
 	return ext == "tscn" or ext == "scn"

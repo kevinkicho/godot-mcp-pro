@@ -1,0 +1,25 @@
+# Dependencies & build outputs
+**/node_modules/
+server/build/
+*.log
+.DS_Store
+Thumbs.db
+
+# Godot local
+.godot/
+*.translation
+
+# Editor / OS
+*.swp
+*~
+.vs/
+.idea/
+
+# Local secrets / env
+.env
+.env.*
+!.env.example
+
+# Optional local settings
+settings.local.json
+*.local.json

@@ -10,6 +10,8 @@ func get_commands() -> Dictionary:
 		"edit_resource": _edit_resource,
 		"create_resource": _create_resource,
 		"get_resource_preview": _get_resource_preview,
+		"create_custom_resource_script": _create_custom_resource_script,
+		"duplicate_resource": _duplicate_resource,
 	}
 
 
@@ -203,3 +205,105 @@ func _get_resource_preview(params: Dictionary) -> Dictionary:
 		"format": "png",
 		"path": path,
 	})
+
+
+func _create_custom_resource_script(params: Dictionary) -> Dictionary:
+	## Create a GDScript Resource subclass with class_name for typed data.
+	var res := require_res_path(params, "path")
+	if res[1] != null:
+		return res[1]
+	var path: String = res[0]
+	if not path.ends_with(".gd"):
+		path += ".gd"
+	var class_name_str: String = optional_string(params, "class_name", path.get_file().get_basename().capitalize().replace(" ", ""))
+	if not class_name_str.is_valid_identifier():
+		class_name_str = "CustomData"
+	var exports: Array = params.get("exports", [])
+	# exports: ["health:int=100", "name:String=\"\""] or [{name, type, default}]
+	var lines: PackedStringArray = []
+	lines.append("class_name %s" % class_name_str)
+	lines.append("extends Resource")
+	lines.append("")
+	if exports is Array and exports.size() > 0:
+		for e in exports:
+			if e is String:
+				var s: String = e
+				if ":" in s:
+					var parts := s.split("=", true, 1)
+					var left := parts[0].strip_edges()
+					var def := parts[1].strip_edges() if parts.size() > 1 else ""
+					var nt := left.split(":")
+					var ename := nt[0].strip_edges()
+					var etype := nt[1].strip_edges() if nt.size() > 1 else "Variant"
+					if def.is_empty():
+						lines.append("@export var %s: %s" % [ename, etype])
+					else:
+						lines.append("@export var %s: %s = %s" % [ename, etype, def])
+				else:
+					lines.append("@export var %s" % s)
+			elif e is Dictionary:
+				var en: String = str(e.get("name", "value"))
+				var et: String = str(e.get("type", "Variant"))
+				if e.has("default"):
+					lines.append("@export var %s: %s = %s" % [en, et, str(e["default"])])
+				else:
+					lines.append("@export var %s: %s" % [en, et])
+	else:
+		lines.append("@export var display_name: String = \"\"")
+		lines.append("@export var value: float = 0.0")
+	lines.append("")
+	var derr := ensure_parent_dir(path)
+	if not derr.is_empty():
+		return derr
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return error_internal("Cannot write %s" % path)
+	f.store_string("\n".join(lines) + "\n")
+	f.close()
+	EditorInterface.get_resource_filesystem().update_file(path)
+	# Optionally create an instance .tres
+	var instance_path: String = optional_string(params, "instance_path", "")
+	var instance_created := false
+	if not instance_path.is_empty():
+		if not instance_path.begins_with("res://"):
+			instance_path = "res://" + instance_path.trim_prefix("/")
+		# Wait: script must be loaded — ResourceLoader may need scan
+		EditorInterface.get_resource_filesystem().scan()
+		var scr: Script = load(path) as Script
+		if scr:
+			var inst: Resource = scr.new()
+			if inst:
+				var err2 := ResourceSaver.save(inst, instance_path)
+				instance_created = err2 == OK
+	return success({
+		"path": path,
+		"class_name": class_name_str,
+		"instance_path": instance_path if instance_created else "",
+		"instance_created": instance_created,
+		"hint": "Use create_resource or ResourceSaver after global class registers; reload_project if class_name not found yet.",
+	})
+
+
+func _duplicate_resource(params: Dictionary) -> Dictionary:
+	var src_r := require_res_path(params, "path")
+	if src_r[1] != null:
+		return src_r[1]
+	var dst: String = optional_string(params, "to", "")
+	if dst.is_empty():
+		dst = src_r[0].get_basename() + "_copy." + src_r[0].get_extension()
+	if not dst.begins_with("res://"):
+		dst = "res://" + dst.trim_prefix("/")
+	if not ResourceLoader.exists(src_r[0]) and not FileAccess.file_exists(src_r[0]):
+		return error_not_found(src_r[0])
+	var res: Resource = load(src_r[0])
+	if res == null:
+		return error_internal("Failed to load %s" % src_r[0])
+	var dup: Resource = res.duplicate(true)
+	var derr := ensure_parent_dir(dst)
+	if not derr.is_empty():
+		return derr
+	var err := ResourceSaver.save(dup, dst)
+	if err != OK:
+		return error_internal(error_string(err))
+	EditorInterface.get_resource_filesystem().update_file(dst)
+	return success({"from": src_r[0], "to": dst, "type": dup.get_class()})

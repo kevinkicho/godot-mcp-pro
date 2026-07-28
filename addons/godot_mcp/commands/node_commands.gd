@@ -12,8 +12,13 @@ func get_commands() -> Dictionary:
 		"duplicate_node": _duplicate_node,
 		"move_node": _move_node,
 		"update_property": _update_property,
+		"update_properties": _update_properties,
+		"list_property_info": _list_property_info,
+		"inspect_node": _inspect_node,
+		"clear_property": _clear_property,
 		"get_node_properties": _get_node_properties,
 		"add_resource": _add_resource,
+		"remove_resource": _remove_resource,
 		"set_anchor_preset": _set_anchor_preset,
 		"rename_node": _rename_node,
 		"connect_signal": _connect_signal,
@@ -24,7 +29,34 @@ func get_commands() -> Dictionary:
 		"get_editor_selection": _get_editor_selection,
 		"select_nodes": _select_nodes,
 		"clear_editor_selection": _clear_editor_selection,
+		"get_meta": _get_meta,
+		"set_meta": _set_meta,
+		"remove_meta": _remove_meta,
+		"list_meta": _list_meta,
 	}
+
+
+## Resolve "shape.radius" / "shape:radius" / "shape/radius" to (object, leaf_property).
+func _resolve_property_path(root_obj: Object, property_path: String) -> Dictionary:
+	var normalized := property_path.replace(":", "/").replace(".", "/")
+	var parts := normalized.split("/", false)
+	if parts.is_empty():
+		return {"error": error_invalid_params("Empty property path")}
+	var obj: Object = root_obj
+	for i in range(parts.size() - 1):
+		var part: String = parts[i]
+		if obj == null or not part in obj:
+			return {"error": error_not_found("Property path segment '%s' on %s" % [part, obj.get_class() if obj else "null"])}
+		var next: Variant = obj.get(part)
+		if next == null:
+			return {"error": error_not_found(
+				"Property '%s' is null — create a resource first (add_resource)" % part,
+				"Example: add_resource node_path=... property=%s resource_type=RectangleShape2D" % part
+			)}
+		if not next is Object:
+			return {"error": error_invalid_params("Cannot traverse into non-object property '%s'" % part)}
+		obj = next as Object
+	return {"object": obj, "property": parts[parts.size() - 1], "path": property_path}
 
 
 func _find_script_by_class_name(class_name_str: String) -> Script:
@@ -247,25 +279,73 @@ func _update_property(params: Dictionary) -> Dictionary:
 	if node == null:
 		return error_not_found("Node '%s'" % node_path, "Use get_scene_tree to see available nodes")
 
-	# Check property exists
-	if not property in node:
+	return _set_object_property(root, node, property, value)
+
+
+func _update_properties(params: Dictionary) -> Dictionary:
+	## Batch fine-tune: set many properties on one node (human inspector multi-edit).
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var node_path: String = result[0]
+	if not params.has("properties") or not params["properties"] is Dictionary:
+		return error_invalid_params("Missing required parameter: properties (Dictionary of name → value)")
+	var properties: Dictionary = params["properties"]
+	if properties.is_empty():
+		return error_invalid_params("properties dictionary is empty")
+
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(node_path)
+	if node == null:
+		return error_not_found("Node '%s'" % node_path, "Use get_scene_tree to see available nodes")
+
+	var changed: Array = []
+	var errors: Array = []
+	for prop_name: String in properties:
+		var one := _set_object_property(root, node, prop_name, properties[prop_name])
+		if one.has("error"):
+			errors.append({"property": prop_name, "error": one["error"]})
+		else:
+			var res: Dictionary = one.get("result", {})
+			changed.append({
+				"property": prop_name,
+				"old_value": res.get("old_value"),
+				"new_value": res.get("new_value"),
+			})
+
+	return success({
+		"node_path": str(root.get_path_to(node)),
+		"changed": changed,
+		"changed_count": changed.size(),
+		"errors": errors,
+	})
+
+
+func _set_object_property(root: Node, node: Node, property: String, value: Variant) -> Dictionary:
+	var resolved := _resolve_property_path(node, property)
+	if resolved.has("error"):
+		return resolved["error"]
+	var target: Object = resolved["object"]
+	var leaf: String = resolved["property"]
+
+	if not leaf in target:
 		var available: Array = []
-		for prop in node.get_property_list():
+		for prop in target.get_property_list():
 			if prop["usage"] & PROPERTY_USAGE_EDITOR:
 				available.append(prop["name"])
-		return error_not_found("Property '%s' on %s" % [property, node.get_class()],
-			"Available: %s" % str(available.slice(0, 20)))
+		return error_not_found("Property '%s' on %s" % [property, target.get_class()],
+			"Available: %s" % str(available.slice(0, 30)))
 
-	var old_value: Variant = node.get(property)
+	var old_value: Variant = target.get(leaf)
 	var target_type := typeof(old_value)
 	var parsed_value: Variant = PropertyParser.parse_value(value, target_type)
 
-	# Handle @export node references (e.g. @export var hud: HUD)
-	# typeof() returns TYPE_NIL when unset or TYPE_OBJECT when set,
-	# neither resolves a string path to a node — check the property hint instead
+	# Handle @export node references
 	if value is String:
-		for prop in node.get_property_list():
-			if prop["name"] == property and prop["hint"] == PROPERTY_HINT_NODE_TYPE:
+		for prop in target.get_property_list():
+			if prop["name"] == leaf and prop["hint"] == PROPERTY_HINT_NODE_TYPE:
 				var target_node: Node = node.get_node_or_null(NodePath(value))
 				if target_node == null:
 					target_node = root.get_node_or_null(NodePath(value))
@@ -274,8 +354,6 @@ func _update_property(params: Dictionary) -> Dictionary:
 				parsed_value = target_node
 				break
 
-	# Fail loudly instead of committing a String into an Object-typed property —
-	# the engine would coerce it to null and silently destroy the existing value.
 	if value is String and typeof(old_value) == TYPE_OBJECT and parsed_value == null:
 		return error_invalid_params(
 			"Could not resolve '%s' to a Resource for property '%s'" % [str(value), property])
@@ -286,15 +364,253 @@ func _update_property(params: Dictionary) -> Dictionary:
 
 	var undo_redo := get_undo_redo()
 	undo_redo.create_action("MCP: Set %s.%s" % [node.name, property])
-	undo_redo.add_do_property(node, property, parsed_value)
-	undo_redo.add_undo_property(node, property, old_value)
+	undo_redo.add_do_property(target, leaf, parsed_value)
+	undo_redo.add_undo_property(target, leaf, old_value)
 	undo_redo.commit_action()
+	mark_current_scene_unsaved()
 
 	return success({
 		"node": str(root.get_path_to(node)),
 		"property": property,
 		"old_value": PropertyParser.serialize_value(old_value),
-		"new_value": PropertyParser.serialize_value(node.get(property)),
+		"new_value": PropertyParser.serialize_value(target.get(leaf)),
+	})
+
+
+func _list_property_info(params: Dictionary) -> Dictionary:
+	## Inspector-style property catalog: types, hints, enums, ranges — for agent fine-tuning.
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var node_path: String = result[0]
+	var include_internal: bool = optional_bool(params, "include_internal", false)
+	var only_editable: bool = optional_bool(params, "only_editable", true)
+
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(node_path)
+	if node == null:
+		return error_not_found("Node '%s'" % node_path)
+
+	var props: Array = []
+	for prop_info in node.get_property_list():
+		var usage: int = prop_info["usage"]
+		if only_editable and not (usage & PROPERTY_USAGE_EDITOR):
+			continue
+		if not include_internal and (usage & PROPERTY_USAGE_INTERNAL):
+			continue
+		var prop_name: String = prop_info["name"]
+		if prop_name.begins_with("_") and not include_internal:
+			continue
+		var entry := {
+			"name": prop_name,
+			"type": type_string(prop_info["type"]),
+			"type_id": prop_info["type"],
+			"hint": prop_info["hint"],
+			"hint_string": prop_info["hint_string"],
+			"usage": usage,
+			"value": PropertyParser.serialize_value(node.get(prop_name)) if prop_name in node else null,
+		}
+		# Expand enum options for agents
+		if prop_info["hint"] == PROPERTY_HINT_ENUM and str(prop_info["hint_string"]).length() > 0:
+			entry["enum_options"] = str(prop_info["hint_string"]).split(",")
+		if prop_info["hint"] == PROPERTY_HINT_RANGE and str(prop_info["hint_string"]).length() > 0:
+			entry["range"] = str(prop_info["hint_string"])
+		if prop_info["type"] == TYPE_OBJECT and prop_info["hint_string"]:
+			entry["object_class"] = prop_info["hint_string"]
+		props.append(entry)
+
+	return success({
+		"node_path": str(root.get_path_to(node)),
+		"type": node.get_class(),
+		"property_count": props.size(),
+		"properties": props,
+		"hint": "Use update_property / update_properties. Nested: property='shape.radius' after add_resource.",
+	})
+
+
+func _inspect_node(params: Dictionary) -> Dictionary:
+	## One-shot human-like inspector: properties, signals, groups, script, meta.
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var node_path: String = result[0]
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(node_path)
+	if node == null:
+		return error_not_found("Node '%s'" % node_path)
+
+	var script_path := ""
+	var script: Script = node.get_script()
+	if script:
+		script_path = script.resource_path
+
+	var signal_list: Array = []
+	for sig in node.get_signal_list():
+		var sig_name: String = sig["name"]
+		var conns: Array = []
+		for c in node.get_signal_connection_list(sig_name):
+			var callable: Callable = c["callable"]
+			var target_obj = callable.get_object()
+			var target_path := str(target_obj)
+			if target_obj is Node:
+				var tn: Node = target_obj
+				if tn == root or root.is_ancestor_of(tn):
+					target_path = str(root.get_path_to(tn))
+			conns.append({
+				"target": target_path,
+				"method": str(callable.get_method()),
+				"flags": c.get("flags", 0),
+			})
+		signal_list.append({"name": sig_name, "connections": conns})
+
+	var meta_keys: Array = []
+	for k in node.get_meta_list():
+		meta_keys.append(str(k))
+
+	return success({
+		"node_path": str(root.get_path_to(node)),
+		"name": node.name,
+		"type": node.get_class(),
+		"script": script_path,
+		"groups": node.get_groups(),
+		"child_count": node.get_child_count(),
+		"properties": NodeUtils.get_node_properties_dict(node),
+		"signals": signal_list,
+		"meta_keys": meta_keys,
+		"hint": "Fine-tune with update_property, list_property_info for hints, connect_signal, add_resource.",
+	})
+
+
+func _clear_property(params: Dictionary) -> Dictionary:
+	## Clear an Object property (e.g. remove mesh/material) or reset with explicit null.
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var node_path: String = result[0]
+	var result2 := require_string(params, "property")
+	if result2[1] != null:
+		return result2[1]
+	var property: String = result2[0]
+
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(node_path)
+	if node == null:
+		return error_not_found("Node '%s'" % node_path)
+
+	return _set_object_property(root, node, property, null)
+
+
+func _remove_resource(params: Dictionary) -> Dictionary:
+	## Alias for clearing a resource-typed property on a node (human: clear slot in inspector).
+	return _clear_property(params)
+
+
+func _get_meta(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var result2 := require_string(params, "key")
+	if result2[1] != null:
+		return result2[1]
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(result[0])
+	if node == null:
+		return error_not_found("Node '%s'" % result[0])
+	var key: String = result2[0]
+	if not node.has_meta(key):
+		return error_not_found("Meta key '%s'" % key)
+	return success({
+		"node_path": str(root.get_path_to(node)),
+		"key": key,
+		"value": PropertyParser.serialize_value(node.get_meta(key)),
+	})
+
+
+func _set_meta(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var result2 := require_string(params, "key")
+	if result2[1] != null:
+		return result2[1]
+	if not params.has("value"):
+		return error_invalid_params("Missing required parameter: value")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(result[0])
+	if node == null:
+		return error_not_found("Node '%s'" % result[0])
+	var key: String = result2[0]
+	var value: Variant = PropertyParser.parse_value(params["value"])
+	var old = node.get_meta(key) if node.has_meta(key) else null
+	var undo_redo := get_undo_redo()
+	undo_redo.create_action("MCP: Set meta %s" % key)
+	undo_redo.add_do_method(node, "set_meta", key, value)
+	if old != null:
+		undo_redo.add_undo_method(node, "set_meta", key, old)
+	else:
+		undo_redo.add_undo_method(node, "remove_meta", key)
+	undo_redo.commit_action()
+	mark_current_scene_unsaved()
+	return success({
+		"node_path": str(root.get_path_to(node)),
+		"key": key,
+		"value": PropertyParser.serialize_value(node.get_meta(key)),
+	})
+
+
+func _remove_meta(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var result2 := require_string(params, "key")
+	if result2[1] != null:
+		return result2[1]
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(result[0])
+	if node == null:
+		return error_not_found("Node '%s'" % result[0])
+	var key: String = result2[0]
+	if not node.has_meta(key):
+		return error_not_found("Meta key '%s'" % key)
+	var old = node.get_meta(key)
+	var undo_redo := get_undo_redo()
+	undo_redo.create_action("MCP: Remove meta %s" % key)
+	undo_redo.add_do_method(node, "remove_meta", key)
+	undo_redo.add_undo_method(node, "set_meta", key, old)
+	undo_redo.commit_action()
+	mark_current_scene_unsaved()
+	return success({"node_path": str(root.get_path_to(node)), "key": key, "removed": true})
+
+
+func _list_meta(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(result[0])
+	if node == null:
+		return error_not_found("Node '%s'" % result[0])
+	var meta: Dictionary = {}
+	for k in node.get_meta_list():
+		meta[str(k)] = PropertyParser.serialize_value(node.get_meta(k))
+	return success({
+		"node_path": str(root.get_path_to(node)),
+		"meta": meta,
+		"count": meta.size(),
 	})
 
 

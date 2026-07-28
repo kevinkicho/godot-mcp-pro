@@ -49,10 +49,10 @@ func _get_scene_file_content(params: Dictionary) -> Dictionary:
 
 
 func _create_scene(params: Dictionary) -> Dictionary:
-	var result := require_string(params, "path")
-	if result[1] != null:
-		return result[1]
-	var path: String = result[0]
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
 
 	var guard := guard_offline_scene_save(path)
 	if not guard.is_empty():
@@ -174,18 +174,35 @@ func _add_scene_instance(params: Dictionary) -> Dictionary:
 
 
 func _play_scene(params: Dictionary) -> Dictionary:
-	var mode: String = optional_string(params, "mode", "main")  # "main", "current", or path
+	# mode: "main" | "current" | "custom" | or a legacy scene path string
+	var mode: String = optional_string(params, "mode", "main")
+	var path: String = optional_string(params, "path", "")
+	if path.is_empty():
+		path = optional_string(params, "scene_path", "")
 
 	match mode:
 		"main":
 			EditorInterface.play_main_scene()
 		"current":
 			EditorInterface.play_current_scene()
+		"custom":
+			if path.is_empty():
+				return error_invalid_params("mode 'custom' requires path (scene file)")
+			if not path.begins_with("res://"):
+				path = "res://" + path.trim_prefix("/")
+			if not FileAccess.file_exists(path):
+				return error_not_found("Scene file '%s'" % path)
+			EditorInterface.play_custom_scene(path)
+			return success({"playing": true, "mode": "custom", "path": path})
 		_:
-			# Treat as scene path
-			if not FileAccess.file_exists(mode):
-				return error_not_found("Scene file '%s'" % mode)
-			EditorInterface.play_custom_scene(mode)
+			# Legacy: treat mode itself as a scene path
+			var scene_path := mode
+			if not scene_path.begins_with("res://") and scene_path.contains("/"):
+				scene_path = "res://" + scene_path.trim_prefix("/")
+			if not FileAccess.file_exists(scene_path):
+				return error_not_found("Scene file '%s'" % scene_path)
+			EditorInterface.play_custom_scene(scene_path)
+			return success({"playing": true, "mode": "path", "path": scene_path})
 
 	return success({"playing": true, "mode": mode})
 

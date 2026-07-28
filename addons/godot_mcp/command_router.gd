@@ -36,11 +36,36 @@ func _register_commands() -> void:
 		preload("res://addons/godot_mcp/commands/physics_commands.gd"),
 		preload("res://addons/godot_mcp/commands/analysis_commands.gd"),
 		preload("res://addons/godot_mcp/commands/animation_tree_commands.gd"),
+		preload("res://addons/godot_mcp/commands/skeleton_commands.gd"),
+		preload("res://addons/godot_mcp/commands/scene_2d_commands.gd"),
+		preload("res://addons/godot_mcp/commands/io_commands.gd"),
 		preload("res://addons/godot_mcp/commands/audio_commands.gd"),
 		preload("res://addons/godot_mcp/commands/navigation_commands.gd"),
 		preload("res://addons/godot_mcp/commands/particle_commands.gd"),
 		preload("res://addons/godot_mcp/commands/test_commands.gd"),
 		preload("res://addons/godot_mcp/commands/android_commands.gd"),
+		preload("res://addons/godot_mcp/commands/compat_commands.gd"),
+		preload("res://addons/godot_mcp/commands/agent_commands.gd"),
+		preload("res://addons/godot_mcp/commands/class_commands.gd"),
+		preload("res://addons/godot_mcp/commands/import_commands.gd"),
+		preload("res://addons/godot_mcp/commands/filesystem_commands.gd"),
+		preload("res://addons/godot_mcp/commands/i18n_commands.gd"),
+		preload("res://addons/godot_mcp/commands/multiplayer_commands.gd"),
+		preload("res://addons/godot_mcp/commands/tileset_commands.gd"),
+		preload("res://addons/godot_mcp/commands/scene_unique_commands.gd"),
+		preload("res://addons/godot_mcp/commands/xr_commands.gd"),
+		preload("res://addons/godot_mcp/commands/ui_list_commands.gd"),
+		preload("res://addons/godot_mcp/commands/debugger_commands.gd"),
+		preload("res://addons/godot_mcp/commands/visual_shader_commands.gd"),
+		preload("res://addons/godot_mcp/commands/csharp_commands.gd"),
+		preload("res://addons/godot_mcp/commands/tween_commands.gd"),
+		preload("res://addons/godot_mcp/commands/plugin_scaffold_commands.gd"),
+		preload("res://addons/godot_mcp/commands/texture_commands.gd"),
+		preload("res://addons/godot_mcp/commands/gdextension_commands.gd"),
+		preload("res://addons/godot_mcp/commands/dialogue_commands.gd"),
+		preload("res://addons/godot_mcp/commands/container_commands.gd"),
+		preload("res://addons/godot_mcp/commands/scene_flow_commands.gd"),
+		preload("res://addons/godot_mcp/commands/gameplay_template_commands.gd"),
 	]
 
 	for cmd_class in command_classes:
@@ -52,6 +77,12 @@ func _register_commands() -> void:
 			_command_handlers[method_name] = methods[method_name]
 
 	print("[MCP] Registered %d commands" % _command_handlers.size())
+
+
+## Serialize all command execution so file-IPC game tools cannot race on the
+## single mcp_game_request / mcp_input_commands files.
+var _exec_busy: bool = false
+var _exec_queue: Array = []  # Array of {method, params, resolve_placeholder not used — we await chain}
 
 
 func execute(method: String, params: Dictionary) -> Dictionary:
@@ -72,8 +103,15 @@ func execute(method: String, params: Dictionary) -> Dictionary:
 			}
 		}
 
+	# Queue if another command is in-flight (await-based serial chain).
+	while _exec_busy:
+		await get_tree().process_frame
+
+	_exec_busy = true
+	var result: Dictionary = {}
 	var handler: Callable = _command_handlers[method]
-	var result: Dictionary = await handler.call(params)
+	result = await handler.call(params)
+	_exec_busy = false
 	return result
 
 

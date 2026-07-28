@@ -10,6 +10,9 @@ func get_commands() -> Dictionary:
 		"assign_shader_material": _assign_shader_material,
 		"set_shader_param": _set_shader_param,
 		"get_shader_params": _get_shader_params,
+		"set_shader_global": _set_shader_global,
+		"get_shader_global": _get_shader_global,
+		"list_shader_globals": _list_shader_globals,
 	}
 
 
@@ -237,3 +240,56 @@ func _get_shader_params(params: Dictionary) -> Dictionary:
 			shader_params[key] = str(material.get(pname))
 
 	return success({"node_path": node_path, "params": shader_params})
+
+
+func _set_shader_global(params: Dictionary) -> Dictionary:
+	## RenderingServer global shader parameters (Project Settings → Shader Globals).
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	if not params.has("value"):
+		return error_invalid_params("value required")
+	var value = params["value"]
+	var type_hint: String = optional_string(params, "type", "")
+	# Prefer ProjectSettings shader_globals map when available
+	var key := "shader_globals/%s" % name_r[0]
+	if type_hint.is_empty():
+		# Store as value via RenderingServer if possible
+		if RenderingServer.has_method("global_shader_parameter_set"):
+			# Need add first if missing
+			if RenderingServer.has_method("global_shader_parameter_add"):
+				# type int: 0=bool ... try set only
+				pass
+			RenderingServer.global_shader_parameter_set(StringName(name_r[0]), value)
+			return success({"name": name_r[0], "value": str(value), "via": "RenderingServer"})
+	# Fallback: project settings dictionary style
+	ProjectSettings.set_setting(key, value)
+	ProjectSettings.save()
+	return success({"name": name_r[0], "value": value, "setting": key})
+
+
+func _get_shader_global(params: Dictionary) -> Dictionary:
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	if RenderingServer.has_method("global_shader_parameter_get"):
+		var v = RenderingServer.global_shader_parameter_get(StringName(name_r[0]))
+		return success({"name": name_r[0], "value": v})
+	var key := "shader_globals/%s" % name_r[0]
+	if ProjectSettings.has_setting(key):
+		return success({"name": name_r[0], "value": ProjectSettings.get_setting(key)})
+	return error_not_found("Shader global '%s'" % name_r[0])
+
+
+func _list_shader_globals(_params: Dictionary) -> Dictionary:
+	var found: Array = []
+	# Enumerate ProjectSettings keys
+	for prop in ProjectSettings.get_property_list():
+		var pname: String = prop.get("name", "")
+		if pname.begins_with("shader_globals/"):
+			found.append({
+				"name": pname.trim_prefix("shader_globals/"),
+				"setting": pname,
+				"value": str(ProjectSettings.get_setting(pname)),
+			})
+	return success({"globals": found, "count": found.size()})

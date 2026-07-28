@@ -4,6 +4,45 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.26.0 — 2026-07-28 (fork: agent production surface)
+
+**Major fork expansion** toward human-worker tool surfaces + open MCP server.  
+**~514** registered plugin commands across **51** modules. Progress registry: `SURFACE_REGISTRY.md`.
+
+### Honesty
+- Docs coverage is **strong/partial/thin/classdb_only** with explicit **gaps** (`list_docs_coverage`).
+- **Not** claimed: 100% of ClassDB methods or every editor dock control.
+- Class reference lookup remains `describe_class` / `list_class_*`.
+
+### Open MCP server (this fork)
+- Machine-wide Node stdio server under `server/` + install scripts (`scripts/update-install.ps1`).
+- Lite vs full tool discovery; `call_editor` escape hatch.
+
+### Surfaces added / deepened (1.16–1.26)
+- Agent: `health_check`, `agent_workflow_guide`, `list_docs_coverage`, `list_surface_registry`
+- ClassDB / import / filesystem / i18n / multiplayer / tileset
+- AnimationPlayer + AnimationTree + SpriteFrames + Skeleton + BoneMap
+- Physics joints/areas/shape cast/vehicle/soft body/physical bone
+- Animation playback, method/audio tracks, blend spaces, travel
+- 2D: camera, parallax, lights, Line2D/Path2D, CanvasLayer, Timer
+- 3D: probes, GI, CSG, fog, occluders, compositor, path
+- Export preset CRUD, run export
+- XR / OpenXR action maps + bindings
+- Debugger continue/step + source breakpoints
+- VisualShader scaffolding
+- C# project helpers + `dotnet` / Godot build logs
+- GDExtension scaffold + scons build helper
+- Dialogue/cutscene JSON + runners
+- UI lists, windows/dialogs, container recipes
+- Tween, plugin scaffold, textures, custom Resource scripts
+- Scene transitions, loading screen, SaveManager, EventBus, ObjectPool, CameraShake
+
+### Docs / registry
+- `SURFACE_REGISTRY.md` + `scripts/export-surface-registry.ps1`
+- `DOCS_SURFACE_100.md`, `GAPS_VS_GODOT_DOCS.md`, `FORK.md`
+
+---
+
 ## v1.15.1 — 2026-07-19
 
 **Patch** — 15 fixes from an external user's full-toolset audit (all 174 tools tested against a live editor). Huge thanks to the reporter.

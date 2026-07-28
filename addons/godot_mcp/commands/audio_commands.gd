@@ -10,6 +10,10 @@ func get_commands() -> Dictionary:
 		"add_audio_bus_effect": _add_audio_bus_effect,
 		"add_audio_player": _add_audio_player,
 		"get_audio_info": _get_audio_info,
+		"remove_audio_bus": _remove_audio_bus,
+		"save_audio_bus_layout": _save_audio_bus_layout,
+		"load_audio_bus_layout": _load_audio_bus_layout,
+		"set_audio_player_stream": _set_audio_player_stream,
 	}
 
 
@@ -429,3 +433,74 @@ func _collect_audio_players(node: Node, result: Array[Dictionary]) -> void:
 
 	for child in node.get_children():
 		_collect_audio_players(child, result)
+
+
+func _remove_audio_bus(params: Dictionary) -> Dictionary:
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var idx := AudioServer.get_bus_index(name_r[0])
+	if idx < 0:
+		return error_not_found("Bus '%s'" % name_r[0])
+	if idx == 0:
+		return error_invalid_params("Cannot remove Master bus")
+	AudioServer.remove_bus(idx)
+	return success({"removed": name_r[0], "bus_count": AudioServer.bus_count})
+
+
+func _save_audio_bus_layout(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "res://default_bus_layout.tres")
+	if not path.begins_with("res://"):
+		path = "res://" + path.trim_prefix("/")
+	var layout := AudioServer.generate_bus_layout()
+	var derr := ensure_parent_dir(path)
+	if not derr.is_empty():
+		return derr
+	var err := ResourceSaver.save(layout, path)
+	if err != OK:
+		return error_internal(error_string(err))
+	# Point project at layout if requested
+	if optional_bool(params, "set_as_default", true):
+		ProjectSettings.set_setting("audio/buses/default_bus_layout", path)
+		ProjectSettings.save()
+	EditorInterface.get_resource_filesystem().update_file(path)
+	return success({"path": path, "bus_count": AudioServer.bus_count})
+
+
+func _load_audio_bus_layout(params: Dictionary) -> Dictionary:
+	var res := require_res_path(params, "path")
+	if res[1] != null:
+		return res[1]
+	if not ResourceLoader.exists(res[0]):
+		return error_not_found(res[0])
+	var layout = load(res[0])
+	if layout == null:
+		return error_internal("Failed to load bus layout")
+	AudioServer.set_bus_layout(layout)
+	return success({"path": res[0], "bus_count": AudioServer.bus_count})
+
+
+func _set_audio_player_stream(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var stream_r := require_res_path(params, "stream_path")
+	if stream_r[1] != null:
+		return stream_r[1]
+	var node := find_node_by_path(r0[0])
+	if node == null:
+		return error_not_found("Node")
+	if not (node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D):
+		return error_invalid_params("Node must be AudioStreamPlayer*")
+	var stream: AudioStream = load(stream_r[0]) as AudioStream
+	if stream == null:
+		return error_not_found("AudioStream %s" % stream_r[0])
+	node.set("stream", stream)
+	if params.has("autoplay"):
+		node.set("autoplay", bool(params["autoplay"]))
+	if params.has("volume_db"):
+		node.set("volume_db", float(params["volume_db"]))
+	if params.has("bus"):
+		node.set("bus", str(params["bus"]))
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "stream_path": stream_r[0]})

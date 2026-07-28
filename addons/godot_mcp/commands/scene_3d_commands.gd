@@ -13,6 +13,23 @@ func get_commands() -> Dictionary:
 		"setup_environment": _setup_environment,
 		"setup_camera_3d": _setup_camera_3d,
 		"add_gridmap": _add_gridmap,
+		"add_reflection_probe": _add_reflection_probe,
+		"add_decal": _add_decal,
+		"add_voxel_gi": _add_voxel_gi,
+		"add_lightmap_gi": _add_lightmap_gi,
+		"set_render_layers": _set_render_layers,
+		"setup_csg_box": _setup_csg_box,
+		"bake_voxel_gi": _bake_voxel_gi,
+		"request_lightmap_bake": _request_lightmap_bake,
+		"setup_path_3d": _setup_path_3d,
+		"setup_csg_sphere": _setup_csg_sphere,
+		"setup_csg_cylinder": _setup_csg_cylinder,
+		"add_fog_volume": _add_fog_volume,
+		"add_occluder_instance_3d": _add_occluder_instance_3d,
+		"set_environment_fog": _set_environment_fog,
+		"setup_world_environment": _setup_world_environment,
+		"setup_compositor": _setup_compositor,
+		"add_compositor_effect": _add_compositor_effect,
 	}
 
 
@@ -677,4 +694,583 @@ func _add_gridmap(params: Dictionary) -> Dictionary:
 		"cells_set": cells_set,
 		"is_existing": is_existing,
 		"has_mesh_library": gridmap.mesh_library != null,
+	})
+
+
+## ─── Rendering depth (probes, GI, decals, layers, CSG) ────────────────────
+
+func _add_reflection_probe(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var probe := ReflectionProbe.new()
+	probe.name = optional_string(params, "name", "ReflectionProbe")
+	probe.size = _parse_vector3_param(params, "size", Vector3(10, 10, 10))
+	probe.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	if params.has("update_mode"):
+		var um: String = str(params["update_mode"])
+		match um:
+			"once":
+				probe.update_mode = ReflectionProbe.UPDATE_ONCE
+			"always":
+				probe.update_mode = ReflectionProbe.UPDATE_ALWAYS
+	if params.has("enable_shadows"):
+		probe.enable_shadows = bool(params["enable_shadows"])
+	_add_child_with_undo(probe, parent, root, "MCP: Add ReflectionProbe")
+	return success({"node_path": str(root.get_path_to(probe)), "type": "ReflectionProbe"})
+
+
+func _add_decal(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var decal := Decal.new()
+	decal.name = optional_string(params, "name", "Decal")
+	decal.size = _parse_vector3_param(params, "size", Vector3(2, 2, 2))
+	decal.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	var tex: String = optional_string(params, "texture_albedo", optional_string(params, "texture_path", ""))
+	if not tex.is_empty() and ResourceLoader.exists(tex):
+		decal.texture_albedo = load(tex)
+	if params.has("albedo_mix"):
+		decal.albedo_mix = float(params["albedo_mix"])
+	if params.has("modulate"):
+		var c = params["modulate"]
+		if c is String:
+			decal.modulate = Color.html(c) if str(c).begins_with("#") else Color(c)
+	_add_child_with_undo(decal, parent, root, "MCP: Add Decal")
+	return success({"node_path": str(root.get_path_to(decal)), "type": "Decal"})
+
+
+func _add_voxel_gi(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var gi := VoxelGI.new()
+	gi.name = optional_string(params, "name", "VoxelGI")
+	gi.size = _parse_vector3_param(params, "size", Vector3(20, 20, 20))
+	gi.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	if params.has("subdiv"):
+		gi.subdiv = int(params["subdiv"])
+	_add_child_with_undo(gi, parent, root, "MCP: Add VoxelGI")
+	return success({
+		"node_path": str(root.get_path_to(gi)),
+		"type": "VoxelGI",
+		"hint": "Bake VoxelGI in editor (or execute_editor_script) after placing geometry",
+	})
+
+
+func _add_lightmap_gi(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var gi := LightmapGI.new()
+	gi.name = optional_string(params, "name", "LightmapGI")
+	_add_child_with_undo(gi, parent, root, "MCP: Add LightmapGI")
+	return success({
+		"node_path": str(root.get_path_to(gi)),
+		"type": "LightmapGI",
+		"hint": "Mark meshes UV2 + bake lightmaps in editor",
+	})
+
+
+func _set_render_layers(params: Dictionary) -> Dictionary:
+	## VisualInstance3D.layers / Camera3D.cull_mask bit helpers.
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null:
+		return error_not_found("Node")
+	var applied := {}
+	if params.has("layers") and "layers" in node:
+		node.set("layers", int(params["layers"]))
+		applied["layers"] = node.get("layers")
+	if params.has("layer_bits") and params["layer_bits"] is Array and "layers" in node:
+		var mask := 0
+		for b in params["layer_bits"]:
+			var bit := int(b)
+			if bit >= 1 and bit <= 20:
+				mask |= (1 << (bit - 1))
+		node.set("layers", mask)
+		applied["layers"] = mask
+	if params.has("cull_mask") and "cull_mask" in node:
+		node.set("cull_mask", int(params["cull_mask"]))
+		applied["cull_mask"] = node.get("cull_mask")
+	if applied.is_empty():
+		return error_invalid_params("Provide layers, layer_bits (1-20 array), or cull_mask")
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "type": node.get_class(), "applied": applied})
+
+
+func _setup_csg_box(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var op: String = optional_string(params, "operation", "union")  # union|intersection|subtraction
+	var box := CSGBox3D.new()
+	box.name = optional_string(params, "name", "CSGBox3D")
+	box.size = _parse_vector3_param(params, "size", Vector3(1, 1, 1))
+	box.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	match op:
+		"intersection":
+			box.operation = CSGShape3D.OPERATION_INTERSECTION
+		"subtraction", "subtract":
+			box.operation = CSGShape3D.OPERATION_SUBTRACTION
+		_:
+			box.operation = CSGShape3D.OPERATION_UNION
+	if params.has("use_collision"):
+		box.use_collision = bool(params["use_collision"])
+	_add_child_with_undo(box, parent, root, "MCP: Add CSGBox3D")
+	return success({"node_path": str(root.get_path_to(box)), "type": "CSGBox3D", "operation": op})
+
+
+func _bake_voxel_gi(params: Dictionary) -> Dictionary:
+	## Call bake on VoxelGI if API available (editor-only bake).
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null or not node is VoxelGI:
+		return error_not_found("VoxelGI at '%s'" % r0[0])
+	var gi: VoxelGI = node
+	if gi.has_method("bake"):
+		# bake(from_node = null, create_visual_debug = false) in some versions
+		if params.has("from_node"):
+			var from_n := find_node_by_path(str(params["from_node"]))
+			gi.call("bake", from_n)
+		else:
+			gi.call("bake")
+		mark_current_scene_unsaved()
+		return success({"node_path": r0[0], "baked": true})
+	return error_internal("VoxelGI.bake() not available — bake from editor UI or execute_editor_script")
+
+
+func _request_lightmap_bake(params: Dictionary) -> Dictionary:
+	## Find LightmapGI and attempt bake; document UI fallback.
+	var path: String = optional_string(params, "node_path", "")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var gi: LightmapGI = null
+	if not path.is_empty():
+		var n := find_node_by_path(path)
+		if n is LightmapGI:
+			gi = n as LightmapGI
+	else:
+		gi = _find_first_lightmap(root)
+	if gi == null:
+		return error_not_found("LightmapGI in scene — use add_lightmap_gi first")
+	# Godot's LightmapGI bake is primarily editor plugin — try method
+	if gi.has_method("bake"):
+		gi.call("bake")
+		mark_current_scene_unsaved()
+		return success({"node_path": str(root.get_path_to(gi)), "baked": true, "via": "bake()"})
+	# Try EditorInterface bake if exists
+	return success({
+		"node_path": str(root.get_path_to(gi)),
+		"baked": false,
+		"message": "Lightmap bake must be run from editor UV2 + Bake Lighmaps UI in this Godot version",
+		"hint": "Ensure meshes have UV2 / lightmap unwrap; select LightmapGI and use Bake",
+	})
+
+
+func _find_first_lightmap(node: Node) -> LightmapGI:
+	if node is LightmapGI:
+		return node as LightmapGI
+	for c in node.get_children():
+		var f := _find_first_lightmap(c)
+		if f:
+			return f
+	return null
+
+
+func _setup_path_3d(params: Dictionary) -> Dictionary:
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent")
+	var path := Path3D.new()
+	path.name = optional_string(params, "name", "Path3D")
+	var curve := Curve3D.new()
+	var points: Array = params.get("points", [])
+	if points is Array and points.size() > 0:
+		for p in points:
+			if p is Dictionary:
+				curve.add_point(Vector3(float(p.get("x", 0)), float(p.get("y", 0)), float(p.get("z", 0))))
+			elif p is Array and p.size() >= 3:
+				curve.add_point(Vector3(float(p[0]), float(p[1]), float(p[2])))
+	else:
+		curve.add_point(Vector3.ZERO)
+		curve.add_point(Vector3(0, 0, -5))
+		curve.add_point(Vector3(5, 0, -10))
+	path.curve = curve
+	_add_child_with_undo(path, parent, root, "MCP: Add Path3D")
+	var follow_path := ""
+	if optional_bool(params, "with_follow", false):
+		var follow := PathFollow3D.new()
+		follow.name = "PathFollow3D"
+		path.add_child(follow)
+		follow.owner = root
+		follow_path = str(root.get_path_to(follow))
+	return success({
+		"node_path": str(root.get_path_to(path)),
+		"point_count": curve.point_count,
+		"path_follow": follow_path,
+	})
+
+
+func _setup_csg_sphere(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var sphere := CSGSphere3D.new()
+	sphere.name = optional_string(params, "name", "CSGSphere3D")
+	sphere.radius = float(params.get("radius", 0.5))
+	sphere.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	if params.has("use_collision"):
+		sphere.use_collision = bool(params["use_collision"])
+	_add_child_with_undo(sphere, parent, root, "MCP: Add CSGSphere3D")
+	return success({"node_path": str(root.get_path_to(sphere)), "type": "CSGSphere3D"})
+
+
+func _setup_csg_cylinder(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var cyl := CSGCylinder3D.new()
+	cyl.name = optional_string(params, "name", "CSGCylinder3D")
+	cyl.radius = float(params.get("radius", 0.5))
+	cyl.height = float(params.get("height", 2.0))
+	cyl.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	if params.has("use_collision"):
+		cyl.use_collision = bool(params["use_collision"])
+	_add_child_with_undo(cyl, parent, root, "MCP: Add CSGCylinder3D")
+	return success({"node_path": str(root.get_path_to(cyl)), "type": "CSGCylinder3D"})
+
+
+func _add_fog_volume(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	if not ClassDB.class_exists("FogVolume"):
+		return error_internal("FogVolume not available")
+	var fog: Node = ClassDB.instantiate("FogVolume")
+	fog.name = optional_string(params, "name", "FogVolume")
+	if "size" in fog:
+		fog.set("size", _parse_vector3_param(params, "size", Vector3(10, 5, 10)))
+	fog.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	if params.has("shape") and "shape" in fog:
+		# 0=ellipsoid 1=cone 2=cylinder 3=box
+		match str(params["shape"]).to_lower():
+			"ellipsoid": fog.set("shape", 0)
+			"cone": fog.set("shape", 1)
+			"cylinder": fog.set("shape", 2)
+			_: fog.set("shape", 3)
+	_add_child_with_undo(fog, parent, root, "MCP: Add FogVolume")
+	return success({"node_path": str(root.get_path_to(fog)), "type": "FogVolume"})
+
+
+func _add_occluder_instance_3d(params: Dictionary) -> Dictionary:
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(optional_string(params, "parent_path", "."))
+	if parent == null:
+		return error_not_found("Parent")
+	var occ := OccluderInstance3D.new()
+	occ.name = optional_string(params, "name", "OccluderInstance3D")
+	var shape_type: String = optional_string(params, "shape", "box")
+	var occluder: Resource = null
+	match shape_type:
+		"sphere":
+			if ClassDB.class_exists("SphereOccluder3D"):
+				occluder = ClassDB.instantiate("SphereOccluder3D")
+				if params.has("radius"):
+					occluder.set("radius", float(params["radius"]))
+		"quad":
+			if ClassDB.class_exists("QuadOccluder3D"):
+				occluder = ClassDB.instantiate("QuadOccluder3D")
+		_:
+			if ClassDB.class_exists("BoxOccluder3D"):
+				occluder = ClassDB.instantiate("BoxOccluder3D")
+				if "size" in occluder:
+					occluder.set("size", _parse_vector3_param(params, "size", Vector3(1, 1, 1)))
+	if occluder:
+		occ.occluder = occluder
+	occ.position = _parse_vector3_param(params, "position", Vector3.ZERO)
+	_add_child_with_undo(occ, parent, root, "MCP: Add OccluderInstance3D")
+	return success({"node_path": str(root.get_path_to(occ)), "shape": shape_type})
+
+
+func _setup_world_environment(params: Dictionary) -> Dictionary:
+	## Ensure a WorldEnvironment exists (3D) with Environment resource.
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent")
+	# Reuse existing WorldEnvironment if present in scene
+	var existing: WorldEnvironment = null
+	var q: Array = [root]
+	while not q.is_empty():
+		var n: Node = q.pop_front()
+		if n is WorldEnvironment:
+			existing = n
+			break
+		for c in n.get_children():
+			q.append(c)
+	var we: WorldEnvironment
+	if existing and not optional_bool(params, "force_new", false):
+		we = existing
+	else:
+		we = WorldEnvironment.new()
+		we.name = optional_string(params, "name", "WorldEnvironment")
+		_add_child_with_undo(we, parent, root, "MCP: Add WorldEnvironment")
+	if we.environment == null:
+		we.environment = Environment.new()
+	var env: Environment = we.environment
+	if params.has("background_mode"):
+		match str(params["background_mode"]).to_lower():
+			"clear_color", "color":
+				env.background_mode = Environment.BG_COLOR
+			"sky":
+				env.background_mode = Environment.BG_SKY
+			"canvas":
+				env.background_mode = Environment.BG_CANVAS
+			_:
+				env.background_mode = Environment.BG_CLEAR_COLOR
+	if params.has("ambient_light_color"):
+		var c = params["ambient_light_color"]
+		if c is String:
+			env.ambient_light_color = Color.html(c) if str(c).begins_with("#") else Color(c)
+	if params.has("ambient_light_energy"):
+		env.ambient_light_energy = float(params["ambient_light_energy"])
+	if params.has("tonemap_mode"):
+		match str(params["tonemap_mode"]).to_lower():
+			"aces":
+				env.tonemap_mode = Environment.TONE_MAPPER_ACES
+			"filmic":
+				env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+			"linear":
+				env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	if optional_bool(params, "glow_enabled", false):
+		env.glow_enabled = true
+		env.glow_intensity = float(params.get("glow_intensity", 0.8))
+	if optional_bool(params, "ssao_enabled", false):
+		env.ssao_enabled = true
+	if optional_bool(params, "ssil_enabled", false) and "ssil_enabled" in env:
+		env.ssil_enabled = true
+	if optional_bool(params, "sdfgi_enabled", false):
+		env.sdfgi_enabled = true
+	mark_current_scene_unsaved()
+	return success({
+		"node_path": str(root.get_path_to(we)),
+		"background_mode": env.background_mode,
+		"glow_enabled": env.glow_enabled,
+		"sdfgi_enabled": env.sdfgi_enabled,
+	})
+
+
+func _set_environment_fog(params: Dictionary) -> Dictionary:
+	## Configure volumetric/depth fog on WorldEnvironment's Environment.
+	var path: String = optional_string(params, "node_path", "")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var we: WorldEnvironment = null
+	if not path.is_empty():
+		var n := find_node_by_path(path)
+		if n is WorldEnvironment:
+			we = n
+	else:
+		var q: Array = [root]
+		while not q.is_empty():
+			var n2: Node = q.pop_front()
+			if n2 is WorldEnvironment:
+				we = n2
+				break
+			for c in n2.get_children():
+				q.append(c)
+	if we == null:
+		var created := _setup_world_environment({"parent_path": "."})
+		if created.has("error"):
+			return created
+		we = find_node_by_path(str(created["result"]["node_path"])) as WorldEnvironment
+	if we == null or we.environment == null:
+		return error_internal("No Environment on WorldEnvironment")
+	var env: Environment = we.environment
+	var applied := {}
+	if params.has("volumetric_fog_enabled") or optional_bool(params, "volumetric", false):
+		env.volumetric_fog_enabled = bool(params.get("volumetric_fog_enabled", true))
+		applied["volumetric_fog_enabled"] = env.volumetric_fog_enabled
+	if params.has("volumetric_fog_density"):
+		env.volumetric_fog_density = float(params["volumetric_fog_density"])
+		applied["volumetric_fog_density"] = env.volumetric_fog_density
+	if params.has("volumetric_fog_albedo"):
+		var a = params["volumetric_fog_albedo"]
+		if a is String:
+			env.volumetric_fog_albedo = Color.html(a) if str(a).begins_with("#") else Color(a)
+		applied["volumetric_fog_albedo"] = env.volumetric_fog_albedo.to_html()
+	if params.has("fog_enabled") or optional_bool(params, "depth_fog", false):
+		env.fog_enabled = bool(params.get("fog_enabled", true))
+		applied["fog_enabled"] = env.fog_enabled
+	if params.has("fog_density"):
+		env.fog_density = float(params["fog_density"])
+		applied["fog_density"] = env.fog_density
+	if params.has("fog_light_color"):
+		var fc = params["fog_light_color"]
+		if fc is String:
+			env.fog_light_color = Color.html(fc) if str(fc).begins_with("#") else Color(fc)
+		applied["fog_light_color"] = env.fog_light_color.to_html()
+	if applied.is_empty():
+		# Default enable light volumetric fog
+		env.volumetric_fog_enabled = true
+		env.volumetric_fog_density = 0.05
+		applied = {"volumetric_fog_enabled": true, "volumetric_fog_density": 0.05}
+	mark_current_scene_unsaved()
+	return success({"node_path": str(root.get_path_to(we)), "applied": applied})
+
+
+func _find_world_environment(root: Node) -> WorldEnvironment:
+	var q: Array = [root]
+	while not q.is_empty():
+		var n: Node = q.pop_front()
+		if n is WorldEnvironment:
+			return n as WorldEnvironment
+		for c in n.get_children():
+			q.append(c)
+	return null
+
+
+func _setup_compositor(params: Dictionary) -> Dictionary:
+	## Attach a Compositor resource to WorldEnvironment (Godot 4.3+ post-FX pipeline).
+	if not ClassDB.class_exists("Compositor"):
+		return error_internal("Compositor class not available in this Godot build (need 4.3+)")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var path: String = optional_string(params, "node_path", "")
+	var we: WorldEnvironment = null
+	if not path.is_empty():
+		var n := find_node_by_path(path)
+		if n is WorldEnvironment:
+			we = n
+	else:
+		we = _find_world_environment(root)
+	if we == null:
+		var created := _setup_world_environment({"parent_path": optional_string(params, "parent_path", ".")})
+		if created.has("error"):
+			return created
+		we = find_node_by_path(str(created["result"]["node_path"])) as WorldEnvironment
+	if we == null:
+		return error_internal("Failed to get WorldEnvironment")
+	if we.environment == null:
+		we.environment = Environment.new()
+	var compositor: Resource = null
+	if "compositor" in we and we.get("compositor") != null:
+		compositor = we.get("compositor")
+	else:
+		compositor = ClassDB.instantiate("Compositor")
+		if "compositor" in we:
+			we.set("compositor", compositor)
+		else:
+			return error_internal("WorldEnvironment has no compositor property")
+	# Optional save path
+	var save_path: String = optional_string(params, "path", "")
+	if not save_path.is_empty():
+		if not save_path.begins_with("res://"):
+			save_path = "res://" + save_path.trim_prefix("/")
+		var derr := ensure_parent_dir(save_path)
+		if not derr.is_empty():
+			return derr
+		ResourceSaver.save(compositor, save_path)
+		if "compositor" in we:
+			we.set("compositor", load(save_path))
+	mark_current_scene_unsaved()
+	return success({
+		"node_path": str(root.get_path_to(we)),
+		"has_compositor": we.get("compositor") != null if "compositor" in we else false,
+		"compositor_path": save_path,
+		"hint": "Use add_compositor_effect for effect instances; full effects need 4.3+ compositor API.",
+	})
+
+
+func _add_compositor_effect(params: Dictionary) -> Dictionary:
+	## Add a compositor effect resource if API exists (best-effort by class name).
+	if not ClassDB.class_exists("Compositor"):
+		return error_internal("Compositor not available")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var we := _find_world_environment(root)
+	if we == null:
+		return error_not_found("WorldEnvironment — call setup_compositor first")
+	if not ("compositor" in we) or we.get("compositor") == null:
+		var sc := _setup_compositor({})
+		if sc.has("error"):
+			return sc
+		we = _find_world_environment(root)
+	var compositor: Resource = we.get("compositor")
+	var effect_type: String = optional_string(params, "effect_type", "")
+	# Common built-ins vary by version; allow any ClassDB CompositorEffect*
+	if effect_type.is_empty():
+		# Prefer a known effect if present
+		for cand in ["CompositorEffect", "SkyCompositorEffect"]:
+			if ClassDB.class_exists(cand) and ClassDB.can_instantiate(cand):
+				effect_type = cand
+				break
+	if effect_type.is_empty() or not ClassDB.class_exists(effect_type):
+		return error_invalid_params(
+			"Provide effect_type class name (CompositorEffect subclass). Available via describe_class / list_classes parent=CompositorEffect"
+		)
+	if not ClassDB.can_instantiate(effect_type):
+		return error_invalid_params("Cannot instantiate %s" % effect_type)
+	var effect: Resource = ClassDB.instantiate(effect_type)
+	if effect == null:
+		return error_internal("Failed to create effect")
+	if "enabled" in effect:
+		effect.set("enabled", optional_bool(params, "enabled", true))
+	# Append to compositor effects array if present
+	if compositor.has_method("add_compositor_effect"):
+		compositor.call("add_compositor_effect", effect)
+	elif "compositor_effects" in compositor:
+		var arr: Array = compositor.get("compositor_effects")
+		arr.append(effect)
+		compositor.set("compositor_effects", arr)
+	else:
+		return error_internal("Cannot attach effect to Compositor (API mismatch)")
+	mark_current_scene_unsaved()
+	return success({
+		"effect_type": effect_type,
+		"world_environment": str(root.get_path_to(we)),
+		"enabled": effect.get("enabled") if "enabled" in effect else true,
 	})

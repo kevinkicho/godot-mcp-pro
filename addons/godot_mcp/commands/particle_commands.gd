@@ -9,6 +9,12 @@ func get_commands() -> Dictionary:
 		"set_particle_color_gradient": _set_particle_color_gradient,
 		"apply_particle_preset": _apply_particle_preset,
 		"get_particle_info": _get_particle_info,
+		"set_particle_emitting": _set_particle_emitting,
+		"set_particle_amount": _set_particle_amount,
+		"set_particle_trail": _set_particle_trail,
+		"set_particle_subemitter": _set_particle_subemitter,
+		"set_particle_collision": _set_particle_collision,
+		"add_gpu_particles_collision": _add_gpu_particles_collision,
 	}
 
 
@@ -624,3 +630,177 @@ func _get_particle_info(params: Dictionary) -> Dictionary:
 		info["material"] = null
 
 	return success(info)
+
+
+func _set_particle_emitting(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := _get_particles_node_any(r0[0])
+	if node == null:
+		return error_not_found("GPUParticles2D/3D at '%s'" % r0[0])
+	var emitting: bool = optional_bool(params, "emitting", true)
+	node.set("emitting", emitting)
+	if params.has("one_shot"):
+		node.set("one_shot", bool(params["one_shot"]))
+	if params.has("explosiveness"):
+		node.set("explosiveness", float(params["explosiveness"]))
+	if params.has("randomness"):
+		node.set("randomness", float(params["randomness"]))
+	if params.has("lifetime"):
+		node.set("lifetime", float(params["lifetime"]))
+	if params.has("preprocess"):
+		node.set("preprocess", float(params["preprocess"]))
+	if params.has("speed_scale"):
+		node.set("speed_scale", float(params["speed_scale"]))
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "emitting": node.get("emitting")})
+
+
+func _set_particle_amount(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := _get_particles_node_any(r0[0])
+	if node == null:
+		return error_not_found("GPUParticles")
+	var amount: int = optional_int(params, "amount", 8)
+	node.set("amount", amount)
+	if params.has("amount_ratio"):
+		node.set("amount_ratio", float(params["amount_ratio"]))
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "amount": amount})
+
+
+func _set_particle_trail(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := _get_particles_node_any(r0[0])
+	if node == null:
+		return error_not_found("GPUParticles")
+	if not ("trail_enabled" in node):
+		return error_invalid_params("This particle node has no trail_enabled (GPUParticles3D trails / check version)")
+	node.set("trail_enabled", optional_bool(params, "enabled", true))
+	if params.has("lifetime") and "trail_lifetime" in node:
+		node.set("trail_lifetime", float(params["lifetime"]))
+	if params.has("sections") and "trail_sections" in node:
+		node.set("trail_sections", int(params["sections"]))
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "trail_enabled": node.get("trail_enabled")})
+
+
+func _set_particle_subemitter(params: Dictionary) -> Dictionary:
+	## Wire sub_emitter NodePath on GPUParticles to another particle system.
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var sub_r := require_string(params, "sub_emitter_path")
+	if sub_r[1] != null:
+		return sub_r[1]
+	var node := _get_particles_node_any(r0[0])
+	if node == null:
+		return error_not_found("GPUParticles")
+	if not ("sub_emitter" in node):
+		return error_invalid_params("No sub_emitter property")
+	node.set("sub_emitter", NodePath(sub_r[0]))
+	if params.has("mode") and "sub_emitter_mode" in node:
+		# 0=disabled, 1=constant, 2=at_end, 3=at_collision — accept int or string
+		var mode = params["mode"]
+		if mode is String:
+			match str(mode):
+				"constant": node.set("sub_emitter_mode", 1)
+				"at_end": node.set("sub_emitter_mode", 2)
+				"at_collision": node.set("sub_emitter_mode", 3)
+				_: node.set("sub_emitter_mode", 0)
+		else:
+			node.set("sub_emitter_mode", int(mode))
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "sub_emitter": sub_r[0]})
+
+
+func _set_particle_collision(params: Dictionary) -> Dictionary:
+	## Enable collision mode on GPUParticles2D/3D (responds to GPUParticlesCollision* nodes).
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := _get_particles_node_any(r0[0])
+	if node == null:
+		return error_not_found("GPUParticles")
+	var applied := {}
+	if "collision_mode" in node:
+		var mode = params.get("mode", params.get("collision_mode", "rigid"))
+		if mode is String:
+			match str(mode).to_lower():
+				"disabled", "off":
+					node.set("collision_mode", 0)
+				"rigid":
+					node.set("collision_mode", 1)
+				"hide_on_contact", "hide":
+					node.set("collision_mode", 2)
+				_:
+					node.set("collision_mode", int(mode) if str(mode).is_valid_int() else 1)
+		else:
+			node.set("collision_mode", int(mode))
+		applied["collision_mode"] = node.get("collision_mode")
+	if params.has("collision_friction") and "collision_friction" in node:
+		node.set("collision_friction", float(params["collision_friction"]))
+		applied["collision_friction"] = node.get("collision_friction")
+	if params.has("collision_bounce") and "collision_bounce" in node:
+		node.set("collision_bounce", float(params["collision_bounce"]))
+		applied["collision_bounce"] = node.get("collision_bounce")
+	if params.has("collision_base_size") and "collision_base_size" in node:
+		node.set("collision_base_size", float(params["collision_base_size"]))
+		applied["collision_base_size"] = node.get("collision_base_size")
+	if applied.is_empty():
+		return error_invalid_params("No collision properties applied (check GPUParticles version)")
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "applied": applied})
+
+
+func _add_gpu_particles_collision(params: Dictionary) -> Dictionary:
+	## Add GPUParticlesCollisionBox3D / Sphere / HeightField or 2D equivalents.
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent")
+	var shape: String = optional_string(params, "shape", "box")
+	var dim: String = optional_string(params, "dimension", "")
+	if dim.is_empty():
+		dim = "3d" if parent is Node3D else "2d"
+	var node: Node = null
+	if dim == "3d":
+		match shape:
+			"sphere":
+				if ClassDB.class_exists("GPUParticlesCollisionSphere3D"):
+					node = ClassDB.instantiate("GPUParticlesCollisionSphere3D")
+					if params.has("radius"):
+						node.set("radius", float(params["radius"]))
+			"heightfield", "height_field":
+				if ClassDB.class_exists("GPUParticlesCollisionHeightField3D"):
+					node = ClassDB.instantiate("GPUParticlesCollisionHeightField3D")
+			_:
+				if ClassDB.class_exists("GPUParticlesCollisionBox3D"):
+					node = ClassDB.instantiate("GPUParticlesCollisionBox3D")
+					if "size" in node:
+						node.set("size", Vector3(
+							float(params.get("size_x", params.get("width", 2.0))),
+							float(params.get("size_y", params.get("height", 2.0))),
+							float(params.get("size_z", params.get("depth", 2.0)))
+						))
+	else:
+		match shape:
+			"sphere", "circle":
+				if ClassDB.class_exists("GPUParticlesCollisionSphere2D"):
+					node = ClassDB.instantiate("GPUParticlesCollisionSphere2D")
+			_:
+				if ClassDB.class_exists("GPUParticlesCollisionBox2D"):
+					node = ClassDB.instantiate("GPUParticlesCollisionBox2D")
+	if node == null:
+		return error_internal("GPUParticlesCollision* class not available for shape=%s dim=%s" % [shape, dim])
+	node.name = optional_string(params, "name", node.get_class())
+	add_child_with_undo(parent, node, root, "MCP: Add GPUParticlesCollision")
+	return success({"node_path": str(root.get_path_to(node)), "type": node.get_class(), "shape": shape})

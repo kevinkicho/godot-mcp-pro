@@ -2,9 +2,8 @@
 extends Node
 
 ## Multi-connection WebSocket client.
-## Connects to multiple Node.js MCP server instances on ports 6505-6514.
-## Each Claude Code session gets its own port; Godot talks to all of them.
-## Ports 6505-6509: MCP servers (stdio), 6510-6514: CLI tool connections.
+## Connects to Node.js MCP server instances on ports 6505-6509.
+## Each AI session gets its own port; Godot talks to all of them.
 
 signal client_connected()
 signal client_disconnected()
@@ -15,11 +14,14 @@ signal command_completed(method: String, success: bool, response: String, source
 var command_router: Node
 
 const BASE_PORT := 6505
-const MAX_PORT := 6514
+# Align with open MCP server + status panel (stdio sessions). Ports 6510-6514
+# previously caused endless failed reconnects with no listener.
+const MAX_PORT := 6509
 const RECONNECT_INTERVAL := 3.0
 const BUFFER_SIZE := 16 * 1024 * 1024  # 16MB
 const PING_INTERVAL := 5.0  # send ping every N seconds while connected
 const INACTIVITY_TIMEOUT := 30.0  # force-close if no message received for N seconds
+const CONNECT_TIMEOUT := 5.0  # abandon stuck CONNECTING peers
 
 # Per-port connection state
 var _peers: Dictionary = {}  # port -> WebSocketPeer
@@ -29,6 +31,7 @@ var _connect_times: Dictionary = {}  # port -> float (elapsed seconds since conn
 var _last_activity: Dictionary = {}  # port -> float (seconds since last received message)
 var _ping_timers: Dictionary = {}  # port -> float (seconds since last sent ping)
 var _stale_ports: Dictionary = {}  # port -> bool (heartbeat timeout flag, exposed to UI)
+var _connect_started: Dictionary = {}  # port -> float seconds in CONNECTING
 var _running: bool = false
 
 
@@ -120,6 +123,7 @@ func _process(delta: float) -> void:
 					_connect_times[p] = 0.0
 					_last_activity[p] = 0.0
 					_ping_timers[p] = 0.0
+					_connect_started[p] = 0.0
 					_stale_ports[p] = false
 					_timers[p] = 0.0
 					print_verbose("[MCP] Connected on port %d" % p)
@@ -145,8 +149,11 @@ func _process(delta: float) -> void:
 				# Force-close if no message received for INACTIVITY_TIMEOUT.
 				# The MCP server pings every 10s, so 30s of silence means the
 				# connection is half-open and reconnect is the only way out.
+				# Use print_verbose (not push_warning) to avoid flooding the
+				# editor Output dock when several ports cycle reconnects.
 				if _last_activity.get(p, 0.0) > INACTIVITY_TIMEOUT:
-					push_warning("[MCP] Port %d silent for %.1fs — forcing reconnect" % [p, _last_activity[p]])
+					if not _stale_ports.get(p, false):
+						print_verbose("[MCP] Port %d silent for %.1fs — reconnecting" % [p, _last_activity[p]])
 					_stale_ports[p] = true
 					ws.close(4000, "Heartbeat timeout")
 					_connected[p] = false
@@ -175,7 +182,13 @@ func _process(delta: float) -> void:
 				_ping_timers[p] = 0.0
 
 			WebSocketPeer.STATE_CONNECTING:
-				pass
+				_connect_started[p] = _connect_started.get(p, 0.0) + delta
+				if _connect_started[p] > CONNECT_TIMEOUT:
+					print_verbose("[MCP] Port %d CONNECTING timeout — retry" % p)
+					ws.close()
+					_peers[p] = null
+					_connect_started[p] = 0.0
+					_timers[p] = 0.0
 
 
 func _send_to_port(p: int, text: String) -> void:
@@ -215,13 +228,23 @@ func _dispatch_message(text: String, source_port: int) -> void:
 		return
 
 	var id: Variant = msg_dict.get("id")
-	var method: String = msg_dict.get("method", "")
-	var params: Dictionary = msg_dict.get("params", {})
+	var method: String = str(msg_dict.get("method", ""))
+	var raw_params: Variant = msg_dict.get("params", {})
+	var params: Dictionary = {}
+	if raw_params == null:
+		params = {}
+	elif raw_params is Dictionary:
+		params = raw_params
+	else:
+		_send_response(source_port, id, null, {"code": -32602, "message": "params must be a JSON object"})
+		return
 
 	if method.is_empty():
 		_send_response(source_port, id, null, {"code": -32600, "message": "Missing method"})
 		return
 
+	# JSON-RPC notifications (no id) — execute but do not expect a response path
+	# that confuses clients; still run deferred with id=null.
 	if not command_router:
 		_send_response(source_port, id, null, {"code": -32603, "message": "No command router"})
 		return

@@ -4,14 +4,29 @@ extends "res://addons/godot_mcp/commands/base_command.gd"
 
 func get_commands() -> Dictionary:
 	return {
+		# Tree setup (human AnimationTree panel)
 		"create_animation_tree": _create_animation_tree,
 		"get_animation_tree_structure": _get_animation_tree_structure,
+		"set_animation_tree_active": _set_animation_tree_active,
+		"set_animation_tree_player": _set_animation_tree_player,
+		# State machine (graph editor)
 		"add_state_machine_state": _add_state_machine_state,
 		"remove_state_machine_state": _remove_state_machine_state,
 		"add_state_machine_transition": _add_state_machine_transition,
 		"remove_state_machine_transition": _remove_state_machine_transition,
+		"set_state_machine_transition": _set_state_machine_transition,
+		"set_state_machine_start": _set_state_machine_start,
+		"travel_animation_state": _travel_animation_state,
+		"get_animation_tree_playback": _get_animation_tree_playback,
+		# BlendTree / blend spaces
 		"set_blend_tree_node": _set_blend_tree_node,
+		"remove_blend_tree_node": _remove_blend_tree_node,
+		"connect_blend_tree_nodes": _connect_blend_tree_nodes,
+		"add_blend_space_point": _add_blend_space_point,
+		"remove_blend_space_point": _remove_blend_space_point,
+		"set_blend_space_point_position": _set_blend_space_point_position,
 		"set_tree_parameter": _set_tree_parameter,
+		"list_tree_parameters": _list_tree_parameters,
 	}
 
 
@@ -276,8 +291,12 @@ func _add_state_machine_state(params: Dictionary) -> Dictionary:
 			node = AnimationNodeBlendTree.new()
 		"state_machine":
 			node = AnimationNodeStateMachine.new()
+		"blend_space_1d", "blendspace1d":
+			node = AnimationNodeBlendSpace1D.new()
+		"blend_space_2d", "blendspace2d":
+			node = AnimationNodeBlendSpace2D.new()
 		_:
-			return error_invalid_params("Unknown state_type: '%s'. Use 'animation', 'blend_tree', or 'state_machine'" % state_type)
+			return error_invalid_params("Unknown state_type: '%s'. Use animation|blend_tree|state_machine|blend_space_1d|blend_space_2d" % state_type)
 
 	var undo_redo := get_undo_redo()
 	undo_redo.create_action("MCP: Add state machine state")
@@ -364,13 +383,17 @@ func _add_state_machine_transition(params: Dictionary) -> Dictionary:
 
 	var transition := AnimationNodeStateMachineTransition.new()
 
-	# switch_mode: AT_END=0, IMMEDIATE=1, SYNC=2
+	# switch_mode: IMMEDIATE=0, SYNC=1, AT_END=2 (Godot 4)
 	var switch_mode_str: String = optional_string(params, "switch_mode", "immediate")
 	match switch_mode_str:
-		"at_end": transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_AT_END
-		"immediate": transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_IMMEDIATE
-		"sync": transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_AT_END  # SYNC maps similarly
-		_: transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_IMMEDIATE
+		"at_end":
+			transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_AT_END
+		"immediate":
+			transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_IMMEDIATE
+		"sync":
+			transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_SYNC
+		_:
+			transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_IMMEDIATE
 
 	# advance_mode: DISABLED=0, ENABLED=1, AUTO=2
 	var advance_mode_str: String = optional_string(params, "advance_mode", "enabled")
@@ -597,5 +620,422 @@ func _set_tree_parameter(params: Dictionary) -> Dictionary:
 	return success({
 		"parameter": parameter,
 		"value": str(actual),
+		"ok": true,
+	})
+
+
+func _set_animation_tree_active(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var active: bool = optional_bool(params, "active", true)
+	var old := tree.active
+	tree.active = active
+	mark_current_scene_unsaved()
+	return success({"node_path": result[0], "active": tree.active, "old": old})
+
+
+func _set_animation_tree_player(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var player_path: String = optional_string(params, "anim_player", optional_string(params, "player_path", ""))
+	if player_path.is_empty():
+		return error_invalid_params("anim_player (NodePath to AnimationPlayer) required")
+	var old := str(tree.anim_player)
+	tree.anim_player = NodePath(player_path)
+	mark_current_scene_unsaved()
+	return success({"node_path": result[0], "anim_player": str(tree.anim_player), "old": old})
+
+
+func _set_state_machine_start(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var state_name: String = optional_string(params, "state_name", optional_string(params, "start_node", ""))
+	if state_name.is_empty():
+		return error_invalid_params("state_name required")
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var sm_result := _resolve_state_machine(tree, sm_path)
+	if sm_result[1] != null:
+		return sm_result[1]
+	var sm: AnimationNodeStateMachine = sm_result[0]
+	if state_name != "Start" and state_name != "End" and not sm.has_node(StringName(state_name)):
+		return error_not_found("State '%s'" % state_name)
+	if sm.has_method("set_start_node"):
+		sm.set_start_node(StringName(state_name))
+	else:
+		# Older API: start is a transition from Start
+		return error_invalid_params("set_start_node not available; add transition from Start instead")
+	mark_current_scene_unsaved()
+	return success({"start_node": state_name, "state_machine_path": sm_path})
+
+
+func _travel_animation_state(params: Dictionary) -> Dictionary:
+	## Like pressing a state in the AnimationTree graph / playback.travel()
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var to_state_r := require_string(params, "to_state")
+	if to_state_r[1] != null:
+		# also accept "state"
+		var alt := optional_string(params, "state", "")
+		if alt.is_empty():
+			return to_state_r[1]
+		to_state_r = [alt, null]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var playback_path: String = optional_string(params, "playback", "parameters/playback")
+	if not playback_path.begins_with("parameters/"):
+		playback_path = "parameters/" + playback_path
+	var playback = tree.get(playback_path)
+	if playback == null or not playback.has_method("travel"):
+		return error_invalid_params("No StateMachinePlayback at '%s' (is tree active with a state machine root?)" % playback_path)
+	var reset: bool = optional_bool(params, "reset", false)
+	if reset and playback.has_method("start"):
+		playback.start(StringName(to_state_r[0]), true)
+	else:
+		playback.travel(StringName(to_state_r[0]))
+	var current := ""
+	if playback.has_method("get_current_node"):
+		current = str(playback.get_current_node())
+	return success({
+		"traveled_to": to_state_r[0],
+		"current_node": current,
+		"playback": playback_path,
+		"is_playing": playback.is_playing() if playback.has_method("is_playing") else null,
+	})
+
+
+func _get_animation_tree_playback(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var playback_path: String = optional_string(params, "playback", "parameters/playback")
+	if not playback_path.begins_with("parameters/"):
+		playback_path = "parameters/" + playback_path
+	var playback = tree.get(playback_path)
+	if playback == null:
+		return success({
+			"playback": playback_path,
+			"available": false,
+			"active": tree.active,
+			"hint": "Activate tree or ensure root is StateMachine; playback appears at runtime/editor when tree is valid",
+		})
+	var info := {
+		"playback": playback_path,
+		"available": true,
+		"active": tree.active,
+		"anim_player": str(tree.anim_player),
+	}
+	if playback.has_method("get_current_node"):
+		info["current_node"] = str(playback.get_current_node())
+	if playback.has_method("get_current_play_position"):
+		info["play_position"] = playback.get_current_play_position()
+	if playback.has_method("get_current_length"):
+		info["length"] = playback.get_current_length()
+	if playback.has_method("is_playing"):
+		info["is_playing"] = playback.is_playing()
+	if playback.has_method("get_travel_path"):
+		var path: Array = []
+		for n in playback.get_travel_path():
+			path.append(str(n))
+		info["travel_path"] = path
+	return success(info)
+
+
+func _set_state_machine_transition(params: Dictionary) -> Dictionary:
+	## Edit existing transition props (xfade, switch_mode, advance_*)
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var from_r := require_string(params, "from_state")
+	if from_r[1] != null:
+		return from_r[1]
+	var to_r := require_string(params, "to_state")
+	if to_r[1] != null:
+		return to_r[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var sm_result := _resolve_state_machine(tree, sm_path)
+	if sm_result[1] != null:
+		return sm_result[1]
+	var sm: AnimationNodeStateMachine = sm_result[0]
+	var transition: AnimationNodeStateMachineTransition = null
+	for i in sm.get_transition_count():
+		if str(sm.get_transition_from(i)) == from_r[0] and str(sm.get_transition_to(i)) == to_r[0]:
+			transition = sm.get_transition(i)
+			break
+	if transition == null:
+		return error_not_found("Transition from '%s' to '%s'" % [from_r[0], to_r[0]])
+
+	if params.has("switch_mode"):
+		var switch_mode_str: String = str(params["switch_mode"])
+		match switch_mode_str:
+			"at_end":
+				transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_AT_END
+			"immediate":
+				transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_IMMEDIATE
+			"sync":
+				transition.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_SYNC
+	if params.has("advance_mode"):
+		var advance_mode_str: String = str(params["advance_mode"])
+		match advance_mode_str:
+			"disabled":
+				transition.advance_mode = AnimationNodeStateMachineTransition.ADVANCE_MODE_DISABLED
+			"enabled":
+				transition.advance_mode = AnimationNodeStateMachineTransition.ADVANCE_MODE_ENABLED
+			"auto":
+				transition.advance_mode = AnimationNodeStateMachineTransition.ADVANCE_MODE_AUTO
+	if params.has("advance_expression"):
+		transition.advance_expression = str(params["advance_expression"])
+	if params.has("xfade_time"):
+		transition.xfade_time = float(params["xfade_time"])
+	if params.has("priority"):
+		transition.priority = int(params["priority"])
+	if params.has("reset") and "reset" in transition:
+		transition.reset = bool(params["reset"])
+	mark_current_scene_unsaved()
+	return success({
+		"from": from_r[0],
+		"to": to_r[0],
+		"switch_mode": transition.switch_mode,
+		"advance_mode": transition.advance_mode,
+		"xfade_time": transition.xfade_time,
+		"advance_expression": transition.advance_expression,
+	})
+
+
+func _remove_blend_tree_node(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var bt_state_r := require_string(params, "blend_tree_state")
+	if bt_state_r[1] != null:
+		return bt_state_r[1]
+	var name_r := require_string(params, "bt_node_name")
+	if name_r[1] != null:
+		return name_r[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var bt_result := _resolve_blend_tree(tree, sm_path, bt_state_r[0])
+	if bt_result[1] != null:
+		return bt_result[1]
+	var bt: AnimationNodeBlendTree = bt_result[0]
+	if not bt.has_node(StringName(name_r[0])):
+		return error_not_found("BlendTree node '%s'" % name_r[0])
+	var old_node := bt.get_node(StringName(name_r[0]))
+	var old_pos := bt.get_node_position(StringName(name_r[0]))
+	var undo_redo := get_undo_redo()
+	undo_redo.create_action("MCP: Remove blend tree node")
+	undo_redo.add_do_method(bt, "remove_node", StringName(name_r[0]))
+	undo_redo.add_undo_method(bt, "add_node", StringName(name_r[0]), old_node, old_pos)
+	undo_redo.add_undo_reference(old_node)
+	undo_redo.commit_action()
+	return success({"bt_node_name": name_r[0], "removed": true})
+
+
+func _connect_blend_tree_nodes(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var bt_state_r := require_string(params, "blend_tree_state")
+	if bt_state_r[1] != null:
+		return bt_state_r[1]
+	var input_r := require_string(params, "input_node")
+	if input_r[1] != null:
+		return input_r[1]
+	var output_r := require_string(params, "output_node")
+	if output_r[1] != null:
+		return output_r[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var bt_result := _resolve_blend_tree(tree, sm_path, bt_state_r[0])
+	if bt_result[1] != null:
+		return bt_result[1]
+	var bt: AnimationNodeBlendTree = bt_result[0]
+	var input_port: int = optional_int(params, "input_port", 0)
+	# Godot: connect_node(input_node, input_index, output_node) — output_node → input_node:port
+	bt.connect_node(StringName(input_r[0]), input_port, StringName(output_r[0]))
+	mark_current_scene_unsaved()
+	return success({
+		"input_node": input_r[0],
+		"input_port": input_port,
+		"output_node": output_r[0],
+		"connected": true,
+	})
+
+
+func _resolve_blend_space(tree: AnimationTree, sm_path: String, state_name: String) -> Array:
+	var sm_result := _resolve_state_machine(tree, sm_path)
+	if sm_result[1] != null:
+		return sm_result
+	var sm: AnimationNodeStateMachine = sm_result[0]
+	if not sm.has_node(StringName(state_name)):
+		return [null, error_not_found("State '%s'" % state_name)]
+	var node := sm.get_node(StringName(state_name))
+	if node is AnimationNodeBlendSpace1D or node is AnimationNodeBlendSpace2D:
+		return [node, null]
+	return [null, error_invalid_params("Node '%s' is not a BlendSpace1D/2D" % state_name)]
+
+
+func _add_blend_space_point(params: Dictionary) -> Dictionary:
+	## Human blend-space editor: add animation point at position
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var state_r := require_string(params, "state_name")
+	if state_r[1] != null:
+		return state_r[1]
+	var anim_name: String = optional_string(params, "animation", "")
+	if anim_name.is_empty():
+		return error_invalid_params("animation name required for blend point")
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var bs_result := _resolve_blend_space(tree, sm_path, state_r[0])
+	if bs_result[1] != null:
+		return bs_result[1]
+	var bs = bs_result[0]
+	var anim_node := AnimationNodeAnimation.new()
+	anim_node.animation = StringName(anim_name)
+
+	if bs is AnimationNodeBlendSpace1D:
+		var pos: float = float(params.get("position", params.get("x", 0.0)))
+		bs.add_blend_point(anim_node, pos)
+		mark_current_scene_unsaved()
+		return success({
+			"state_name": state_r[0],
+			"type": "BlendSpace1D",
+			"animation": anim_name,
+			"position": pos,
+			"point_count": bs.get_blend_point_count(),
+		})
+	elif bs is AnimationNodeBlendSpace2D:
+		var x: float = float(params.get("x", params.get("position_x", 0.0)))
+		var y: float = float(params.get("y", params.get("position_y", 0.0)))
+		bs.add_blend_point(anim_node, Vector2(x, y))
+		mark_current_scene_unsaved()
+		return success({
+			"state_name": state_r[0],
+			"type": "BlendSpace2D",
+			"animation": anim_name,
+			"position": {"x": x, "y": y},
+			"point_count": bs.get_blend_point_count(),
+		})
+	return error_invalid_params("Unsupported blend space type")
+
+
+func _remove_blend_space_point(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var state_r := require_string(params, "state_name")
+	if state_r[1] != null:
+		return state_r[1]
+	var point_index: int = int(params.get("point_index", -1))
+	if point_index < 0:
+		return error_invalid_params("point_index required")
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var bs_result := _resolve_blend_space(tree, sm_path, state_r[0])
+	if bs_result[1] != null:
+		return bs_result[1]
+	var bs = bs_result[0]
+	if point_index >= bs.get_blend_point_count():
+		return error_invalid_params("point_index out of range")
+	bs.remove_blend_point(point_index)
+	mark_current_scene_unsaved()
+	return success({"state_name": state_r[0], "removed_point": point_index, "point_count": bs.get_blend_point_count()})
+
+
+func _set_blend_space_point_position(params: Dictionary) -> Dictionary:
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var state_r := require_string(params, "state_name")
+	if state_r[1] != null:
+		return state_r[1]
+	var point_index: int = int(params.get("point_index", -1))
+	if point_index < 0:
+		return error_invalid_params("point_index required")
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var sm_path: String = optional_string(params, "state_machine_path", "")
+	var bs_result := _resolve_blend_space(tree, sm_path, state_r[0])
+	if bs_result[1] != null:
+		return bs_result[1]
+	var bs = bs_result[0]
+	if point_index >= bs.get_blend_point_count():
+		return error_invalid_params("point_index out of range")
+	if bs is AnimationNodeBlendSpace1D:
+		var pos: float = float(params.get("position", params.get("x", 0.0)))
+		bs.set_blend_point_position(point_index, pos)
+		mark_current_scene_unsaved()
+		return success({"point_index": point_index, "position": pos})
+	elif bs is AnimationNodeBlendSpace2D:
+		var x: float = float(params.get("x", params.get("position_x", 0.0)))
+		var y: float = float(params.get("y", params.get("position_y", 0.0)))
+		bs.set_blend_point_position(point_index, Vector2(x, y))
+		mark_current_scene_unsaved()
+		return success({"point_index": point_index, "position": {"x": x, "y": y}})
+	return error_invalid_params("Unsupported blend space type")
+
+
+func _list_tree_parameters(params: Dictionary) -> Dictionary:
+	## List AnimationTree parameters/* like the inspector parameters section
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tree := _find_animation_tree(result[0])
+	if tree == null:
+		return error_not_found("AnimationTree at '%s'" % result[0])
+	var parameters: Array = []
+	for prop in tree.get_property_list():
+		var pname: String = prop.get("name", "")
+		if not pname.begins_with("parameters/"):
+			continue
+		# Skip nested resource sub-properties that aren't useful
+		if pname.count("/") > 2 and not pname.ends_with("/blend_position") and not pname.ends_with("/current_index") and not pname.ends_with("/active"):
+			# still include common leaf params
+			pass
+		var usage: int = int(prop.get("usage", 0))
+		if usage & PROPERTY_USAGE_STORAGE == 0 and usage & PROPERTY_USAGE_EDITOR == 0:
+			continue
+		parameters.append({
+			"name": pname,
+			"type": prop.get("type", 0),
+			"value": str(tree.get(pname)) if pname in tree else null,
+		})
+	return success({
+		"node_path": result[0],
+		"active": tree.active,
+		"anim_player": str(tree.anim_player),
+		"parameters": parameters,
+		"count": parameters.size(),
+	})
 		"set": true,
 	})

@@ -9,6 +9,9 @@ func get_commands() -> Dictionary:
 		"setup_navigation_agent": _setup_navigation_agent,
 		"set_navigation_layers": _set_navigation_layers,
 		"get_navigation_info": _get_navigation_info,
+		"setup_navigation_link": _setup_navigation_link,
+		"setup_navigation_obstacle": _setup_navigation_obstacle,
+		"set_navigation_agent_target": _set_navigation_agent_target,
 	}
 
 
@@ -470,3 +473,125 @@ func _collect_navigation_nodes(node: Node, regions: Array, agents: Array) -> voi
 
 	for child in node.get_children():
 		_collect_navigation_nodes(child, regions, agents)
+
+
+func _setup_navigation_link(params: Dictionary) -> Dictionary:
+	## NavigationLink2D/3D — off-mesh connections (doors, jumps, ladders).
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var dim: String = optional_string(params, "dimension", "")
+	if dim.is_empty():
+		dim = "3d" if _is_3d_context(parent) else "2d"
+	var bidirectional: bool = optional_bool(params, "bidirectional", true)
+	var enabled: bool = optional_bool(params, "enabled", true)
+	if dim == "3d":
+		var link := NavigationLink3D.new()
+		link.name = optional_string(params, "name", "NavigationLink3D")
+		link.bidirectional = bidirectional
+		link.enabled = enabled
+		if params.has("start_position"):
+			var s = params["start_position"]
+			if s is Dictionary:
+				link.start_position = Vector3(float(s.get("x", 0)), float(s.get("y", 0)), float(s.get("z", 0)))
+		if params.has("end_position"):
+			var e = params["end_position"]
+			if e is Dictionary:
+				link.end_position = Vector3(float(e.get("x", 0)), float(e.get("y", 0)), float(e.get("z", 0)))
+		if params.has("navigation_layers"):
+			link.navigation_layers = int(params["navigation_layers"])
+		add_child_with_undo(parent, link, root, "MCP: Add NavigationLink3D")
+		return success({"node_path": str(root.get_path_to(link)), "type": "NavigationLink3D"})
+	else:
+		var link2 := NavigationLink2D.new()
+		link2.name = optional_string(params, "name", "NavigationLink2D")
+		link2.bidirectional = bidirectional
+		link2.enabled = enabled
+		if params.has("start_position"):
+			var s2 = params["start_position"]
+			if s2 is Dictionary:
+				link2.start_position = Vector2(float(s2.get("x", 0)), float(s2.get("y", 0)))
+		if params.has("end_position"):
+			var e2 = params["end_position"]
+			if e2 is Dictionary:
+				link2.end_position = Vector2(float(e2.get("x", 0)), float(e2.get("y", 0)))
+		if params.has("navigation_layers"):
+			link2.navigation_layers = int(params["navigation_layers"])
+		add_child_with_undo(parent, link2, root, "MCP: Add NavigationLink2D")
+		return success({"node_path": str(root.get_path_to(link2)), "type": "NavigationLink2D"})
+
+
+func _setup_navigation_obstacle(params: Dictionary) -> Dictionary:
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var parent := find_node_by_path(parent_path)
+	if parent == null:
+		return error_not_found("Parent '%s'" % parent_path)
+	var dim: String = optional_string(params, "dimension", "")
+	if dim.is_empty():
+		dim = "3d" if _is_3d_context(parent) else "2d"
+	if dim == "3d":
+		var obs := NavigationObstacle3D.new()
+		obs.name = optional_string(params, "name", "NavigationObstacle3D")
+		if params.has("radius"):
+			obs.radius = float(params["radius"])
+		if params.has("height"):
+			obs.height = float(params["height"])
+		if params.has("avoidance_enabled"):
+			obs.avoidance_enabled = bool(params["avoidance_enabled"])
+		add_child_with_undo(parent, obs, root, "MCP: Add NavigationObstacle3D")
+		return success({"node_path": str(root.get_path_to(obs)), "type": "NavigationObstacle3D"})
+	else:
+		var obs2 := NavigationObstacle2D.new()
+		obs2.name = optional_string(params, "name", "NavigationObstacle2D")
+		if params.has("radius"):
+			obs2.radius = float(params["radius"])
+		if params.has("avoidance_enabled"):
+			obs2.avoidance_enabled = bool(params["avoidance_enabled"])
+		var verts: Array = params.get("vertices", [])
+		if verts is Array and verts.size() >= 3:
+			var packed := PackedVector2Array()
+			for v in verts:
+				if v is Array and v.size() >= 2:
+					packed.append(Vector2(float(v[0]), float(v[1])))
+				elif v is Dictionary:
+					packed.append(Vector2(float(v.get("x", 0)), float(v.get("y", 0))))
+			obs2.vertices = packed
+		add_child_with_undo(parent, obs2, root, "MCP: Add NavigationObstacle2D")
+		return success({"node_path": str(root.get_path_to(obs2)), "type": "NavigationObstacle2D"})
+
+
+func _set_navigation_agent_target(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null:
+		return error_not_found("Node '%s'" % r0[0])
+	if node is NavigationAgent2D:
+		var a2: NavigationAgent2D = node
+		var t = params.get("target", params.get("target_position", null))
+		if t is Dictionary:
+			a2.target_position = Vector2(float(t.get("x", 0)), float(t.get("y", 0)))
+		elif t is Array and t.size() >= 2:
+			a2.target_position = Vector2(float(t[0]), float(t[1]))
+		else:
+			return error_invalid_params("target {x,y} required")
+		return success({"type": "NavigationAgent2D", "target_position": {"x": a2.target_position.x, "y": a2.target_position.y}})
+	elif node is NavigationAgent3D:
+		var a3: NavigationAgent3D = node
+		var t3 = params.get("target", params.get("target_position", null))
+		if t3 is Dictionary:
+			a3.target_position = Vector3(float(t3.get("x", 0)), float(t3.get("y", 0)), float(t3.get("z", 0)))
+		elif t3 is Array and t3.size() >= 3:
+			a3.target_position = Vector3(float(t3[0]), float(t3[1]), float(t3[2]))
+		else:
+			return error_invalid_params("target {x,y,z} required")
+		return success({"type": "NavigationAgent3D", "target_position": {"x": a3.target_position.x, "y": a3.target_position.y, "z": a3.target_position.z}})
+	return error_invalid_params("Node must be NavigationAgent2D/3D")

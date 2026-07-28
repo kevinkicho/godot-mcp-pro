@@ -1,7 +1,10 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-const COMMANDS_PATH := "user://mcp_input_commands"
+## Prefer the *game* user dir so input reaches the running play-session
+## even when editor-cached user:// differs (project rename, custom user dir).
+func _commands_path() -> String:
+	return get_game_user_dir().path_join("mcp_input_commands")
 
 
 func get_commands() -> Dictionary:
@@ -33,7 +36,9 @@ func _simulate_key(params: Dictionary) -> Dictionary:
 		"ctrl": ctrl,
 		"alt": alt,
 	}
-	_write_commands([event])
+	var werr := _write_commands([event])
+	if not werr.is_empty():
+		return werr
 	return success({"sent": true, "event": event})
 
 
@@ -61,15 +66,14 @@ func _simulate_mouse_click(params: Dictionary) -> Dictionary:
 			"sequence_events": [press_event, release_event],
 			"frame_delay": 1,
 		}
-		var json := JSON.stringify(sequence_data)
-		var file := FileAccess.open(COMMANDS_PATH, FileAccess.WRITE)
-		if file == null:
-			return error_internal("Failed to write commands: %s" % error_string(FileAccess.get_open_error()))
-		file.store_string(json)
-		file.close()
+		var write_err := _write_raw(JSON.stringify(sequence_data))
+		if not write_err.is_empty():
+			return write_err
 		return success({"sent": true, "event": press_event, "auto_release": true})
 
-	_write_commands([press_event])
+	var werr2 := _write_commands([press_event])
+	if not werr2.is_empty():
+		return werr2
 	return success({"sent": true, "event": press_event})
 
 
@@ -96,7 +100,9 @@ func _simulate_mouse_move(params: Dictionary) -> Dictionary:
 		event["unhandled"] = unhandled
 	elif button_mask > 0:
 		event["unhandled"] = true
-	_write_commands([event])
+	var werr3 := _write_commands([event])
+	if not werr3.is_empty():
+		return werr3
 	return success({"sent": true, "event": event})
 
 
@@ -115,7 +121,9 @@ func _simulate_action(params: Dictionary) -> Dictionary:
 		"pressed": pressed,
 		"strength": strength,
 	}
-	_write_commands([event])
+	var werr4 := _write_commands([event])
+	if not werr4.is_empty():
+		return werr4
 	return success({"sent": true, "event": event})
 
 
@@ -135,28 +143,33 @@ func _simulate_sequence(params: Dictionary) -> Dictionary:
 
 	if frame_delay <= 0:
 		# All events in one frame - write as plain array
-		_write_commands(events)
+		var err := _write_commands(events)
+		if not err.is_empty():
+			return err
 	else:
 		# Sequence with frame delay - game side handles timing
 		var sequence_data := {
 			"sequence_events": events,
 			"frame_delay": frame_delay,
 		}
-		var json := JSON.stringify(sequence_data)
-		var file := FileAccess.open(COMMANDS_PATH, FileAccess.WRITE)
-		if file == null:
-			return error_internal("Failed to write commands: %s" % error_string(FileAccess.get_open_error()))
-		file.store_string(json)
-		file.close()
+		var write_err := _write_raw(JSON.stringify(sequence_data))
+		if not write_err.is_empty():
+			return write_err
 
 	return success({"sent": true, "event_count": events.size(), "frame_delay": frame_delay})
 
 
-func _write_commands(events: Array) -> void:
-	var json := JSON.stringify(events)
-	var file := FileAccess.open(COMMANDS_PATH, FileAccess.WRITE)
+func _write_commands(events: Array) -> Dictionary:
+	return _write_raw(JSON.stringify(events))
+
+
+func _write_raw(json: String) -> Dictionary:
+	var path := _commands_path()
+	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
-		push_error("[MCP Input] Failed to write commands: %s" % error_string(FileAccess.get_open_error()))
-		return
+		var msg := "Failed to write commands to %s: %s" % [path, error_string(FileAccess.get_open_error())]
+		push_error("[MCP Input] %s" % msg)
+		return error_internal(msg)
 	file.store_string(json)
 	file.close()
+	return {}

@@ -746,9 +746,16 @@ func _safe_get(node: Node, prop: String, default: Variant = null) -> Variant:
 		_write_response({"error": "Script compilation failed: %s" % error_string(err)})
 		return
 
+	var host: Node = get_tree().current_scene
+	if host == null:
+		host = get_tree().root
+	if host == null:
+		_write_response({"error": "No scene tree host available (current_scene and root are null)"})
+		return
+
 	var temp_node := Node.new()
 	temp_node.set_script(script)
-	get_tree().current_scene.add_child(temp_node)
+	host.add_child(temp_node)
 
 	var output: Variant = null
 	if temp_node.has_method("run"):

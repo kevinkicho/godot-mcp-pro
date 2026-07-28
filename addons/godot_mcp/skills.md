@@ -2,11 +2,16 @@
 
 # Godot MCP Pro — Skills for AI Assistants
 
-> Copy this file to `.claude/skills.md` in your Godot project root to give Claude Code full context on how to use Godot MCP Pro effectively.
+> Project-neutral. Works with any Godot 4 project that has the plugin enabled.
+> Copy this file into your project (e.g. `.claude/skills.md` or Grok skill) to steer agents toward **agent-driven game production**.
 
 ## What is Godot MCP Pro?
 
-You have access to 169 MCP tools that connect directly to the Godot 4 editor. You can create scenes, write scripts, simulate player input, inspect running games, and more — all without the user leaving this conversation. Every change goes through Godot's UndoRedo system, so the user can always Ctrl+Z.
+This is the control plane for **agent-driven game production**: create scenes, write scripts, playtest, simulate input, inspect runtime state, and iterate—without the user leaving the conversation. When the editor plugin is connected, mutations go through UndoRedo (Ctrl+Z). Prefer MCP tools over raw filesystem edits of `.tscn` / `project.godot`.
+
+**Start every session with `health_check`.** Use `agent_workflow_guide` for the production loop.
+
+You have access to a large set of editor tools (180+) when connected, plus CLI tools when the editor is offline.
 
 ## Essential Workflows
 
@@ -92,14 +97,28 @@ stop_scene             → stop the game
 6. `stop_scene` → stop when done
 7. Fix issues in scripts → repeat
 
-### 6. Animations
+### 6. Animations (human Animation editor surface)
 
 ```
-# Ensure an AnimationPlayer node exists in the scene
-create_animation       → new animation with length and loop mode
-add_animation_track    → add property/transform/method tracks
-set_animation_keyframe → insert keyframes at specific times
-get_animation_info     → inspect existing animations
+# AnimationPlayer library / clips
+list_animations / create_animation / rename_animation / duplicate_animation
+ensure_RESET via ensure_reset_animation
+list_animation_libraries / add_animation_library
+
+# Tracks & keys (value, method, audio, bezier, 3D, blend_shape, …)
+add_animation_track / remove_animation_track
+set_animation_keyframe / remove_animation_key
+insert_method_key / insert_audio_key / insert_animation_playback_key
+
+# Playback (like Play button)
+animation_player_play / stop / seek / queue / set_autoplay / set_speed
+set_root_motion_track
+
+# 2D SpriteFrames
+sprite_frames_create / add_animation / add_frame / assign
+
+# Skeleton3D dock
+find_skeletons / list_skeleton_bones / get_bone_info / set_bone_pose
 ```
 
 **Example — bouncing sprite:**
@@ -108,6 +127,7 @@ get_animation_info     → inspect existing animations
 3. `set_animation_keyframe` time `0.0`, value `Vector2(0, 0)`
 4. `set_animation_keyframe` time `0.5`, value `Vector2(0, -50)`
 5. `set_animation_keyframe` time `1.0`, value `Vector2(0, 0)`
+6. `animation_player_play` to preview
 
 ### 7. UI / HUD
 
@@ -250,13 +270,39 @@ bake_navigation_mesh   → generate navmesh
 setup_navigation_agent → add pathfinding to characters
 ```
 
-### AnimationTree & State Machines
+### AnimationTree & State Machines (human graph surface)
 ```
-create_animation_tree           → set up AnimationTree with state machine or blend tree
-add_state_machine_state         → add states (idle, walk, run, jump)
-add_state_machine_transition    → define transitions between states
-set_tree_parameter              → control blend parameters
+create_animation_tree / set_animation_tree_active / set_animation_tree_player
+get_animation_tree_structure / list_tree_parameters
+add_state_machine_state         → animation|blend_tree|state_machine|blend_space_1d|2d
+add_state_machine_transition / set_state_machine_transition
+travel_animation_state          → playback.travel like clicking a state
+add_blend_space_point           → blend space editor points
+set_blend_tree_node / connect_blend_tree_nodes
+set_tree_parameter              → parameters/* blend positions, oneshots
 ```
+
+### Coding-Solo parity (CLI + fork extras)
+
+These tools match free `godot-mcp` (Coding-Solo) capabilities:
+
+```
+get_godot_version     → engine version (CLI or editor)
+list_projects         → find project.godot under a directory
+launch_editor         → open Godot editor for a project path
+run_project           → run game as separate process (open server CLI)
+get_debug_output      → capture that process stdout/stderr
+stop_project          → kill CLI-run process / stop_scene
+load_sprite           → assign texture to Sprite2D/Sprite3D/TextureRect
+export_mesh_library   → scene → MeshLibrary for GridMap
+get_uid               → resource UID (file_path)
+update_project_uids   → resave resources to refresh UIDs
+get_connection_status → is the editor plugin connected?
+list_mcp_commands     → all plugin command names
+call_editor           → invoke any plugin method by name
+```
+
+When the open MCP server is used: prefer the editor when connected; otherwise headless CLI.
 
 ### Code-to-Inspector Migration
 

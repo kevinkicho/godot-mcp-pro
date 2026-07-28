@@ -10,6 +10,8 @@ func get_commands() -> Dictionary:
 		"tilemap_clear": _tilemap_clear,
 		"tilemap_get_info": _tilemap_get_info,
 		"tilemap_get_used_cells": _tilemap_get_used_cells,
+		"tilemap_set_cells_terrain_connect": _tilemap_set_cells_terrain_connect,
+		"tilemap_set_cells_terrain_path": _tilemap_set_cells_terrain_path,
 	}
 
 
@@ -379,3 +381,99 @@ func _tilemap_get_used_cells(params: Dictionary) -> Dictionary:
 		cells.append({"x": pos.x, "y": pos.y, "layer": layer, "source_id": _get_cell_source_id(tilemap, layer, pos)})
 
 	return success({"cells": cells, "total": used.size(), "returned": cells.size(), "layer": layer, "node_class": tilemap.get_class()})
+
+
+func _parse_cell_coords(params: Dictionary) -> Array:
+	## Returns Array[Vector2i] from cells=[[x,y],...] or points / single x,y
+	var out: Array = []
+	if params.has("cells") and params["cells"] is Array:
+		for c in params["cells"]:
+			if c is Array and c.size() >= 2:
+				out.append(Vector2i(int(c[0]), int(c[1])))
+			elif c is Dictionary:
+				out.append(Vector2i(int(c.get("x", 0)), int(c.get("y", 0))))
+	elif params.has("x") and params.has("y"):
+		out.append(Vector2i(int(params["x"]), int(params["y"])))
+	return out
+
+
+func _tilemap_set_cells_terrain_connect(params: Dictionary) -> Dictionary:
+	## Paint terrain with auto-connect (TileMapLayer.set_cells_terrain_connect).
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tilemap := _find_tilemap_node(result[0])
+	if tilemap == null:
+		return _not_found_result(result[0])
+	var cells := _parse_cell_coords(params)
+	if cells.is_empty():
+		return error_invalid_params("Provide cells=[[x,y],...] or x,y")
+	var terrain_set: int = optional_int(params, "terrain_set", 0)
+	var terrain: int = optional_int(params, "terrain", 0)
+	var ignore_empty: bool = optional_bool(params, "ignore_empty_terrains", true)
+	var packed: Array[Vector2i] = []
+	for c in cells:
+		packed.append(c as Vector2i)
+	if tilemap is TileMapLayer:
+		var layer: TileMapLayer = tilemap
+		if layer.has_method("set_cells_terrain_connect"):
+			layer.set_cells_terrain_connect(packed, terrain_set, terrain, ignore_empty)
+		else:
+			return error_internal("set_cells_terrain_connect unavailable")
+	elif _is_legacy_tilemap(tilemap):
+		var layer_i: int = optional_int(params, "layer", 0)
+		if tilemap.has_method("set_cells_terrain_connect"):
+			tilemap.call("set_cells_terrain_connect", layer_i, packed, terrain_set, terrain, ignore_empty)
+		else:
+			return error_internal("Legacy TileMap terrain connect unavailable")
+	else:
+		return _not_found_result(result[0])
+	mark_current_scene_unsaved()
+	return success({
+		"node_path": result[0],
+		"cells": cells.size(),
+		"terrain_set": terrain_set,
+		"terrain": terrain,
+		"mode": "connect",
+	})
+
+
+func _tilemap_set_cells_terrain_path(params: Dictionary) -> Dictionary:
+	## Paint terrain as a path (set_cells_terrain_path).
+	var result := require_string(params, "node_path")
+	if result[1] != null:
+		return result[1]
+	var tilemap := _find_tilemap_node(result[0])
+	if tilemap == null:
+		return _not_found_result(result[0])
+	var cells := _parse_cell_coords(params)
+	if cells.is_empty():
+		return error_invalid_params("Provide cells path as [[x,y],...]")
+	var terrain_set: int = optional_int(params, "terrain_set", 0)
+	var terrain: int = optional_int(params, "terrain", 0)
+	var ignore_empty: bool = optional_bool(params, "ignore_empty_terrains", true)
+	var packed: Array[Vector2i] = []
+	for c in cells:
+		packed.append(c as Vector2i)
+	if tilemap is TileMapLayer:
+		var layer: TileMapLayer = tilemap
+		if layer.has_method("set_cells_terrain_path"):
+			layer.set_cells_terrain_path(packed, terrain_set, terrain, ignore_empty)
+		else:
+			return error_internal("set_cells_terrain_path unavailable")
+	elif _is_legacy_tilemap(tilemap):
+		var layer_i: int = optional_int(params, "layer", 0)
+		if tilemap.has_method("set_cells_terrain_path"):
+			tilemap.call("set_cells_terrain_path", layer_i, packed, terrain_set, terrain, ignore_empty)
+		else:
+			return error_internal("Legacy terrain path unavailable")
+	else:
+		return _not_found_result(result[0])
+	mark_current_scene_unsaved()
+	return success({
+		"node_path": result[0],
+		"cells": cells.size(),
+		"terrain_set": terrain_set,
+		"terrain": terrain,
+		"mode": "path",
+	})

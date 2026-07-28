@@ -11,6 +11,9 @@ func get_commands() -> Dictionary:
 		"set_theme_stylebox": _set_theme_stylebox,
 		"setup_control": _setup_control,
 		"get_theme_info": _get_theme_info,
+		"set_focus_neighbors": _set_focus_neighbors,
+		"set_control_size_flags": _set_control_size_flags,
+		"set_control_mouse_filter": _set_control_mouse_filter,
 	}
 
 
@@ -426,3 +429,119 @@ func _get_theme_info(params: Dictionary) -> Dictionary:
 
 	info["overrides"] = overrides
 	return success(info)
+
+
+func _set_focus_neighbors(params: Dictionary) -> Dictionary:
+	## Focus neighbor paths like inspector Focus section (keyboard/gamepad UI nav).
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null or not node is Control:
+		return error_not_found("Control at '%s'" % r0[0])
+	var c: Control = node
+	var applied := {}
+	var map := {
+		"focus_neighbor_left": "focus_neighbor_left",
+		"left": "focus_neighbor_left",
+		"focus_neighbor_right": "focus_neighbor_right",
+		"right": "focus_neighbor_right",
+		"focus_neighbor_top": "focus_neighbor_top",
+		"top": "focus_neighbor_top",
+		"focus_neighbor_bottom": "focus_neighbor_bottom",
+		"bottom": "focus_neighbor_bottom",
+		"focus_next": "focus_next",
+		"next": "focus_next",
+		"focus_previous": "focus_previous",
+		"previous": "focus_previous",
+	}
+	for k in params:
+		var ks := str(k)
+		if map.has(ks):
+			var prop: String = map[ks]
+			c.set(prop, NodePath(str(params[k])))
+			applied[prop] = str(c.get(prop))
+	if params.has("focus_mode"):
+		var fm: String = str(params["focus_mode"])
+		match fm:
+			"none":
+				c.focus_mode = Control.FOCUS_NONE
+			"click":
+				c.focus_mode = Control.FOCUS_CLICK
+			"all":
+				c.focus_mode = Control.FOCUS_ALL
+			_:
+				c.focus_mode = int(params["focus_mode"])
+		applied["focus_mode"] = c.focus_mode
+	if applied.is_empty():
+		return error_invalid_params("Provide left/right/top/bottom/next/previous and/or focus_mode")
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "applied": applied})
+
+
+func _set_control_size_flags(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null or not node is Control:
+		return error_not_found("Control at '%s'" % r0[0])
+	var c: Control = node
+	var flags_map := {
+		"fill": Control.SIZE_FILL,
+		"expand": Control.SIZE_EXPAND,
+		"fill_expand": Control.SIZE_EXPAND_FILL,
+		"expand_fill": Control.SIZE_EXPAND_FILL,
+		"shrink_begin": Control.SIZE_SHRINK_BEGIN,
+		"shrink_center": Control.SIZE_SHRINK_CENTER,
+		"shrink_end": Control.SIZE_SHRINK_END,
+	}
+	var applied := {}
+	if params.has("horizontal") or params.has("size_flags_h"):
+		var h: String = str(params.get("horizontal", params.get("size_flags_h", "fill")))
+		if flags_map.has(h):
+			c.size_flags_horizontal = flags_map[h]
+			applied["size_flags_horizontal"] = h
+	if params.has("vertical") or params.has("size_flags_v"):
+		var v: String = str(params.get("vertical", params.get("size_flags_v", "fill")))
+		if flags_map.has(v):
+			c.size_flags_vertical = flags_map[v]
+			applied["size_flags_vertical"] = v
+	if params.has("stretch_ratio"):
+		c.size_flags_stretch_ratio = float(params["stretch_ratio"])
+		applied["stretch_ratio"] = c.size_flags_stretch_ratio
+	if params.has("custom_minimum_size"):
+		var ms = params["custom_minimum_size"]
+		if ms is Dictionary:
+			c.custom_minimum_size = Vector2(float(ms.get("x", 0)), float(ms.get("y", 0)))
+		elif ms is String:
+			var parts := ms.replace("Vector2(", "").replace(")", "").split(",")
+			if parts.size() >= 2:
+				c.custom_minimum_size = Vector2(float(parts[0]), float(parts[1]))
+		applied["custom_minimum_size"] = {"x": c.custom_minimum_size.x, "y": c.custom_minimum_size.y}
+	if applied.is_empty():
+		return error_invalid_params("Provide horizontal/vertical size flags and/or stretch_ratio/min size")
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "applied": applied})
+
+
+func _set_control_mouse_filter(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var node := find_node_by_path(r0[0])
+	if node == null or not node is Control:
+		return error_not_found("Control at '%s'" % r0[0])
+	var c: Control = node
+	var mf: String = optional_string(params, "mouse_filter", "stop")
+	match mf:
+		"stop":
+			c.mouse_filter = Control.MOUSE_FILTER_STOP
+		"pass":
+			c.mouse_filter = Control.MOUSE_FILTER_PASS
+		"ignore":
+			c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_:
+			c.mouse_filter = int(params.get("mouse_filter", 0))
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "mouse_filter": mf})
