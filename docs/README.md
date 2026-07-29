@@ -23,6 +23,7 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [CURVES_AND_BEZIER.md](CURVES_AND_BEZIER.md) | Cartesian curve/Bezier SDK surface for agents |
 | [HUMANOID_AND_LEVELS.md](HUMANOID_AND_LEVELS.md) | Humanoid interaction + level design verticals |
 | [IDE_PARITY.md](IDE_PARITY.md) | Map of human IDE docks → MCP for agents |
+| [SDK_STRUCTURE_EXPANSION.md](SDK_STRUCTURE_EXPANSION.md) | Docs/SDK structural surfaces prioritized for MCP |
 
 ### Root reference (not under `docs/`)
 

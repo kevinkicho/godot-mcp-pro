@@ -42,6 +42,13 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Quality packs | `apply_lod_distance_preset` / `apply_lightmap_quality_preset` / `apply_platform_render_pack` |
 | Agent pipelines | `list_agent_pipelines` / `pipeline_*` multi-step recipes |
 | Live nav path | `navigation_live_path` (play → query → draw) |
+| Particles / VFX | `set_particle_process_params` / attractors / turbulence |
+| Interaction | `setup_interaction_zone` / prompt UI / `bind_interaction_action` |
+| Export signing | `get_export_signing_checklist` / Android keystore helpers |
+| HTTP + encrypted IO | `create_http_client_script` / `encrypted_file_*` |
+| Physics debug | `editor_raycast` / `set_collision_debug_visible` |
+| 3D structure | VisibleOnScreen*, RemoteTransform, WorldBoundary, Occluder, Marker |
+| Project hygiene | `analyze_project_best_practices` |
 
 ## Universal escape hatches
 
