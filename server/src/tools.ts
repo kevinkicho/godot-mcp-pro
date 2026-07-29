@@ -1269,6 +1269,216 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     description: 'Settings menu + save slot recipes.',
     inputSchema: emptyProps,
   },
+  // ── Native run plane (1.33) ──
+  {
+    name: 'run_session_start',
+    description:
+      'Start native run session: play main|current|custom, wait settle, optional video record. Prefer over bare play_scene for agent loops.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: { type: 'string', description: 'main | current | custom' },
+        path: { type: 'string' },
+        settle_sec: { type: 'number' },
+        record: { type: 'boolean', description: 'Start video frame recording' },
+        restart: { type: 'boolean' },
+        fps: { type: 'number' },
+        track_nodes: { type: 'array' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'run_session_stop',
+    description: 'Stop play session; optionally stop video record first.',
+    inputSchema: {
+      type: 'object',
+      properties: { stop_record: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'run_session_status',
+    description: 'Is game playing? Channel health, video recording, fps, paused.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'run_record_start',
+    description:
+      'Start in-engine video capture (PNG sequence + events.jsonl under user://mcp_recordings/).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        session_id: { type: 'string' },
+        fps: { type: 'number' },
+        half_resolution: { type: 'boolean' },
+        max_frames: { type: 'number' },
+        track_nodes: { type: 'array', description: '[{node_path, properties}]' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'run_record_stop',
+    description: 'Stop video capture; optionally encode session.mp4 via FFmpeg.',
+    inputSchema: {
+      type: 'object',
+      properties: { encode: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'run_log_event',
+    description: 'Append timed event to run log/video sidecar (markers for clip extraction).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        type: { type: 'string' },
+        message: { type: 'string' },
+        level: { type: 'string' },
+        data: { type: 'object' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'run_capture_timeline',
+    description:
+      'Sample node properties over duration_sec (structured time series; optional images). Deep motion probe without full video.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        duration_sec: { type: 'number' },
+        interval_sec: { type: 'number' },
+        nodes: { type: 'array', description: '[{node_path, properties:[]}]' },
+        node_path: { type: 'string' },
+        properties: { type: 'array' },
+        include_images: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'run_find_nodes',
+    description: 'Find nodes in the RUNNING game by group|type|name|path|script.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        by: { type: 'string' },
+        query: { type: 'string' },
+        max: { type: 'number' },
+      },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'run_probe_report',
+    description:
+      'One-shot native probe: play → status/tree/debugger errors/screenshot/asserts/optional record → stop.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: { type: 'string' },
+        path: { type: 'string' },
+        record: { type: 'boolean' },
+        encode: { type: 'boolean' },
+        asserts: { type: 'array' },
+        stop_after: { type: 'boolean' },
+        settle_sec: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'media_find_ffmpeg',
+    description: 'Locate system FFmpeg (PATH or FFMPEG_PATH). Required for video encode/clip/keyframes.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'media_frames_to_video',
+    description: 'Encode frame_%05d.png sequence dir to mp4 via FFmpeg.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        frames_dir: { type: 'string' },
+        fps: { type: 'number' },
+        output_path: { type: 'string' },
+      },
+      required: ['frames_dir'],
+    },
+  },
+  {
+    name: 'media_extract_keyframes',
+    description: 'Extract keyframe PNGs from a video for VLM review (FFmpeg).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        video_path: { type: 'string' },
+        fps: { type: 'number', description: 'Keyframes per second (default 1)' },
+        output_dir: { type: 'string' },
+      },
+      required: ['video_path'],
+    },
+  },
+  {
+    name: 'media_clip_video',
+    description: 'Cut a time range from a video (FFmpeg) — e.g. around assert failure.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        video_path: { type: 'string' },
+        start_sec: { type: 'number' },
+        duration_sec: { type: 'number' },
+        end_sec: { type: 'number' },
+        output_path: { type: 'string' },
+      },
+      required: ['video_path'],
+    },
+  },
+  {
+    name: 'media_contact_sheet',
+    description: 'Build a grid/contact sheet image from video for one multimodal glance.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        video_path: { type: 'string' },
+        columns: { type: 'number' },
+        rows: { type: 'number' },
+        output_path: { type: 'string' },
+      },
+      required: ['video_path'],
+    },
+  },
+  {
+    name: 'detect_test_frameworks',
+    description: 'Detect GUT / GdUnit4 installed in the project.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'run_gut_tests',
+    description: 'Run GUT tests headlessly (project must have GUT addon). Does not reimplement GUT.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        test_dir: { type: 'string' },
+        prefix: { type: 'string' },
+        extra_args: { type: 'array' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'run_gdunit_tests',
+    description: 'Run GdUnit4 CLI if installed (version-dependent script path).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        script: { type: 'string' },
+        extra_args: { type: 'array' },
+      },
+      required: [],
+    },
+  },
   {
     name: 'get_filesystem_tree',
     description: 'Project file tree with optional filter (e.g. *.tscn, *.gd)',

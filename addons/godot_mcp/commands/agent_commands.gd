@@ -399,6 +399,25 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			],
 			"gaps": ["iOS code signing automation", "store upload APIs"],
 		},
+		"runtime_probe": {
+			"status": "strong",
+			"tools": [
+				"run_session_start/stop/status", "run_probe_report",
+				"run_record_start/stop", "run_log_event", "run_get_events", "run_get_logs",
+				"run_capture_timeline", "run_find_nodes",
+				"get_game_scene_tree", "get_game_node_properties", "assert_node_state",
+				"simulate_*", "capture_frames", "playtest_report",
+				"media_find_ffmpeg", "media_frames_to_video", "media_extract_keyframes",
+				"media_clip_video", "media_contact_sheet",
+				"detect_test_frameworks", "run_gut_tests", "run_gdunit_tests",
+			],
+			"gaps": [
+				"game-side WebSocket transport (still file IPC)",
+				"standalone CLI run without editor Play",
+				"Playwright only for web exports (not desktop)",
+			],
+		},
+
 		"tutorials/performance": {
 			"status": "strong",
 			"tools": [

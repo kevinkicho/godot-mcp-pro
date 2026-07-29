@@ -60,6 +60,24 @@ create_enhanced_save_manager_script + setup_save_slot_menu
 export_and_verify / list_export_templates
 ```
 
+### 0f. Native run probe (structure first, video for motion)
+
+```
+run_session_start record=true
+run_find_nodes / assert_node_state / get_game_node_properties
+run_log_event  →  markers in events.jsonl
+run_capture_timeline  →  property time series
+run_record_stop  →  session.mp4 (FFmpeg)
+media_extract_keyframes / media_clip_video / media_contact_sheet
+run_session_stop
+
+# Optional CI unit tests (wrappers, not reimplemented):
+detect_test_frameworks → run_gut_tests | run_gdunit_tests
+
+# One-shot:
+run_probe_report
+```
+
 ### 0b. Asset intake (human FileSystem + Import)
 
 ```

@@ -85,6 +85,10 @@ func _register_commands() -> void:
 		preload("res://addons/godot_mcp/commands/behavior_tree_commands.gd"),
 		preload("res://addons/godot_mcp/commands/vfx_shader_commands.gd"),
 		preload("res://addons/godot_mcp/commands/settings_save_commands.gd"),
+		# Native run plane: session, video record, media (FFmpeg), GUT/GdUnit adapters
+		preload("res://addons/godot_mcp/commands/run_session_commands.gd"),
+		preload("res://addons/godot_mcp/commands/media_commands.gd"),
+		preload("res://addons/godot_mcp/commands/test_framework_commands.gd"),
 	]
 
 	for cmd_class in command_classes:

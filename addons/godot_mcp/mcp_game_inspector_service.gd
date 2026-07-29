@@ -5,10 +5,33 @@ extends Node
 const REQUEST_PATH := "user://mcp_game_request"
 const RESPONSE_PATH := "user://mcp_game_response"
 
-enum State { IDLE, CAPTURING_FRAMES, MONITORING, RECORDING, MOVING_TO, WATCHING_SIGNALS }
+enum State { IDLE, CAPTURING_FRAMES, MONITORING, RECORDING, MOVING_TO, WATCHING_SIGNALS, VIDEO_RECORDING, CAPTURING_TIMELINE }
 
 var _state := State.IDLE
 var _pending_command: bool = false  # Crash recovery flag
+
+# Video / session recording (frames + event sidecar — agent visual probe)
+var _video_dir: String = ""
+var _video_frame_idx: int = 0
+var _video_fps: float = 10.0
+var _video_accum: float = 0.0
+var _video_half: bool = true
+var _video_events: Array = []  # JSONL-compatible event dicts
+var _video_start_msec: int = 0
+var _video_max_frames: int = 900
+var _video_track_nodes: Array = []  # [{node_path, properties:[]}]
+var _video_save_images: bool = true
+var _log_ring: Array = []  # recent events/errors for get_run_logs
+const LOG_RING_MAX := 200
+
+# Timeline capture (structured + optional frames without full video)
+var _timeline_remaining_sec: float = 0.0
+var _timeline_interval_sec: float = 0.1
+var _timeline_accum: float = 0.0
+var _timeline_samples: Array = []
+var _timeline_nodes: Array = []
+var _timeline_include_images: bool = false
+var _timeline_half: bool = true
 
 # Frame capture state
 var _capture_frames_remaining: int = 0
@@ -84,6 +107,14 @@ func _process(_delta: float) -> void:
 			_process_move_to(_delta)
 		State.WATCHING_SIGNALS:
 			_process_watch_signals()
+		State.VIDEO_RECORDING:
+			_process_video_record(_delta)
+			if FileAccess.file_exists(REQUEST_PATH):
+				_handle_request()
+		State.CAPTURING_TIMELINE:
+			_process_timeline(_delta)
+			if FileAccess.file_exists(REQUEST_PATH):
+				_handle_request()
 
 
 # ── Request handling ──────────────────────────────────────────────────────────
@@ -101,12 +132,22 @@ func _handle_request() -> void:
 		_write_response({"error": "Invalid request JSON"})
 		return
 
-	# Abort any in-progress operation
-	_state = State.IDLE
-	_pending_command = true
-
 	var command: String = parsed.get("command", "")
 	var params: Dictionary = parsed.get("params", {})
+
+	# Commands that may run during video/timeline without aborting them
+	var concurrent_ok := command in [
+		"log_run_event", "get_run_events", "get_run_logs", "get_run_status",
+		"get_performance_monitors", "get_node_properties", "get_scene_tree",
+		"find_nodes", "assert_node_state", "batch_get_properties", "get_autoload",
+		"stop_video_record",
+	]
+	var was_video := _state == State.VIDEO_RECORDING
+	var was_timeline := _state == State.CAPTURING_TIMELINE
+	if not concurrent_ok:
+		# Abort any in-progress operation
+		_state = State.IDLE
+	_pending_command = true
 
 	match command:
 		"get_scene_tree":
@@ -151,8 +192,32 @@ func _handle_request() -> void:
 			_cmd_assert_node_state(params)
 		"get_performance_monitors":
 			_cmd_get_performance_monitors(params)
+		# Native run probe v2 — video session, timeline, events, find
+		"start_video_record":
+			_cmd_start_video_record(params)
+		"stop_video_record":
+			_cmd_stop_video_record(params)
+		"log_run_event":
+			_cmd_log_run_event(params)
+		"get_run_events":
+			_cmd_get_run_events(params)
+		"get_run_logs":
+			_cmd_get_run_logs(params)
+		"get_run_status":
+			_cmd_get_run_status(params)
+		"capture_timeline":
+			_cmd_capture_timeline(params)
+		"find_nodes":
+			_cmd_find_nodes(params)
 		_:
 			_write_response({"error": "Unknown command: %s" % command})
+
+	# Restore long-running states after concurrent probes
+	if concurrent_ok and command != "stop_video_record":
+		if was_video and _state == State.IDLE:
+			_state = State.VIDEO_RECORDING
+		elif was_timeline and _state == State.IDLE and command != "capture_timeline":
+			_state = State.CAPTURING_TIMELINE
 
 
 # ── get_scene_tree ────────────────────────────────────────────────────────────
@@ -1721,6 +1786,361 @@ func _cmd_get_performance_monitors(_params: Dictionary) -> void:
 	monitors["navigation_agent_count"] = Performance.get_monitor(Performance.NAVIGATION_AGENT_COUNT)
 
 	_write_response({"result": {"monitors": monitors, "process": "game"}})
+
+
+# ── Video / timeline / events (native visual probe) ───────────────────────────
+
+func _session_t() -> float:
+	return (Time.get_ticks_msec() - _video_start_msec) / 1000.0 if _video_start_msec > 0 else 0.0
+
+
+func _append_log(level: String, message: String, extra: Dictionary = {}) -> void:
+	var entry := {
+		"t": _session_t() if _state == State.VIDEO_RECORDING or _state == State.CAPTURING_TIMELINE else Time.get_ticks_msec() / 1000.0,
+		"level": level,
+		"message": message,
+	}
+	for k in extra:
+		entry[k] = extra[k]
+	_log_ring.append(entry)
+	while _log_ring.size() > LOG_RING_MAX:
+		_log_ring.pop_front()
+	if _state == State.VIDEO_RECORDING:
+		_video_events.append(entry)
+		_flush_event_line(entry)
+
+
+func _flush_event_line(entry: Dictionary) -> void:
+	if _video_dir.is_empty():
+		return
+	var path := _video_dir.path_join("events.jsonl")
+	var f := FileAccess.open(path, FileAccess.READ_WRITE)
+	if f == null:
+		f = FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return
+	f.seek_end()
+	f.store_line(JSON.stringify(entry))
+	f.close()
+
+
+func _cmd_start_video_record(params: Dictionary) -> void:
+	_pending_command = false
+	var session_id: String = str(params.get("session_id", "session_%d" % Time.get_ticks_msec()))
+	_video_dir = "user://mcp_recordings/%s" % session_id
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_video_dir))
+	_video_frame_idx = 0
+	_video_fps = clampf(float(params.get("fps", 10.0)), 1.0, 30.0)
+	_video_accum = 0.0
+	_video_half = bool(params.get("half_resolution", true))
+	_video_max_frames = clampi(int(params.get("max_frames", 900)), 30, 3600)
+	_video_save_images = bool(params.get("save_images", true))
+	_video_events.clear()
+	_video_track_nodes.clear()
+	if params.has("track_nodes") and params["track_nodes"] is Array:
+		_video_track_nodes = params["track_nodes"]
+	_video_start_msec = Time.get_ticks_msec()
+	# Clear events file
+	var ef := FileAccess.open(_video_dir.path_join("events.jsonl"), FileAccess.WRITE)
+	if ef:
+		ef.close()
+	_append_log("info", "video_record_start", {"session_id": session_id, "fps": _video_fps})
+	_state = State.VIDEO_RECORDING
+	_write_response({
+		"recording": true,
+		"session_id": session_id,
+		"dir": _video_dir,
+		"fps": _video_fps,
+		"half_resolution": _video_half,
+		"max_frames": _video_max_frames,
+		"hint": "stop_video_record then media_frames_to_video / media_extract_keyframes",
+	})
+
+
+func _process_video_record(delta: float) -> void:
+	if _video_frame_idx >= _video_max_frames:
+		_finalize_video_record(true)
+		return
+	_video_accum += delta
+	var interval := 1.0 / _video_fps
+	if _video_accum < interval:
+		return
+	_video_accum = 0.0
+	if not _video_save_images:
+		_video_frame_idx += 1
+		return
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	var image := viewport.get_texture().get_image()
+	if image == null:
+		return
+	if _video_half:
+		var ns := image.get_size() / 2
+		if ns.x >= 2 and ns.y >= 2:
+			image.resize(ns.x, ns.y, Image.INTERPOLATE_BILINEAR)
+	var fname := "frame_%05d.png" % _video_frame_idx
+	var fpath := _video_dir.path_join(fname)
+	image.save_png(fpath)
+	# Optional property tracks
+	if not _video_track_nodes.is_empty():
+		var sample := {"t": _session_t(), "frame": _video_frame_idx, "props": {}}
+		for spec in _video_track_nodes:
+			if not spec is Dictionary:
+				continue
+			var np := str(spec.get("node_path", ""))
+			var node := get_tree().root.get_node_or_null(np) if not np.is_empty() else null
+			if node == null:
+				continue
+			var props: Array = spec.get("properties", [])
+			var bag := {}
+			for p in props:
+				bag[str(p)] = _serialize_value(node.get(str(p)))
+			sample["props"][np] = bag
+		_flush_event_line({"t": sample["t"], "type": "sample", "frame": _video_frame_idx, "props": sample["props"]})
+	_video_frame_idx += 1
+
+
+func _finalize_video_record(auto: bool) -> Dictionary:
+	var duration := _session_t()
+	var meta := {
+		"dir": _video_dir,
+		"frame_count": _video_frame_idx,
+		"fps": _video_fps,
+		"duration_sec": duration,
+		"events_path": _video_dir.path_join("events.jsonl") if not _video_dir.is_empty() else "",
+		"frame_pattern": _video_dir.path_join("frame_%05d.png") if not _video_dir.is_empty() else "",
+		"half_resolution": _video_half,
+		"auto_stopped": auto,
+		"event_count": _video_events.size(),
+	}
+	# Write meta.json
+	if not _video_dir.is_empty():
+		var mf := FileAccess.open(_video_dir.path_join("meta.json"), FileAccess.WRITE)
+		if mf:
+			mf.store_string(JSON.stringify(meta, "\t"))
+			mf.close()
+	_state = State.IDLE
+	_append_log("info", "video_record_stop", meta)
+	return meta
+
+
+func _cmd_stop_video_record(_params: Dictionary) -> void:
+	if _state != State.VIDEO_RECORDING and _video_dir.is_empty():
+		_write_response({"error": "No video recording in progress"})
+		return
+	var meta := _finalize_video_record(false)
+	_write_response({"recording": false, "meta": meta})
+
+
+func _cmd_log_run_event(params: Dictionary) -> void:
+	var type: String = str(params.get("type", params.get("event_type", "event")))
+	var message: String = str(params.get("message", params.get("name", type)))
+	var level: String = str(params.get("level", "info"))
+	var extra: Dictionary = {}
+	if params.has("data") and params["data"] is Dictionary:
+		extra = params["data"]
+	extra["type"] = type
+	_append_log(level, message, extra)
+	_write_response({"logged": true, "t": _session_t(), "type": type, "message": message})
+
+
+func _cmd_get_run_events(params: Dictionary) -> void:
+	var max_n: int = clampi(int(params.get("max", 100)), 1, 500)
+	var out: Array = []
+	# Prefer file if recording dir set
+	if not _video_dir.is_empty() and FileAccess.file_exists(_video_dir.path_join("events.jsonl")):
+		var f := FileAccess.open(_video_dir.path_join("events.jsonl"), FileAccess.READ)
+		if f:
+			while not f.eof_reached():
+				var line := f.get_line().strip_edges()
+				if line.is_empty():
+					continue
+				var parsed = JSON.parse_string(line)
+				if parsed is Dictionary:
+					out.append(parsed)
+			f.close()
+	else:
+		out = _video_events.duplicate()
+	if out.size() > max_n:
+		out = out.slice(out.size() - max_n)
+	_write_response({"events": out, "count": out.size(), "dir": _video_dir})
+
+
+func _cmd_get_run_logs(params: Dictionary) -> void:
+	var max_n: int = clampi(int(params.get("max", 50)), 1, LOG_RING_MAX)
+	var level_filter: String = str(params.get("level", ""))
+	var out: Array = []
+	for e in _log_ring:
+		if not level_filter.is_empty() and str(e.get("level", "")) != level_filter:
+			continue
+		out.append(e)
+	if out.size() > max_n:
+		out = out.slice(out.size() - max_n)
+	_write_response({
+		"logs": out,
+		"count": out.size(),
+		"playing": true,
+		"state": _state_name(),
+		"video_recording": _state == State.VIDEO_RECORDING,
+	})
+
+
+func _state_name() -> String:
+	match _state:
+		State.IDLE: return "idle"
+		State.CAPTURING_FRAMES: return "capturing_frames"
+		State.MONITORING: return "monitoring"
+		State.RECORDING: return "input_recording"
+		State.MOVING_TO: return "moving_to"
+		State.WATCHING_SIGNALS: return "watching_signals"
+		State.VIDEO_RECORDING: return "video_recording"
+		State.CAPTURING_TIMELINE: return "capturing_timeline"
+		_: return "unknown"
+
+
+func _cmd_get_run_status(_params: Dictionary) -> void:
+	var scene := get_tree().current_scene
+	_write_response({
+		"ok": true,
+		"state": _state_name(),
+		"has_scene": scene != null,
+		"scene_name": str(scene.name) if scene else "",
+		"scene_path": scene.scene_file_path if scene else "",
+		"video_recording": _state == State.VIDEO_RECORDING,
+		"video_dir": _video_dir,
+		"video_frames": _video_frame_idx,
+		"video_t": _session_t() if _state == State.VIDEO_RECORDING else 0.0,
+		"log_count": _log_ring.size(),
+		"fps": Performance.get_monitor(Performance.TIME_FPS),
+		"paused": get_tree().paused,
+	})
+
+
+func _cmd_capture_timeline(params: Dictionary) -> void:
+	## Sample node properties over duration; optional frame PNGs.
+	_pending_command = false
+	var duration: float = clampf(float(params.get("duration_sec", params.get("duration", 2.0))), 0.1, 30.0)
+	_timeline_interval_sec = clampf(float(params.get("interval_sec", 0.1)), 0.033, 2.0)
+	_timeline_include_images = bool(params.get("include_images", false))
+	_timeline_half = bool(params.get("half_resolution", true))
+	_timeline_nodes.clear()
+	if params.has("nodes") and params["nodes"] is Array:
+		_timeline_nodes = params["nodes"]
+	elif params.has("node_path"):
+		_timeline_nodes = [{
+			"node_path": params["node_path"],
+			"properties": params.get("properties", []),
+		}]
+	if _timeline_nodes.is_empty():
+		_write_response({"error": "Provide nodes:[{node_path,properties}] or node_path+properties"})
+		return
+	_timeline_samples.clear()
+	_timeline_remaining_sec = duration
+	_timeline_accum = 0.0
+	_video_start_msec = Time.get_ticks_msec()  # reuse for sample t
+	_state = State.CAPTURING_TIMELINE
+	_sample_timeline_once()  # immediate first sample
+
+
+func _process_timeline(delta: float) -> void:
+	_timeline_remaining_sec -= delta
+	_timeline_accum += delta
+	if _timeline_accum >= _timeline_interval_sec:
+		_timeline_accum = 0.0
+		_sample_timeline_once()
+	if _timeline_remaining_sec <= 0.0:
+		_finish_timeline()
+
+
+func _sample_timeline_once() -> void:
+	var sample := {"t": (Time.get_ticks_msec() - _video_start_msec) / 1000.0, "nodes": {}}
+	for spec in _timeline_nodes:
+		if not spec is Dictionary:
+			continue
+		var np := str(spec.get("node_path", ""))
+		var node := get_tree().root.get_node_or_null(np)
+		if node == null:
+			sample["nodes"][np] = {"error": "not_found"}
+			continue
+		var bag := {"type": node.get_class()}
+		var props: Array = spec.get("properties", [])
+		if props.is_empty():
+			# sensible defaults
+			if "position" in node:
+				bag["position"] = _serialize_value(node.get("position"))
+			if "visible" in node:
+				bag["visible"] = node.get("visible")
+		else:
+			for p in props:
+				bag[str(p)] = _serialize_value(node.get(str(p)))
+		sample["nodes"][np] = bag
+	if _timeline_include_images:
+		var viewport := get_viewport()
+		if viewport:
+			var image := viewport.get_texture().get_image()
+			if image:
+				if _timeline_half:
+					var ns := image.get_size() / 2
+					if ns.x >= 2 and ns.y >= 2:
+						image.resize(ns.x, ns.y, Image.INTERPOLATE_BILINEAR)
+				sample["image_b64"] = Marshalls.raw_to_base64(image.save_png_to_buffer())
+	_timeline_samples.append(sample)
+
+
+func _finish_timeline() -> void:
+	_state = State.IDLE
+	var dur := 0.0
+	if not _timeline_samples.is_empty():
+		dur = float(_timeline_samples[_timeline_samples.size() - 1].get("t", 0.0))
+	_write_response({
+		"samples": _timeline_samples,
+		"count": _timeline_samples.size(),
+		"duration_sec": dur,
+		"include_images": _timeline_include_images,
+	})
+	_timeline_samples.clear()
+
+
+func _cmd_find_nodes(params: Dictionary) -> void:
+	var by: String = str(params.get("by", "type")).to_lower()
+	var query: String = str(params.get("query", params.get("value", "")))
+	var max_n: int = clampi(int(params.get("max", 50)), 1, 200)
+	var root := get_tree().current_scene
+	if root == null:
+		root = get_tree().root
+	var found: Array = []
+	_find_nodes_walk(root, by, query, found, max_n)
+	_write_response({"by": by, "query": query, "nodes": found, "count": found.size()})
+
+
+func _find_nodes_walk(node: Node, by: String, query: String, out: Array, max_n: int) -> void:
+	if out.size() >= max_n:
+		return
+	var match := false
+	match by:
+		"group":
+			match = node.is_in_group(query)
+		"type", "class":
+			match = node.is_class(query) or node.get_class() == query
+		"name":
+			match = str(node.name).contains(query) or str(node.name).matchn("*" + query + "*")
+		"path":
+			match = str(node.get_path()).contains(query)
+		"script":
+			var sc: Script = node.get_script()
+			match = sc != null and sc.resource_path.contains(query)
+		_:
+			match = str(node.name).contains(query) or node.is_class(query)
+	if match:
+		out.append({
+			"path": str(node.get_path()),
+			"name": str(node.name),
+			"type": node.get_class(),
+			"script": node.get_script().resource_path if node.get_script() else "",
+		})
+	for c in node.get_children():
+		_find_nodes_walk(c, by, query, out, max_n)
 
 
 func _serialize_value(value: Variant) -> Variant:

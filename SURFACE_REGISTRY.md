@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.32.0**  
+Plugin version: **1.33.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 667
-- **Command modules:** 65
+- **Registered plugin commands:** 688
+- **Command modules:** 68
 
 ## Commands by module
 
@@ -411,6 +411,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_button`
 - `setup_texture_rect`
 
+### media_commands (6)
+
+- `media_find_ffmpeg`
+- `media_frames_to_video`
+- `media_extract_keyframes`
+- `media_clip_video`
+- `media_contact_sheet`
+- `media_probe`
+
 ### modern_render_commands (6)
 
 - `apply_environment_preset`
@@ -584,6 +593,20 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_custom_resource_script`
 - `duplicate_resource`
 
+### run_session_commands (11)
+
+- `run_session_start`
+- `run_session_stop`
+- `run_session_status`
+- `run_record_start`
+- `run_record_stop`
+- `run_log_event`
+- `run_get_events`
+- `run_get_logs`
+- `run_capture_timeline`
+- `run_find_nodes`
+- `run_probe_report`
+
 ### runtime_commands (19)
 
 - `get_game_scene_tree`
@@ -739,6 +762,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `assert_screen_text`
 - `run_stress_test`
 - `get_test_report`
+
+### test_framework_commands (4)
+
+- `detect_test_frameworks`
+- `run_gut_tests`
+- `run_gdunit_tests`
+- `list_test_recipes`
 
 ### texture_commands (4)
 

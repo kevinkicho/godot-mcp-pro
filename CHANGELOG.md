@@ -4,6 +4,37 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.33.0 — 2026-07-28
+
+**Native run probe plane** — session lifecycle, in-engine video + event log, FFmpeg media tools, GUT/GdUnit adapters (no reinvention).
+
+### Game inspector (`mcp_game_inspector_service`)
+- `start_video_record` / `stop_video_record` — PNG sequence + `events.jsonl` + `meta.json` under `user://mcp_recordings/`
+- `log_run_event`, `get_run_events`, `get_run_logs`, `get_run_status`
+- `capture_timeline` — property time series (+ optional frames)
+- `find_nodes` — by group|type|name|path|script
+- Concurrent probes during video (status/tree/assert without aborting record)
+
+### Run session (`run_session_commands`)
+- `run_session_start` / `stop` / `status`
+- `run_record_start` / `stop` (optional FFmpeg encode)
+- `run_log_event`, `run_get_events`, `run_get_logs`
+- `run_capture_timeline`, `run_find_nodes`
+- `run_probe_report` — one-shot play → status/tree/asserts/screenshot/record
+
+### Media (FFmpeg — system dependency)
+- `media_find_ffmpeg`, `media_frames_to_video`, `media_extract_keyframes`
+- `media_clip_video`, `media_contact_sheet`, `media_probe`
+
+### Test framework adapters
+- `detect_test_frameworks`, `run_gut_tests`, `run_gdunit_tests`, `list_test_recipes`
+
+### Philosophy
+- Structure first (tree/properties/assert); video for motion/juice
+- Wrap GUT/GdUnit/FFmpeg — do not reimplement them
+
+---
+
 ## v1.32.0 — 2026-07-28
 
 **Full remaining slice pack:** WebRTC/matchmaking/netcode, dialogue graph viz, FBX import depth, behavior trees, export polish, VFX/shaders, settings/save menus.
