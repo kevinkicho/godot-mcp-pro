@@ -1,38 +1,51 @@
-# Command modules layout (v1.64+ refactor)
+# Command modules layout (v1.65+)
 
 Command modules are **auto-discovered recursively** as `**/*_commands.gd`.
 
+Prefer **~5–22 modules per domain** so folders stay manageable.
+
 ```
 commands/
-  base_command.gd          # shared base (not a module)
-  agent/                   # agent, discovery, pipelines, surface closure
-  animation/               # AnimationPlayer/Tree, skeleton, retarget
+  base_command.gd     # shared base (not a module)
+  agent/              # discovery, pipelines, surface closure
+  ai/                 # utility AI, BT, AI agents
+  animation/          # AnimationPlayer/Tree, skeleton, retarget
   audio/
-  assets/                  # import, resources, materials, textures
-  2d/                      # tiles, pixel, mesh2d, lights2d, …
-  3d/                      # scene3d, GI, LOD, vehicles, …
-  core/                    # scene/node/editor/project/input/…
-  export/                  # export, CI, Android/iOS, plugins, GDExtension
-  navigation/
-  network/                 # multiplayer, WebRTC, HTTP
+  assets/             # import, resources, materials, textures
+  rendering/          # GI, LOD, lightmap, environment, compositor
+  2d/                 # tiles, pixel, mesh2d, scene_2d, sprite frames
+  3d/                 # scene3d, CSG, vehicles, terrain, multimesh
+  scene/              # scene graph, pack, flow, camera, node_*
+  editor/             # editor docks, workspace, focus
+  project/            # project settings, display, groups, autoload
+  input/              # input map, joypad, record
+  scripting/          # scripts, ClassDB, C#, curves, migration, IO
   physics/
-  qa_runtime/              # playtest, debugger, profiling, media
+  navigation/
+  network/
+  export/
+  qa_runtime/
   shaders_vfx/
-  ui_gameplay/             # UI, theme, dialogue, quests, inventory, saves
+  ui_gameplay/
   xr/
 ```
 
 ## Rules
 
-1. File name: `*_commands.gd` with `get_commands() -> Dictionary`.
+1. Name: `*_commands.gd` with `get_commands() -> Dictionary`.
 2. Extend `res://addons/godot_mcp/commands/base_command.gd`.
-3. Prefer `parse_vec2` / `parse_color` / `save_resource_to_res` / `list_tools_payload` on base.
-4. Shared pure helpers: `utils/mcp_params.gd`.
-5. Re-bucket: `.\scripts\organize-command-modules.ps1`
+3. Prefer base helpers: `parse_vec2`, `parse_color`, `list_tools_payload`, `save_resource_to_res`.
+4. Shared pure parsers: `utils/mcp_params.gd`.
+5. Rebalance: `.\scripts\organize-command-modules.ps1`
 6. Registry: `.\scripts\export-surface-registry.ps1`
+
+## Merge policy
+
+- Prefer one module per cohesive feature surface.
+- Merge thin `*_depth` siblings when they only add a few commands to the parent.
+- Avoid mega-files (>800 lines); split by concern instead.
 
 ## Discovery
 
-- `list_command_domains` — filesystem domains  
-- `list_command_modules domain=animation`  
-- `list_agent_domains` — agent workflow domains (orthogonal map)  
+- `list_command_domains` / `list_command_modules domain=scene`
+- `list_agent_domains` (workflow map; orthogonal to filesystem domains)

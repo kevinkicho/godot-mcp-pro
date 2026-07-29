@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.64.0**  
+Plugin version: **1.65.0**  
 
 ## Honesty
 
@@ -11,36 +11,35 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 
 ## Totals
 
-- **Registered plugin commands:** 1494
-- **Command modules:** 193
-- **Domains:** 15
+- **Registered plugin commands:** 1490
+- **Command modules:** 189
+- **Domains:** 21
 
 ## Commands by domain
 
-- **2d** - 105 commands
-- **3d** - 35 commands
+- **2d** - 133 commands
+- **3d** - 56 commands
 - **agent** - 58 commands
+- **ai** - 28 commands
 - **animation** - 170 commands
-- **assets** - 171 commands
+- **assets** - 82 commands
 - **audio** - 33 commands
-- **core** - 413 commands
+- **editor** - 40 commands
 - **export** - 48 commands
-- **navigation** - 15 commands
+- **input** - 26 commands
+- **navigation** - 19 commands
 - **network** - 49 commands
-- **physics** - 43 commands
+- **physics** - 56 commands
+- **project** - 59 commands
 - **qa_runtime** - 103 commands
+- **rendering** - 47 commands
+- **scene** - 110 commands
+- **scripting** - 107 commands
 - **shaders_vfx** - 66 commands
-- **ui_gameplay** - 158 commands
+- **ui_gameplay** - 173 commands
 - **xr** - 27 commands
 
 ## Commands by module
-
-### 2d / astar_pathfinding_commands (4)
-
-- `create_astar_grid_2d_script`
-- `create_astar_point_graph_script`
-- `setup_astar_grid_controller`
-- `list_astar_pathfinding_tools`
 
 ### 2d / canvas_draw_recipe_commands (4)
 
@@ -78,6 +77,17 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_point_light_2d_params`
 - `list_light_2d_depth_tools`
 
+### 2d / mesh_2d_commands (8)
+
+- `setup_mesh_instance_2d`
+- `create_quad_mesh_2d`
+- `create_array_mesh_2d`
+- `assign_mesh_2d`
+- `set_mesh_instance_2d_texture`
+- `convert_sprite_to_mesh_instance_2d`
+- `setup_multimesh_instance_2d`
+- `list_mesh_2d_tools`
+
 ### 2d / pixel_2d_preset_commands (6)
 
 - `list_pixel_2d_presets`
@@ -86,6 +96,36 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `apply_pixel_texture_import_batch`
 - `set_canvas_item_texture_filter`
 - `list_pixel_2d_tools`
+
+### 2d / scene_2d_commands (17)
+
+- `setup_camera_2d`
+- `setup_parallax_background`
+- `add_parallax_layer`
+- `add_light_occluder_2d`
+- `setup_point_light_2d`
+- `setup_canvas_modulate`
+- `setup_world_environment_2d`
+- `setup_line_2d`
+- `setup_path_2d`
+- `setup_polygon_2d`
+- `set_y_sort_enabled`
+- `setup_canvas_layer`
+- `setup_directional_light_2d`
+- `setup_timer`
+- `setup_remote_transform_2d`
+- `setup_visible_on_screen_notifier_2d`
+- `add_camera_shake_to_camera2d`
+
+### 2d / sprite_frames_depth_commands (7)
+
+- `sprite_frames_get_info`
+- `sprite_frames_set_animation_speed`
+- `sprite_frames_set_animation_loop`
+- `sprite_frames_remove_frame`
+- `sprite_frames_clear_animation`
+- `sprite_frames_rename_animation`
+- `list_sprite_frames_depth_tools`
 
 ### 2d / tilemap_commands (13)
 
@@ -182,6 +222,22 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `tilemap_paint_terrain_cells`
 - `list_tileset_terrain_depth_tools`
 
+### 3d / csg_ops_commands (6)
+
+- `csg_set_operation`
+- `csg_set_use_collision`
+- `csg_get_info`
+- `csg_bake_to_mesh_instance`
+- `csg_list_shapes`
+- `list_csg_tools`
+
+### 3d / multimesh_commands (4)
+
+- `setup_multimesh_instance`
+- `multimesh_set_transforms`
+- `multimesh_scatter`
+- `multimesh_get_info`
+
 ### 3d / scene_3d_commands (23)
 
 - `add_mesh_instance`
@@ -221,6 +277,23 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_third_person_camera_rig`
 - `set_spring_arm_params`
 - `list_spring_arm_camera_tools`
+
+### 3d / structure_3d_commands (7)
+
+- `setup_visible_on_screen_notifier`
+- `setup_visible_on_screen_enabler`
+- `setup_remote_transform`
+- `setup_world_boundary_body`
+- `setup_occluder_instance`
+- `setup_marker_3d`
+- `list_structure_3d_tools`
+
+### 3d / terrain_mesh_commands (4)
+
+- `create_heightmap_terrain`
+- `create_plane_mesh_terrain`
+- `terrain_apply_height_noise`
+- `list_terrain_tools`
 
 ### 3d / vehicle_depth_commands (4)
 
@@ -310,6 +383,46 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `list_out_of_scope_surfaces`
 - `get_production_surface_report`
 - `list_surface_closure_tools`
+
+### ai / ai_system_commands (8)
+
+- `setup_ai_agent_2d`
+- `setup_ai_agent_3d`
+- `create_chase_ai_script`
+- `create_patrol_ai_script`
+- `setup_detection_area`
+- `create_gameplay_state_machine_script`
+- `create_interactable_script`
+- `list_ai_templates`
+
+### ai / behavior_tree_commands (6)
+
+- `create_behavior_tree_runtime_script`
+- `create_behavior_tree_resource`
+- `create_behavior_tree_runner_script`
+- `create_blackboard_script`
+- `setup_behavior_tree_on_node`
+- `list_behavior_tree_recipes`
+
+### ai / utility_ai_commands (4)
+
+- `create_utility_ai_script`
+- `create_goap_planner_script`
+- `create_blackboard_utility_script`
+- `list_utility_ai_tools`
+
+### ai / utility_node_commands (10)
+
+- `setup_spring_arm_3d`
+- `setup_remote_transform_3d`
+- `setup_visible_on_screen_notifier_3d`
+- `setup_marker_2d`
+- `setup_marker_3d`
+- `setup_ray_cast_query_script`
+- `list_groups_in_scene`
+- `add_node_to_group`
+- `remove_node_from_group`
+- `create_state_machine_script`
 
 ### animation / animation_commands (36)
 
@@ -520,38 +633,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `spring_bone_add_chain`
 - `list_spring_bone_tools`
 
-### assets / compositor_depth_commands (4)
-
-- `setup_compositor_on_environment`
-- `compositor_list_effects`
-- `compositor_clear_effects`
-- `list_compositor_depth_tools`
-
-### assets / csg_ops_commands (6)
-
-- `csg_set_operation`
-- `csg_set_use_collision`
-- `csg_get_info`
-- `csg_bake_to_mesh_instance`
-- `csg_list_shapes`
-- `list_csg_tools`
-
-### assets / decal_depth_commands (3)
-
-- `setup_decal_3d`
-- `set_decal_params`
-- `list_decal_depth_tools`
-
-### assets / environment_sky_commands (7)
-
-- `create_environment_resource`
-- `create_procedural_sky`
-- `create_panorama_sky`
-- `assign_environment_to_world`
-- `setup_fog_volume`
-- `set_environment_fog_params`
-- `list_environment_sky_tools`
-
 ### assets / font_label_settings_commands (5)
 
 - `create_font_file_resource`
@@ -600,23 +681,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `get_import_options_for_path`
 - `list_import_schema_tools`
 
-### assets / lightmap_uv_commands (5)
-
-- `mesh_lightmap_unwrap`
-- `mesh_has_uv2`
-- `batch_prepare_lightmap_meshes`
-- `lightmap_bake_prepare`
-- `list_lightmap_uv_tools`
-
-### assets / lod_commands (6)
-
-- `mesh_generate_lods`
-- `mesh_get_lod_info`
-- `set_visibility_range`
-- `setup_lod_mesh_instances`
-- `create_shadow_mesh`
-- `list_lod_tools`
-
 ### assets / material_2d_commands (12)
 
 - `set_canvas_item_modulate`
@@ -639,68 +703,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_standard_material_params`
 - `assign_material_3d_to_mesh`
 - `list_material_3d_depth_tools`
-
-### assets / mesh_2d_commands (8)
-
-- `setup_mesh_instance_2d`
-- `create_quad_mesh_2d`
-- `create_array_mesh_2d`
-- `assign_mesh_2d`
-- `set_mesh_instance_2d_texture`
-- `convert_sprite_to_mesh_instance_2d`
-- `setup_multimesh_instance_2d`
-- `list_mesh_2d_tools`
-
-### assets / mesh_collision_commands (7)
-
-- `mesh_create_trimesh_collision`
-- `mesh_create_convex_collision`
-- `mesh_create_multiple_convex_collisions`
-- `mesh_create_trimesh_static_body`
-- `mesh_create_convex_static_body`
-- `add_collision_shape_from_mesh`
-- `list_mesh_collision_tools`
-
-### assets / modern_render_commands (6)
-
-- `apply_environment_preset`
-- `setup_camera_follow_2d`
-- `setup_third_person_camera`
-- `setup_orbit_camera_3d`
-- `create_minimap_viewport`
-- `list_render_presets`
-
-### assets / multimesh_commands (4)
-
-- `setup_multimesh_instance`
-- `multimesh_set_transforms`
-- `multimesh_scatter`
-- `multimesh_get_info`
-
-### assets / occlusion_culling_commands (4)
-
-- `setup_occluder_instance_3d`
-- `set_occlusion_culling_project`
-- `create_box_occluder_3d`
-- `list_occlusion_culling_tools`
-
-### assets / quality_preset_commands (5)
-
-- `list_quality_presets`
-- `apply_lod_distance_preset`
-- `apply_lightmap_quality_preset`
-- `configure_lightmap_gi`
-- `apply_platform_render_pack`
-
-### assets / render_gi_commands (7)
-
-- `configure_sdfgi`
-- `configure_ssao`
-- `configure_ssr`
-- `configure_glow`
-- `configure_ssil`
-- `set_mesh_lightmap_params`
-- `list_gi_tools`
 
 ### assets / resource_commands (6)
 
@@ -741,32 +743,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_resource_local_to_scene`
 - `duplicate_subresource_on_node`
 - `list_resource_unique_tools`
-
-### assets / shape_resource_commands (6)
-
-- `create_shape_resource`
-- `list_shape_resource_types`
-- `assign_shape_to_collision`
-- `setup_collision_from_shape_resource`
-- `batch_create_shape_resources`
-- `list_shape_resource_tools`
-
-### assets / structure_3d_commands (7)
-
-- `setup_visible_on_screen_notifier`
-- `setup_visible_on_screen_enabler`
-- `setup_remote_transform`
-- `setup_world_boundary_body`
-- `setup_occluder_instance`
-- `setup_marker_3d`
-- `list_structure_3d_tools`
-
-### assets / terrain_mesh_commands (4)
-
-- `create_heightmap_terrain`
-- `create_plane_mesh_terrain`
-- `terrain_apply_height_noise`
-- `list_terrain_tools`
 
 ### assets / texture_commands (4)
 
@@ -823,150 +799,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `music_set_playlist`
 - `list_music_tools`
 
-### core / ai_system_commands (8)
-
-- `setup_ai_agent_2d`
-- `setup_ai_agent_3d`
-- `create_chase_ai_script`
-- `create_patrol_ai_script`
-- `setup_detection_area`
-- `create_gameplay_state_machine_script`
-- `create_interactable_script`
-- `list_ai_templates`
-
-### core / async_resource_commands (5)
-
-- `create_async_resource_loader_script`
-- `resource_load_threaded_request`
-- `resource_load_threaded_status`
-- `resource_load_threaded_get`
-- `list_async_resource_tools`
-
-### core / autoload_depth_commands (5)
-
-- `list_autoloads`
-- `remove_autoload`
-- `set_autoload`
-- `rename_autoload`
-- `list_autoload_depth_tools`
-
-### core / behavior_tree_commands (6)
-
-- `create_behavior_tree_runtime_script`
-- `create_behavior_tree_resource`
-- `create_behavior_tree_runner_script`
-- `create_blackboard_script`
-- `setup_behavior_tree_on_node`
-- `list_behavior_tree_recipes`
-
-### core / camera_depth_commands (6)
-
-- `setup_camera_2d`
-- `setup_camera_3d_node`
-- `set_camera_2d_limits`
-- `set_camera_3d_params`
-- `camera_make_current`
-- `list_camera_depth_tools`
-
-### core / camera_level_bounds_commands (4)
-
-- `set_camera_2d_limits_rect`
-- `set_camera_2d_limits_from_tilemap`
-- `set_camera_2d_limits_from_node_bounds`
-- `list_camera_level_bounds_tools`
-
-### core / character_system_commands (10)
-
-- `setup_character_2d`
-- `setup_character_3d`
-- `create_platformer_controller_script`
-- `create_topdown_controller_script`
-- `create_fps_controller_script`
-- `create_health_component_script`
-- `setup_hitbox`
-- `setup_hurtbox`
-- `create_projectile_script`
-- `list_character_templates`
-
-### core / class_commands (17)
-
-- `describe_class`
-- `list_classes`
-- `get_class_inheritance`
-- `list_class_methods`
-- `list_class_signals`
-- `list_class_properties`
-- `list_class_constants`
-- `class_has_method`
-- `get_global_class_list`
-- `inheritance`
-- `methods`
-- `signals`
-- `properties`
-- `chain`
-- `methods`
-- `signals`
-- `properties`
-
-### core / classdb_examples_commands (4)
-
-- `get_class_usage_examples`
-- `list_instantiateable_classes`
-- `suggest_class_for_task`
-- `list_classdb_examples_tools`
-
-### core / csharp_commands (16)
-
-- `get_csharp_project_info`
-- `create_csharp_script`
-- `list_csharp_scripts`
-- `ensure_csharp_csproj`
-- `set_dotnet_project_settings`
-- `attach_csharp_script`
-- `run_dotnet_build`
-- `run_godot_csharp_build`
-- `get_last_build_log`
-- `create_csharp_node_script`
-- `check_dotnet_sdk`
-- `list_csharp_partial_classes`
-- `errors`
-- `warnings`
-- `errors`
-- `warnings`
-
-### core / curve_commands (21)
-
-- `create_curve_resource`
-- `curve_set_points`
-- `curve_get_points`
-- `curve_sample`
-- `curve_sample_baked`
-- `create_curve2d_resource`
-- `create_curve3d_resource`
-- `curve2d_set_points`
-- `curve2d_get_points`
-- `curve2d_sample_polyline`
-- `curve3d_set_points`
-- `curve3d_get_points`
-- `curve3d_sample_polyline`
-- `path_get_curve_points`
-- `path_set_curve_points`
-- `bezier_list_keys_cartesian`
-- `bezier_set_keys_batch`
-- `bezier_sample_dense`
-- `bezier_remove_key`
-- `bezier_set_handle_mode`
-- `list_curve_sdk_tools`
-
-### core / display_window_commands (5)
-
-- `get_display_info`
-- `set_window_project_settings`
-- `set_window_mode_live`
-- `list_screens`
-- `list_display_window_tools`
-
-### core / editor_clipboard_commands (5)
+### editor / editor_clipboard_commands (5)
 
 - `clipboard_set_text`
 - `clipboard_get_text`
@@ -974,7 +807,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `copy_node_path_to_clipboard`
 - `list_editor_clipboard_tools`
 
-### core / editor_commands (19)
+### editor / editor_commands (19)
 
 - `get_editor_errors`
 - `get_output_log`
@@ -996,7 +829,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_main_screen`
 - `distraction_free_mode`
 
-### core / editor_workspace_commands (11)
+### editor / editor_workspace_commands (11)
 
 - `play_main_scene`
 - `play_current_scene`
@@ -1010,381 +843,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `duplicate_scene_file`
 - `list_editor_workspace_tools`
 
-### core / engine_runtime_info_commands (6)
-
-- `get_engine_info`
-- `get_os_info`
-- `get_time_info`
-- `get_project_feature_tags`
-- `get_agent_environment_report`
-- `list_engine_runtime_info_tools`
-
-### core / expression_eval_commands (3)
-
-- `evaluate_expression`
-- `evaluate_expression_on_node`
-- `list_expression_eval_tools`
-
-### core / filesystem_commands (8)
-
-- `res_copy_file`
-- `res_delete_path`
-- `res_rename_path`
-- `res_make_dir`
-- `res_file_exists`
-- `res_list_dir`
-- `res_read_text`
-- `res_write_text`
-
-### core / group_layer_commands (8)
-
-- `list_project_groups`
-- `set_physics_layer_names`
-- `get_physics_layer_names`
-- `set_render_layer_names`
-- `get_render_layer_names`
-- `find_nodes_in_group`
-- `batch_set_node_groups`
-- `list_group_layer_tools`
-
-### core / input_commands (5)
-
-- `simulate_key`
-- `simulate_mouse_click`
-- `simulate_mouse_move`
-- `simulate_action`
-- `simulate_sequence`
-
-### core / input_map_commands (6)
-
-- `get_input_actions`
-- `set_input_action`
-- `remove_input_action`
-- `list_input_action_events`
-- `add_input_action_event`
-- `clear_input_action_events`
-
-### core / input_map_io_commands (5)
-
-- `export_input_map_json`
-- `import_input_map_json`
-- `list_input_map_actions_detail`
-- `clear_input_action_events`
-- `list_input_map_io_tools`
-
-### core / input_record_commands (3)
-
-- `write_input_replay_manifest`
-- `run_input_replay_manifest`
-- `list_input_record_tools`
-
-### core / interaction_zone_commands (5)
-
-- `setup_interaction_zone`
-- `setup_interaction_prompt_ui`
-- `create_interaction_controller_script`
-- `bind_interaction_action`
-- `list_interaction_zone_tools`
-
-### core / io_commands (8)
-
-- `config_file_get`
-- `config_file_set`
-- `json_read`
-- `json_write`
-- `user_list_dir`
-- `user_read_text`
-- `user_write_text`
-- `user_delete_path`
-
-### core / joypad_commands (7)
-
-- `list_joypads`
-- `create_joypad_input_map_preset`
-- `add_joypad_binding`
-- `set_action_deadzone`
-- `get_action_strength_info`
-- `list_joypad_button_names`
-- `event`
-
-### core / migration_commands (4)
-
-- `scan_godot3_patterns`
-- `list_migration_replacements`
-- `apply_migration_replacements`
-- `get_migration_guide`
-
-### core / migration_depth_commands (7)
-
-- `list_migration_replacements_extended`
-- `scan_project_migration_report`
-- `scan_tscn_godot3_markers`
-- `get_migration_out_of_scope`
-- `list_migration_depth_tools`
-- `replacements`
-- `count`
-
-### core / node_commands (35)
-
-- `add_node`
-- `delete_node`
-- `duplicate_node`
-- `move_node`
-- `update_property`
-- `update_properties`
-- `get_property`
-- `list_property_info`
-- `search_properties`
-- `reset_property`
-- `inspect_node`
-- `list_node_methods`
-- `call_node_method`
-- `clear_property`
-- `get_node_properties`
-- `add_resource`
-- `remove_resource`
-- `set_anchor_preset`
-- `rename_node`
-- `connect_signal`
-- `disconnect_signal`
-- `get_node_groups`
-- `set_node_groups`
-- `find_nodes_in_group`
-- `get_editor_selection`
-- `select_nodes`
-- `clear_editor_selection`
-- `get_meta`
-- `set_meta`
-- `remove_meta`
-- `list_meta`
-- `set_nodes_transform`
-- `batch_update_property`
-- `nodes`
-- `selected`
-
-### core / node_query_commands (6)
-
-- `find_nodes_by_class`
-- `find_nodes_by_script`
-- `find_nodes_by_name_pattern`
-- `count_nodes_by_class`
-- `reorder_node`
-- `list_node_query_tools`
-
-### core / path_follow_commands (5)
-
-- `setup_path_follow`
-- `path_follow_set_progress`
-- `path_follow_get_info`
-- `path_follow_set_loop`
-- `list_path_follow_tools`
-
-### core / project_commands (24)
-
-- `get_project_info`
-- `get_filesystem_tree`
-- `search_files`
-- `search_in_files`
-- `get_project_settings`
-- `set_project_setting`
-- `get_project_setting`
-- `set_project_settings`
-- `clear_project_setting`
-- `has_project_setting`
-- `search_project_settings`
-- `get_project_feature_list`
-- `set_project_feature`
-- `uid_to_project_path`
-- `project_path_to_uid`
-- `add_autoload`
-- `remove_autoload`
-- `list_autoloads`
-- `set_window_settings`
-- `set_physics_ticks`
-- `list_project_settings_keys`
-- `set_layer_names`
-- `get_layer_names`
-- `value`
-
-### core / project_settings_bulk_commands (4)
-
-- `list_project_settings_by_prefix`
-- `batch_set_project_settings`
-- `get_project_settings_snapshot`
-- `list_project_settings_bulk_tools`
-
-### core / save_game_state_commands (8)
-
-- `capture_node_state`
-- `capture_scene_state`
-- `apply_node_state`
-- `create_game_state_serializer_script`
-- `write_save_slot_json`
-- `read_save_slot_json`
-- `list_save_slots_json`
-- `list_save_game_state_tools`
-
-### core / scene_2d_commands (17)
-
-- `setup_camera_2d`
-- `setup_parallax_background`
-- `add_parallax_layer`
-- `add_light_occluder_2d`
-- `setup_point_light_2d`
-- `setup_canvas_modulate`
-- `setup_world_environment_2d`
-- `setup_line_2d`
-- `setup_path_2d`
-- `setup_polygon_2d`
-- `set_y_sort_enabled`
-- `setup_canvas_layer`
-- `setup_directional_light_2d`
-- `setup_timer`
-- `setup_remote_transform_2d`
-- `setup_visible_on_screen_notifier_2d`
-- `add_camera_shake_to_camera2d`
-
-### core / scene_audit_commands (5)
-
-- `list_scene_signals`
-- `list_missing_scripts`
-- `validate_all_scenes`
-- `audit_scene_tree`
-- `list_scene_audit_tools`
-
-### core / scene_commands (10)
-
-- `get_scene_tree`
-- `get_scene_file_content`
-- `create_scene`
-- `open_scene`
-- `delete_scene`
-- `add_scene_instance`
-- `play_scene`
-- `stop_scene`
-- `save_scene`
-- `get_scene_exports`
-
-### core / scene_flow_commands (4)
-
-- `create_scene_transition_script`
-- `create_loading_screen_scene`
-- `list_scene_flow_recipes`
-- `set_main_scene`
-
-### core / scene_flow_depth_commands (5)
-
-- `set_scene_tree_paused_state`
-- `create_game_flow_controller_script`
-- `setup_main_menu_scene`
-- `create_pause_menu_controller_script`
-- `list_scene_flow_depth_tools`
-
-### core / scene_instance_depth_commands (7)
-
-- `set_editable_instance`
-- `get_instance_info`
-- `setup_instance_placeholder`
-- `make_scene_instance_local`
-- `instance_packed_scene`
-- `batch_set_owners`
-- `list_scene_instance_tools`
-
-### core / scene_pack_commands (5)
-
-- `pack_node_as_scene`
-- `pack_selection_as_scene`
-- `create_inherited_scene_from`
-- `replace_node_with_scene_instance`
-- `list_scene_pack_tools`
-
-### core / scene_stream_commands (6)
-
-- `create_stream_manager_script`
-- `stream_load_chunk`
-- `stream_unload_chunk`
-- `stream_list_chunks`
-- `stream_set_chunk_active`
-- `list_stream_tools`
-
-### core / scene_unique_commands (4)
-
-- `set_scene_unique_name`
-- `get_scene_unique_name`
-- `find_node_by_unique_name`
-- `list_scene_unique_names`
-
-### core / scene_unique_depth_commands (4)
-
-- `batch_set_scene_unique_names`
-- `find_node_by_unique_name`
-- `list_scene_unique_names`
-- `list_scene_unique_depth_tools`
-
-### core / script_commands (7)
-
-- `list_scripts`
-- `read_script`
-- `create_script`
-- `edit_script`
-- `attach_script`
-- `get_open_scripts`
-- `validate_script`
-
-### core / sprite_frames_depth_commands (7)
-
-- `sprite_frames_get_info`
-- `sprite_frames_set_animation_speed`
-- `sprite_frames_set_animation_loop`
-- `sprite_frames_remove_frame`
-- `sprite_frames_clear_animation`
-- `sprite_frames_rename_animation`
-- `list_sprite_frames_depth_tools`
-
-### core / subviewport_render_commands (7)
-
-- `setup_subviewport_container`
-- `setup_subviewport_2d_world`
-- `setup_viewport_texture_rect`
-- `setup_sprite_from_subviewport`
-- `setup_back_buffer_copy`
-- `set_subviewport_update_mode`
-- `list_subviewport_render_tools`
-
-### core / timer_tween_depth_commands (4)
-
-- `setup_timer`
-- `setup_scene_tree_timer_script`
-- `create_tween_recipe_script`
-- `list_timer_tween_tools`
-
-### core / tween_commands (3)
-
-- `create_tween_helper_script`
-- `list_tween_recipes`
-- `create_scene_tree_tween_snippet`
-
-### core / utility_ai_commands (4)
-
-- `create_utility_ai_script`
-- `create_goap_planner_script`
-- `create_blackboard_utility_script`
-- `list_utility_ai_tools`
-
-### core / utility_node_commands (10)
-
-- `setup_spring_arm_3d`
-- `setup_remote_transform_3d`
-- `setup_visible_on_screen_notifier_3d`
-- `setup_marker_2d`
-- `setup_marker_3d`
-- `setup_ray_cast_query_script`
-- `list_groups_in_scene`
-- `add_node_to_group`
-- `remove_node_from_group`
-- `create_state_machine_script`
-
-### core / viewport_focus_commands (5)
+### editor / viewport_focus_commands (5)
 
 - `editor_focus_node`
 - `editor_frame_selection`
@@ -1463,6 +922,54 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 
 - `create_editor_plugin`
 - `list_project_plugins`
+
+### input / input_commands (5)
+
+- `simulate_key`
+- `simulate_mouse_click`
+- `simulate_mouse_move`
+- `simulate_action`
+- `simulate_sequence`
+
+### input / input_map_commands (6)
+
+- `get_input_actions`
+- `set_input_action`
+- `remove_input_action`
+- `list_input_action_events`
+- `add_input_action_event`
+- `clear_input_action_events`
+
+### input / input_map_io_commands (5)
+
+- `export_input_map_json`
+- `import_input_map_json`
+- `list_input_map_actions_detail`
+- `clear_input_action_events`
+- `list_input_map_io_tools`
+
+### input / input_record_commands (3)
+
+- `write_input_replay_manifest`
+- `run_input_replay_manifest`
+- `list_input_record_tools`
+
+### input / joypad_commands (7)
+
+- `list_joypads`
+- `create_joypad_input_map_preset`
+- `add_joypad_binding`
+- `set_action_deadzone`
+- `get_action_strength_info`
+- `list_joypad_button_names`
+- `event`
+
+### navigation / astar_pathfinding_commands (4)
+
+- `create_astar_grid_2d_script`
+- `create_astar_point_graph_script`
+- `setup_astar_grid_controller`
+- `list_astar_pathfinding_tools`
 
 ### navigation / nav_debug_commands (7)
 
@@ -1582,6 +1089,16 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `get_joint_info`
 - `list_joint_limit_tools`
 
+### physics / mesh_collision_commands (7)
+
+- `mesh_create_trimesh_collision`
+- `mesh_create_convex_collision`
+- `mesh_create_multiple_convex_collisions`
+- `mesh_create_trimesh_static_body`
+- `mesh_create_convex_static_body`
+- `add_collision_shape_from_mesh`
+- `list_mesh_collision_tools`
+
 ### physics / physics_commands (18)
 
 - `setup_collision`
@@ -1618,6 +1135,92 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `create_physics_material`
 - `assign_physics_material`
 - `list_physics_material_tools`
+
+### physics / shape_resource_commands (6)
+
+- `create_shape_resource`
+- `list_shape_resource_types`
+- `assign_shape_to_collision`
+- `setup_collision_from_shape_resource`
+- `batch_create_shape_resources`
+- `list_shape_resource_tools`
+
+### project / autoload_depth_commands (5)
+
+- `list_autoloads`
+- `remove_autoload`
+- `set_autoload`
+- `rename_autoload`
+- `list_autoload_depth_tools`
+
+### project / display_window_commands (5)
+
+- `get_display_info`
+- `set_window_project_settings`
+- `set_window_mode_live`
+- `list_screens`
+- `list_display_window_tools`
+
+### project / engine_runtime_info_commands (6)
+
+- `get_engine_info`
+- `get_os_info`
+- `get_time_info`
+- `get_project_feature_tags`
+- `get_agent_environment_report`
+- `list_engine_runtime_info_tools`
+
+### project / group_layer_commands (8)
+
+- `list_project_groups`
+- `set_physics_layer_names`
+- `get_physics_layer_names`
+- `set_render_layer_names`
+- `get_render_layer_names`
+- `find_nodes_in_group`
+- `batch_set_node_groups`
+- `list_group_layer_tools`
+
+### project / project_commands (27)
+
+- `get_project_info`
+- `get_filesystem_tree`
+- `search_files`
+- `search_in_files`
+- `get_project_settings`
+- `set_project_setting`
+- `get_project_setting`
+- `set_project_settings`
+- `clear_project_setting`
+- `has_project_setting`
+- `search_project_settings`
+- `get_project_feature_list`
+- `set_project_feature`
+- `uid_to_project_path`
+- `project_path_to_uid`
+- `add_autoload`
+- `remove_autoload`
+- `list_autoloads`
+- `set_window_settings`
+- `set_physics_ticks`
+- `list_project_settings_keys`
+- `set_layer_names`
+- `get_layer_names`
+- `list_project_settings_by_prefix`
+- `batch_set_project_settings`
+- `get_project_settings_snapshot`
+- `value`
+
+### project / save_game_state_commands (8)
+
+- `capture_node_state`
+- `capture_scene_state`
+- `apply_node_state`
+- `create_game_state_serializer_script`
+- `write_save_slot_json`
+- `read_save_slot_json`
+- `list_save_slots_json`
+- `list_save_game_state_tools`
 
 ### qa_runtime / analysis_commands (6)
 
@@ -1764,6 +1367,372 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `run_gdunit_tests`
 - `list_test_recipes`
 
+### rendering / compositor_depth_commands (4)
+
+- `setup_compositor_on_environment`
+- `compositor_list_effects`
+- `compositor_clear_effects`
+- `list_compositor_depth_tools`
+
+### rendering / decal_depth_commands (3)
+
+- `setup_decal_3d`
+- `set_decal_params`
+- `list_decal_depth_tools`
+
+### rendering / environment_sky_commands (7)
+
+- `create_environment_resource`
+- `create_procedural_sky`
+- `create_panorama_sky`
+- `assign_environment_to_world`
+- `setup_fog_volume`
+- `set_environment_fog_params`
+- `list_environment_sky_tools`
+
+### rendering / lightmap_uv_commands (5)
+
+- `mesh_lightmap_unwrap`
+- `mesh_has_uv2`
+- `batch_prepare_lightmap_meshes`
+- `lightmap_bake_prepare`
+- `list_lightmap_uv_tools`
+
+### rendering / lod_commands (6)
+
+- `mesh_generate_lods`
+- `mesh_get_lod_info`
+- `set_visibility_range`
+- `setup_lod_mesh_instances`
+- `create_shadow_mesh`
+- `list_lod_tools`
+
+### rendering / modern_render_commands (6)
+
+- `apply_environment_preset`
+- `setup_camera_follow_2d`
+- `setup_third_person_camera`
+- `setup_orbit_camera_3d`
+- `create_minimap_viewport`
+- `list_render_presets`
+
+### rendering / occlusion_culling_commands (4)
+
+- `setup_occluder_instance_3d`
+- `set_occlusion_culling_project`
+- `create_box_occluder_3d`
+- `list_occlusion_culling_tools`
+
+### rendering / quality_preset_commands (5)
+
+- `list_quality_presets`
+- `apply_lod_distance_preset`
+- `apply_lightmap_quality_preset`
+- `configure_lightmap_gi`
+- `apply_platform_render_pack`
+
+### rendering / render_gi_commands (7)
+
+- `configure_sdfgi`
+- `configure_ssao`
+- `configure_ssr`
+- `configure_glow`
+- `configure_ssil`
+- `set_mesh_lightmap_params`
+- `list_gi_tools`
+
+### scene / camera_depth_commands (9)
+
+- `setup_camera_2d`
+- `setup_camera_3d_node`
+- `set_camera_2d_limits`
+- `set_camera_3d_params`
+- `camera_make_current`
+- `set_camera_2d_limits_rect`
+- `set_camera_2d_limits_from_tilemap`
+- `set_camera_2d_limits_from_node_bounds`
+- `list_camera_depth_tools`
+
+### scene / node_commands (35)
+
+- `add_node`
+- `delete_node`
+- `duplicate_node`
+- `move_node`
+- `update_property`
+- `update_properties`
+- `get_property`
+- `list_property_info`
+- `search_properties`
+- `reset_property`
+- `inspect_node`
+- `list_node_methods`
+- `call_node_method`
+- `clear_property`
+- `get_node_properties`
+- `add_resource`
+- `remove_resource`
+- `set_anchor_preset`
+- `rename_node`
+- `connect_signal`
+- `disconnect_signal`
+- `get_node_groups`
+- `set_node_groups`
+- `find_nodes_in_group`
+- `get_editor_selection`
+- `select_nodes`
+- `clear_editor_selection`
+- `get_meta`
+- `set_meta`
+- `remove_meta`
+- `list_meta`
+- `set_nodes_transform`
+- `batch_update_property`
+- `nodes`
+- `selected`
+
+### scene / node_query_commands (6)
+
+- `find_nodes_by_class`
+- `find_nodes_by_script`
+- `find_nodes_by_name_pattern`
+- `count_nodes_by_class`
+- `reorder_node`
+- `list_node_query_tools`
+
+### scene / path_follow_commands (5)
+
+- `setup_path_follow`
+- `path_follow_set_progress`
+- `path_follow_get_info`
+- `path_follow_set_loop`
+- `list_path_follow_tools`
+
+### scene / scene_audit_commands (5)
+
+- `list_scene_signals`
+- `list_missing_scripts`
+- `validate_all_scenes`
+- `audit_scene_tree`
+- `list_scene_audit_tools`
+
+### scene / scene_commands (10)
+
+- `get_scene_tree`
+- `get_scene_file_content`
+- `create_scene`
+- `open_scene`
+- `delete_scene`
+- `add_scene_instance`
+- `play_scene`
+- `stop_scene`
+- `save_scene`
+- `get_scene_exports`
+
+### scene / scene_flow_commands (4)
+
+- `create_scene_transition_script`
+- `create_loading_screen_scene`
+- `list_scene_flow_recipes`
+- `set_main_scene`
+
+### scene / scene_flow_depth_commands (5)
+
+- `set_scene_tree_paused_state`
+- `create_game_flow_controller_script`
+- `setup_main_menu_scene`
+- `create_pause_menu_controller_script`
+- `list_scene_flow_depth_tools`
+
+### scene / scene_instance_depth_commands (7)
+
+- `set_editable_instance`
+- `get_instance_info`
+- `setup_instance_placeholder`
+- `make_scene_instance_local`
+- `instance_packed_scene`
+- `batch_set_owners`
+- `list_scene_instance_tools`
+
+### scene / scene_pack_commands (5)
+
+- `pack_node_as_scene`
+- `pack_selection_as_scene`
+- `create_inherited_scene_from`
+- `replace_node_with_scene_instance`
+- `list_scene_pack_tools`
+
+### scene / scene_stream_commands (6)
+
+- `create_stream_manager_script`
+- `stream_load_chunk`
+- `stream_unload_chunk`
+- `stream_list_chunks`
+- `stream_set_chunk_active`
+- `list_stream_tools`
+
+### scene / scene_unique_commands (6)
+
+- `set_scene_unique_name`
+- `get_scene_unique_name`
+- `find_node_by_unique_name`
+- `list_scene_unique_names`
+- `batch_set_scene_unique_names`
+- `list_scene_unique_tools`
+
+### scene / subviewport_render_commands (7)
+
+- `setup_subviewport_container`
+- `setup_subviewport_2d_world`
+- `setup_viewport_texture_rect`
+- `setup_sprite_from_subviewport`
+- `setup_back_buffer_copy`
+- `set_subviewport_update_mode`
+- `list_subviewport_render_tools`
+
+### scripting / async_resource_commands (5)
+
+- `create_async_resource_loader_script`
+- `resource_load_threaded_request`
+- `resource_load_threaded_status`
+- `resource_load_threaded_get`
+- `list_async_resource_tools`
+
+### scripting / class_commands (17)
+
+- `describe_class`
+- `list_classes`
+- `get_class_inheritance`
+- `list_class_methods`
+- `list_class_signals`
+- `list_class_properties`
+- `list_class_constants`
+- `class_has_method`
+- `get_global_class_list`
+- `inheritance`
+- `methods`
+- `signals`
+- `properties`
+- `chain`
+- `methods`
+- `signals`
+- `properties`
+
+### scripting / classdb_examples_commands (4)
+
+- `get_class_usage_examples`
+- `list_instantiateable_classes`
+- `suggest_class_for_task`
+- `list_classdb_examples_tools`
+
+### scripting / csharp_commands (16)
+
+- `get_csharp_project_info`
+- `create_csharp_script`
+- `list_csharp_scripts`
+- `ensure_csharp_csproj`
+- `set_dotnet_project_settings`
+- `attach_csharp_script`
+- `run_dotnet_build`
+- `run_godot_csharp_build`
+- `get_last_build_log`
+- `create_csharp_node_script`
+- `check_dotnet_sdk`
+- `list_csharp_partial_classes`
+- `errors`
+- `warnings`
+- `errors`
+- `warnings`
+
+### scripting / curve_commands (21)
+
+- `create_curve_resource`
+- `curve_set_points`
+- `curve_get_points`
+- `curve_sample`
+- `curve_sample_baked`
+- `create_curve2d_resource`
+- `create_curve3d_resource`
+- `curve2d_set_points`
+- `curve2d_get_points`
+- `curve2d_sample_polyline`
+- `curve3d_set_points`
+- `curve3d_get_points`
+- `curve3d_sample_polyline`
+- `path_get_curve_points`
+- `path_set_curve_points`
+- `bezier_list_keys_cartesian`
+- `bezier_set_keys_batch`
+- `bezier_sample_dense`
+- `bezier_remove_key`
+- `bezier_set_handle_mode`
+- `list_curve_sdk_tools`
+
+### scripting / expression_eval_commands (3)
+
+- `evaluate_expression`
+- `evaluate_expression_on_node`
+- `list_expression_eval_tools`
+
+### scripting / filesystem_commands (8)
+
+- `res_copy_file`
+- `res_delete_path`
+- `res_rename_path`
+- `res_make_dir`
+- `res_file_exists`
+- `res_list_dir`
+- `res_read_text`
+- `res_write_text`
+
+### scripting / io_commands (8)
+
+- `config_file_get`
+- `config_file_set`
+- `json_read`
+- `json_write`
+- `user_list_dir`
+- `user_read_text`
+- `user_write_text`
+- `user_delete_path`
+
+### scripting / migration_commands (11)
+
+- `scan_godot3_patterns`
+- `list_migration_replacements`
+- `apply_migration_replacements`
+- `get_migration_guide`
+- `list_migration_replacements_extended`
+- `scan_project_migration_report`
+- `scan_tscn_godot3_markers`
+- `get_migration_out_of_scope`
+- `list_migration_depth_tools`
+- `replacements`
+- `count`
+
+### scripting / script_commands (7)
+
+- `list_scripts`
+- `read_script`
+- `create_script`
+- `edit_script`
+- `attach_script`
+- `get_open_scripts`
+- `validate_script`
+
+### scripting / timer_tween_depth_commands (4)
+
+- `setup_timer`
+- `setup_scene_tree_timer_script`
+- `create_tween_recipe_script`
+- `list_timer_tween_tools`
+
+### scripting / tween_commands (3)
+
+- `create_tween_helper_script`
+- `list_tween_recipes`
+- `create_scene_tree_tween_snippet`
+
 ### shaders_vfx / particle_commands (11)
 
 - `create_particles`
@@ -1853,6 +1822,19 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `time`
 - `threshold`
 - `cmp`
+
+### ui_gameplay / character_system_commands (10)
+
+- `setup_character_2d`
+- `setup_character_3d`
+- `create_platformer_controller_script`
+- `create_topdown_controller_script`
+- `create_fps_controller_script`
+- `create_health_component_script`
+- `setup_hitbox`
+- `setup_hurtbox`
+- `create_projectile_script`
+- `list_character_templates`
 
 ### ui_gameplay / container_commands (8)
 
@@ -1949,6 +1931,14 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `import_translation_csv`
 - `wrap_script_strings_with_tr`
 - `list_i18n_csv_tools`
+
+### ui_gameplay / interaction_zone_commands (5)
+
+- `setup_interaction_zone`
+- `setup_interaction_prompt_ui`
+- `create_interaction_controller_script`
+- `bind_interaction_action`
+- `list_interaction_zone_tools`
 
 ### ui_gameplay / inventory_component_commands (4)
 

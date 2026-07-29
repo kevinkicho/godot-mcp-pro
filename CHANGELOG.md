@@ -4,6 +4,28 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.65.0 — 2026-07-29
+
+**Continue refactor** — split oversized domains, merge thin siblings, rebalance for management.
+
+### Domain rebalance (21 domains)
+- Split former `core` into: `scene`, `editor`, `project`, `input`, `scripting`, `ai`
+- Split rendering out of `assets` → `rendering/`
+- Moved `mesh_2d`/`scene_2d`/`sprite_frames` → `2d`; CSG/terrain/multimesh → `3d`
+- Target size: roughly 3–22 modules per domain (no 50+ dumping ground)
+
+### Module merges (fewer files, same tools)
+- `scene_unique_depth` → `scene_unique_commands`
+- `project_settings_bulk` → `project_commands`
+- `camera_level_bounds` → `camera_depth_commands`
+- `migration_depth` → `migration_commands`
+
+### Tooling
+- `organize-command-modules.ps1` now rebalances recursively
+- README documents domain map + merge policy
+
+---
+
 ## v1.64.0 — 2026-07-29
 
 **Structural refactor** — domain folders, recursive discovery, shared param utils, richer module index.

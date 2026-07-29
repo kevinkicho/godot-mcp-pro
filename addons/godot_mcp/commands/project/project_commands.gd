@@ -27,6 +27,10 @@ func get_commands() -> Dictionary:
 		"list_project_settings_keys": _list_project_settings_keys,
 		"set_layer_names": _set_layer_names,
 		"get_layer_names": _get_layer_names,
+		# bulk / snapshot (merged from project_settings_bulk_commands)
+		"list_project_settings_by_prefix": _list_project_settings_by_prefix,
+		"batch_set_project_settings": _batch_set_project_settings_dict,
+		"get_project_settings_snapshot": _get_project_settings_snapshot,
 	}
 
 

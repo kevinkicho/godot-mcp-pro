@@ -227,6 +227,13 @@ Production surface is **complete for agent shipping** (workflows + discovery + C
 - Shared parsers: prefer base `parse_vec2` / `parse_color` / `save_resource_to_res`
 - Registry groups by domain; no tool renames (API stable)
 
+## v1.65+ — domain split + thin merges
+
+- Core split into `scene` / `editor` / `project` / `input` / `scripting` / `ai`
+- `rendering` split from assets; ~21 balanced domains
+- Merged thin depth modules into parents (unique names, camera limits, migration, project bulk)
+- Still: `list_command_domains` to browse layout
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:
