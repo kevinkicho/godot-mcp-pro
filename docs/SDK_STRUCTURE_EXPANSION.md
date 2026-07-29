@@ -1,6 +1,6 @@
 # Godot SDK / docs → MCP structural expansion
 
-**As of:** v1.52 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
+**As of:** v1.53 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
 
 ## What we audited
 
@@ -38,6 +38,11 @@ Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html
 | **UI container depth** | Tabs/splits/flow/viewport | ui_container_depth_* | **new 1.52** |
 | **Multiplayer interest** | AOI / visibility / bandwidth | multiplayer_interest_* | **new 1.52** |
 | **Skeleton IK** | Procedural limbs/look-at | skeleton_ik_* | **new 1.52** |
+| **Cameras** | 2D/3D view control | camera_depth_* | **new 1.53** |
+| **2D lighting stack** | Modulate + occluders | light_2d_depth_* | **new 1.53** |
+| **Async resources** | Threaded loads | async_resource_* | **new 1.53** |
+| **StyleBox / theme boxes** | UI chrome | stylebox_* | **new 1.53** |
+| **Utility AI / GOAP** | Decision recipes | utility_ai_* | **new 1.53** |
 | **ClassDB long tail** | Anything else | describe_class, execute_editor_script, call_editor | strong (lookup) |
 
 ## Docs areas still intentionally partial

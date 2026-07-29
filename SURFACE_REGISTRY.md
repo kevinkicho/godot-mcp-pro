@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.52.0**  
+Plugin version: **1.53.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1089
-- **Command modules:** 121
+- **Registered plugin commands:** 1119
+- **Command modules:** 128
 
 ## Commands by module
 
@@ -174,6 +174,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_animation_tree_graph_tools`
 - `root`
 
+### async_resource_commands (5)
+
+- `create_async_resource_loader_script`
+- `resource_load_threaded_request`
+- `resource_load_threaded_status`
+- `resource_load_threaded_get`
+- `list_async_resource_tools`
+
 ### audio_commands (15)
 
 - `get_audio_bus_layout`
@@ -225,6 +233,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `check_autoload_hygiene`
 - `check_res_path_conventions`
 - `list_best_practices_tools`
+
+### camera_depth_commands (6)
+
+- `setup_camera_2d`
+- `setup_camera_3d_node`
+- `set_camera_2d_limits`
+- `set_camera_3d_params`
+- `camera_make_current`
+- `list_camera_depth_tools`
 
 ### character_system_commands (10)
 
@@ -365,6 +382,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_debugger_errors`
 - `set_debug_project_settings`
 
+### decal_depth_commands (3)
+
+- `setup_decal_3d`
+- `set_decal_params`
+- `list_decal_depth_tools`
+
 ### dialogue_commands (5)
 
 - `create_dialogue_resource`
@@ -443,6 +466,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_android_signing_status`
 - `set_export_preset_signing_options`
 - `list_export_signing_tools`
+
+### expression_eval_commands (3)
+
+- `evaluate_expression`
+- `evaluate_expression_on_node`
+- `list_expression_eval_tools`
 
 ### filesystem_commands (8)
 
@@ -646,6 +675,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `validate_level_playable`
 - `level_playtest_route`
 - `list_level_design_tools`
+
+### light_2d_depth_commands (5)
+
+- `setup_canvas_modulate`
+- `setup_light_occluder_2d`
+- `setup_point_light_2d_node`
+- `set_point_light_2d_params`
+- `list_light_2d_depth_tools`
 
 ### lightmap_uv_commands (5)
 
@@ -1232,6 +1269,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_marker_3d`
 - `list_structure_3d_tools`
 
+### stylebox_commands (4)
+
+- `create_stylebox_flat`
+- `theme_set_stylebox_flat`
+- `apply_stylebox_to_panel`
+- `list_stylebox_tools`
+
 ### terrain_mesh_commands (4)
 
 - `create_heightmap_terrain`
@@ -1379,6 +1423,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_video_stream_player`
 - `setup_progress_bar`
 - `setup_texture_progress_bar`
+
+### utility_ai_commands (4)
+
+- `create_utility_ai_script`
+- `create_goap_planner_script`
+- `create_blackboard_utility_script`
+- `list_utility_ai_tools`
 
 ### utility_node_commands (10)
 

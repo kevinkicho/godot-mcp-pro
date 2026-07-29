@@ -108,6 +108,13 @@ Prefer composed pipelines for multi-step human docks:
 - Multiplayer interest manager + synchronizer bandwidth helpers  
 - Timer, tween recipes, SkeletonIK, Label/RichText setup
 
+## v1.53+
+
+- Cameras: `setup_camera_2d`/`3d`, limits, FOV, make current  
+- 2D lights: CanvasModulate, LightOccluder2D, PointLight2D  
+- Async `ResourceLoader` helpers; StyleBoxFlat theme tools  
+- Utility AI / GOAP recipes; `evaluate_expression`; Decal3D depth
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

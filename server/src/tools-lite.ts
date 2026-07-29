@@ -675,6 +675,81 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  {
+    name: 'setup_camera_2d',
+    description: 'Add Camera2D with optional zoom/smoothing and make_current.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        zoom: {},
+        make_current: { type: 'boolean' },
+        position_smoothing_enabled: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_camera_3d_node',
+    description: 'Add Camera3D with fov/near/far and make_current.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        fov: { type: 'number' },
+        make_current: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_stylebox_flat',
+    description: 'Save StyleBoxFlat .tres (bg/border/corners) for UI theming.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        bg_color: { type: 'string' },
+        border_width: { type: 'number' },
+        corner_radius: { type: 'number' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_utility_ai_script',
+    description: 'Utility AI scorer script (considerations → pick max action).',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, overwrite: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'evaluate_expression',
+    description: 'Evaluate a Godot Expression (math/logic) with optional named inputs.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        expression: { type: 'string' },
+        inputs: { type: 'object' },
+      },
+      required: ['expression'],
+    },
+  },
+  {
+    name: 'create_async_resource_loader_script',
+    description: 'Threaded ResourceLoader helper script; optional autoload.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

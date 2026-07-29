@@ -4,6 +4,25 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.53.0 — 2026-07-28
+
+**Agent surface expansion** — cameras, 2D lights/occluders, async resources, StyleBox, utility AI/GOAP, Expression eval, Decals.
+
+### Camera
+- `setup_camera_2d` / `setup_camera_3d_node`, limits, FOV/cull, `camera_make_current`
+
+### 2D lighting
+- CanvasModulate, LightOccluder2D, PointLight2D setup/params
+
+### Resources / theme / AI / math / decals
+- Threaded ResourceLoader request/status/get + async loader script
+- StyleBoxFlat create/theme assign/panel override
+- Utility AI, tiny GOAP planner, AI blackboard
+- `evaluate_expression` / on-node Expression
+- Decal3D setup + params
+
+---
+
 ## v1.52.0 — 2026-07-28
 
 **Agent surface expansion** — shader includes, UI containers depth, multiplayer interest, Timer/Tween recipes, SkeletonIK, Label/RichText.

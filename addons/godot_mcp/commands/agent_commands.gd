@@ -646,7 +646,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_behavior_tree_on_node", "list_behavior_tree_recipes",
 				"create_gameplay_state_machine_script", "setup_ai_agent_2d/3d",
 			],
-			"gaps": ["visual BT editor UI", "full utility AI / GOAP planner"],
+			"gaps": ["visual BT editor UI", "full GOAP with continuous world state"],
 		},
 		"networking_webrtc": {
 			"status": "strong",
