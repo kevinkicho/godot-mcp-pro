@@ -4,6 +4,29 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.51.0 — 2026-07-28
+
+**Agent surface expansion** — ragdoll auto-gen, XR passthrough, TileSet atlas polish, SoftBody/vehicle/SpriteFrames depth.
+
+### Ragdoll
+- `generate_ragdoll_from_skeleton`, `list_physical_bones`, `set_physical_bone_params`
+- `create_ragdoll_control_script`
+
+### XR passthrough
+- `set_xr_passthrough_settings`, `get_xr_passthrough_info`
+- `setup_xr_composition_layer_quad`, `create_xr_passthrough_controller_script`
+
+### TileSet atlas
+- `tileset_get_atlas_info`, `tileset_set_atlas_region_size`
+- `tileset_create_tiles_in_region`, `tileset_remove_tiles_in_region`, `tileset_set_tile_texture_origin`
+
+### SoftBody / vehicle / SpriteFrames
+- `set_soft_body_params`, `soft_body_pin_point`, `soft_body_get_info`
+- `setup_vehicle_body`, `set_vehicle_wheel_params`, `list_vehicle_wheels`
+- `sprite_frames_get_info`, speed/loop/remove/clear/rename
+
+---
+
 ## v1.50.0 — 2026-07-28
 
 **Agent surface expansion** — i18n CSV/open-scene, TileSet terrain depth, import schemas, PathFollow, audio generator, display/window, joint limits.

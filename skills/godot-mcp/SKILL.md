@@ -94,6 +94,13 @@ Prefer composed pipelines for multi-step human docks:
 - PathFollow / AudioStreamGenerator / DisplayServer window tools  
 - Joint limits: hinge / slider / 6DOF / pin
 
+## v1.51+
+
+- Ragdoll: **`generate_ragdoll_from_skeleton`**, `create_ragdoll_control_script`  
+- XR: `set_xr_passthrough_settings`, composition layer quad, passthrough controller script  
+- TileSet atlas: region size, create/remove tile regions, texture origin  
+- SoftBody params/pin, **`setup_vehicle_body`**, SpriteFrames speed/loop/frame edit
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

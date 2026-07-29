@@ -1,6 +1,6 @@
 # Godot SDK / docs → MCP structural expansion
 
-**As of:** v1.50 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
+**As of:** v1.51 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
 
 ## What we audited
 
@@ -29,6 +29,11 @@ Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html
 | **AudioStreamGenerator** | Procedural audio | audio_generator_* | **new 1.50** |
 | **Display/window** | Platform window settings | display_window_* | **new 1.50** |
 | **Joint limits** | Physics constraints | joint_limit_* | **new 1.50** |
+| **Ragdoll from skeleton** | Death/physics characters | ragdoll_* | **new 1.51** |
+| **XR passthrough / layers** | MR / AR blend | xr_passthrough_* | **new 1.51** |
+| **TileSet atlas regions** | 2D atlas authoring | tileset_atlas_depth_* | **new 1.51** |
+| **SoftBody / vehicle stacks** | Soft cloth + cars | softbody_depth_*, vehicle_depth_* | **new 1.51** |
+| **SpriteFrames depth** | 2D clip edit | sprite_frames_depth_* | **new 1.51** |
 | **ClassDB long tail** | Anything else | describe_class, execute_editor_script, call_editor | strong (lookup) |
 
 ## Docs areas still intentionally partial

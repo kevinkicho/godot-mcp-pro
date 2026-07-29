@@ -553,6 +553,64 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['node_path'],
     },
   },
+  {
+    name: 'generate_ragdoll_from_skeleton',
+    description: 'Auto-create PhysicalBone3D capsules (+ optional simulator) from Skeleton3D.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        use_simulator: { type: 'boolean' },
+        shape: { type: 'string' },
+        radius_scale: { type: 'number' },
+        max_bones: { type: 'number' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'set_xr_passthrough_settings',
+    description: 'OpenXR blend/passthrough-related project settings (device-dependent).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        openxr_enabled: { type: 'boolean' },
+        environment_blend_mode: { type: 'string', description: 'opaque|additive|alpha|passthrough' },
+        submit_depth_buffer: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_vehicle_body',
+    description: 'VehicleBody3D + chassis collision + four VehicleWheel3D recipe.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        mass: { type: 'number' },
+        add_wheels: { type: 'boolean' },
+        wheel_radius: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'tileset_create_tiles_in_region',
+    description: 'Create TileSet atlas tiles for a grid region (x0..x1, y0..y1).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        tileset_path: { type: 'string' },
+        source_id: { type: 'number' },
+        x0: { type: 'number' },
+        y0: { type: 'number' },
+        x1: { type: 'number' },
+        y1: { type: 'number' },
+      },
+      required: ['tileset_path'],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

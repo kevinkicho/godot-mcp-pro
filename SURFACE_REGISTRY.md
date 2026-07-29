@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.50.0**  
+Plugin version: **1.51.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1027
-- **Command modules:** 109
+- **Registered plugin commands:** 1058
+- **Command modules:** 115
 
 ## Commands by module
 
@@ -954,6 +954,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_dialogue_graph_nodes`
 - `list_quest_recipes`
 
+### ragdoll_commands (5)
+
+- `generate_ragdoll_from_skeleton`
+- `list_physical_bones`
+- `set_physical_bone_params`
+- `create_ragdoll_control_script`
+- `list_ragdoll_tools`
+
 ### render_gi_commands (7)
 
 - `configure_sdfgi`
@@ -1166,6 +1174,23 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `rest`
 - `mapped_count`
 
+### softbody_depth_commands (4)
+
+- `set_soft_body_params`
+- `soft_body_pin_point`
+- `soft_body_get_info`
+- `list_softbody_depth_tools`
+
+### sprite_frames_depth_commands (7)
+
+- `sprite_frames_get_info`
+- `sprite_frames_set_animation_speed`
+- `sprite_frames_set_animation_loop`
+- `sprite_frames_remove_frame`
+- `sprite_frames_clear_animation`
+- `sprite_frames_rename_animation`
+- `list_sprite_frames_depth_tools`
+
 ### structure_3d_commands (7)
 
 - `setup_visible_on_screen_notifier`
@@ -1242,6 +1267,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `used_cells`
 - `used_cells`
 
+### tileset_atlas_depth_commands (6)
+
+- `tileset_get_atlas_info`
+- `tileset_set_atlas_region_size`
+- `tileset_create_tiles_in_region`
+- `tileset_remove_tiles_in_region`
+- `tileset_set_tile_texture_origin`
+- `list_tileset_atlas_depth_tools`
+
 ### tileset_commands (19)
 
 - `tileset_create`
@@ -1310,6 +1344,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `remove_node_from_group`
 - `create_state_machine_script`
 
+### vehicle_depth_commands (4)
+
+- `setup_vehicle_body`
+- `set_vehicle_wheel_params`
+- `list_vehicle_wheels`
+- `list_vehicle_depth_tools`
+
 ### vfx_shader_commands (10)
 
 - `create_shader_preset`
@@ -1368,6 +1409,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `openxr_add_interaction_profile`
 - `openxr_bind_action`
 - `openxr_create_default_controller_bindings`
+
+### xr_passthrough_commands (5)
+
+- `set_xr_passthrough_settings`
+- `setup_xr_composition_layer_quad`
+- `get_xr_passthrough_info`
+- `create_xr_passthrough_controller_script`
+- `list_xr_passthrough_tools`
 
 ## Refresh
 
