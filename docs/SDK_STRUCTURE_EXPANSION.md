@@ -1,6 +1,6 @@
 # Godot SDK / docs → MCP structural expansion
 
-**As of:** v1.53 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
+**As of:** v1.54 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage` + `get_agent_capability_map`
 
 ## What we audited
 
@@ -60,7 +60,19 @@ Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html
 1. Prefer **workflow recipes** (pipelines) over raw ClassDB dumps.  
 2. Expose **numbers and resources** agents can set without a GUI.  
 3. Keep **escape hatches**: `call_editor`, `execute_editor_script`, `describe_class`.  
-4. Refresh with `.\scripts\export-surface-registry.ps1` + `list_docs_coverage`.
+4. Refresh with `.\scripts\export-surface-registry.ps1` + `list_docs_coverage`.  
+5. **Discovery first:** `list_agent_domains` → `list_tools_by_domain` → `get_tool_examples` (v1.54).  
+
+## v1.54 roadmap delivery
+
+| Wave | Status |
+|------|--------|
+| 1 Discovery index / search / examples | **shipped** (`discovery_commands`) |
+| 2 Playtest fix loop | **shipped** (`playtest_fix_commands`) |
+| 3 glTF character + retarget pipeline | **shipped** (`retarget_pipeline_commands`) |
+| 4 Theme type depth + dialogue graph CRUD | **shipped** |
+| 5 Debugger intel + performance budgets | **shipped** |
+| 6 VisualShader presets + tile custom data | **shipped** |
 
 ## Related
 

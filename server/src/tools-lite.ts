@@ -750,6 +750,107 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  {
+    name: 'list_agent_domains',
+    description: 'List MCP capability domains (scene, playtest, humanoid, …) for discovery.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_tools_by_domain',
+    description: 'List canonical + matched commands for a domain (e.g. playtest, animation).',
+    inputSchema: {
+      type: 'object',
+      properties: { domain: { type: 'string' } },
+      required: ['domain'],
+    },
+  },
+  {
+    name: 'search_mcp_tools',
+    description: 'Search registered plugin command names by keywords.',
+    inputSchema: {
+      type: 'object',
+      properties: { query: { type: 'string' }, max: { type: 'number' } },
+      required: ['query'],
+    },
+  },
+  {
+    name: 'get_tool_examples',
+    description: 'Curated example params for a tool name.',
+    inputSchema: {
+      type: 'object',
+      properties: { tool: { type: 'string' }, name: { type: 'string' } },
+      required: [],
+    },
+  },
+  {
+    name: 'get_agent_capability_map',
+    description: 'Full domain map + escape hatches for 100% production surfacing.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'playtest_fix_loop',
+    description: 'Playtest up to N attempts; collect debugger errors + fix hints.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        max_attempts: { type: 'number' },
+        mode: { type: 'string' },
+        settle_sec: { type: 'number' },
+        asserts: { type: 'array', items: { type: 'object' } },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_character_from_gltf',
+    description: 'Import character glTF → bone map → humanoid/locomotion pipeline.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        gltf_path: { type: 'string' },
+        profile: { type: 'string', description: 'mixamo|rpm|humanoid' },
+        parent_path: { type: 'string' },
+        setup_locomotion: { type: 'boolean' },
+      },
+      required: ['gltf_path'],
+    },
+  },
+  {
+    name: 'analyze_performance_budget',
+    description: 'Scene/runtime metrics vs budgets (nodes, FPS, memory).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        max_nodes: { type: 'number' },
+        min_fps: { type: 'number' },
+        max_static_memory_mb: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_fix_plan_from_errors',
+    description: 'Turn debugger errors into ordered fix steps + tools.',
+    inputSchema: {
+      type: 'object',
+      properties: { max: { type: 'number' } },
+      required: [],
+    },
+  },
+  {
+    name: 'theme_seed_default_types',
+    description: 'Seed Theme with Button/Label/Panel defaults (colors + StyleBoxFlat).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        theme_path: { type: 'string' },
+        bg_color: { type: 'string' },
+        font_color: { type: 'string' },
+        accent_color: { type: 'string' },
+      },
+      required: ['theme_path'],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

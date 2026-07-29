@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.53.0**  
+Plugin version: **1.54.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1119
-- **Command modules:** 128
+- **Registered plugin commands:** 1168
+- **Command modules:** 137
 
 ## Commands by module
 
@@ -382,6 +382,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_debugger_errors`
 - `set_debug_project_settings`
 
+### debugger_intel_commands (5)
+
+- `analyze_debugger_errors`
+- `get_fix_plan_from_errors`
+- `open_error_source`
+- `list_debugger_intel_tools`
+- `category`
+
 ### decal_depth_commands (3)
 
 - `setup_decal_3d`
@@ -395,6 +403,26 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_dialogue_runner_script`
 - `create_cutscene_player_script`
 - `list_dialogue_recipes`
+
+### dialogue_graph_depth_commands (8)
+
+- `dialogue_graph_load`
+- `dialogue_graph_add_line`
+- `dialogue_graph_set_line`
+- `dialogue_graph_remove_line`
+- `dialogue_graph_add_choice`
+- `dialogue_graph_validate`
+- `dialogue_graph_list_lines`
+- `list_dialogue_graph_depth_tools`
+
+### discovery_commands (6)
+
+- `list_agent_domains`
+- `list_tools_by_domain`
+- `search_mcp_tools`
+- `get_tool_examples`
+- `get_agent_capability_map`
+- `list_discovery_tools`
 
 ### display_window_commands (5)
 
@@ -896,6 +924,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `path_follow_set_loop`
 - `list_path_follow_tools`
 
+### performance_budget_commands (4)
+
+- `analyze_performance_budget`
+- `set_performance_budget_thresholds`
+- `get_performance_budget_thresholds`
+- `list_performance_budget_tools`
+
 ### physics_commands (18)
 
 - `setup_collision`
@@ -926,6 +961,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_physics_debug_tools`
 - `position`
 - `normal`
+
+### playtest_fix_commands (4)
+
+- `playtest_fix_loop`
+- `diagnose_playtest_failure`
+- `assert_scene_playable`
+- `list_playtest_fix_tools`
 
 ### playtest_loop_commands (2)
 
@@ -1042,6 +1084,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_orphaned_resources`
 - `validate_scene_dependencies`
 - `list_resource_graph_tools`
+
+### retarget_pipeline_commands (3)
+
+- `pipeline_character_from_gltf`
+- `pipeline_retarget_animations`
+- `list_retarget_pipeline_tools`
 
 ### run_session_commands (15)
 
@@ -1326,6 +1374,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `theme_get_type_info`
 - `assign_theme_to_control`
 
+### theme_type_depth_commands (6)
+
+- `theme_set_type_font`
+- `theme_set_type_icon`
+- `theme_seed_default_types`
+- `theme_list_type_items`
+- `theme_copy_type`
+- `list_theme_type_depth_tools`
+
 ### tilemap_commands (13)
 
 - `tilemap_set_cell`
@@ -1372,6 +1429,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tileset_set_tile_probability`
 - `tileset_set_atlas_margins`
 - `tileset_create_alternative_tile`
+
+### tileset_custom_data_commands (5)
+
+- `tileset_add_custom_data_layer`
+- `tileset_list_custom_data_layers`
+- `tileset_set_tile_custom_data`
+- `tileset_get_tile_custom_data`
+- `list_tileset_custom_data_tools`
 
 ### tileset_terrain_depth_commands (6)
 
@@ -1481,6 +1546,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `visual_shader_get_info`
 - `assign_visual_shader_material`
 - `visual_shader_add_preset_fresnel`
+
+### visual_shader_preset_commands (8)
+
+- `visual_shader_add_preset_pbr`
+- `visual_shader_add_preset_unshaded_color`
+- `visual_shader_add_preset_dissolve`
+- `visual_shader_list_node_types`
+- `list_visual_shader_preset_tools`
+- `time`
+- `threshold`
+- `cmp`
 
 ### webrtc_multiplayer_commands (7)
 

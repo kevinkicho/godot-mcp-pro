@@ -4,6 +4,35 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.54.0 — 2026-07-29
+
+**100% agent production surfacing roadmap** — discovery plane, playtest fix loops, retarget pipeline, theme/dialogue depth, debugger intel, perf budgets, VisualShader presets, tile custom data.
+
+### Wave 1 — Discovery
+- `list_agent_domains`, `list_tools_by_domain`, `search_mcp_tools`
+- `get_tool_examples`, `get_agent_capability_map`
+
+### Wave 2 — Playtest fix loop
+- `playtest_fix_loop`, `diagnose_playtest_failure`, `assert_scene_playable`
+
+### Wave 3 — Character / import pipeline
+- `pipeline_character_from_gltf`, `pipeline_retarget_animations`
+- Import schemas: fbx, ogg_vorbis expansions
+
+### Wave 4 — Theme + dialogue graphs
+- Theme fonts/icons/seed types/list items/copy type
+- Dialogue graph load/add/set/remove/choice/validate
+
+### Wave 5 — Debugger + performance
+- `analyze_debugger_errors`, `get_fix_plan_from_errors`, `open_error_source`
+- `analyze_performance_budget` + threshold settings
+
+### Wave 6 — VisualShader + tiles
+- VisualShader presets: PBR, unshaded color, dissolve scaffold
+- TileSet custom data layers + per-tile values
+
+---
+
 ## v1.53.0 — 2026-07-28
 
 **Agent surface expansion** — cameras, 2D lights/occluders, async resources, StyleBox, utility AI/GOAP, Expression eval, Decals.

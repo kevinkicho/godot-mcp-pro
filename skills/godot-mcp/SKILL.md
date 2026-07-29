@@ -15,10 +15,12 @@ You control Godot through the **godot** MCP server (open Pro bridge). This is th
 1. Call **`agent_ensure_ready`** with `project_path` when known (launches editor, waits, ensures runtime autoloads, opens main scene).
 2. Call **`health_check`** if ensure is unavailable; confirm `ready_for_agent_production`.
 3. If still offline: user enables plugin, or `launch_editor` + wait + re-check.
-4. Call **`agent_workflow_guide`** for non-trivial production.
-5. Unknown APIs: **`describe_class`**; full command list: **`list_mcp_commands`** / **`call_editor`**.
-6. Docs map: **`list_docs_coverage`**.
-7. After assets: **`scan_filesystem`** → **`wait_for_import`** / **`ensure_imported`**.
+4. Call **`list_agent_domains`** / **`get_agent_capability_map`** to discover domains (v1.54+).
+5. Call **`agent_workflow_guide`** for non-trivial production.
+6. Unknown APIs: **`describe_class`**; full command list: **`list_mcp_commands`** / **`search_mcp_tools`** / **`call_editor`**.
+7. Docs map: **`list_docs_coverage`**.
+8. After assets: **`scan_filesystem`** → **`wait_for_import`** / **`ensure_imported`**.
+9. On play failures: **`playtest_fix_loop`** or **`get_fix_plan_from_errors`**.
 
 **IDE parity:** With the plugin connected, prefer MCP for everything a human does in Godot (scenes, inspector numbers, animation/curves, humanoid, levels, GridMap, mesh collision, CSG bake, resource remaps, viewport focus, streaming, music, interactive playtest). Use **`call_editor`** for any registered method not typed in the client. Batch with **`batch_call_editor`**. Offline: `write_project_file`, headless scene ops, `run_project`. Docs: `docs/IDE_PARITY.md`, `docs/HEADLESS_AGENT.md`, `docs/HUMANOID_AND_LEVELS.md`.
 
@@ -114,6 +116,17 @@ Prefer composed pipelines for multi-step human docks:
 - 2D lights: CanvasModulate, LightOccluder2D, PointLight2D  
 - Async `ResourceLoader` helpers; StyleBoxFlat theme tools  
 - Utility AI / GOAP recipes; `evaluate_expression`; Decal3D depth
+
+## v1.54+ (100% production surfacing roadmap)
+
+- **Discovery:** `list_agent_domains`, `list_tools_by_domain`, `search_mcp_tools`, `get_tool_examples`, `get_agent_capability_map`
+- **Fix loop:** `playtest_fix_loop`, `diagnose_playtest_failure`, `assert_scene_playable`
+- **Character:** `pipeline_character_from_gltf`, `pipeline_retarget_animations`
+- **Theme:** `theme_seed_default_types`, fonts/icons/list/copy type
+- **Dialogue graph:** add/set/remove lines & choices, validate
+- **Debugger:** `analyze_debugger_errors`, `get_fix_plan_from_errors`
+- **Perf:** `analyze_performance_budget`
+- **VisualShader presets + tile custom data layers**
 
 ## Human-like inspector fine-tuning (full parameter control)
 

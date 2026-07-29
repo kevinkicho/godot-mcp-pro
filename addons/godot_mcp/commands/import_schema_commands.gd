@@ -81,6 +81,31 @@ func _schemas() -> Dictionary:
 			},
 			"presets": ["translations"],
 		},
+		"fbx": {
+			"importer": "scene (FBX)",
+			"common_params": {
+				"nodes/root_type": {"type": "string"},
+				"meshes/ensure_tangents": {"type": "bool"},
+				"meshes/generate_lods": {"type": "bool"},
+				"animation/import": {"type": "bool"},
+				"animation/fps": {"type": "int"},
+				"fbx/importer": {"type": "int", "hint": "0 ufbx, 1 legacy (version-dependent)"},
+				"fbx/allow_geometry_helper_nodes": {"type": "bool"},
+				"skins/use_named_skins": {"type": "bool"},
+			},
+			"presets": ["character_animated", "static_level", "game_prop"],
+		},
+		"ogg_vorbis": {
+			"importer": "oggvorbisstr",
+			"common_params": {
+				"loop": {"type": "bool"},
+				"loop_offset": {"type": "float"},
+				"bpm": {"type": "float"},
+				"beat_count": {"type": "int"},
+				"bar_beats": {"type": "int"},
+			},
+			"presets": ["music_loop", "sfx_oneshot"],
+		},
 	}
 
 
