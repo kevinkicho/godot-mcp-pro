@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.60.0**  
+Plugin version: **1.61.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1403
-- **Command modules:** 178
+- **Registered plugin commands:** 1428
+- **Command modules:** 182
 
 ## Commands by module
 
@@ -25,7 +25,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `batch_editor_calls`
 - `agent_headless_status`
 
-### agent_pipeline_commands (11)
+### agent_pipeline_commands (13)
 
 - `list_agent_pipelines`
 - `pipeline_prepare_level_lighting`
@@ -38,6 +38,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `pipeline_pre_ship_check`
 - `pipeline_3d_character_tps`
 - `pipeline_multiplayer_enet`
+- `pipeline_game_loop_shell`
+- `pipeline_multiplayer_lobby`
 
 ### ai_system_commands (8)
 
@@ -805,6 +807,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `bind_interaction_action`
 - `list_interaction_zone_tools`
 
+### inventory_component_commands (4)
+
+- `create_inventory_component_script`
+- `create_item_resource_script`
+- `create_item_resource`
+- `list_inventory_component_tools`
+
 ### io_commands (8)
 
 - `config_file_get`
@@ -983,6 +992,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_synchronizer_replication_interval`
 - `configure_multiplayer_spawner_limits`
 - `list_multiplayer_interest_tools`
+
+### multiplayer_lobby_depth_commands (6)
+
+- `create_multiplayer_lobby_script`
+- `create_player_spawn_service_script`
+- `setup_spawn_points`
+- `list_spawn_points`
+- `create_network_clock_script`
+- `list_multiplayer_lobby_depth_tools`
 
 ### multiplayer_peer_commands (4)
 
@@ -1374,6 +1392,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `move_to`
 - `watch_signals`
 
+### save_game_state_commands (8)
+
+- `capture_node_state`
+- `capture_scene_state`
+- `apply_node_state`
+- `create_game_state_serializer_script`
+- `write_save_slot_json`
+- `read_save_slot_json`
+- `list_save_slots_json`
+- `list_save_game_state_tools`
+
 ### scene_2d_commands (17)
 
 - `setup_camera_2d`
@@ -1447,6 +1476,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_loading_screen_scene`
 - `list_scene_flow_recipes`
 - `set_main_scene`
+
+### scene_flow_depth_commands (5)
+
+- `set_scene_tree_paused_state`
+- `create_game_flow_controller_script`
+- `setup_main_menu_scene`
+- `create_pause_menu_controller_script`
+- `list_scene_flow_depth_tools`
 
 ### scene_instance_depth_commands (7)
 

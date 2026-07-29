@@ -194,6 +194,21 @@ func _domains() -> Dictionary:
 			"examples": ["set_collision_layers_by_name", "set_collision_mask_by_name", "get_collision_layers_named"],
 			"workflow": "set_physics_layer_names → set_collision_layers_by_name layers=[player]",
 		},
+		"game_loop": {
+			"description": "Main menu, pause, scene flow, save slots",
+			"examples": ["pipeline_game_loop_shell", "setup_main_menu_scene", "create_game_flow_controller_script", "write_save_slot_json"],
+			"workflow": "pipeline_game_loop_shell → wire pause menu → save/load slots",
+		},
+		"save": {
+			"description": "Capture/apply node state and JSON save slots",
+			"examples": ["capture_scene_state", "write_save_slot_json", "create_game_state_serializer_script", "read_save_slot_json"],
+			"workflow": "capture_scene_state → write_save_slot_json → read → apply_node_state",
+		},
+		"inventory": {
+			"description": "ItemData + InventoryComponent recipes",
+			"examples": ["create_inventory_component_script", "create_item_resource", "setup_inventory_ui"],
+			"workflow": "create_item_resource → create_inventory_component_script → attach to player",
+		},
 	}
 
 

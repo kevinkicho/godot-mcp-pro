@@ -34,7 +34,7 @@
 | **Assets / import** | **~88%** | Med | Stage/wait/presets/schemas; every importer option UI not mirrored |
 | **UI / theme / fonts** | **~88%** | Med | Theme depth, StyleBox, LabelSettings/FontFile; Theme editor graph N/A |
 | **Audio / music** | **~90%** | High | Typed bus effects (reverb/EQ/compressor…), polyphony, music |
-| **Multiplayer / net** | **~85%** | Med | ENet host/join scripts + spawner + interest/WebRTC; no hosted MM |
+| **Multiplayer / net** | **~90%** | High | ENet + lobby ready-up + spawns + sync bulk + interest/WebRTC; no hosted MM |
 | **Rendering advanced** | **~88%** | Med | Env/Sky/Fog + GI/compositor/lightmap; vendor GPU captures N/A |
 | **Shaders / VFX** | **~82%** | Med | Text + VisualShader presets + particles; full VS node catalog N/A |
 | **XR** | **~80%** | Med | OpenXR maps + passthrough helpers; vendor AR kits partial |
@@ -52,12 +52,12 @@
 | 2D tile RPG with dialogue/quests | **~91%** |
 | 3D greybox → playable prototype | **~92%** |
 | 3D character + TPS + locomotion | **~90%** |
-| Multiplayer prototype | **~85%** |
+| Multiplayer prototype | **~90%** |
 | XR prototype | **~75%** |
 | Console-ready ship | **~50%** (platform/vendor limits) |
 
-**Overall agent production readiness (all genres blended): ~93–96%** (v1.60 pack-scene, named layers, sync bulk, queries).  
-**Remaining ~4–7%** is mostly: platform/vendor SDKs, visual editors (VS/Theme/Anim graphs), hosted matchmaking, and long-tail polish — not missing core docks.
+**Overall agent production readiness (all genres blended): ~94–97%** (v1.61 lobby + game loop + saves).  
+**Remaining ~3–6%** is mostly: platform/vendor SDKs, visual editors (VS/Theme/Anim graphs), hosted matchmaking, and long-tail polish — not missing core docks.
 
 ---
 
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.60) | ~1403 |
-| Modules | ~178 |
+| Plugin commands (v1.61) | ~1428 |
+| Modules | ~182 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

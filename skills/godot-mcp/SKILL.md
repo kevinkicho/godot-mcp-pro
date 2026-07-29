@@ -191,6 +191,17 @@ Full agent path for production 2D games (pixel + skeletal + tiles + mesh):
 - **Camera limits:** **`set_camera_2d_limits_from_tilemap`**
 - **Juice:** `setup_floating_text_spawner` / hit flash script
 
+## v1.61+ — multiplayer lobby + full game loop (recommended)
+
+Ship-loop depth for agents:
+
+- **`pipeline_game_loop_shell`** — main menu + GameFlow + SceneTransition + save serializer
+- **`pipeline_multiplayer_lobby`** — ENet + lobby ready-up + spawn points + spawn service
+- Lobby: `create_multiplayer_lobby_script` → `set_ready` / `start_match`
+- Spawns: `setup_spawn_points` + `create_player_spawn_service_script`
+- Saves: `capture_scene_state` → `write_save_slot_json` / `create_game_state_serializer_script`
+- Inventory: `create_item_resource` + `create_inventory_component_script`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

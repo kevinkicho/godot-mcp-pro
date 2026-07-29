@@ -17,6 +17,8 @@ func get_commands() -> Dictionary:
 		"pipeline_pre_ship_check": _pipeline_pre_ship_check,
 		"pipeline_3d_character_tps": _pipeline_3d_character_tps,
 		"pipeline_multiplayer_enet": _pipeline_multiplayer_enet,
+		"pipeline_game_loop_shell": _pipeline_game_loop_shell,
+		"pipeline_multiplayer_lobby": _pipeline_multiplayer_lobby,
 	}
 
 
@@ -33,6 +35,8 @@ func _list_pipelines(_params: Dictionary) -> Dictionary:
 			"pipeline_pre_ship_check": "Best practices + scene audit + export ready + optional playtest",
 			"pipeline_3d_character_tps": "CharacterBody3D motion preset + SpringArm TPS camera rig",
 			"pipeline_multiplayer_enet": "ENet host/join scripts + optional MultiplayerSpawner",
+			"pipeline_game_loop_shell": "Main menu + GameFlow + scene transition + optional save serializer",
+			"pipeline_multiplayer_lobby": "ENet + lobby ready-up + spawn points + spawn service",
 		},
 		"hint": "Prefer pipelines for multi-dock human workflows; use atomic tools for fine control",
 	})
@@ -421,4 +425,82 @@ func _pipeline_multiplayer_enet(params: Dictionary) -> Dictionary:
 		"pipeline": "multiplayer_enet",
 		"steps": steps,
 		"next": ["setup_multiplayer_synchronizer", "add_replication_property", "playtest host/join"],
+	})
+
+
+func _pipeline_game_loop_shell(params: Dictionary) -> Dictionary:
+	## Menu ↔ game shell for any project.
+	var steps: Array = []
+	var main_menu: String = optional_string(params, "main_menu_scene", "res://scenes/main_menu.tscn")
+	var game_scene: String = optional_string(params, "game_scene", "res://scenes/main.tscn")
+	steps.append({"game_flow": await _exec("create_game_flow_controller_script", {
+		"path": optional_string(params, "flow_script", "res://scripts/game_flow.gd"),
+		"main_menu_scene": main_menu,
+		"game_scene": game_scene,
+		"add_autoload": optional_bool(params, "add_autoload", true),
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	steps.append({"transition": await _exec("create_scene_transition_script", {
+		"add_autoload": optional_bool(params, "add_autoload", true),
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	steps.append({"main_menu": await _exec("setup_main_menu_scene", {
+		"path": main_menu,
+		"game_scene": game_scene,
+		"title": optional_string(params, "title", "Game Title"),
+		"set_as_main": optional_bool(params, "set_as_main", true),
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	if optional_bool(params, "save_system", true):
+		steps.append({"save": await _exec("create_game_state_serializer_script", {
+			"add_autoload": optional_bool(params, "add_autoload", true),
+			"overwrite": optional_bool(params, "overwrite", false),
+		})})
+	if optional_bool(params, "pause_controller", true):
+		steps.append({"pause": await _exec("create_pause_menu_controller_script", {
+			"overwrite": optional_bool(params, "overwrite", false),
+		})})
+	return success({
+		"pipeline": "game_loop_shell",
+		"main_menu_scene": main_menu,
+		"game_scene": game_scene,
+		"steps": steps,
+		"next": ["setup_pause_menu", "write_save_slot_json", "play_main_scene"],
+	})
+
+
+func _pipeline_multiplayer_lobby(params: Dictionary) -> Dictionary:
+	var steps: Array = []
+	steps.append({"enet": await _exec("pipeline_multiplayer_enet", {
+		"player_scene": optional_string(params, "player_scene", ""),
+		"setup_spawner": optional_bool(params, "setup_spawner", true),
+		"add_autoload": optional_bool(params, "add_autoload", false),
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	steps.append({"lobby": await _exec("create_multiplayer_lobby_script", {
+		"add_autoload": optional_bool(params, "add_autoload", true),
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	steps.append({"spawn_service": await _exec("create_player_spawn_service_script", {
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	if optional_bool(params, "setup_spawn_points", true):
+		steps.append({"spawn_points": await _exec("setup_spawn_points", {
+			"parent_path": optional_string(params, "parent_path", "."),
+			"count": optional_int(params, "spawn_count", 4),
+			"dimension": optional_string(params, "dimension", "auto"),
+		})})
+	if optional_bool(params, "network_clock", true):
+		steps.append({"clock": await _exec("create_network_clock_script", {
+			"add_autoload": optional_bool(params, "add_autoload", false),
+			"overwrite": optional_bool(params, "overwrite", false),
+		})})
+	return success({
+		"pipeline": "multiplayer_lobby",
+		"steps": steps,
+		"next": [
+			"add_replication_properties_bulk",
+			"create_multiplayer_lobby_ui",
+			"Lobby.set_ready / start_match",
+		],
 	})

@@ -44,6 +44,10 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Find by class | `find_nodes_by_class` / name pattern / `reorder_node` |
 | Camera limits from map | `set_camera_2d_limits_from_tilemap` |
 | Make resource unique | `make_resource_unique` |
+| Game loop shell | `pipeline_game_loop_shell` / main menu / GameFlow |
+| Multiplayer lobby | `pipeline_multiplayer_lobby` / ready-up / spawn points |
+| Save slots JSON | `write_save_slot_json` / `capture_scene_state` |
+| Inventory component | `create_inventory_component_script` / ItemData |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |

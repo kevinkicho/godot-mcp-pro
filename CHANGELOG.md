@@ -4,6 +4,30 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.61.0 — 2026-07-29
+
+**Recommended deep wave: multiplayer lobby + game loop shell + save state + inventory** — closes host→play and menu↔game↔save ship loops.
+
+### Multiplayer lobby
+- `create_multiplayer_lobby_script` (ready-up, roster, start_match)
+- `create_player_spawn_service_script`, `setup_spawn_points`, `list_spawn_points`
+- `create_network_clock_script` (RTT / server time estimate)
+- **`pipeline_multiplayer_lobby`**
+
+### Game loop / scene flow
+- `create_game_flow_controller_script` (menu/game/pause/quit)
+- `setup_main_menu_scene`, `create_pause_menu_controller_script`
+- **`pipeline_game_loop_shell`**
+
+### Save / load state
+- `capture_node_state`, `capture_scene_state`, `apply_node_state`
+- `create_game_state_serializer_script`, `write_save_slot_json`, `read_save_slot_json`, `list_save_slots_json`
+
+### Inventory
+- `create_item_resource_script`, `create_item_resource`, `create_inventory_component_script`
+
+---
+
 ## v1.60.0 — 2026-07-29
 
 **Biggest-gain production tools** — pack-as-scene, input map I/O, named collision layers, multiplayer sync bulk, resource make-unique, node queries, camera limits from tilemap, floating combat text.

@@ -4500,6 +4500,112 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['tilemap_path'],
     },
   },
+  // ── v1.61 game loop + multiplayer lobby ──
+  {
+    name: 'pipeline_game_loop_shell',
+    description: 'Main menu + GameFlow autoload + scene transition + optional save system',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        main_menu_scene: { type: 'string' },
+        game_scene: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        save_system: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_multiplayer_lobby',
+    description: 'ENet + lobby ready-up + spawn points + player spawn service',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        player_scene: { type: 'string' },
+        spawn_count: { type: 'number' },
+        parent_path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_main_menu_scene',
+    description: 'Create main menu .tscn with Start/Quit wired to GameFlow',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        game_scene: { type: 'string' },
+        title: { type: 'string' },
+        set_as_main: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_multiplayer_lobby_script',
+    description: 'Lobby roster + ready-up + start_match (server authoritative)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_spawn_points',
+    description: 'Create Marker2D/3D spawn points in group spawn_point',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        count: { type: 'number' },
+        dimension: { type: 'string' },
+        spacing: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'write_save_slot_json',
+    description: 'Write user://saves/slot_N.json game save payload',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        slot: { type: 'string' },
+        data: { type: 'object' },
+        meta: { type: 'object' },
+      },
+      required: ['data'],
+    },
+  },
+  {
+    name: 'capture_scene_state',
+    description: 'Capture serializable properties from nodes in open scene',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        class_name: { type: 'string' },
+        group: { type: 'string' },
+        properties: { type: 'array' },
+        limit: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_inventory_component_script',
+    description: 'InventoryComponent with stack add/remove and save helpers',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, overwrite: { type: 'boolean' } },
+      required: [],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */
