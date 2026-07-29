@@ -280,11 +280,29 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["focus"] = [
 				"list_level_design_tools",
 				"greybox_room / greybox_corridor",
-				"gridmap_* or tilemap_* paint",
+				"create_heightmap_terrain / gridmap_* / tilemap_*",
+				"stream_load_chunk for large worlds",
 				"place_prop_scatter / multimesh_scatter / stamp_scene_instances",
 				"setup_navigation_region + bake",
 				"validate_level_playable",
 				"level_playtest_route + playtest_report",
+			]
+		"audio", "music":
+			guide["focus"] = [
+				"list_music_tools",
+				"create_music_controller_script add_autoload=true",
+				"music_set_playlist states={explore,combat}",
+				"add_audio_bus / set_bus_volume_db",
+				"setup_audio_stream_player_2d/3d",
+			]
+		"editor", "workspace":
+			guide["focus"] = [
+				"get_editor_workspace_info",
+				"play_main_scene / play_current_scene / play_custom_scene",
+				"list_open_scenes / save_all_scenes",
+				"list_resources_by_type",
+				"set_nodes_transform / select_nodes",
+				"open_path_in_filesystem / set_main_screen",
 			]
 		"animation", "animations", "anim":
 			guide["focus"] = [
@@ -475,8 +493,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"create_audio_manager_script", "add_audio_player", "set_audio_player_stream",
 				"add_audio_bus", "remove_audio_bus", "set_audio_bus",
 				"add_audio_bus_effect", "get_audio_bus_layout", "save_audio_bus_layout", "load_audio_bus_layout",
+				"create_music_controller_script", "setup_music_player", "music_set_playlist",
 			],
-			"gaps": ["interactive music graphs", "AudioStreamGenerator procedural"],
+			"gaps": ["AudioStreamGenerator procedural waveform designer"],
 		},
 		"tutorials/inputs": {
 			"status": "strong",

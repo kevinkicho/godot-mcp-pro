@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.44.0**  
+Plugin version: **1.45.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 847
-- **Command modules:** 78
+- **Registered plugin commands:** 872
+- **Command modules:** 82
 
 ## Commands by module
 
@@ -349,6 +349,20 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_main_screen`
 - `distraction_free_mode`
 
+### editor_workspace_commands (11)
+
+- `play_main_scene`
+- `play_current_scene`
+- `play_custom_scene`
+- `get_editor_workspace_info`
+- `set_editor_3d_snap`
+- `list_open_scenes`
+- `close_scene`
+- `save_all_scenes`
+- `list_resources_by_type`
+- `duplicate_scene_file`
+- `list_editor_workspace_tools`
+
 ### export_commands (16)
 
 - `list_export_presets`
@@ -589,6 +603,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_multiplayer_player_scene`
 - `setup_multiplayer_spawn_stack`
 - `list_multiplayer_recipes`
+
+### music_commands (4)
+
+- `create_music_controller_script`
+- `setup_music_player`
+- `music_set_playlist`
+- `list_music_tools`
 
 ### navigation_commands (8)
 
@@ -866,6 +887,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_scene_flow_recipes`
 - `set_main_scene`
 
+### scene_stream_commands (6)
+
+- `create_stream_manager_script`
+- `stream_load_chunk`
+- `stream_unload_chunk`
+- `stream_list_chunks`
+- `stream_set_chunk_active`
+- `list_stream_tools`
+
 ### scene_unique_commands (4)
 
 - `set_scene_unique_name`
@@ -926,6 +956,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `global_pose`
 - `rest`
 - `mapped_count`
+
+### terrain_mesh_commands (4)
+
+- `create_heightmap_terrain`
+- `create_plane_mesh_terrain`
+- `terrain_apply_height_noise`
+- `list_terrain_tools`
 
 ### test_commands (5)
 

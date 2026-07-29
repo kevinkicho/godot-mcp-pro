@@ -20,7 +20,7 @@ You control Godot through the **godot** MCP server (open Pro bridge). This is th
 6. Docs map: **`list_docs_coverage`**.
 7. After assets: **`scan_filesystem`** → **`wait_for_import`** / **`ensure_imported`**.
 
-**Headless IDE parity:** With the plugin connected you have the full human editor surface (inspector fine-tune, import, play, export). Use **`call_editor`** for any registered method not in the typed tool list. Batch with **`batch_call_editor`**. Offline scaffolding: `write_project_file`, headless `create_scene`/`add_node`, `run_project`. See `docs/HEADLESS_AGENT.md`.
+**IDE parity:** With the plugin connected, prefer MCP for everything a human does in Godot (scenes, inspector numbers, animation/curves, humanoid, levels, GridMap, streaming chunks, music, playtest). Use **`call_editor`** for any registered method not typed in the client. Batch with **`batch_call_editor`**. Offline: `write_project_file`, headless scene ops, `run_project`. Docs: `docs/IDE_PARITY.md`, `docs/HEADLESS_AGENT.md`, `docs/HUMANOID_AND_LEVELS.md`.
 
 ## Production loop (default)
 

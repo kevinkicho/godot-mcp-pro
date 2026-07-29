@@ -4,6 +4,29 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.45.0 — 2026-07-28
+
+**IDE parity expansion** — streaming chunks, heightmap terrain, interactive music, editor workspace play/browse.
+
+### Scene streaming
+- `create_stream_manager_script`, `stream_load_chunk`, `stream_unload_chunk`, `stream_list_chunks`, `stream_set_chunk_active`
+
+### Terrain (native heightfield)
+- `create_heightmap_terrain`, `create_plane_mesh_terrain`, `terrain_apply_height_noise`, `list_terrain_tools`
+
+### Interactive music
+- `create_music_controller_script`, `setup_music_player`, `music_set_playlist`, `list_music_tools`
+
+### Editor workspace
+- `play_main_scene`, `play_current_scene`, `play_custom_scene`
+- `get_editor_workspace_info`, `list_open_scenes`, `save_all_scenes`, `close_scene`
+- `list_resources_by_type`, `duplicate_scene_file`, `set_editor_3d_snap`
+
+### Docs
+- `docs/IDE_PARITY.md`; agent topics audio/editor/level streaming
+
+---
+
 ## v1.44.0 — 2026-07-28
 
 **Humanoid + level design verticals** — agent recipes for characters, interaction, greybox levels, GridMap paint, MultiMesh, animation libraries.

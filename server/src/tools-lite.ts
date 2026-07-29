@@ -1977,6 +1977,79 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'create_heightmap_terrain',
+    description: 'Build heightfield MeshInstance3D terrain from noise or heights array (+ optional collision)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        resolution_x: { type: 'number' },
+        resolution_z: { type: 'number' },
+        size_x: { type: 'number' },
+        size_z: { type: 'number' },
+        height_scale: { type: 'number' },
+        seed: { type: 'number' },
+        with_collision: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'stream_load_chunk',
+    description: 'Instance a level chunk PackedScene under Chunks/ for large-world streaming',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scene_path: { type: 'string' },
+        id: { type: 'string' },
+        parent_path: { type: 'string' },
+        position: { type: 'object' },
+      },
+      required: ['scene_path'],
+    },
+  },
+  {
+    name: 'create_music_controller_script',
+    description: 'Interactive BGM controller with crossfade states (explore/combat/…)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'play_main_scene',
+    description: 'Play project main scene (Editor Play button)',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'play_current_scene',
+    description: 'Play currently edited scene',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'get_editor_workspace_info',
+    description: 'Open scenes, play state, main scene path',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_resources_by_type',
+    description: 'Browse res:// by extension or resource class (FileSystem filter)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        extension: { type: 'string' },
+        type: { type: 'string' },
+        path: { type: 'string' },
+        max: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
     name: 'insert_method_key',
     description: 'Call Method track key (human method track in Animation editor)',
     inputSchema: {
