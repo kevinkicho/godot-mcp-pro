@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.59.0**  
+Plugin version: **1.60.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1365
-- **Command modules:** 170
+- **Registered plugin commands:** 1403
+- **Command modules:** 178
 
 ## Commands by module
 
@@ -289,6 +289,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `camera_make_current`
 - `list_camera_depth_tools`
 
+### camera_level_bounds_commands (4)
+
+- `set_camera_2d_limits_rect`
+- `set_camera_2d_limits_from_tilemap`
+- `set_camera_2d_limits_from_node_bounds`
+- `list_camera_level_bounds_tools`
+
 ### canvas_draw_recipe_commands (4)
 
 - `list_canvas_draw_recipes`
@@ -335,6 +342,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `methods`
 - `signals`
 - `properties`
+
+### collision_layer_bit_commands (5)
+
+- `set_collision_layers_by_name`
+- `set_collision_mask_by_name`
+- `get_collision_layers_named`
+- `resolve_layer_names_to_mask`
+- `list_collision_layer_bit_tools`
 
 ### compat_commands (8)
 
@@ -625,6 +640,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_scene_tree_paused`
 - `list_game_ui_templates`
 
+### gameplay_feedback_commands (4)
+
+- `create_floating_text_script`
+- `create_hit_flash_script`
+- `setup_floating_text_spawner`
+- `list_gameplay_feedback_tools`
+
 ### gameplay_template_commands (5)
 
 - `create_save_manager_script`
@@ -760,6 +782,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_input_action_events`
 - `add_input_action_event`
 - `clear_input_action_events`
+
+### input_map_io_commands (5)
+
+- `export_input_map_json`
+- `import_input_map_json`
+- `list_input_map_actions_detail`
+- `clear_input_action_events`
+- `list_input_map_io_tools`
 
 ### input_record_commands (3)
 
@@ -970,6 +1000,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_multiplayer_spawn_stack`
 - `list_multiplayer_recipes`
 
+### multiplayer_sync_depth_commands (5)
+
+- `configure_multiplayer_synchronizer`
+- `add_replication_properties_bulk`
+- `list_replication_config`
+- `set_rpc_config_on_node`
+- `list_multiplayer_sync_depth_tools`
+
 ### music_commands (4)
 
 - `create_music_controller_script`
@@ -1035,6 +1073,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `batch_update_property`
 - `nodes`
 - `selected`
+
+### node_query_commands (6)
+
+- `find_nodes_by_class`
+- `find_nodes_by_script`
+- `find_nodes_by_name_pattern`
+- `count_nodes_by_class`
+- `reorder_node`
+- `list_node_query_tools`
 
 ### occlusion_culling_commands (4)
 
@@ -1274,6 +1321,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `validate_preload_manifest`
 - `list_resource_preload_tools`
 
+### resource_unique_commands (4)
+
+- `make_resource_unique`
+- `set_resource_local_to_scene`
+- `duplicate_subresource_on_node`
+- `list_resource_unique_tools`
+
 ### retarget_pipeline_commands (3)
 
 - `pipeline_character_from_gltf`
@@ -1403,6 +1457,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `instance_packed_scene`
 - `batch_set_owners`
 - `list_scene_instance_tools`
+
+### scene_pack_commands (5)
+
+- `pack_node_as_scene`
+- `pack_selection_as_scene`
+- `create_inherited_scene_from`
+- `replace_node_with_scene_instance`
+- `list_scene_pack_tools`
 
 ### scene_stream_commands (6)
 

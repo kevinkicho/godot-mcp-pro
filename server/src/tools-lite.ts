@@ -4381,6 +4381,125 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['settings'],
     },
   },
+  // ── v1.60 biggest gains ──
+  {
+    name: 'pack_node_as_scene',
+    description: 'Save a node branch as PackedScene .tscn (Scene dock Save Branch As)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        path: { type: 'string' },
+        overwrite: { type: 'boolean' },
+        replace_with_instance: { type: 'boolean' },
+      },
+      required: ['node_path', 'path'],
+    },
+  },
+  {
+    name: 'export_input_map_json',
+    description: 'Export InputMap actions/events to res:// JSON for VCS/portability',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        include_ui: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'import_input_map_json',
+    description: 'Import InputMap from JSON (replace_existing default true)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        replace_existing: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'set_collision_layers_by_name',
+    description: 'Set collision_layer from named layers e.g. [player, world]',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        layers: { type: 'array', items: { type: 'string' } },
+        mode: { type: 'string', description: 'replace|add|remove' },
+        dimension: { type: 'string' },
+      },
+      required: ['node_path', 'layers'],
+    },
+  },
+  {
+    name: 'set_collision_mask_by_name',
+    description: 'Set collision_mask from named layers',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        layers: { type: 'array', items: { type: 'string' } },
+        mode: { type: 'string' },
+      },
+      required: ['node_path', 'layers'],
+    },
+  },
+  {
+    name: 'add_replication_properties_bulk',
+    description: 'Bulk MultiplayerSynchronizer replication properties',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        properties: { type: 'array' },
+        clear_existing: { type: 'boolean' },
+      },
+      required: ['node_path', 'properties'],
+    },
+  },
+  {
+    name: 'find_nodes_by_class',
+    description: 'Find all nodes of a class in the open scene',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        class_name: { type: 'string' },
+        node_path: { type: 'string' },
+        limit: { type: 'number' },
+      },
+      required: ['class_name'],
+    },
+  },
+  {
+    name: 'make_resource_unique',
+    description: 'Duplicate a resource property so the node owns a unique copy (Make Unique)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        property: { type: 'string' },
+        deep: { type: 'boolean' },
+        local_to_scene: { type: 'boolean' },
+      },
+      required: ['node_path', 'property'],
+    },
+  },
+  {
+    name: 'set_camera_2d_limits_from_tilemap',
+    description: 'Set Camera2D limits from TileMapLayer used rect',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        camera_path: { type: 'string' },
+        tilemap_path: { type: 'string' },
+        margin: { type: 'number' },
+      },
+      required: ['tilemap_path'],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */

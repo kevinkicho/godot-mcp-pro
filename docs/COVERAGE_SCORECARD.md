@@ -56,8 +56,8 @@
 | XR prototype | **~75%** |
 | Console-ready ship | **~50%** (platform/vendor limits) |
 
-**Overall agent production readiness (all genres blended): ~91–94%.**  
-**Remaining ~6–9%** is mostly: platform/vendor SDKs, visual editors (VS/Theme/Anim graphs), hosted matchmaking, and long-tail polish — not missing core docks.
+**Overall agent production readiness (all genres blended): ~93–96%** (v1.60 pack-scene, named layers, sync bulk, queries).  
+**Remaining ~4–7%** is mostly: platform/vendor SDKs, visual editors (VS/Theme/Anim graphs), hosted matchmaking, and long-tail polish — not missing core docks.
 
 ---
 
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.59) | ~1365 |
-| Modules | ~170 |
+| Plugin commands (v1.60) | ~1403 |
+| Modules | ~178 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

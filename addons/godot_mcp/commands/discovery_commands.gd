@@ -184,6 +184,16 @@ func _domains() -> Dictionary:
 			"examples": ["create_environment_resource", "create_procedural_sky", "setup_fog_volume", "assign_environment_to_world"],
 			"workflow": "create_procedural_sky → create_environment_resource → assign_environment_to_world",
 		},
+		"scene_pack": {
+			"description": "Pack branch as scene, inherited scenes, replace with instance",
+			"examples": ["pack_node_as_scene", "pack_selection_as_scene", "create_inherited_scene_from"],
+			"workflow": "build under open scene → pack_node_as_scene → instance elsewhere",
+		},
+		"collision_layers": {
+			"description": "Named physics layer bits (human layer names)",
+			"examples": ["set_collision_layers_by_name", "set_collision_mask_by_name", "get_collision_layers_named"],
+			"workflow": "set_physics_layer_names → set_collision_layers_by_name layers=[player]",
+		},
 	}
 
 

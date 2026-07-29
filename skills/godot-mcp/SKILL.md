@@ -180,6 +180,17 @@ Full agent path for production 2D games (pixel + skeletal + tiles + mesh):
 - **AnimPlayer:** autoplay, libraries, speed, status
 - **PhysicsMaterial + occlusion culling** helpers
 
+## v1.60+ — highest-gain agent workflows
+
+- **Pack props:** **`pack_node_as_scene`** path=res://props/x.tscn (optional replace_with_instance)
+- **InputMap portability:** `export_input_map_json` / `import_input_map_json`
+- **Layers by name:** `set_collision_layers_by_name layers=[player]` / mask by name
+- **Net sync bulk:** `add_replication_properties_bulk properties=[position,velocity]`
+- **Make unique:** `make_resource_unique property=material_override`
+- **Find in tree:** `find_nodes_by_class class_name=CharacterBody2D` / name pattern / reorder_node
+- **Camera limits:** **`set_camera_2d_limits_from_tilemap`**
+- **Juice:** `setup_floating_text_spawner` / hit flash script
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

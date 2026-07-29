@@ -38,6 +38,12 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Environment / Sky / Fog | `create_environment_resource` / `create_procedural_sky` / `setup_fog_volume` |
 | ENet multiplayer | `create_enet_multiplayer_script` / `pipeline_multiplayer_enet` |
 | Audio bus FX typed | `add_audio_bus_effect_typed` |
+| Pack branch as scene | `pack_node_as_scene` / `pack_selection_as_scene` |
+| InputMap JSON I/O | `export_input_map_json` / `import_input_map_json` |
+| Named collision layers | `set_collision_layers_by_name` / mask by name |
+| Find by class | `find_nodes_by_class` / name pattern / `reorder_node` |
+| Camera limits from map | `set_camera_2d_limits_from_tilemap` |
+| Make resource unique | `make_resource_unique` |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |

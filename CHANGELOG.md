@@ -4,6 +4,33 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.60.0 — 2026-07-29
+
+**Biggest-gain production tools** — pack-as-scene, input map I/O, named collision layers, multiplayer sync bulk, resource make-unique, node queries, camera limits from tilemap, floating combat text.
+
+### Scene pack (Scene dock)
+- `pack_node_as_scene`, `pack_selection_as_scene`, `create_inherited_scene_from`
+- `replace_node_with_scene_instance`
+
+### InputMap I/O
+- `export_input_map_json`, `import_input_map_json`, `list_input_map_actions_detail`, `clear_input_action_events`
+
+### Named collision layers
+- `set_collision_layers_by_name`, `set_collision_mask_by_name`, `get_collision_layers_named`, `resolve_layer_names_to_mask`
+
+### Multiplayer sync depth
+- `configure_multiplayer_synchronizer`, `add_replication_properties_bulk`, `list_replication_config`, `set_rpc_config_on_node`
+
+### Resources / tree navigation
+- `make_resource_unique`, `set_resource_local_to_scene`
+- `find_nodes_by_class`, `find_nodes_by_script`, `find_nodes_by_name_pattern`, `count_nodes_by_class`, `reorder_node`
+
+### Camera + combat juice
+- `set_camera_2d_limits_from_tilemap`, `set_camera_2d_limits_rect`, `set_camera_2d_limits_from_node_bounds`
+- Floating damage text + hit flash scripts + spawner
+
+---
+
 ## v1.59.0 — 2026-07-29
 
 **Full production push** — CharacterBody motion, Environment/Sky/Fog, SpringArm TPS, audio bus effects, ENet multiplayer peers, project settings bulk, AnimationPlayer depth, PhysicsMaterial, occlusion culling, TPS/multiplayer pipelines.
