@@ -47,12 +47,12 @@ func _find_by_class(params: Dictionary) -> Dictionary:
 func _walk_class(scene_root: Node, node: Node, class_name_str: String, out: Array, limit: int, include_internal: bool) -> void:
 	if out.size() >= limit:
 		return
-	var match := false
+	var is_match := false
 	if node.get_class() == class_name_str:
-		match = true
+		is_match = true
 	elif ClassDB.class_exists(class_name_str) and node.is_class(class_name_str):
-		match = true
-	if match:
+		is_match = true
+	if is_match:
 		out.append({
 			"node_path": str(scene_root.get_path_to(node)),
 			"name": node.name,

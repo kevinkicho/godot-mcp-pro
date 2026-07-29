@@ -2044,22 +2044,22 @@ func _cmd_find_nodes(params: Dictionary) -> void:
 func _find_nodes_walk(node: Node, by: String, query: String, out: Array, max_n: int) -> void:
 	if out.size() >= max_n:
 		return
-	var match := false
+	var is_match := false
 	match by:
 		"group":
-			match = node.is_in_group(query)
+			is_match = node.is_in_group(query)
 		"type", "class":
-			match = node.is_class(query) or node.get_class() == query
+			is_match = node.is_class(query) or node.get_class() == query
 		"name":
-			match = str(node.name).contains(query) or str(node.name).matchn("*" + query + "*")
+			is_match = str(node.name).contains(query) or str(node.name).matchn("*" + query + "*")
 		"path":
-			match = str(node.get_path()).contains(query)
+			is_match = str(node.get_path()).contains(query)
 		"script":
 			var sc: Script = node.get_script()
-			match = sc != null and sc.resource_path.contains(query)
+			is_match = sc != null and sc.resource_path.contains(query)
 		_:
-			match = str(node.name).contains(query) or node.is_class(query)
-	if match:
+			is_match = str(node.name).contains(query) or node.is_class(query)
+	if is_match:
 		out.append({
 			"path": str(node.get_path()),
 			"name": str(node.name),
