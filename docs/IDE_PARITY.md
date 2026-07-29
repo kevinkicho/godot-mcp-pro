@@ -68,6 +68,12 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Steering / flock | `create_steering_behaviors_script` / `create_flock_controller_script` |
 | Reverb zones | `setup_reverb_zone_3d` / `setup_audio_listener_3d` |
 | Reticle / drag-drop | `setup_reticle_ui` / `setup_drag_drop_inventory_row` |
+| Dialogue graph + timeline | `validate_dialogue_graph_json` / `setup_cinematic_timeline_player` / `setup_dialogue_balloon_ui` |
+| Cloud save / settings / a11y | `create_cloud_save_provider_script` / `setup_settings_menu_ui` / `create_accessibility_settings_script` |
+| Net prediction | `setup_prediction_pipeline` / `create_client_prediction_script` / `create_network_interpolator_script` |
+| 2D lights + occluders | `setup_2d_lighting_scene_pack` / `setup_light_occluder_polygon_2d` |
+| Filesystem bulk remap | `move_resource_file` / `bulk_move_resources` / `bulk_rename_resources` |
+| Perf budget autofix | `suggest_performance_fixes` / `apply_performance_autofix_pack` |
 | Multiplayer lobby | `pipeline_multiplayer_lobby` / ready-up / spawn points |
 | Save slots JSON | `write_save_slot_json` / `capture_scene_state` |
 | Inventory component | `create_inventory_component_script` / ItemData |

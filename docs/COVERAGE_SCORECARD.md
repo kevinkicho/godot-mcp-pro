@@ -1,6 +1,6 @@
 # Coverage scorecard (honest agent production %)
 
-**As of:** plugin **v1.68** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
+**As of:** plugin **v1.69** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
 **Refresh:** `list_docs_coverage` · `get_production_surface_report` · `.\scripts\export-surface-registry.ps1`
 
 ---
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.68) | 1640 |
-| Modules | 215 |
+| Plugin commands (v1.69) | 1686 |
+| Modules | 221 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

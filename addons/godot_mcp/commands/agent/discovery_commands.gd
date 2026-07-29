@@ -306,6 +306,36 @@ func _domains() -> Dictionary:
 			"examples": ["list_shader_global_parameters", "set_shader_global_parameter", "set_shader_globals_batch"],
 			"workflow": "add_shader_global_parameter -> set in shaders as global uniform",
 		},
+		"dialogue_runtime": {
+			"description": "Dialogue graph validate/merge, typewriter balloon, cinematic timeline",
+			"examples": ["validate_dialogue_graph_json", "setup_dialogue_balloon_ui", "create_cinematic_timeline_json", "setup_cinematic_timeline_player"],
+			"workflow": "create_dialogue_resource -> validate_dialogue_graph_json -> setup_dialogue_balloon_ui",
+		},
+		"cloud_settings": {
+			"description": "Cloud save providers, settings menu, accessibility defaults",
+			"examples": ["create_cloud_save_provider_script", "setup_settings_menu_ui", "create_accessibility_settings_script", "apply_accessibility_project_defaults"],
+			"workflow": "create_accessibility_settings_script add_autoload -> setup_settings_menu_ui -> cloud provider stub",
+		},
+		"net_prediction": {
+			"description": "Client prediction, reconciliation, interpolation recipes",
+			"examples": ["setup_prediction_pipeline", "create_client_prediction_script", "create_network_interpolator_script"],
+			"workflow": "setup_prediction_pipeline -> wire with ENet lobby + interest manager",
+		},
+		"light_2d": {
+			"description": "2D lights + occluders pack (directional, texture point, polygons)",
+			"examples": ["setup_2d_lighting_scene_pack", "setup_light_occluder_polygon_2d", "setup_directional_light_2d_node", "set_light_2d_params"],
+			"workflow": "setup_2d_lighting_scene_pack -> tune lights -> occluders on walls",
+		},
+		"filesystem_bulk": {
+			"description": "Move/rename/delete resources with reference remap",
+			"examples": ["move_resource_file", "bulk_move_resources", "bulk_rename_resources", "list_directory_resources"],
+			"workflow": "list_directory_resources -> move_resource_file remap=true dry_run then apply",
+		},
+		"perf_autofix": {
+			"description": "Performance budget suggestions + auto LOD/shadow/particle packs",
+			"examples": ["suggest_performance_fixes", "apply_performance_autofix_pack", "autofix_reduce_shadows", "create_performance_watchdog_script"],
+			"workflow": "analyze_performance_budget -> suggest_performance_fixes -> apply_performance_autofix_pack",
+		},
 		"save": {
 			"description": "Capture/apply node state and JSON save slots",
 			"examples": ["capture_scene_state", "write_save_slot_json", "create_game_state_serializer_script", "read_save_slot_json"],

@@ -4,6 +4,42 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.69.0 — 2026-07-29
+
+**All remaining critical maps** - dialogue/cinematic, cloud/settings/a11y, net prediction, 2D lights, filesystem bulk, perf autofix.
+
+### Dialogue runtime + cinematic timeline
+- Validate/merge dialogue JSON graphs
+- Typewriter RichText + dialogue balloon UI
+- Cinematic timeline script/JSON/player (cuts, camera, dialogue, signals)
+
+### Cloud save / settings / accessibility
+- CloudSaveProvider (stub + HTTP template) + SaveCloudSync
+- Settings menu controller + UI
+- AccessibilitySettings autoload + project stretch defaults
+
+### Multiplayer prediction
+- Client prediction, server reconciliation, input buffer, network interpolator
+- `setup_prediction_pipeline` + NETWORK_PREDICTION.md notes
+
+### 2D lighting / occlusion depth
+- DirectionalLight2D, textured PointLight2D, polygon/rect occluders
+- Batch light params + full `setup_2d_lighting_scene_pack`
+
+### Filesystem bulk
+- Move/rename/duplicate/delete with optional reference remap
+- Bulk move/rename, list directory resources
+
+### Performance autofix
+- `suggest_performance_fixes`, packs mobile/balanced/aggressive
+- Autofix shadows, LOD visibility, particles, GI mode
+- Runtime performance watchdog script
+
+### Discovery domains
+- `dialogue_runtime`, `cloud_settings`, `net_prediction`, `light_2d`, `filesystem_bulk`, `perf_autofix`
+
+---
+
 ## v1.68.0 — 2026-07-29
 
 **Critical production maps wave** - cameras, combat, crafting, touch, lights, geometry, shaders, steering, audio zones.

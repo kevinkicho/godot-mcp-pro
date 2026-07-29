@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.68.0**  
+Plugin version: **1.69.0**  
 
 ## Honesty
 
@@ -11,32 +11,32 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 
 ## Totals
 
-- **Registered plugin commands:** 1640
-- **Command modules:** 215
+- **Registered plugin commands:** 1686
+- **Command modules:** 221
 - **Domains:** 21
 
 ## Commands by domain
 
-- **2d** - 132 commands
+- **2d** - 140 commands
 - **3d** - 62 commands
 - **agent** - 58 commands
 - **ai** - 32 commands
 - **animation** - 226 commands
-- **assets** - 87 commands
+- **assets** - 95 commands
 - **audio** - 37 commands
 - **editor** - 40 commands
 - **export** - 48 commands
 - **input** - 32 commands
 - **navigation** - 19 commands
-- **network** - 49 commands
+- **network** - 56 commands
 - **physics** - 56 commands
-- **project** - 58 commands
-- **qa_runtime** - 103 commands
+- **project** - 65 commands
+- **qa_runtime** - 111 commands
 - **rendering** - 62 commands
 - **scene** - 132 commands
 - **scripting** - 110 commands
 - **shaders_vfx** - 72 commands
-- **ui_gameplay** - 198 commands
+- **ui_gameplay** - 206 commands
 - **xr** - 27 commands
 
 ## Commands by module
@@ -76,6 +76,17 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_point_light_2d_node`
 - `set_point_light_2d_params`
 - `list_light_2d_depth_tools`
+
+### 2d / light_2d_occlusion_depth_commands (8)
+
+- `setup_directional_light_2d_node`
+- `setup_point_light_2d_texture`
+- `set_light_2d_params`
+- `setup_light_occluder_polygon_2d`
+- `setup_light_occluder_from_rect`
+- `batch_set_light_2d_params`
+- `setup_2d_lighting_scene_pack`
+- `list_light_2d_occlusion_depth_tools`
 
 ### 2d / mesh_2d_commands (8)
 
@@ -731,6 +742,17 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `spring_bone_add_chain`
 - `list_spring_bone_tools`
 
+### assets / filesystem_bulk_commands (8)
+
+- `move_resource_file`
+- `rename_resource_file`
+- `bulk_move_resources`
+- `bulk_rename_resources`
+- `duplicate_resource_file`
+- `delete_resource_files`
+- `list_directory_resources`
+- `list_filesystem_bulk_tools`
+
 ### assets / font_label_settings_commands (5)
 
 - `create_font_file_resource`
@@ -1160,6 +1182,16 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_multiplayer_spawner_basic`
 - `list_multiplayer_peer_tools`
 
+### network / multiplayer_prediction_commands (7)
+
+- `create_client_prediction_script`
+- `create_server_reconciliation_script`
+- `create_lag_compensation_notes`
+- `create_network_interpolator_script`
+- `create_input_buffer_script`
+- `setup_prediction_pipeline`
+- `list_multiplayer_prediction_tools`
+
 ### network / multiplayer_runtime_commands (6)
 
 - `create_multiplayer_lobby_ui`
@@ -1274,6 +1306,16 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_autoload`
 - `rename_autoload`
 - `list_autoload_depth_tools`
+
+### project / cloud_settings_accessibility_commands (7)
+
+- `create_cloud_save_provider_script`
+- `create_settings_menu_controller_script`
+- `setup_settings_menu_ui`
+- `create_accessibility_settings_script`
+- `apply_accessibility_project_defaults`
+- `create_save_cloud_sync_script`
+- `list_cloud_settings_accessibility_tools`
 
 ### project / display_window_commands (5)
 
@@ -1391,6 +1433,17 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `play_with_movie_maker`
 - `capture_play_session`
 - `list_movie_maker_tools`
+
+### qa_runtime / performance_autofix_commands (8)
+
+- `suggest_performance_fixes`
+- `apply_performance_autofix_pack`
+- `autofix_reduce_shadows`
+- `autofix_apply_lod_visibility`
+- `autofix_cap_particles`
+- `autofix_disable_gi_dynamic`
+- `create_performance_watchdog_script`
+- `list_performance_autofix_tools`
 
 ### qa_runtime / performance_budget_commands (4)
 
@@ -2101,6 +2154,17 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `dialogue_graph_validate`
 - `dialogue_graph_list_lines`
 - `list_dialogue_graph_depth_tools`
+
+### ui_gameplay / dialogue_runtime_depth_commands (8)
+
+- `validate_dialogue_graph_json`
+- `merge_dialogue_graphs`
+- `create_dialogue_typewriter_ui_script`
+- `setup_dialogue_balloon_ui`
+- `create_cinematic_timeline_script`
+- `create_cinematic_timeline_json`
+- `setup_cinematic_timeline_player`
+- `list_dialogue_runtime_depth_tools`
 
 ### ui_gameplay / game_ui_system_commands (8)
 
