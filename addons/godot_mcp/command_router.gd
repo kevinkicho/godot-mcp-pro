@@ -15,7 +15,59 @@ const COMMANDS_DIR := "res://addons/godot_mcp/commands"
 
 func _ready() -> void:
 	_load_tool_config()
+	# Defer: EditorFileSystem may not have finished scanning a freshly copied addon.
+	# Immediate DirAccess can see only a subset of *_commands.gd files.
 	_register_commands()
+	call_deferred("_reregister_when_fs_ready")
+
+
+func _reregister_when_fs_ready() -> void:
+	## Second pass after one frame; third pass after filesystem scan if available.
+	await get_tree().process_frame
+	var before := _command_handlers.size()
+	var discovered := _discover_command_scripts().size()
+	if discovered > _loaded_modules.size() or before < 100:
+		print("[MCP] Re-registering commands (handlers=%d modules=%d discovered_paths=%d)" % [
+			before, _loaded_modules.size(), discovered
+		])
+		reload_commands({})
+	# Hook filesystem if editor available
+	if Engine.is_editor_hint() and editor_plugin:
+		var fs := EditorInterface.get_resource_filesystem()
+		if fs and not fs.filesystem_changed.is_connected(_on_filesystem_changed):
+			fs.filesystem_changed.connect(_on_filesystem_changed)
+
+
+var _fs_reregister_cooldown: float = 0.0
+
+
+func _on_filesystem_changed() -> void:
+	## After addon files import, ensure full module set is loaded (once).
+	if _loaded_modules.size() >= 100:
+		return
+	var discovered := _discover_command_scripts().size()
+	if discovered > _loaded_modules.size():
+		print("[MCP] Filesystem changed — re-registering (%d paths > %d modules)" % [
+			discovered, _loaded_modules.size()
+		])
+		reload_commands({})
+
+
+## Force re-scan of command modules (after addon install/reload).
+func reload_commands(params: Dictionary = {}) -> Dictionary:
+	# Free previous module nodes (children of router)
+	for c in get_children():
+		remove_child(c)
+		c.queue_free()
+	_register_commands()
+	return {
+		"result": {
+			"registered": _command_handlers.size(),
+			"modules": _loaded_modules.size(),
+			"domains": _domain_index.size(),
+			"discovered_paths": _discover_command_scripts().size(),
+		}
+	}
 
 
 func _register_commands() -> void:
@@ -27,23 +79,33 @@ func _register_commands() -> void:
 	var scripts: Array = _discover_command_scripts()
 	var registered := 0
 	var modules := 0
+	var failed: Array = []
+	print("[MCP] Discovering command modules under %s (%d paths)" % [COMMANDS_DIR, scripts.size()])
 	for path in scripts:
 		var scr: GDScript = load(path) as GDScript
 		if scr == null:
 			push_warning("[MCP] Failed to load command module: %s" % path)
+			failed.append({"path": path, "reason": "load_null"})
 			continue
-		var cmd: Node = scr.new()
+		var cmd: Node = null
+		# Isolate instantiation failures so one bad module cannot stop registration.
+		cmd = scr.new() as Node
 		if cmd == null:
+			push_warning("[MCP] Failed to instantiate: %s" % path)
+			failed.append({"path": path, "reason": "instantiate_null"})
 			continue
 		if not cmd.has_method("get_commands"):
 			cmd.free()
+			failed.append({"path": path, "reason": "no_get_commands"})
 			continue
 		cmd.editor_plugin = editor_plugin
 		add_child(cmd)
-		var methods: Dictionary = cmd.get_commands()
+		var methods: Dictionary = {}
+		methods = cmd.get_commands()
 		if methods.is_empty():
 			remove_child(cmd)
 			cmd.free()
+			failed.append({"path": path, "reason": "empty_commands"})
 			continue
 		modules += 1
 		var base_name: String = path.get_file().get_basename()
@@ -66,10 +128,27 @@ func _register_commands() -> void:
 			_command_source[method_name] = path
 			registered += 1
 
-	print("[MCP] Registered %d commands from %d modules in %d domains (recursive auto-discover)" % [
-		registered, modules, _domain_index.size()
+	print("[MCP] Registered %d commands from %d modules in %d domains (failed_modules=%d)" % [
+		registered, modules, _domain_index.size(), failed.size()
 	])
+	if failed.size() > 0:
+		push_warning("[MCP] Module load failures (first 20): %s" % str(failed.slice(0, mini(20, failed.size()))))
+	# Built-in meta command always available for recovery
+	_command_handlers["mcp_reload_commands"] = reload_commands
+	_command_source["mcp_reload_commands"] = "command_router.gd"
+	_command_handlers["mcp_registration_stats"] = _registration_stats
+	_command_source["mcp_registration_stats"] = "command_router.gd"
 
+
+func _registration_stats(_params: Dictionary = {}) -> Dictionary:
+	return {
+		"result": {
+			"registered": _command_handlers.size(),
+			"modules": _loaded_modules.size(),
+			"domains": _domain_index.size(),
+			"module_names": _loaded_modules.map(func(m): return m.get("name", "")),
+		}
+	}
 
 func _domain_from_path(path: String) -> String:
 	## res://addons/godot_mcp/commands/<domain>/foo_commands.gd → domain
