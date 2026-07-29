@@ -5,6 +5,8 @@ This repository is a fork of [youichi-uda/godot-mcp-pro](https://github.com/youi
 
 **Project-neutral:** install into any Godot 4 game. No game-specific paths or content.
 
+**Docs:** [README.md](README.md) · [docs/README.md](docs/README.md) (install, architecture, runtime probe, agent workflow)
+
 ## Role
 
 Primary **agentic control plane** for agent-driven game production: explore → build → playtest → fix, with live editor feedback when the plugin is connected.
