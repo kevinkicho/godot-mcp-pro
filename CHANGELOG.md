@@ -4,6 +4,36 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.47.0 — 2026-07-28
+
+**Suggested parity wave** — LOD, UV2 lightmap unwrap, movie capture, nav path debug, AnimationTree graph recipes.
+
+### LOD
+- `mesh_generate_lods`, `mesh_get_lod_info`, `set_visibility_range`
+- `setup_lod_mesh_instances`, `create_shadow_mesh`, `list_lod_tools`
+
+### UV2 / lightmap bake prep
+- `mesh_lightmap_unwrap`, `mesh_has_uv2`, `batch_prepare_lightmap_meshes`
+- `lightmap_bake_prepare` (batch + LightmapGI + optional bake)
+- Runtime-ready path to `request_lightmap_bake`
+
+### Movie Maker / capture
+- `set_movie_maker_enabled`, `get_movie_maker_settings`, `set_movie_maker_output`
+- `play_with_movie_maker`, `capture_play_session` (frames → optional FFmpeg video)
+
+### Navigation debug
+- `navigation_set_debug_enabled`, `navigation_get_debug_settings`
+- `navigation_query_path` (editor + runtime TCP), `draw_debug_path`, `navigation_get_map_info`
+- Runtime: `get_screenshot`, `navigation_query_path` on game inspector
+
+### AnimationTree graph depth
+- `set_state_machine_node_position`, `set_state_animation`, `list_state_machine_transitions`
+- `get_blend_tree_connections`, `disconnect_blend_tree_nodes`
+- `create_simple_locomotion_tree`, `create_blend_space_1d_locomotion`
+- `export_animation_tree_graph` (+ mermaid)
+
+---
+
 ## v1.46.0 — 2026-07-28
 
 **Human workflow parity** — mesh collision menu, interactive playtest loops, resource graph remaps, viewport focus, CSG bake, scene audits.

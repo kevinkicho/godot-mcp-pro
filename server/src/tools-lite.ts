@@ -270,6 +270,85 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['node_path'],
     },
   },
+  {
+    name: 'mesh_generate_lods',
+    description: 'Generate mesh LODs (ImporterMesh path) on MeshInstance3D.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        normal_merge_angle: { type: 'number' },
+        normal_split_angle: { type: 'number' },
+        save_path: { type: 'string' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'lightmap_bake_prepare',
+    description: 'Batch UV2 unwrap + gi_mode static + ensure LightmapGI; optional request_bake.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        texel_size: { type: 'number' },
+        only_missing_uv2: { type: 'boolean' },
+        add_lightmap_gi: { type: 'boolean' },
+        request_bake: { type: 'boolean' },
+        max: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'capture_play_session',
+    description: 'Play scene, capture frames at fps, optional FFmpeg video (movie-maker fallback).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: { type: 'string' },
+        path: { type: 'string' },
+        duration_sec: { type: 'number' },
+        fps: { type: 'number' },
+        frames_dir: { type: 'string' },
+        make_video: { type: 'boolean' },
+        output_path: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'navigation_query_path',
+    description: 'Query NavigationServer path between from/to (prefer while playing after bake).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: { type: 'string', description: '3d | 2d' },
+        from: { type: 'object' },
+        to: { type: 'object' },
+        optimize: { type: 'boolean' },
+      },
+      required: ['from', 'to'],
+    },
+  },
+  {
+    name: 'create_simple_locomotion_tree',
+    description: 'AnimationTree recipe: Idle/Walk/Run (+ optional Jump) state machine.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        anim_player: { type: 'string' },
+        idle: { type: 'string' },
+        walk: { type: 'string' },
+        run: { type: 'string' },
+        jump: { type: 'string' },
+        xfade_time: { type: 'number' },
+        active: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

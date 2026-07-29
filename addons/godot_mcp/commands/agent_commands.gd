@@ -343,12 +343,14 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			]
 		"animation", "animations", "anim":
 			guide["focus"] = [
-				"list_animation_fine_tune_tools",
+				"list_animation_fine_tune_tools / list_animation_tree_graph_tools",
 				"EXAMPLE → TARGET: extract_animations_from_scene OR list_animations on example player",
 				"dump_animation / get_animation_info include_keys=true (read example tracks+keys)",
 				"apply_example_animation example_scene_path=… source_animation=Walk target_node_path=Player/Anim",
 				"OR copy_animation_to_player source_node_path=… target_node_path=…",
 				"remap_animation_track_paths from_prefix=… to_prefix=… (hierarchy mismatch)",
+				"create_simple_locomotion_tree / create_blend_space_1d_locomotion",
+				"export_animation_tree_graph mermaid=true",
 				"compare_animations source_* vs target_*",
 				"scale_animation_time / offset_animation_keys / crop_animation",
 				"set_animation_keyframe / set_bezier_key / bezier_set_keys_batch for key fine-tune",
@@ -364,9 +366,33 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"timing": "scale_animation_time scale=0.5 (2x speed) or offset_animation_keys",
 				"tweak_key": "set_animation_keyframe / bezier_set_keys_batch with Cartesian {x:time,y:value,in,out}",
 				"curve_shape": "bezier_sample_dense polyline → identify extrema → set handles",
-				"tree": "create_animation_tree + travel_animation_state",
+				"tree": "create_simple_locomotion_tree + travel_animation_state",
 			}
 			guide["guarantee"] = "Full numerical access to animation keys, Bezier control points, and Curve/Curve2D/Curve3D resources — agents map focal points on the Cartesian plane and write them via MCP."
+		"lod", "lightmap", "rendering_prep":
+			guide["focus"] = [
+				"list_lod_tools / list_lightmap_uv_tools",
+				"mesh_generate_lods + set_visibility_range",
+				"setup_lod_mesh_instances distances=[0,15,40,80]",
+				"mesh_has_uv2 → mesh_lightmap_unwrap / batch_prepare_lightmap_meshes",
+				"lightmap_bake_prepare → request_lightmap_bake",
+			]
+		"movie", "capture", "recording":
+			guide["focus"] = [
+				"list_movie_maker_tools",
+				"set_movie_maker_output path=user://movie.avi fps=30",
+				"play_with_movie_maker duration_sec=5",
+				"capture_play_session make_video=true (portable FFmpeg path)",
+				"run_session_start record=true for TCP run-plane video",
+			]
+		"navigation", "nav_debug":
+			guide["focus"] = [
+				"list_nav_debug_tools",
+				"bake_navigation_mesh",
+				"navigation_set_debug_enabled true",
+				"navigation_query_path from={…} to={…}",
+				"draw_debug_path points=[…]",
+			]
 		"ui":
 			guide["focus"] = [
 				"scaffold_project_defaults genre=ui",
@@ -478,8 +504,10 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"add_fog_volume", "set_environment_fog", "add_occluder_instance_3d",
 				"find_skeletons", "list_skeleton_bones", "create_bone_map", "add_bone_attachment", "setup_ai_agent_3d",
 				"editor_focus_node", "editor_frame_selection",
+				"mesh_generate_lods", "set_visibility_range", "setup_lod_mesh_instances",
+				"mesh_lightmap_unwrap", "batch_prepare_lightmap_meshes", "lightmap_bake_prepare",
 			],
-			"gaps": ["full lightmap UV2 auto-unwrap", "auto LOD generation"],
+			"gaps": ["importer auto-LOD quality tuning per DCC asset"],
 		},
 		"gameplay_systems": {
 			"status": "strong",
@@ -504,6 +532,8 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"set_bezier_key", "get_bezier_key_info", "bezier_list_keys_cartesian", "bezier_set_keys_batch",
 				"bezier_sample_dense", "bezier_set_handle_mode", "create_bone_map", "apply_bone_map_to_skeleton",
 				"apply_example_animation", "dump_animation", "compare_animations",
+				"create_simple_locomotion_tree", "create_blend_space_1d_locomotion",
+				"export_animation_tree_graph", "set_state_animation", "list_state_machine_transitions",
 			],
 			"gaps": ["importer auto-retarget for every DCC pipeline variant"],
 		},
@@ -566,8 +596,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_navigation_region", "bake_navigation_mesh", "setup_navigation_agent",
 				"setup_navigation_link", "setup_navigation_obstacle", "set_navigation_agent_target", "set_navigation_layers",
 				"setup_ai_agent_2d/3d", "create_chase_ai_script", "create_patrol_ai_script",
+				"navigation_query_path", "draw_debug_path", "navigation_set_debug_enabled", "navigation_get_map_info",
 			],
-			"gaps": ["path debug draw overlay", "NavigationServer query helpers"],
+			"gaps": ["live agent path replan viz during play without draw_debug_path nodes"],
 		},
 		"tutorials/networking": {
 			"status": "strong",
@@ -648,6 +679,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"run_capture_timeline", "run_find_nodes",
 				"get_game_scene_tree", "get_game_node_properties", "assert_node_state",
 				"simulate_*", "capture_frames", "playtest_report", "playtest_sequence",
+				"play_with_movie_maker", "capture_play_session", "set_movie_maker_output",
 				"media_find_ffmpeg", "media_frames_to_video", "media_extract_keyframes",
 				"media_clip_video", "media_contact_sheet",
 				"detect_test_frameworks", "run_gut_tests", "run_gdunit_tests",
@@ -704,7 +736,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"set_mesh_lightmap_params", "add_lightmap_gi", "request_lightmap_bake",
 				"setup_compositor", "add_compositor_effect", "apply_environment_preset",
 			],
-			"gaps": ["full automatic UV2 unwrap for all mesh importers", "vendor GPU captures"],
+			"gaps": ["vendor GPU captures", "lightmap quality presets per platform"],
 		},
 		"tutorials/shaders": {
 			"status": "strong",

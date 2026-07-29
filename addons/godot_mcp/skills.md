@@ -26,6 +26,16 @@ csg_set_operation + csg_bake_to_mesh_instance                   → greybox fina
 audit_scene_tree / list_scene_signals / validate_all_scenes     → scene health
 ```
 
+### v1.47+ LOD / lightmap / movie / nav / AnimationTree
+
+```
+mesh_generate_lods + set_visibility_range / setup_lod_mesh_instances
+mesh_lightmap_unwrap / batch_prepare_lightmap_meshes / lightmap_bake_prepare
+play_with_movie_maker / capture_play_session
+navigation_query_path + draw_debug_path + navigation_set_debug_enabled
+create_simple_locomotion_tree / create_blend_space_1d_locomotion / export_animation_tree_graph
+```
+
 ## Essential Workflows
 
 ### 0. New project / first hour (human Project Settings)

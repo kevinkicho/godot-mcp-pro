@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.46.0**  
+Plugin version: **1.47.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 903
-- **Command modules:** 88
+- **Registered plugin commands:** 936
+- **Command modules:** 93
 
 ## Commands by module
 
@@ -151,6 +151,19 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_blend_space_point_position`
 - `set_tree_parameter`
 - `list_tree_parameters`
+
+### animation_tree_graph_commands (10)
+
+- `set_state_machine_node_position`
+- `set_state_animation`
+- `list_state_machine_transitions`
+- `get_blend_tree_connections`
+- `disconnect_blend_tree_nodes`
+- `create_simple_locomotion_tree`
+- `create_blend_space_1d_locomotion`
+- `export_animation_tree_graph`
+- `list_animation_tree_graph_tools`
+- `root`
 
 ### audio_commands (15)
 
@@ -544,6 +557,23 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `level_playtest_route`
 - `list_level_design_tools`
 
+### lightmap_uv_commands (5)
+
+- `mesh_lightmap_unwrap`
+- `mesh_has_uv2`
+- `batch_prepare_lightmap_meshes`
+- `lightmap_bake_prepare`
+- `list_lightmap_uv_tools`
+
+### lod_commands (6)
+
+- `mesh_generate_lods`
+- `mesh_get_lod_info`
+- `set_visibility_range`
+- `setup_lod_mesh_instances`
+- `create_shadow_mesh`
+- `list_lod_tools`
+
 ### material_2d_commands (12)
 
 - `set_canvas_item_modulate`
@@ -594,6 +624,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_minimap_viewport`
 - `list_render_presets`
 
+### movie_maker_commands (6)
+
+- `set_movie_maker_enabled`
+- `get_movie_maker_settings`
+- `set_movie_maker_output`
+- `play_with_movie_maker`
+- `capture_play_session`
+- `list_movie_maker_tools`
+
 ### multimesh_commands (4)
 
 - `setup_multimesh_instance`
@@ -629,6 +668,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_music_player`
 - `music_set_playlist`
 - `list_music_tools`
+
+### nav_debug_commands (6)
+
+- `navigation_set_debug_enabled`
+- `navigation_get_debug_settings`
+- `navigation_query_path`
+- `draw_debug_path`
+- `navigation_get_map_info`
+- `list_nav_debug_tools`
 
 ### navigation_commands (8)
 

@@ -246,6 +246,10 @@ func _dispatch_command(command: String, params: Dictionary) -> void:
 				_write_response({"error": "capture helper missing"})
 		"find_nodes":
 			_cmd_find_nodes(params)
+		"get_screenshot":
+			_cmd_get_screenshot(params)
+		"navigation_query_path":
+			_cmd_navigation_query_path(params)
 		_:
 			_write_response({"error": "Unknown command: %s" % command})
 
@@ -453,6 +457,61 @@ func _process_capture() -> void:
 	if _capture_frame_counter >= _capture_frame_interval:
 		_capture_frame_counter = 0
 		_capture_one_frame()
+
+
+func _cmd_get_screenshot(params: Dictionary) -> void:
+	## Single-frame PNG base64 for playtest_sequence / capture_play_session.
+	var viewport := get_viewport()
+	if viewport == null:
+		_write_response({"error": "No viewport"})
+		return
+	var image := viewport.get_texture().get_image()
+	if image == null:
+		_write_response({"error": "Could not get viewport image"})
+		return
+	if bool(params.get("half_res", false)):
+		var new_size := image.get_size() / 2
+		image.resize(maxi(new_size.x, 1), maxi(new_size.y, 1), Image.INTERPOLATE_BILINEAR)
+	var png_buffer := image.save_png_to_buffer()
+	_write_response({
+		"image_base64": Marshalls.raw_to_base64(png_buffer),
+		"width": image.get_width(),
+		"height": image.get_height(),
+		"format": "png",
+	})
+
+
+func _cmd_navigation_query_path(params: Dictionary) -> void:
+	var mode: String = str(params.get("mode", "3d")).to_lower()
+	var optimize: bool = bool(params.get("optimize", true))
+	if mode == "2d":
+		var from_d: Dictionary = params.get("from", {})
+		var to_d: Dictionary = params.get("to", {})
+		var from2 := Vector2(float(from_d.get("x", 0)), float(from_d.get("y", 0)))
+		var to2 := Vector2(float(to_d.get("x", 0)), float(to_d.get("y", 0)))
+		var maps2: Array = NavigationServer2D.get_maps() if NavigationServer2D.has_method("get_maps") else []
+		if maps2.is_empty():
+			_write_response({"error": "No NavigationServer2D maps", "points": []})
+			return
+		var path2: PackedVector2Array = NavigationServer2D.map_get_path(maps2[0], from2, to2, optimize)
+		var pts2: Array = []
+		for p in path2:
+			pts2.append({"x": p.x, "y": p.y})
+		_write_response({"mode": "2d", "points": pts2, "count": pts2.size()})
+		return
+	var from_d3: Dictionary = params.get("from", {})
+	var to_d3: Dictionary = params.get("to", {})
+	var from3 := Vector3(float(from_d3.get("x", 0)), float(from_d3.get("y", 0)), float(from_d3.get("z", 0)))
+	var to3 := Vector3(float(to_d3.get("x", 0)), float(to_d3.get("y", 0)), float(to_d3.get("z", 0)))
+	var maps3: Array = NavigationServer3D.get_maps() if NavigationServer3D.has_method("get_maps") else []
+	if maps3.is_empty():
+		_write_response({"error": "No NavigationServer3D maps", "points": []})
+		return
+	var path3: PackedVector3Array = NavigationServer3D.map_get_path(maps3[0], from3, to3, optimize)
+	var pts3: Array = []
+	for p in path3:
+		pts3.append({"x": p.x, "y": p.y, "z": p.z})
+	_write_response({"mode": "3d", "points": pts3, "count": pts3.size()})
 
 
 func _capture_one_frame() -> void:

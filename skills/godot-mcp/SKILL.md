@@ -57,6 +57,14 @@ Also: `playtest_report` (errors + optional asserts), `simulate_*`, `run_session_
 - Resource move: `find_files_referencing` → **`remap_resource_references`** (dry_run first)
 - Focus viewport: **`editor_focus_node`** / `editor_frame_selection`
 
+## LOD, lightmaps, movie, nav debug, AnimationTree (v1.47+)
+
+- LODs: **`mesh_generate_lods`**, `set_visibility_range`, `setup_lod_mesh_instances`
+- Lightmap: **`mesh_lightmap_unwrap`**, `batch_prepare_lightmap_meshes`, **`lightmap_bake_prepare`**
+- Movie: `play_with_movie_maker` or portable **`capture_play_session`**
+- Nav: `navigation_query_path` → `draw_debug_path`; `navigation_set_debug_enabled`
+- Anim graph: **`create_simple_locomotion_tree`**, `create_blend_space_1d_locomotion`, `export_animation_tree_graph`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

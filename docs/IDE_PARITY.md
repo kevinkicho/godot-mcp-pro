@@ -34,6 +34,11 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Scene health | `audit_scene_tree` / `list_scene_signals` / `validate_all_scenes` |
 | Export | export_* / verify_export_ready |
 | Curves | curve_* / bezier_* |
+| Mesh LODs | `mesh_generate_lods` / `set_visibility_range` / `setup_lod_mesh_instances` |
+| Lightmap UV2 | `mesh_lightmap_unwrap` / `batch_prepare_lightmap_meshes` / `lightmap_bake_prepare` |
+| Movie Maker | `play_with_movie_maker` / `capture_play_session` |
+| Nav path debug | `navigation_query_path` / `draw_debug_path` / `navigation_set_debug_enabled` |
+| AnimationTree graph | `create_simple_locomotion_tree` / `export_animation_tree_graph` / blend-space recipes |
 
 ## Universal escape hatches
 
