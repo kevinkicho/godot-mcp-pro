@@ -27,9 +27,6 @@ func _list_shader_presets(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_text(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _shader_source(preset: String) -> Dictionary:
 	## Returns {type, code}
@@ -165,7 +162,7 @@ func _create_shader_preset(params: Dictionary) -> Dictionary:
 	if src.is_empty():
 		return error_invalid_params("Unknown preset. Call list_shader_presets.")
 	var path: String = optional_string(params, "path", "res://shaders/%s.gdshader" % preset)
-	var w := _write_text(path, src["code"], optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, src["code"], optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "preset": preset, "shader_type": src["type"]})
@@ -324,7 +321,7 @@ func _process(delta: float) -> void:
 		if mat2:
 			mat2.set_shader_parameter("flash", 0.0)
 """
-	var w := _write_text(script_path, content, optional_bool(params, "overwrite", true))
+	var w := write_script_file(script_path, content, optional_bool(params, "overwrite", true))
 	if w.has("error"):
 		return w
 	var n := Node.new()
@@ -374,7 +371,7 @@ func fade_to_color(color: Color, duration: float = 0.5) -> void:
 	var tw := create_tween()
 	tw.tween_property(rect, "color", color, duration)
 """
-	_write_text(sp, scr, true)
+	write_script_file(sp, scr, true)
 	var s = load(sp)
 	if s:
 		layer.set_script(s)
@@ -393,7 +390,7 @@ func freeze(duration: float = 0.05, time_scale: float = 0.0) -> void:
 	await get_tree().create_timer(duration, true, false, true).timeout
 	Engine.time_scale = prev
 """
-	var w := _write_text(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false

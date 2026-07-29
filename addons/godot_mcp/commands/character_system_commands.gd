@@ -32,9 +32,6 @@ func _list_character_templates(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _setup_character_2d(params: Dictionary) -> Dictionary:
 	## Full CharacterBody2D stack: body + collision + optional sprite + script.
@@ -247,7 +244,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, friction * delta)
 	move_and_slide()
 """ % [speed, jump_v]
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "style": "platformer_2d", "actions": ["move_left", "move_right", "jump"]})
@@ -266,7 +263,7 @@ func _physics_process(_delta: float) -> void:
 	velocity = dir * speed
 	move_and_slide()
 """ % speed
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "style": "topdown_2d", "actions": ["move_left", "move_right", "move_up", "move_down"]})
@@ -313,7 +310,7 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, speed)
 	move_and_slide()
 """ % [speed, jump_v]
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({
@@ -364,7 +361,7 @@ func heal(amount: float) -> void:
 func is_alive() -> bool:
 	return current > 0.0
 """ % max_hp
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "class_name": "HealthComponent"})
@@ -455,7 +452,7 @@ func _on_area(a: Node) -> void:
 		# Use Area3D script variant if 3d
 		if dim == "3d":
 			scr_body = scr_body.replace("extends Area2D", "extends Area3D")
-		var wr := _write_script(sp, scr_body, optional_bool(params, "overwrite", true))
+		var wr := write_script_file(sp, scr_body, optional_bool(params, "overwrite", true))
 		if wr.has("path"):
 			var s = load(wr["path"])
 			if s:
@@ -517,7 +514,7 @@ func _hit(body: Node) -> void:
 		body.take_damage(damage, self)
 	queue_free()
 """ % [speed, damage]
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "is_3d": is_3d})

@@ -44,12 +44,6 @@ func _list_quest_recipes(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_json(path: String, data: Dictionary, overwrite: bool) -> Dictionary:
-	return write_json_file(path, data, overwrite)
-
-
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
 
 
 func _create_quest_resource(params: Dictionary) -> Dictionary:
@@ -77,7 +71,7 @@ func _create_quest_resource(params: Dictionary) -> Dictionary:
 	if params.has("extra") and params["extra"] is Dictionary:
 		for k in params["extra"]:
 			data[str(k)] = params["extra"][k]
-	var w := _write_json(path, data, optional_bool(params, "overwrite", false))
+	var w := write_json_file(path, data, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "id": quest_id, "objective_count": objectives.size()})
@@ -186,7 +180,7 @@ func get_active_summaries() -> Array:
 		out.append({"id": qid, "title": q["data"].get("title", qid), "objectives": objs})
 	return out
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false
@@ -238,7 +232,7 @@ func _create_dialogue_graph_resource(params: Dictionary) -> Dictionary:
 		"nodes": nodes,
 		"meta": {"created_by": "godot-mcp", "version": 2, "format": "graph"},
 	}
-	var w := _write_json(path, data, optional_bool(params, "overwrite", false))
+	var w := write_json_file(path, data, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "start": start, "node_count": nodes.size(), "format": "graph"})
@@ -353,7 +347,7 @@ func _merge_dialogue_lines(params: Dictionary) -> Dictionary:
 				added.append(nid)
 	if params.has("start") and str(params["start"]) != "":
 		data["start"] = str(params["start"])
-	var w := _write_json(path, data, true)
+	var w := write_json_file(path, data, true)
 	if w.has("error"):
 		return w
 	return success({"path": path, "added": added, "node_count": data["nodes"].size()})
@@ -396,7 +390,7 @@ func _unhandled_input(event: InputEvent) -> void:
 """
 	if optional_bool(params, "is_3d", false):
 		content = content.replace("extends Area2D", "extends Area3D")
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "requires": ["QuestLog autoload", "player in group 'player'"]})
@@ -553,7 +547,7 @@ func _add_dialogue_graph_node(params: Dictionary) -> Dictionary:
 	data["nodes"][nid] = node
 	if optional_bool(params, "as_start", false):
 		data["start"] = nid
-	var w := _write_json(path, data, true)
+	var w := write_json_file(path, data, true)
 	if w.has("error"):
 		return w
 	return success({"path": path, "id": nid, "node": node, "node_count": data["nodes"].size()})
@@ -613,7 +607,7 @@ func _on_body(body: Node) -> void:
 """
 	if optional_bool(params, "is_3d", false):
 		content = content.replace("extends Area2D", "extends Area3D")
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"]})

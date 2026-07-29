@@ -37,9 +37,6 @@ func _list_webrtc_recipes(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _create_webrtc_template(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/webrtc_multiplayer.gd")
@@ -129,7 +126,7 @@ func leave() -> void:
 	multiplayer.multiplayer_peer = null
 	_rtc = null
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({
@@ -245,7 +242,7 @@ func stop() -> void:
 	if _tcp:
 		_tcp.stop()
 """ % port
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "port": port, "protocol": "websocket_json_signaling"})
@@ -331,7 +328,7 @@ func _handle(text: String) -> void:
 		"signal":
 			signal_received.emit(int(data.get("from", 0)), data.get("payload", {}))
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"]})
@@ -397,7 +394,7 @@ func tick(expected_peers: Array) -> bool:
 func get_current_frame() -> int:
 	return _current_frame
 """ % delay
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({
@@ -453,7 +450,7 @@ static func _lerp_pos(a: Variant, b: Variant, t: float) -> Variant:
 static func rtt_rewind_time(now: float, rtt_sec: float) -> float:
 	return now - rtt_sec * 0.5
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "class_name": "LagCompensation"})

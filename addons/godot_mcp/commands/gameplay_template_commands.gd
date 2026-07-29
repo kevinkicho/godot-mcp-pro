@@ -25,12 +25,6 @@ func _list_gameplay_templates(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	var r := write_script_file(path, content, overwrite)
-	if r.has("error"):
-		return r
-	return {}
-
 
 func _maybe_autoload(params: Dictionary, path: String, default_name: String) -> bool:
 	return maybe_add_autoload(params, path, default_name)
@@ -97,8 +91,8 @@ func list_slots() -> PackedStringArray:
 	dir.list_dir_end()
 	return out
 """
-	var err := _write_script(path, content, optional_bool(params, "overwrite", false))
-	if not err.is_empty():
+	var err := write_script_file(path, content, optional_bool(params, "overwrite", false))
+	if err.has("error"):
 		return err
 	var al := _maybe_autoload(params, path if path.begins_with("res://") else "res://" + path, "SaveManager")
 	return success({"path": path if path.begins_with("res://") else "res://" + path.trim_prefix("/"), "autoload_added": al})
@@ -132,8 +126,8 @@ func emit_named(name: String, payload: Variant = null) -> void:
 	event.emit(name, payload)
 """ % sig_lines
 	var wpath := path if path.begins_with("res://") else "res://" + path.trim_prefix("/")
-	var err := _write_script(wpath, content, optional_bool(params, "overwrite", false))
-	if not err.is_empty():
+	var err := write_script_file(wpath, content, optional_bool(params, "overwrite", false))
+	if err.has("error"):
 		return err
 	var al := _maybe_autoload(params, wpath, "EventBus")
 	return success({"path": wpath, "autoload_added": al, "signals": sig_lines.split("\n")})
@@ -199,8 +193,8 @@ func release(n: Node) -> void:
 func available_count() -> int:
 	return _available.size()
 """
-	var err := _write_script(wpath, content, optional_bool(params, "overwrite", false))
-	if not err.is_empty():
+	var err := write_script_file(wpath, content, optional_bool(params, "overwrite", false))
+	if err.has("error"):
 		return err
 	return success({"path": wpath, "created": true})
 
@@ -259,8 +253,8 @@ func _process(delta: float) -> void:
 		c3.h_offset = nx * max_offset * 0.05 * shake
 		c3.v_offset = ny * max_offset * 0.05 * shake
 """
-	var err := _write_script(wpath, content, optional_bool(params, "overwrite", false))
-	if not err.is_empty():
+	var err := write_script_file(wpath, content, optional_bool(params, "overwrite", false))
+	if err.has("error"):
 		return err
 	return success({
 		"path": wpath,

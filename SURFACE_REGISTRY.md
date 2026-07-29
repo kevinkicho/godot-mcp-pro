@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.37.0**  
+Plugin version: **1.38.0**  
 
 ## Honesty
 

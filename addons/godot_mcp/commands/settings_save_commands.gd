@@ -28,9 +28,6 @@ func _list_recipes(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _create_settings_resource_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/game_settings.gd")
@@ -48,7 +45,7 @@ class_name GameSettings
 @export var show_subtitles: bool = true
 @export var extra: Dictionary = {}
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "class_name": "GameSettings"})
@@ -133,7 +130,7 @@ func set_sfx_volume(v: float) -> void:
 	sfx_volume = clampf(v, 0.0, 1.0)
 	apply()
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false
@@ -260,7 +257,7 @@ func _on_apply() -> void:
 	sm.apply()
 	sm.save_settings()
 """
-	_write_script(sp, scr, true)
+	write_script_file(sp, scr, true)
 	var s = load(sp)
 	if s:
 		layer.set_script(s)
@@ -364,7 +361,7 @@ func autosave(data: Dictionary, meta: Dictionary = {}) -> Error:
 	meta["title"] = meta.get("title", "Autosave")
 	return save_game(data, "autosave", meta)
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false
@@ -501,7 +498,7 @@ func _on_delete() -> void:
 		get_node("/root/SaveManager").delete_save(slot)
 		refresh()
 """
-	_write_script(sp, scr, true)
+	write_script_file(sp, scr, true)
 	var s = load(sp)
 	if s:
 		layer.set_script(s)

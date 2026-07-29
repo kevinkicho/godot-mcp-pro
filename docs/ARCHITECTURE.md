@@ -1,11 +1,11 @@
-# Godot MCP Pro — architecture (post-1.36)
+# Godot MCP Pro — architecture (post-1.38)
 
 ## Planes
 
 | Plane | Transport | Code |
 |-------|-----------|------|
 | **Edit** | WS 6505–6509 (plugin ↔ open MCP server) | `websocket_server.gd`, `command_router.gd`, `commands/*` |
-| **Run** | TCP 6510–6514 (preferred) + file IPC fallback | `mcp_game_inspector_service.gd`, `utils/runtime_tcp_server.gd`, `utils/runtime_tcp_client.gd` |
+| **Run** | TCP 6510–6514 (preferred) + file IPC fallback | `mcp_game_inspector_service.gd`, `utils/runtime_tcp_*`, `utils/runtime_capture.gd` |
 | **Media** | FFmpeg CLI | `commands/media_commands.gd` |
 | **Web** | Optional Playwright | `server/src/web-playwright.ts` |
 | **Tests** | GUT / GdUnit CLI | `commands/test_framework_commands.gd` |
@@ -17,6 +17,7 @@
 | `utils/script_io.gd` | res:// text/json writers |
 | `utils/runtime_tcp_server.gd` | Game-side TCP probe server |
 | `utils/runtime_tcp_client.gd` | Editor-side TCP client |
+| `utils/runtime_capture.gd` | Video record, property timeline, event/log ring |
 | `utils/node_utils.gd` | Node ownership helpers |
 | `utils/property_parser.gd` | Property value parsing |
 

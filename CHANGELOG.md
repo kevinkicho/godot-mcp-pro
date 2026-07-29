@@ -4,6 +4,22 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.38.0 — 2026-07-28
+
+**Refactor** — extract runtime capture; command modules use shared script writers only.
+
+### Plugin
+- `utils/runtime_capture.gd` — video record, property timeline, event/log ring extracted from `mcp_game_inspector_service.gd`
+- Inspector delegates `start/stop_video_record`, `capture_timeline`, `log_run_event`, `get_run_events`/`logs`, status extras
+- Abort of non-concurrent commands finalizes video (`meta.json`) via `abort_to_idle`
+- Command modules call `write_script_file` directly (thin `_write_script` wrappers removed)
+- `plugin_scaffold` uses local `_write_raw` for always-overwrite template files
+
+### Docs
+- ARCHITECTURE lists `runtime_capture.gd`
+
+---
+
 ## v1.37.0 — 2026-07-28
 
 **Refactor continued** — auto-discover commands, split tool schemas, shared autoload API.

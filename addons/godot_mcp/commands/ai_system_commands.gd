@@ -29,9 +29,6 @@ func _list_ai_templates(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _setup_ai_agent_2d(params: Dictionary) -> Dictionary:
 	var root := get_edited_root()
@@ -245,7 +242,7 @@ func _retarget() -> void:
 	if _target and agent:
 		agent.target_position = _target.global_position
 """ % [group, speed, group]
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "is_3d": is_3d, "target_group": group})
@@ -334,7 +331,7 @@ func _physics_process(delta: float) -> void:
 		velocity = dir * speed
 	move_and_slide()
 """ % speed
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "is_3d": is_3d})
@@ -410,7 +407,7 @@ func _physics_process(delta: float) -> void:
 func is_state(name: String) -> bool:
 	return current == name.to_lower()
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path)})
@@ -439,7 +436,7 @@ func _unhandled_input(event: InputEvent) -> void:
 """
 	if optional_bool(params, "is_3d", false):
 		content = content.replace("extends Area2D", "extends Area3D")
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w.get("path", path), "action": "interact"})

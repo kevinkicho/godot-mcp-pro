@@ -28,12 +28,6 @@ func _list_bt_recipes(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
-
-func _write_json(path: String, data: Dictionary, overwrite: bool) -> Dictionary:
-	return write_json_file(path, data, overwrite)
 
 
 func _create_blackboard(params: Dictionary) -> Dictionary:
@@ -65,7 +59,7 @@ func keys() -> Array:
 func as_dict() -> Dictionary:
 	return _data.duplicate()
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "class_name": "BTBlackboard"})
@@ -226,7 +220,7 @@ func _do_action(node: Dictionary, delta: float) -> int:
 			push_warning("BT unknown action: " + action)
 			return FAILURE
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "class_name": "BTRuntime"})
@@ -270,7 +264,7 @@ func _create_bt_resource(params: Dictionary) -> Dictionary:
 		"tree": tree,
 		"meta": {"created_by": "godot-mcp", "version": 1},
 	}
-	var w := _write_json(path, data, optional_bool(params, "overwrite", false))
+	var w := write_json_file(path, data, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "name": data["name"]})
@@ -331,7 +325,7 @@ class _BlackboardFallback:
 	func get_value(k, d=null): return _data.get(k, d)
 	func has_value(k): return _data.has(k)
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"]})

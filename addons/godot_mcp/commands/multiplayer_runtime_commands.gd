@@ -32,9 +32,6 @@ func _list_multiplayer_recipes(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _create_multiplayer_game_manager_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/multiplayer_manager.gd")
@@ -160,7 +157,7 @@ func get_my_id() -> int:
 """ % [port, max_clients, game_scene]
 	# Fix double-escaped percents for GDScript format - I used %% for the template inside % format
 	# Actually the outer is % [port...] so %% becomes % in output - good for GDScript format strings
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false
@@ -298,7 +295,7 @@ func _on_players(players: Dictionary) -> void:
 		var n: String = str(players[id].get("name", id))
 		player_list.add_item("%s (%s)" % [n, id])
 """
-	var w := _write_script(sp, scr, optional_bool(params, "overwrite", true))
+	var w := write_script_file(sp, scr, optional_bool(params, "overwrite", true))
 	if w.has("path"):
 		var s = load(w["path"])
 		if s:
@@ -357,7 +354,7 @@ func _wire() -> void:
 	if not multiplayer.connection_failed.is_connected(func(): connection_failed.emit()):
 		multiplayer.connection_failed.connect(func(): connection_failed.emit())
 """ % [port, port]
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "port": port, "protocol": "websocket"})
@@ -421,7 +418,7 @@ func _physics_process(_delta: float) -> void:
 	move_and_slide()
 """ % speed
 
-	var sw := _write_script(script_path, script_content, optional_bool(params, "overwrite", true))
+	var sw := write_script_file(script_path, script_content, optional_bool(params, "overwrite", true))
 	if sw.has("error"):
 		return sw
 
@@ -564,7 +561,7 @@ func _spawn_for(peer_id: int) -> void:
 	get_parent().add_child(p, true)
 	p.set_multiplayer_authority(peer_id)
 """ % [player_scene, player_scene]
-	var w := _write_script(sp, scr, optional_bool(params, "overwrite", true))
+	var w := write_script_file(sp, scr, optional_bool(params, "overwrite", true))
 	if w.has("path"):
 		var host_node := Node.new()
 		host_node.name = "SpawnHost"

@@ -65,7 +65,7 @@ author="%s"
 version="%s"
 script="plugin.gd"
 """ % [display_name, description, author, version]
-	_write_text(base + "/plugin.cfg", cfg)
+	_write_raw(base + "/plugin.cfg", cfg)
 	var plugin_gd := """@tool
 extends EditorPlugin
 
@@ -93,7 +93,7 @@ func _enter_tree() -> void:
 func _exit_tree() -> void:
 	print("[", PLUGIN_NAME, "] disabled")
 """
-	_write_text(base + "/plugin.gd", plugin_gd)
+	_write_raw(base + "/plugin.gd", plugin_gd)
 	var files: Array = [base + "/plugin.cfg", base + "/plugin.gd"]
 	if with_dock:
 		var dock_gd := """@tool
@@ -104,7 +104,7 @@ func _ready() -> void:
 	label.text = "%s dock"
 	add_child(label)
 """ % display_name
-		_write_text(base + "/dock.gd", dock_gd)
+		_write_raw(base + "/dock.gd", dock_gd)
 		# Minimal tscn
 		var tscn := """[gd_scene load_steps=2 format=3]
 
@@ -113,7 +113,7 @@ func _ready() -> void:
 [node name="Dock" type="VBoxContainer"]
 script = ExtResource("1")
 """ % folder
-		_write_text(base + "/dock.tscn", tscn)
+		_write_raw(base + "/dock.tscn", tscn)
 		files.append(base + "/dock.gd")
 		files.append(base + "/dock.tscn")
 	EditorInterface.get_resource_filesystem().scan()
@@ -125,7 +125,8 @@ script = ExtResource("1")
 	})
 
 
-func _write_text(path: String, content: String) -> void:
+func _write_raw(path: String, content: String) -> void:
+	## Scaffold always overwrites template files.
 	var abs := ProjectSettings.globalize_path(path)
 	DirAccess.make_dir_recursive_absolute(abs.get_base_dir())
 	var f := FileAccess.open(path, FileAccess.WRITE)

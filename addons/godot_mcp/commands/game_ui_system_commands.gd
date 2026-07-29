@@ -30,9 +30,6 @@ func _list_game_ui_templates(_params: Dictionary) -> Dictionary:
 	})
 
 
-func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	return write_script_file(path, content, overwrite)
-
 
 func _setup_hud(params: Dictionary) -> Dictionary:
 	var root := get_edited_root()
@@ -100,7 +97,7 @@ func set_score(score: int) -> void:
 func _on_health_changed(current: float, maximum: float) -> void:
 	set_health(current, maximum)
 """
-		var w := _write_script(sp, scr, optional_bool(params, "overwrite", true))
+		var w := write_script_file(sp, scr, optional_bool(params, "overwrite", true))
 		if w.has("path"):
 			var s = load(w["path"])
 			if s:
@@ -191,7 +188,7 @@ func unpause() -> void:
 	dimmer.visible = false
 	get_tree().paused = false
 """
-	var w := _write_script(sp, scr, optional_bool(params, "overwrite", true))
+	var w := write_script_file(sp, scr, optional_bool(params, "overwrite", true))
 	if w.has("path"):
 		var s = load(w["path"])
 		if s:
@@ -291,7 +288,7 @@ func _refresh_slot(slot: int) -> void:
 		if lbl: lbl.text = str(items[slot].get("count", 1))
 		node.tooltip_text = str(items[slot].get("name", ""))
 """
-	var w := _write_script(sp, scr, optional_bool(params, "overwrite", true))
+	var w := write_script_file(sp, scr, optional_bool(params, "overwrite", true))
 	if w.has("path"):
 		var s = load(w["path"])
 		if s:
@@ -392,7 +389,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		advance()
 		get_viewport().set_input_as_handled()
 """
-	var w := _write_script(sp, scr, optional_bool(params, "overwrite", true))
+	var w := write_script_file(sp, scr, optional_bool(params, "overwrite", true))
 	if w.has("path"):
 		var s = load(w["path"])
 		if s:
@@ -432,7 +429,7 @@ func resume_game() -> void:
 func toggle_pause() -> void:
 	get_tree().paused = not get_tree().paused
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false
@@ -499,7 +496,7 @@ func stop_music(fade_sec: float = 0.5) -> void:
 	tw.tween_property(cur, "volume_db", -40.0, fade_sec)
 	tw.tween_callback(cur.stop)
 """
-	var w := _write_script(path, content, optional_bool(params, "overwrite", false))
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
 	if w.has("error"):
 		return w
 	var al := false
