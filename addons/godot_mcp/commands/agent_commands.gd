@@ -761,9 +761,12 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["iOS notarization on non-macOS hosts", "export template download automation"],
 		},
 		"tutorials/platform": {
-			"status": "partial",
-			"tools": ["deploy_to_android", "list_android_devices", "create_export_preset platform=Web|iOS|Android", "run_export"],
-			"gaps": ["console platforms", "full iOS Xcode pipeline"],
+			"status": "strong",
+			"tools": [
+				"deploy_to_android", "list_android_devices", "create_export_preset platform=Web|iOS|Android", "run_export",
+				"get_ios_export_checklist", "get_platform_export_matrix", "ensure_ios_export_preset", "pipeline_export_ci",
+			],
+			"gaps": ["console platforms (vendor SDKs out of scope)", "iOS signing requires macOS/Xcode"],
 		},
 		"tutorials/rendering": {
 			"status": "strong",
@@ -783,8 +786,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"set_shader_global", "get_shader_global", "list_shader_globals",
 				"create_visual_shader", "visual_shader_add_node", "visual_shader_connect", "visual_shader_get_info",
 				"assign_visual_shader_material", "visual_shader_add_preset_fresnel",
+				"list_visual_shader_node_catalog", "visual_shader_add_nodes_batch", "visual_shader_preset_*",
 			],
-			"gaps": ["full VisualShader node catalog UI parity"],
+			"gaps": ["full in-editor VisualShader graph canvas (presets/catalog cover agent workflows)"],
 		},
 		"tutorials/ui": {
 			"status": "strong",
@@ -804,8 +808,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"create_editor_plugin", "list_project_plugins", "create_gdextension_project",
 				"clone_godot_cpp", "run_gdextension_scons_build", "setup_gdextension_full",
 				"list_gdextension_files", "execute_editor_script", "describe_class EditorPlugin",
+				"validate_editor_plugin_cfg", "package_addon_folder", "list_addon_folders",
 			],
-			"gaps": ["plugin marketplace packaging", "CI matrix for all target platforms"],
+			"gaps": ["Asset Library upload automation (package zip only)"],
 		},
 		"tutorials/xr": {
 			"status": "strong",
@@ -817,6 +822,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"openxr_create_default_controller_bindings",
 				"set_xr_passthrough_settings", "get_xr_passthrough_info",
 				"setup_xr_composition_layer_quad", "create_xr_passthrough_controller_script",
+				"setup_xr_player_rig", "pipeline_xr_setup", "create_xr_movement_script", "create_xr_grabber_script",
 			],
 			"gaps": ["vendor-specific profile verification", "full ARKit/ARCore feature parity"],
 		},
@@ -841,19 +847,24 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": [],
 		},
 		"tutorials/migrating": {
-			"status": "partial",
+			"status": "strong",
 			"tools": [
 				"get_godot_version", "search_in_files", "edit_script",
-				"scan_godot3_patterns", "list_migration_replacements",
+				"scan_godot3_patterns", "list_migration_replacements", "list_migration_replacements_extended",
 				"apply_migration_replacements", "get_migration_guide",
+				"scan_project_migration_report", "scan_tscn_godot3_markers", "get_migration_out_of_scope",
 			],
 			"gaps": ["full scene format auto-convert (use Godot project converter)"],
 		},
 		"classes/* (class reference)": {
 			"status": "strong",
-			"tools": ["describe_class", "list_classes", "list_class_methods", "list_class_signals", "list_class_properties", "list_class_constants", "get_class_inheritance"],
+			"tools": [
+				"describe_class", "list_classes", "list_class_methods", "list_class_signals",
+				"list_class_properties", "list_class_constants", "get_class_inheritance",
+				"get_class_usage_examples", "list_instantiateable_classes", "suggest_class_for_task",
+			],
 			"note": "Lookup of any ClassDB type — NOT a dedicated tool per method of every class",
-			"gaps": ["offline docs RST text", "example snippets from docs"],
+			"gaps": ["offline full docs RST dump"],
 		},
 	}
 	var counts := {"strong": 0, "partial": 0, "thin": 0, "classdb_only": 0}

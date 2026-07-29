@@ -4679,6 +4679,49 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  // ── v1.63 surface closure ──
+  {
+    name: 'get_production_surface_report',
+    description: 'Honest production completeness report + remaining non-goals',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_out_of_scope_surfaces',
+    description: 'Surfaces intentionally not automated (consoles, ClassDB 1:1, hosted services)',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'get_ios_export_checklist',
+    description: 'iOS export/signing checklist (macOS/Xcode required to finish)',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'scan_project_migration_report',
+    description: 'Scan project for Godot 3→4 migration pattern hits',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, max_files: { type: 'number' } },
+      required: [],
+    },
+  },
+  {
+    name: 'get_class_usage_examples',
+    description: 'Generate GDScript/MCP usage examples for a ClassDB type',
+    inputSchema: {
+      type: 'object',
+      properties: { class_name: { type: 'string' } },
+      required: ['class_name'],
+    },
+  },
+  {
+    name: 'suggest_class_for_task',
+    description: 'Suggest Godot classes for a natural-language task',
+    inputSchema: {
+      type: 'object',
+      properties: { task: { type: 'string' } },
+      required: ['task'],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */

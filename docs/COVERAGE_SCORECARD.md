@@ -1,7 +1,7 @@
 # Coverage scorecard (honest agent production %)
 
-**As of:** plugin **v1.59** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
-**Refresh:** `list_docs_coverage` in editor · `.\scripts\export-surface-registry.ps1`
+**As of:** plugin **v1.63** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
+**Refresh:** `list_docs_coverage` · `get_production_surface_report` · `.\scripts\export-surface-registry.ps1`
 
 ---
 
@@ -56,8 +56,8 @@
 | XR prototype | **~88%** |
 | Console-ready ship | **~50%** (platform/vendor limits) |
 
-**Overall agent production readiness (all genres blended): ~95–97%** (v1.62 XR + VS catalog + export CI).  
-**Remaining ~3–5%** is mostly: platform/vendor SDKs, pure visual graph UIs, hosted matchmaking — not missing core production docks.
+**Overall agent production readiness (all genres blended): ~97%** (v1.63 closure).  
+**Remaining ~3%** is **intentionally out of scope** (consoles, hosted backends, 1:1 ClassDB tools, pure graph UIs) — see `list_out_of_scope_surfaces` and [PRODUCTION_SURFACE_COMPLETE.md](PRODUCTION_SURFACE_COMPLETE.md).
 
 ---
 
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.62) | ~1451 |
-| Modules | ~185 |
+| Plugin commands (v1.63) | ~1492 |
+| Modules | ~193 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

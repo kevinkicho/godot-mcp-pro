@@ -4,6 +4,31 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.63.0 — 2026-07-29
+
+**Remaining production surface closure** — migration depth, iOS/platform matrix, theme I/O, ClassDB examples, runtime systems, plugin packaging, UI leftovers, honesty report.
+
+### Migration
+- Extended replacements, `scan_project_migration_report`, `scan_tscn_godot3_markers`, `get_migration_out_of_scope`
+
+### Platform / iOS
+- `get_ios_export_checklist`, `get_platform_export_matrix`, `ensure_ios_export_preset`, `create_ios_export_notes`
+
+### Theme I/O + ClassDB examples
+- Theme export/import/assign; `get_class_usage_examples`, `suggest_class_for_task`, `list_instantiateable_classes`
+
+### Runtime systems
+- Logger, achievements, day/night, feature flags, accessibility, WebSocket client
+
+### Plugin packaging + UI
+- Validate/package addon folders; CodeEdit, RichText BBCode demo, OptionButton items, ProgressBar
+
+### Closure honesty
+- **`list_out_of_scope_surfaces`**, **`get_production_surface_report`**
+- Docs areas platform + migrating elevated to **strong** (with honest residual gaps)
+
+---
+
 ## v1.62.0 — 2026-07-29
 
 **All recommended remaining waves** — XR player rig depth, VisualShader node catalog + presets, export/CI templates.

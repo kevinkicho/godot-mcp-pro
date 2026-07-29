@@ -224,6 +224,16 @@ func _domains() -> Dictionary:
 			"examples": ["pipeline_export_ci", "create_github_actions_godot_export", "create_export_presets_pack"],
 			"workflow": "pipeline_export_ci → verify templates → run_export",
 		},
+		"migration": {
+			"description": "Godot 3→4 scan/report (not full scene converter)",
+			"examples": ["scan_project_migration_report", "scan_tscn_godot3_markers", "apply_migration_replacements"],
+			"workflow": "scan_project_migration_report → apply_migration_replacements dry_run → playtest",
+		},
+		"closure": {
+			"description": "Production surface completeness and out-of-scope honesty",
+			"examples": ["get_production_surface_report", "list_out_of_scope_surfaces", "list_docs_coverage"],
+			"workflow": "get_production_surface_report → list_out_of_scope_surfaces",
+		},
 	}
 
 

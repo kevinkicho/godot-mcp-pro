@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.62.0**  
+Plugin version: **1.63.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1451
-- **Command modules:** 185
+- **Registered plugin commands:** 1492
+- **Command modules:** 193
 
 ## Commands by module
 
@@ -346,6 +346,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `methods`
 - `signals`
 - `properties`
+
+### classdb_examples_commands (4)
+
+- `get_class_usage_examples`
+- `list_instantiateable_classes`
+- `suggest_class_for_task`
+- `list_classdb_examples_tools`
 
 ### collision_layer_bit_commands (5)
 
@@ -836,6 +843,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `user_write_text`
 - `user_delete_path`
 
+### ios_platform_commands (5)
+
+- `get_ios_export_checklist`
+- `get_platform_export_matrix`
+- `create_ios_export_notes`
+- `ensure_ios_export_preset`
+- `list_ios_platform_tools`
+
 ### joint_limit_commands (6)
 
 - `set_pin_joint_params`
@@ -957,6 +972,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_migration_replacements`
 - `apply_migration_replacements`
 - `get_migration_guide`
+
+### migration_depth_commands (7)
+
+- `list_migration_replacements_extended`
+- `scan_project_migration_report`
+- `scan_tscn_godot3_markers`
+- `get_migration_out_of_scope`
+- `list_migration_depth_tools`
+- `replacements`
+- `count`
 
 ### modern_render_commands (6)
 
@@ -1217,6 +1242,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `playtest_sequence`
 - `list_playtest_loop_tools`
 
+### plugin_packaging_commands (5)
+
+- `validate_editor_plugin_cfg`
+- `list_addon_folders`
+- `package_addon_folder`
+- `create_plugin_readme`
+- `list_plugin_packaging_tools`
+
 ### plugin_scaffold_commands (2)
 
 - `create_editor_plugin`
@@ -1402,6 +1435,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `navigate_to`
 - `move_to`
 - `watch_signals`
+
+### runtime_systems_commands (7)
+
+- `create_game_logger_script`
+- `create_achievement_manager_script`
+- `create_day_night_cycle_script`
+- `create_feature_flags_script`
+- `create_accessibility_settings_script`
+- `create_websocket_client_script`
+- `list_runtime_systems_tools`
 
 ### save_game_state_commands (8)
 
@@ -1699,6 +1742,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_subviewport_update_mode`
 - `list_subviewport_render_tools`
 
+### surface_closure_commands (3)
+
+- `list_out_of_scope_surfaces`
+- `get_production_surface_report`
+- `list_surface_closure_tools`
+
 ### terrain_mesh_commands (4)
 
 - `create_heightmap_terrain`
@@ -1748,6 +1797,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `theme_clear_type`
 - `theme_get_type_info`
 - `assign_theme_to_control`
+
+### theme_io_commands (5)
+
+- `export_theme_resource`
+- `import_theme_to_project`
+- `duplicate_theme_resource`
+- `assign_theme_to_scene_root`
+- `list_theme_io_tools`
 
 ### theme_type_depth_commands (6)
 
@@ -1876,6 +1933,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_subviewport_container`
 - `tab_container_add_page`
 - `list_ui_container_depth_tools`
+
+### ui_editor_depth_commands (5)
+
+- `setup_code_edit`
+- `setup_richtext_effects_basic`
+- `set_option_button_items`
+- `setup_progress_bar_ranged`
+- `list_ui_editor_depth_tools`
 
 ### ui_list_commands (15)
 

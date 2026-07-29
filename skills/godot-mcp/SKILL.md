@@ -208,6 +208,19 @@ Ship-loop depth for agents:
 - **VisualShader:** `list_visual_shader_node_catalog` · batch nodes · presets (toon, pulse, scroll UV, triplanar, fresnel outline)
 - **Export CI:** **`pipeline_export_ci`** — preset pack + GitHub Actions + headless `.ps1`/`.sh`
 
+## v1.63+ — remaining surface closure
+
+Production surface is **complete for agent shipping** (workflows + discovery + ClassDB escapes):
+
+- **`get_production_surface_report`** / **`list_out_of_scope_surfaces`** — honesty map
+- Migration: `scan_project_migration_report` · `scan_tscn_godot3_markers`
+- iOS: `get_ios_export_checklist` · `get_platform_export_matrix`
+- Theme I/O · ClassDB `get_class_usage_examples` / `suggest_class_for_task`
+- Runtime: logger · achievements · day/night · feature flags · a11y · WebSocket client
+- Plugin: `package_addon_folder` · `validate_editor_plugin_cfg`
+
+**Not goals:** console SDKs, 1 tool per ClassDB method, hosted backends, pure visual graph UIs.
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:
