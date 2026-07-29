@@ -1106,7 +1106,7 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
   {
     name: 'update_property',
     description:
-      'Set one node property (inspector fine-tune). Supports nested paths: shape.radius, mesh, material_override. Values: Vector2(...), Color(...), res://, numbers, bools.',
+      'Set one node property (full inspector fine-tune). Nested paths: shape.radius, material_override.albedo_color. Enums by name. Types: Vector2/3/4, Color, Transform2D/3D, Quaternion, res://, arrays, bools, numbers.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1114,12 +1114,12 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
         property: { type: 'string', description: 'Name or nested path e.g. shape.radius' },
         value: {},
       },
-      required: ['node_path', 'property'],
+      required: ['node_path', 'property', 'value'],
     },
   },
   {
     name: 'update_properties',
-    description: 'Batch set many properties on one node (multi-field inspector edit)',
+    description: 'Batch set many properties on one node (multi-field inspector edit). Paths may be nested.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1130,27 +1130,103 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'get_property',
+    description:
+      'Read one property with full metadata (type, enum options, range, can_revert, current value). Prefer before update_property.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        property: { type: 'string', description: 'Name or nested path' },
+      },
+      required: ['node_path', 'property'],
+    },
+  },
+  {
     name: 'list_property_info',
     description:
-      'Inspector catalog: property names, types, enum options, ranges, current values — use before fine-tuning',
+      'Full inspector catalog: types, enums, ranges, usage flags, nested resource fields. Use recurse_resources=true to expand sub-resources. filter= substring. property_path= to catalog a resource slot.',
     inputSchema: {
       type: 'object',
       properties: {
         node_path: { type: 'string' },
         only_editable: { type: 'boolean' },
         include_internal: { type: 'boolean' },
+        include_headers: { type: 'boolean', description: 'Include category/group headers' },
+        recurse_resources: { type: 'boolean', description: 'Expand Resource sub-properties (shape.*, material.*)' },
+        max_depth: { type: 'number' },
+        filter: { type: 'string', description: 'Name substring filter' },
+        property_path: { type: 'string', description: 'Catalog a nested resource e.g. shape or material_override' },
+        max: { type: 'number' },
       },
       required: ['node_path'],
     },
   },
   {
-    name: 'inspect_node',
-    description:
-      'Full human-like inspection: properties, signals+connections, groups, script, meta',
+    name: 'search_properties',
+    description: 'Find properties by name substring on a node (recurses resources by default)',
     inputSchema: {
       type: 'object',
-      properties: { node_path: { type: 'string' } },
+      properties: {
+        node_path: { type: 'string' },
+        query: { type: 'string' },
+        recurse_resources: { type: 'boolean' },
+      },
+      required: ['node_path', 'query'],
+    },
+  },
+  {
+    name: 'reset_property',
+    description: 'Revert a property to editor default (inspector Revert) when property_can_revert',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        property: { type: 'string' },
+      },
+      required: ['node_path', 'property'],
+    },
+  },
+  {
+    name: 'inspect_node',
+    description:
+      'Full human-like inspection: properties, signals+connections, groups, script, meta. deep=true adds nested property_info; include_methods=true samples methods.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        deep: { type: 'boolean' },
+        include_methods: { type: 'boolean' },
+      },
       required: ['node_path'],
+    },
+  },
+  {
+    name: 'list_node_methods',
+    description: 'List callable methods on a scene node (for call_node_method). filter= substring.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        filter: { type: 'string' },
+        include_private: { type: 'boolean' },
+        max: { type: 'number' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'call_node_method',
+    description:
+      'Call a method on a scene node with args (structured alternative to execute_editor_script). Discover via list_node_methods / describe_class.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        method: { type: 'string' },
+        args: { type: 'array', items: {} },
+      },
+      required: ['node_path', 'method'],
     },
   },
   {
@@ -1166,9 +1242,22 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'describe_class',
+    description:
+      'ClassDB / docs class reference for any engine type: methods, signals, properties, enums, inheritance. Essential for fine-tuning unknown node types.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        class_name: { type: 'string', description: 'e.g. CharacterBody3D, GPUParticles2D' },
+        include_inherited: { type: 'boolean' },
+      },
+      required: ['class_name'],
+    },
+  },
+  {
     name: 'add_resource',
     description:
-      'Create and assign a Resource on a node property (e.g. CollisionShape2D.shape = RectangleShape2D)',
+      'Create and assign a Resource on a node property (e.g. CollisionShape2D.shape = RectangleShape2D). Nested property paths supported. Pass resource_properties to set fields on create.',
     inputSchema: {
       type: 'object',
       properties: {

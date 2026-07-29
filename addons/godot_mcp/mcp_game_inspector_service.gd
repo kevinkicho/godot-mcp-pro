@@ -364,7 +364,9 @@ func _cmd_get_node_properties(params: Dictionary) -> void:
 		return
 
 	var filter: Array = params.get("properties", [])
+	var with_info: bool = bool(params.get("with_info", false))
 	var props: Dictionary = {}
+	var info: Array = []
 
 	if filter.is_empty():
 		for prop_info in node.get_property_list():
@@ -375,17 +377,46 @@ func _cmd_get_node_properties(params: Dictionary) -> void:
 			if prop_name.begins_with("_") or prop_name == "script":
 				continue
 			props[prop_name] = _serialize_value(node.get(prop_name))
+			if with_info:
+				info.append({
+					"name": prop_name,
+					"type": type_string(prop_info["type"]),
+					"hint": prop_info["hint"],
+					"hint_string": prop_info["hint_string"],
+					"value": props[prop_name],
+				})
 	else:
 		for prop_name: String in filter:
-			var value: Variant = node.get(prop_name)
-			props[prop_name] = _serialize_value(value)
+			# Nested path support
+			var target: Object = node
+			var leaf := str(prop_name)
+			var normalized := leaf.replace(":", "/").replace(".", "/")
+			var parts := normalized.split("/", false)
+			var ok := true
+			if parts.size() > 1:
+				for i in range(parts.size() - 1):
+					if target == null or not parts[i] in target:
+						ok = false
+						break
+					var nxt = target.get(parts[i])
+					if nxt == null or not nxt is Object:
+						ok = false
+						break
+					target = nxt
+				leaf = parts[parts.size() - 1]
+			if not ok or not leaf in target:
+				props[str(prop_name)] = {"error": "not_found"}
+			else:
+				props[str(prop_name)] = _serialize_value(target.get(leaf))
 
-	_write_response({
+	var payload := {
 		"node_path": str(node.get_path()),
 		"type": node.get_class(),
 		"properties": props,
-	})
-
+	}
+	if with_info:
+		payload["property_info"] = info
+	_write_response(payload)
 
 # ── capture_frames ────────────────────────────────────────────────────────────
 
@@ -694,12 +725,33 @@ func _cmd_set_node_property(params: Dictionary) -> void:
 		_write_response({"error": "Node not found: %s" % node_path})
 		return
 
-	var old_value: Variant = node.get(property)
+	# Nested paths: shape.radius / material_override.albedo_color
+	var target: Object = node
+	var leaf := property
+	var normalized := property.replace(":", "/").replace(".", "/")
+	var parts := normalized.split("/", false)
+	if parts.size() > 1:
+		for i in range(parts.size() - 1):
+			if target == null or not parts[i] in target:
+				_write_response({"error": "Property path segment missing: %s" % parts[i]})
+				return
+			var nxt = target.get(parts[i])
+			if nxt == null or not nxt is Object:
+				_write_response({"error": "Cannot traverse into '%s' (null or non-object)" % parts[i]})
+				return
+			target = nxt
+		leaf = parts[parts.size() - 1]
+
+	if not leaf in target:
+		_write_response({"error": "Property not found: %s on %s" % [leaf, target.get_class()]})
+		return
+
+	var old_value: Variant = target.get(leaf)
 	var raw_value: Variant = params.get("value")
 	var parsed_value: Variant = _parse_value_for_type(raw_value, typeof(old_value))
 
-	node.set(property, parsed_value)
-	var new_value: Variant = node.get(property)
+	target.set(leaf, parsed_value)
+	var new_value: Variant = target.get(leaf)
 
 	_write_response({
 		"node_path": str(node.get_path()),

@@ -16,6 +16,7 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [PRODUCTION_SYSTEMS.md](PRODUCTION_SYSTEMS.md) | Characters, AI, quests, multiplayer, VFX, settings, BT |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Add commands, ship versions, regenerate registry |
 | [DOCS_COVERAGE_ANALYSIS.md](DOCS_COVERAGE_ANALYSIS.md) | MCP ↔ official Godot docs / SDK surface map |
+| [INSPECTOR_FINE_TUNE.md](INSPECTOR_FINE_TUNE.md) | Full node/parameter fine-tune for agents |
 
 ### Root reference (not under `docs/`)
 

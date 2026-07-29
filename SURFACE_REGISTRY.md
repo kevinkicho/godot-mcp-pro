@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.38.0**  
+Plugin version: **1.39.0**  
 
 ## Honesty
 
@@ -10,7 +10,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 692
+- **Registered plugin commands:** 697
 - **Command modules:** 68
 
 ## Commands by module
@@ -462,7 +462,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_navigation_obstacle`
 - `set_navigation_agent_target`
 
-### node_commands (28)
+### node_commands (33)
 
 - `add_node`
 - `delete_node`
@@ -470,8 +470,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `move_node`
 - `update_property`
 - `update_properties`
+- `get_property`
 - `list_property_info`
+- `search_properties`
+- `reset_property`
 - `inspect_node`
+- `list_node_methods`
+- `call_node_method`
 - `clear_property`
 - `get_node_properties`
 - `add_resource`

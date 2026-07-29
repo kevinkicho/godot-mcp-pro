@@ -34,22 +34,23 @@ health_check
   → stop_scene → fix → repeat
 ```
 
-## Human-like inspector fine-tuning
+## Human-like inspector fine-tuning (full parameter control)
 
-Work like a person in the Inspector / Scene dock:
+Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:
 
-1. **`select_nodes`** or navigate with **`get_scene_tree`**
-2. **`inspect_node`** or **`list_property_info`** — see types, enums, ranges, current values
-3. **`update_property`** / **`update_properties`** — fine-tune fields (supports nested `shape.radius`)
-4. **Resources:** `add_resource` (e.g. shape, material) → then nest-tune; **`clear_property`** / **`remove_resource`** to empty a slot
-5. **Signals:** `get_signals` → `connect_signal` / `disconnect_signal`
-6. **Meshes:** `add_mesh_instance`, `set_material_3d`, `update_property` on `mesh`
-7. **Meta / groups:** `set_meta`, `list_meta`, `set_node_groups`
-8. **`save_scene`**
+1. **`select_nodes`** or **`get_scene_tree`**
+2. **Discover:** `inspect_node deep=true` · `list_property_info recurse_resources=true` · `search_properties` · `get_property`
+3. **Unknown types:** `describe_class` / `list_class_properties` (full ClassDB surface)
+4. **Tune:** `update_property` / `update_properties` (nested paths, enum **names**, Vector/Color/Transform dicts)
+5. **Revert / clear:** `reset_property` · `clear_property`
+6. **Resources:** `add_resource` (+ `resource_properties`) → nest-tune `shape.radius`, `material_override.albedo_color`
+7. **Methods:** `list_node_methods` → `call_node_method` (or `execute_editor_script`)
+8. **Signals / meta / groups:** `connect_signal`, `set_meta`, `set_node_groups`
+9. **`save_scene`**
 
-To **add/remove script parameters** (`@export` vars): `read_script` → `edit_script` (add/remove export lines) → `validate_script` → `reload_project` if needed. Inspector then shows new exports via `list_property_info`.
+Script `@export` vars appear in `list_property_info` after attach; add/remove via `edit_script` → `validate_script` → `reload_project` if needed.
 
-Topic guide: `agent_workflow_guide` with `topic: "inspector"`.
+Topic: `agent_workflow_guide` with `topic: "inspector"`. Doc: `docs/INSPECTOR_FINE_TUNE.md`.
 
 ## Human animation surface
 

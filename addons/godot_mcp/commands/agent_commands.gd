@@ -173,21 +173,29 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		"inspector", "tune", "properties":
 			guide["focus"] = [
 				"select_nodes / get_editor_selection",
-				"inspect_node or list_property_info (see enums/ranges)",
-				"update_property or update_properties (batch fine-tune)",
-				"Nested: add_resource then update_property property='shape.radius'",
-				"wire_signal_to_new_method or connect_signal / disconnect_signal / get_signals",
-				"add_mesh_instance / set_material_3d / clear_property",
-				"set_meta / list_meta",
-				"save_scene",
+				"inspect_node deep=true OR list_property_info (enums/ranges/usage)",
+				"list_property_info recurse_resources=true — expand shape.*, material.*, etc.",
+				"search_properties query=radius|albedo|collision",
+				"get_property → update_property / update_properties (batch)",
+				"reset_property when can_revert",
+				"describe_class class_name=CharacterBody3D for full ClassDB surface",
+				"list_node_methods → call_node_method for non-property API",
+				"Nested resources: add_resource then update_property property='shape.radius'",
+				"wire_signal_to_new_method / connect_signal / get_signals",
+				"set_meta / list_meta / save_scene",
 			]
 			guide["human_parity"] = {
 				"tune_transform": "update_properties node_path=Player properties={position, rotation, scale}",
 				"tune_collision": "add_resource property=shape resource_type=CircleShape2D → update_property property=shape.radius value=16",
+				"tune_material": "add_resource property=material_override resource_type=StandardMaterial3D resource_properties={albedo_color:'#ff0000'} → update_property property=material_override.roughness value=0.4",
+				"enum_by_name": "update_property property=process_mode value=PROCESS_MODE_ALWAYS (or list_property_info enum_options)",
+				"discover_every_field": "list_property_info recurse_resources=true include_headers=true",
+				"unknown_type": "describe_class + list_class_properties include_inherited=true",
+				"call_api": "list_node_methods filter=play → call_node_method method=play args=[]",
 				"wire_button": "wire_signal_to_new_method source_path=UI/Button signal_name=pressed target_path=.",
-				"swap_mesh": "add_mesh_instance or update_property mesh / set_material_3d",
-				"script_exports": "list_property_info shows @export vars; edit_script to add/remove @export lines then reload",
+				"script_exports": "list_property_info shows @export; edit_script to add/remove @export then reload_project",
 			}
+			guide["guarantee"] = "Any editor-visible property on a node or nested Resource is readable via list_property_info/get_property and writable via update_property (UndoRedo). Methods via call_node_method. ClassDB via describe_class."
 		_:
 			guide["focus"] = [
 				"Full production_loop above",
@@ -216,12 +224,14 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 		"tutorials/editor": {
 			"status": "strong",
 			"tools": [
-				"inspect_node", "list_property_info", "select_nodes", "get_scene_tree", "get_editor_errors",
+				"inspect_node", "list_property_info", "get_property", "search_properties", "reset_property",
+				"update_property", "update_properties", "list_node_methods", "call_node_method",
+				"select_nodes", "get_scene_tree", "get_editor_errors",
 				"reload_project", "scan_filesystem",
 				"debugger_get_status", "debugger_continue", "debugger_step_over/into/out",
 				"set_source_breakpoint", "list_source_breakpoints", "open_script_at_line",
 			],
-			"gaps": ["native editor gutter breakpoint list (engine-limited)", "full call stack variables"],
+			"gaps": ["native editor gutter breakpoint list (engine-limited)", "full call stack variables UI"],
 		},
 		"tutorials/scripting": {
 			"status": "strong",

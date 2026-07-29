@@ -4,6 +4,35 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.39.0 — 2026-07-28
+
+**Inspector fine-tune** — agents can discover and set every editor-visible node/resource parameter.
+
+### Node / property control
+- `get_property` — single field + full metadata (type, enum, range, can_revert)
+- `search_properties` — find fields by name (recurses resources)
+- `reset_property` — inspector Revert when available
+- `list_node_methods` / `call_node_method` — structured method access
+- `list_property_info` — `recurse_resources`, `property_path`, `filter`, headers, usage flags
+- `inspect_node` — `deep` nested catalog, optional methods sample
+- `update_property` — enum-by-name, declared types when value is null, richer parse
+- `add_resource` — nested property paths + `resource_properties` on create
+
+### Types (`utils/property_parser.gd`)
+- Vector4, Transform2D/3D, Quaternion, Basis, AABB, Plane, packed arrays
+- Enum options as `{name,value}`; range min/max/step
+- Stronger serialize for nested resources
+
+### Runtime
+- Nested property paths on `set_node_property` / filtered `get_node_properties`
+- Optional `with_info` on game property dump
+
+### Docs / discovery
+- `docs/INSPECTOR_FINE_TUNE.md`, skill + agent_workflow `topic=inspector` updated
+- Lite schemas for new fine-tune tools + `describe_class`
+
+---
+
 ## v1.38.0 — 2026-07-28
 
 **Refactor** — extract runtime capture; command modules use shared script writers only.
