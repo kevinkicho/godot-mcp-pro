@@ -265,6 +265,29 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"stage_files_into_res for .glb → ensure_imported",
 				"add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_collision",
 			]
+		"animation", "animations", "anim":
+			guide["focus"] = [
+				"list_animation_fine_tune_tools",
+				"EXAMPLE → TARGET: extract_animations_from_scene OR list_animations on example player",
+				"dump_animation / get_animation_info include_keys=true (read example tracks+keys)",
+				"apply_example_animation example_scene_path=… source_animation=Walk target_node_path=Player/Anim",
+				"OR copy_animation_to_player source_node_path=… target_node_path=…",
+				"remap_animation_track_paths from_prefix=… to_prefix=… (hierarchy mismatch)",
+				"compare_animations source_* vs target_*",
+				"scale_animation_time / offset_animation_keys / crop_animation",
+				"set_animation_keyframe / set_bezier_key for per-key fine-tune",
+				"sample_animation_at_time to match example pose",
+				"animation_player_play + playtest_report / get_game_screenshot",
+			]
+			guide["human_parity"] = {
+				"copy_example": "apply_example_animation or copy_animation_to_player",
+				"inspect": "dump_animation include_keys=true",
+				"retarget_paths": "remap_animation_track_paths",
+				"timing": "scale_animation_time scale=0.5 (2x speed) or offset_animation_keys",
+				"tweak_key": "set_animation_keyframe track_index time value",
+				"tree": "create_animation_tree + travel_animation_state",
+			}
+			guide["guarantee"] = "Agents can inspect example clips, copy into target AnimationPlayer, remap tracks, scale timing, and fine-tune keys via MCP — same as Animation dock + library paste."
 		"ui":
 			guide["focus"] = [
 				"scaffold_project_defaults genre=ui",

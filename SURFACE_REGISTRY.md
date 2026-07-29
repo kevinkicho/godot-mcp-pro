@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.41.0**  
+Plugin version: **1.42.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 766
-- **Command modules:** 71
+- **Registered plugin commands:** 790
+- **Command modules:** 72
 
 ## Commands by module
 
@@ -89,6 +89,33 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_bezier_key`
 - `get_bezier_key_info`
 - `apply_bone_map_to_skeleton`
+
+### animation_transfer_commands (24)
+
+- `dump_animation`
+- `list_animation_tracks`
+- `get_track_keys`
+- `sample_animation_at_time`
+- `compare_animations`
+- `copy_animation_to_player`
+- `copy_animation_track`
+- `remap_animation_track_paths`
+- `set_animation_track_path`
+- `scale_animation_time`
+- `offset_animation_keys`
+- `crop_animation`
+- `clear_animation_track_keys`
+- `save_animation_resource`
+- `load_animation_resource`
+- `extract_animations_from_scene`
+- `apply_example_animation`
+- `list_animation_fine_tune_tools`
+- `type_name`
+- `value`
+- `track`
+- `type_name`
+- `type`
+- `type`
 
 ### animation_tree_commands (20)
 

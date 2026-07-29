@@ -19,6 +19,7 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [INSPECTOR_FINE_TUNE.md](INSPECTOR_FINE_TUNE.md) | Full node/parameter fine-tune for agents |
 | [SURFACE_EXPANSION.md](SURFACE_EXPANSION.md) | v1.40 docs-gap tools (GI, joypad, i18n, …) |
 | [HEADLESS_AGENT.md](HEADLESS_AGENT.md) | IDE-parity agent sessions without friction |
+| [ANIMATION_FINE_TUNE.md](ANIMATION_FINE_TUNE.md) | Copy example animations + fine-tune via MCP |
 
 ### Root reference (not under `docs/`)
 

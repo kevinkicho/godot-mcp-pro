@@ -1594,12 +1594,138 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
   },
   // ── Human animation surface (AnimationPlayer / AnimationTree / Skeleton) ──
   {
+    name: 'list_animation_fine_tune_tools',
+    description: 'List example→target animation transfer tools and recommended agent flow',
+    inputSchema: emptyProps,
+  },
+  {
     name: 'list_animations',
     description: 'List clips on an AnimationPlayer (human Animation panel library list)',
     inputSchema: {
       type: 'object',
       properties: { node_path: { type: 'string' } },
       required: ['node_path'],
+    },
+  },
+  {
+    name: 'dump_animation',
+    description:
+      'Full dump of a clip (tracks+keys) for agent comparison with an example animation. Prefer before fine-tune.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        include_keys: { type: 'boolean' },
+        max_keys_per_track: { type: 'number' },
+      },
+      required: ['node_path', 'animation'],
+    },
+  },
+  {
+    name: 'apply_example_animation',
+    description:
+      'Copy example clip onto target AnimationPlayer (from open scene player or example_scene_path). Optional path remap + time scale/offset.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        example_scene_path: { type: 'string', description: 'res:// example .tscn with AnimationPlayer' },
+        source_node_path: { type: 'string' },
+        source_animation: { type: 'string' },
+        example_animation: { type: 'string' },
+        target_node_path: { type: 'string' },
+        target_animation: { type: 'string' },
+        from_prefix: { type: 'string' },
+        to_prefix: { type: 'string' },
+        replacements: { type: 'object' },
+        scale: { type: 'number' },
+        offset: { type: 'number' },
+      },
+      required: ['target_node_path'],
+    },
+  },
+  {
+    name: 'compare_animations',
+    description: 'Diff example vs target: track paths, key counts, length',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source_node_path: { type: 'string' },
+        source_animation: { type: 'string' },
+        target_node_path: { type: 'string' },
+        target_animation: { type: 'string' },
+      },
+      required: ['source_node_path', 'source_animation', 'target_animation'],
+    },
+  },
+  {
+    name: 'copy_animation_to_player',
+    description: 'Duplicate a clip from one AnimationPlayer to another (same open scene)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source_node_path: { type: 'string' },
+        source_animation: { type: 'string' },
+        target_node_path: { type: 'string' },
+        target_animation: { type: 'string' },
+        overwrite: { type: 'boolean' },
+      },
+      required: ['source_node_path', 'source_animation', 'target_node_path'],
+    },
+  },
+  {
+    name: 'remap_animation_track_paths',
+    description: 'Rewrite track NodePaths after copy (example hierarchy → target hierarchy)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        from_prefix: { type: 'string' },
+        to_prefix: { type: 'string' },
+        replacements: { type: 'object' },
+      },
+      required: ['node_path', 'animation'],
+    },
+  },
+  {
+    name: 'scale_animation_time',
+    description: 'Scale key times + length (e.g. scale=0.5 = 2× speed)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        scale: { type: 'number' },
+      },
+      required: ['node_path', 'animation', 'scale'],
+    },
+  },
+  {
+    name: 'sample_animation_at_time',
+    description: 'Sample interpolated track values at time t (match example pose)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        time: { type: 'number' },
+      },
+      required: ['node_path', 'animation'],
+    },
+  },
+  {
+    name: 'extract_animations_from_scene',
+    description: 'Instantiate example .tscn and list AnimationPlayer clips; optional copy into open scene',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scene_path: { type: 'string' },
+        copy_to_node_path: { type: 'string' },
+        copy_animation: { type: 'string' },
+        target_animation: { type: 'string' },
+      },
+      required: ['scene_path'],
     },
   },
   {
@@ -1633,7 +1759,7 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
   },
   {
     name: 'set_animation_keyframe',
-    description: 'Insert/update a key on a value/transform track',
+    description: 'Insert/update a key on a value/transform track (fine-tune after copying example)',
     inputSchema: {
       type: 'object',
       properties: {

@@ -4,6 +4,26 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.42.0 — 2026-07-28
+
+**Animation example → fine-tune pipeline** — agents can copy example clips and retarget/tune them like the Animation dock.
+
+### New module `animation_transfer_commands`
+- `dump_animation`, `list_animation_tracks`, `get_track_keys`, `sample_animation_at_time`
+- `compare_animations`, `copy_animation_to_player`, `copy_animation_track`
+- `remap_animation_track_paths`, `set_animation_track_path`
+- `scale_animation_time`, `offset_animation_keys`, `crop_animation`, `clear_animation_track_keys`
+- `save_animation_resource`, `load_animation_resource`
+- `extract_animations_from_scene`, **`apply_example_animation`** (one-shot)
+- `list_animation_fine_tune_tools`
+
+### Other
+- `get_animation_info` serializes key values properly; optional key caps
+- Lite schemas + `agent_workflow_guide topic=animation`
+- Doc: `docs/ANIMATION_FINE_TUNE.md`
+
+---
+
 ## v1.41.0 — 2026-07-28
 
 **Headless IDE parity + remaining tool surfaces** — agents can operate like a human in the editor with fewer round-trips and offline fallbacks.

@@ -239,6 +239,9 @@ func _get_animation_info(params: Dictionary) -> Dictionary:
 	if anim == null:
 		return error_not_found("Animation '%s'" % anim_name)
 
+	var include_keys: bool = optional_bool(params, "include_keys", true)
+	var max_keys: int = clampi(optional_int(params, "max_keys_per_track", 100), 1, 2000)
+	const PropertyParser := preload("res://addons/godot_mcp/utils/property_parser.gd")
 	var tracks: Array = []
 	for i in anim.get_track_count():
 		var track_info := {
@@ -247,14 +250,18 @@ func _get_animation_info(params: Dictionary) -> Dictionary:
 			"type": anim.track_get_type(i),
 			"key_count": anim.track_get_key_count(i),
 		}
-		var keys: Array = []
-		for k in anim.track_get_key_count(i):
-			keys.append({
-				"time": anim.track_get_key_time(i, k),
-				"value": str(anim.track_get_key_value(i, k)),
-				"easing": anim.track_get_key_transition(i, k),
-			})
-		track_info["keys"] = keys
+		if include_keys:
+			var keys: Array = []
+			var kn := anim.track_get_key_count(i)
+			var lim := mini(kn, max_keys)
+			for k in range(lim):
+				keys.append({
+					"time": anim.track_get_key_time(i, k),
+					"value": PropertyParser.serialize_value(anim.track_get_key_value(i, k)),
+					"easing": anim.track_get_key_transition(i, k),
+				})
+			track_info["keys"] = keys
+			track_info["keys_truncated"] = kn > max_keys
 		tracks.append(track_info)
 
 	return success({
@@ -263,6 +270,7 @@ func _get_animation_info(params: Dictionary) -> Dictionary:
 		"loop_mode": anim.loop_mode,
 		"step": anim.step,
 		"tracks": tracks,
+		"hint": "For example→target workflow use dump_animation / apply_example_animation / compare_animations",
 	})
 
 
