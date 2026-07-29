@@ -18,6 +18,8 @@ func get_commands() -> Dictionary:
 		"run_capture_timeline": _run_capture_timeline,
 		"run_find_nodes": _run_find_nodes,
 		"run_probe_report": _run_probe_report,
+		"run_ping_runtime": _run_ping_runtime,
+		"ensure_runtime_autoloads": _ensure_runtime_autoloads,
 	}
 
 
@@ -121,16 +123,60 @@ func _run_session_stop(params: Dictionary) -> Dictionary:
 func _run_session_status(_params: Dictionary) -> Dictionary:
 	var playing := EditorInterface.is_playing_scene()
 	var game := {}
-	if playing:
-		if is_debugger_paused():
-			try_debugger_continue()
+	var transport := "offline"
+	# Prefer TCP even if editor thinks not playing (standalone game)
+	var ping := await send_game_command("ping_runtime", {}, 2.0)
+	if not ping.has("error"):
+		transport = str((ping.get("result", {}) as Dictionary).get("_transport", "tcp"))
 		var res := await send_game_command("get_run_status", {}, 5.0)
 		game = res.get("result", res)
+	elif playing:
+		if is_debugger_paused():
+			try_debugger_continue()
+		var res2 := await send_game_command("get_run_status", {}, 5.0)
+		game = res2.get("result", res2)
+		transport = str((game as Dictionary).get("_transport", "file")) if game is Dictionary else "file"
 	return success({
 		"playing": playing,
 		"debugger_paused": is_debugger_paused(),
+		"runtime_reachable": not ping.has("error") or (game is Dictionary and game.get("ok", false)),
 		"game": game,
-		"channel": "file_ipc" if playing else "offline",
+		"channel": transport,
+		"ping": ping.get("result", ping.get("error", {})),
+	})
+
+
+func _run_ping_runtime(_params: Dictionary) -> Dictionary:
+	return await send_game_command("ping_runtime", {}, 3.0)
+
+
+func _ensure_runtime_autoloads(params: Dictionary) -> Dictionary:
+	## Permanently keep MCP runtime autoloads in the project so CLI/export runs stay probeable.
+	var permanent: bool = optional_bool(params, "permanent", true)
+	var entries := [
+		["autoload/MCPScreenshot", "res://addons/godot_mcp/mcp_screenshot_service.gd"],
+		["autoload/MCPInputService", "res://addons/godot_mcp/mcp_input_service.gd"],
+		["autoload/MCPGameInspector", "res://addons/godot_mcp/mcp_game_inspector_service.gd"],
+	]
+	var added: Array = []
+	var existing: Array = []
+	for e in entries:
+		var key: String = e[0]
+		var script: String = e[1]
+		if not FileAccess.file_exists(script):
+			continue
+		if ProjectSettings.has_setting(key):
+			existing.append(key)
+		else:
+			ProjectSettings.set_setting(key, "*" + script)
+			added.append(key)
+	if permanent and not added.is_empty():
+		ProjectSettings.save()
+	return success({
+		"added": added,
+		"already_present": existing,
+		"permanent": permanent,
+		"hint": "Launch game (editor Play or CLI). Runtime TCP listens on 127.0.0.1:6510-6514. run_ping_runtime to verify.",
 	})
 
 

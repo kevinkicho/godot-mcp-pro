@@ -76,6 +76,14 @@ detect_test_frameworks → run_gut_tests | run_gdunit_tests
 
 # One-shot:
 run_probe_report
+
+# TCP runtime (1.34) — preferred transport; works standalone:
+ensure_runtime_autoloads
+run_ping_runtime
+runtime_call (server) when editor offline
+
+# Web export only (optional Playwright):
+web_serve_export → web_playwright_probe → web_serve_stop
 ```
 
 ### 0b. Asset intake (human FileSystem + Import)

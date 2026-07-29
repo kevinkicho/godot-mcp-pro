@@ -1,9 +1,13 @@
 ## Autoload injected by Godot MCP Pro plugin at runtime.
 ## Handles runtime game inspection: scene tree, node properties, frame capture, property monitoring.
+## Transport: file IPC (legacy) + TCP JSON-lines on 127.0.0.1:6510-6514 (preferred).
 extends Node
 
 const REQUEST_PATH := "user://mcp_game_request"
 const RESPONSE_PATH := "user://mcp_game_response"
+const RUNTIME_PORT_FILE := "user://mcp_runtime_port"
+const RUNTIME_PORT_START := 6510
+const RUNTIME_PORT_END := 6514
 
 enum State { IDLE, CAPTURING_FRAMES, MONITORING, RECORDING, MOVING_TO, WATCHING_SIGNALS, VIDEO_RECORDING, CAPTURING_TIMELINE }
 
@@ -74,12 +78,118 @@ var _moveto_run: bool = false
 var _moveto_look_at: bool = true
 var _moveto_keys_held: Array = []  # Track injected keys for guaranteed release
 
+# TCP runtime probe server (preferred over file IPC)
+var _tcp: TCPServer
+var _tcp_port: int = 0
+var _tcp_clients: Array = []  # Array of StreamPeerTCP
+var _pending_tcp: StreamPeerTCP = null
+var _pending_tcp_id: int = 0
+var _tcp_buffers: Dictionary = {}  # instance_id -> String partial line
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_start_runtime_tcp()
+
+
+func _exit_tree() -> void:
+	_stop_runtime_tcp()
+
+
+func _start_runtime_tcp() -> void:
+	## Always listen so editor Play AND standalone CLI/export can attach.
+	_tcp = TCPServer.new()
+	for port in range(RUNTIME_PORT_START, RUNTIME_PORT_END + 1):
+		var err := _tcp.listen(port, "127.0.0.1")
+		if err == OK:
+			_tcp_port = port
+			var f := FileAccess.open(RUNTIME_PORT_FILE, FileAccess.WRITE)
+			if f:
+				f.store_string(str(port))
+				f.close()
+			print("[MCP] Runtime probe TCP listening on 127.0.0.1:%d" % port)
+			return
+	_tcp = null
+	push_warning("[MCP] Runtime TCP ports %d-%d busy — file IPC only" % [RUNTIME_PORT_START, RUNTIME_PORT_END])
+
+
+func _stop_runtime_tcp() -> void:
+	for c in _tcp_clients:
+		if c is StreamPeerTCP:
+			(c as StreamPeerTCP).disconnect_from_host()
+	_tcp_clients.clear()
+	_tcp_buffers.clear()
+	if _tcp:
+		_tcp.stop()
+		_tcp = null
+	_tcp_port = 0
+
+
+func _poll_runtime_tcp() -> void:
+	if _tcp == null:
+		return
+	if _tcp.is_connection_available():
+		var peer: StreamPeerTCP = _tcp.take_connection()
+		if peer:
+			_tcp_clients.append(peer)
+			_tcp_buffers[peer.get_instance_id()] = ""
+	var dead: Array = []
+	for peer in _tcp_clients:
+		if not peer is StreamPeerTCP:
+			continue
+		var p: StreamPeerTCP = peer
+		p.poll()
+		var st := p.get_status()
+		if st != StreamPeerTCP.STATUS_CONNECTED:
+			if st == StreamPeerTCP.STATUS_ERROR or st == StreamPeerTCP.STATUS_NONE:
+				dead.append(p)
+			continue
+		var avail := p.get_available_bytes()
+		if avail <= 0:
+			continue
+		var chunk: PackedByteArray = p.get_data(avail)[1]
+		var id := p.get_instance_id()
+		var buf: String = str(_tcp_buffers.get(id, "")) + chunk.get_string_from_utf8()
+		while true:
+			var nl := buf.find("\n")
+			if nl < 0:
+				break
+			var line := buf.substr(0, nl).strip_edges()
+			buf = buf.substr(nl + 1)
+			if not line.is_empty():
+				_handle_tcp_line(p, line)
+		_tcp_buffers[id] = buf
+	for d in dead:
+		_tcp_clients.erase(d)
+		_tcp_buffers.erase(d.get_instance_id())
+
+
+func _handle_tcp_line(peer: StreamPeerTCP, line: String) -> void:
+	var parsed = JSON.parse_string(line)
+	if parsed == null or not parsed is Dictionary:
+		_tcp_send(peer, {"id": 0, "ok": false, "error": "Invalid JSON"})
+		return
+	var req_id: int = int(parsed.get("id", 0))
+	var command: String = str(parsed.get("command", ""))
+	var params: Dictionary = parsed.get("params", {}) if parsed.get("params") is Dictionary else {}
+	if command.is_empty():
+		_tcp_send(peer, {"id": req_id, "ok": false, "error": "command required"})
+		return
+	_pending_tcp = peer
+	_pending_tcp_id = req_id
+	_dispatch_command(command, params)
+
+
+func _tcp_send(peer: StreamPeerTCP, obj: Dictionary) -> void:
+	if peer == null:
+		return
+	var line := JSON.stringify(obj) + "\n"
+	peer.put_data(line.to_utf8_buffer())
 
 
 func _process(_delta: float) -> void:
+	_poll_runtime_tcp()
+
 	# Crash recovery: if a command was in progress but never wrote a response
 	if _pending_command and not FileAccess.file_exists(REQUEST_PATH) and not FileAccess.file_exists(RESPONSE_PATH):
 		push_warning("[MCP] Recovered from crashed command — writing error response")
@@ -134,13 +244,18 @@ func _handle_request() -> void:
 
 	var command: String = parsed.get("command", "")
 	var params: Dictionary = parsed.get("params", {})
+	_pending_tcp = null
+	_pending_tcp_id = 0
+	_dispatch_command(command, params)
 
+
+func _dispatch_command(command: String, params: Dictionary) -> void:
 	# Commands that may run during video/timeline without aborting them
 	var concurrent_ok := command in [
 		"log_run_event", "get_run_events", "get_run_logs", "get_run_status",
 		"get_performance_monitors", "get_node_properties", "get_scene_tree",
 		"find_nodes", "assert_node_state", "batch_get_properties", "get_autoload",
-		"stop_video_record",
+		"stop_video_record", "ping_runtime",
 	]
 	var was_video := _state == State.VIDEO_RECORDING
 	var was_timeline := _state == State.CAPTURING_TIMELINE
@@ -150,6 +265,14 @@ func _handle_request() -> void:
 	_pending_command = true
 
 	match command:
+		"ping_runtime":
+			_write_response({
+				"pong": true,
+				"tcp_port": _tcp_port,
+				"state": _state_name(),
+				"transport": "tcp" if _pending_tcp else "file",
+			})
+			# fallthrough restore handled below — already wrote
 		"get_scene_tree":
 			_cmd_get_scene_tree(params)
 		"get_node_properties":
@@ -1683,6 +1806,20 @@ func _reconstruct_event(data: Dictionary) -> InputEvent:
 
 func _write_response(data: Dictionary) -> void:
 	_pending_command = false
+	# TCP client (preferred)
+	if _pending_tcp != null:
+		var envelope: Dictionary
+		if data.has("error") and data.size() == 1:
+			envelope = {"id": _pending_tcp_id, "ok": false, "error": str(data["error"])}
+		elif data.has("error") and typeof(data["error"]) == TYPE_STRING and not data.has("result"):
+			envelope = {"id": _pending_tcp_id, "ok": false, "error": str(data["error"]), "data": data}
+		else:
+			envelope = {"id": _pending_tcp_id, "ok": true, "data": data}
+		_tcp_send(_pending_tcp, envelope)
+		_pending_tcp = null
+		_pending_tcp_id = 0
+		return
+	# File IPC fallback
 	var json := JSON.stringify(data)
 	var file := FileAccess.open(RESPONSE_PATH, FileAccess.WRITE)
 	if file:

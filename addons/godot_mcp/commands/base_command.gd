@@ -231,10 +231,22 @@ func unwrap_game_result(result: Dictionary) -> Dictionary:
 
 
 ## Shared IPC helper: send a command to the running game and await its response.
+## Prefers TCP runtime probe (127.0.0.1:6510-6514); falls back to file IPC.
 func send_game_command(command: String, params: Dictionary = {}, timeout_sec: float = 5.0) -> Dictionary:
 	var ei := get_editor()
-	if not ei.is_playing_scene():
-		return error(-32000, "No scene is currently playing", {"suggestion": "Use play_scene first"})
+	var playing := ei != null and ei.is_playing_scene()
+	# TCP works for editor Play AND standalone game processes
+	var tcp_res := await _send_game_command_tcp(command, params, timeout_sec)
+	if tcp_res.get("_tcp_ok", false):
+		tcp_res.erase("_tcp_ok")
+		tcp_res.erase("_transport")
+		return tcp_res
+	# File IPC only when editor is playing (same user://)
+	if not playing:
+		return error(-32000, "No scene is currently playing and runtime TCP unavailable", {
+			"suggestion": "run_session_start, or launch game with MCPGameInspector autoload (ports 6510-6514)",
+			"tcp_error": tcp_res.get("error", tcp_res),
+		})
 
 	var user_dir := get_game_user_dir()
 	var request_path := user_dir + "/mcp_game_request"
@@ -293,7 +305,99 @@ func send_game_command(command: String, params: Dictionary = {}, timeout_sec: fl
 	if parsed.has("error"):
 		return error(-32000, str(parsed["error"]))
 
-	return success(parsed)
+	var out := success(parsed)
+	if out.has("result") and out["result"] is Dictionary:
+		out["result"]["_transport"] = "file"
+	return out
+
+
+func _runtime_ports() -> Array:
+	var ports: Array = []
+	# Prefer port advertised by game
+	var port_file := get_game_user_dir() + "/mcp_runtime_port"
+	if FileAccess.file_exists(port_file):
+		var f := FileAccess.open(port_file, FileAccess.READ)
+		if f:
+			var p := int(f.get_as_text().strip_edges())
+			f.close()
+			if p >= 6510 and p <= 6514:
+				ports.append(p)
+	# Also try default user path
+	var alt := OS.get_user_data_dir() + "/mcp_runtime_port"
+	if FileAccess.file_exists(alt):
+		var f2 := FileAccess.open(alt, FileAccess.READ)
+		if f2:
+			var p2 := int(f2.get_as_text().strip_edges())
+			f2.close()
+			if p2 >= 6510 and p2 <= 6514 and not ports.has(p2):
+				ports.append(p2)
+	for p3 in range(6510, 6515):
+		if not ports.has(p3):
+			ports.append(p3)
+	return ports
+
+
+func _send_game_command_tcp(command: String, params: Dictionary, timeout_sec: float) -> Dictionary:
+	var ports := _runtime_ports()
+	var last_err := "no connection"
+	for port in ports:
+		var peer := StreamPeerTCP.new()
+		var err := peer.connect_to_host("127.0.0.1", int(port))
+		if err != OK:
+			last_err = "connect %d: %s" % [port, error_string(err)]
+			continue
+		# Wait for connection
+		var connect_deadline := Time.get_ticks_msec() + 800
+		while Time.get_ticks_msec() < connect_deadline:
+			peer.poll()
+			var st := peer.get_status()
+			if st == StreamPeerTCP.STATUS_CONNECTED:
+				break
+			if st == StreamPeerTCP.STATUS_ERROR:
+				break
+			await get_tree().process_frame
+		peer.poll()
+		if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+			peer.disconnect_from_host()
+			last_err = "port %d not connected" % port
+			continue
+		var req_id := Time.get_ticks_msec() % 1000000
+		var line := JSON.stringify({"id": req_id, "command": command, "params": params}) + "\n"
+		peer.put_data(line.to_utf8_buffer())
+		var buf := ""
+		var deadline := Time.get_ticks_msec() + int(timeout_sec * 1000.0)
+		while Time.get_ticks_msec() < deadline:
+			peer.poll()
+			if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+				last_err = "disconnected during wait"
+				break
+			var n := peer.get_available_bytes()
+			if n > 0:
+				var chunk: PackedByteArray = peer.get_data(n)[1]
+				buf += chunk.get_string_from_utf8()
+				var nl := buf.find("\n")
+				if nl >= 0:
+					var resp_line := buf.substr(0, nl).strip_edges()
+					peer.disconnect_from_host()
+					var parsed = JSON.parse_string(resp_line)
+					if parsed == null or not parsed is Dictionary:
+						return error_internal("Invalid TCP JSON from game")
+					if parsed.get("ok", false) == false:
+						return error(-32000, str(parsed.get("error", "runtime error")), {"transport": "tcp", "port": port})
+					var data = parsed.get("data", {})
+					if data is Dictionary:
+						data["_transport"] = "tcp"
+						data["_port"] = port
+						var ok_out := success(data)
+						ok_out["_tcp_ok"] = true
+						return ok_out
+					var ok2 := success({"value": data, "_transport": "tcp", "_port": port})
+					ok2["_tcp_ok"] = true
+					return ok2
+			await get_tree().process_frame
+		peer.disconnect_from_host()
+		last_err = "timeout on port %d" % port
+	return {"_tcp_ok": false, "error": last_err}
 
 
 func is_shader_resource_path(path: String) -> bool:

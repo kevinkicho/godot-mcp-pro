@@ -4,6 +4,31 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.34.0 — 2026-07-28
+
+**Runtime TCP transport + standalone attach + optional Playwright web probe.**
+
+### Game runtime TCP (preferred over file IPC)
+- `MCPGameInspector` listens on `127.0.0.1:6510-6514` (writes `user://mcp_runtime_port`)
+- JSON-lines protocol: `{"id", "command", "params"}` → `{"id", "ok", "data"|"error"}`
+- Editor `send_game_command` tries TCP first, falls back to file IPC
+- `ping_runtime` game command; `run_ping_runtime` / server `runtime_ping`
+
+### Standalone / permanent autoloads
+- `ensure_runtime_autoloads` — keep inspector autoloads in project for CLI/export runs
+- Open MCP server `runtime_call` — direct TCP when editor offline
+- Offline fallback maps `get_game_*` / `run_*` probe tools to TCP
+
+### Web export (optional Playwright)
+- `web_serve_export` / `web_serve_stop` — static server for HTML5 build
+- `web_playwright_probe` — screenshot/console (requires optional `playwright` package)
+
+### Philosophy
+- Native desktop: TCP runtime + structure/video (1.33)
+- Web product only: Playwright adapter (do not use for desktop Play)
+
+---
+
 ## v1.33.0 — 2026-07-28
 
 **Native run probe plane** — session lifecycle, in-engine video + event log, FFmpeg media tools, GUT/GdUnit adapters (no reinvention).

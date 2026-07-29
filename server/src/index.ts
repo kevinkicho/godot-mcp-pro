@@ -24,6 +24,8 @@ import { join } from 'path';
 
 import { GodotWebSocketBridge } from './websocket-bridge.js';
 import { GodotCli } from './godot-cli.js';
+import { callGameRuntime, pingGameRuntime } from './game-runtime-bridge.js';
+import { webServeExport, webPlaywrightProbe, stopWebServe } from './web-playwright.js';
 import {
   CLI_TOOLS,
   LITE_EDITOR_TOOLS,
@@ -35,7 +37,7 @@ import {
 const DEBUG = process.env.DEBUG === 'true';
 const PREFERRED_PORT = parseInt(process.env.GODOT_MCP_PORT || '6505', 10);
 const LITE = parseLiteMode(process.argv);
-const SERVER_VERSION = '1.33.0';
+const SERVER_VERSION = '1.34.0';
 
 function log(msg: string): void {
   if (DEBUG) console.error(`[SERVER] ${msg}`);
@@ -47,6 +49,27 @@ function pick(args: Record<string, unknown>, ...keys: string[]): string {
     if (typeof v === 'string' && v.length > 0) return v;
   }
   return '';
+}
+
+/** Map MCP tool names to MCPGameInspector command names for standalone TCP. */
+function mapRunToolToGameCommand(tool: string): string | null {
+  const map: Record<string, string> = {
+    run_ping_runtime: 'ping_runtime',
+    runtime_ping: 'ping_runtime',
+    run_session_status: 'get_run_status',
+    run_find_nodes: 'find_nodes',
+    run_log_event: 'log_run_event',
+    run_get_events: 'get_run_events',
+    run_get_logs: 'get_run_logs',
+    run_record_start: 'start_video_record',
+    run_record_stop: 'stop_video_record',
+    run_capture_timeline: 'capture_timeline',
+    get_game_scene_tree: 'get_scene_tree',
+    get_game_node_properties: 'get_node_properties',
+    assert_node_state: 'assert_node_state',
+    get_game_screenshot: 'capture_frames',
+  };
+  return map[tool] ?? null;
 }
 
 function textResult(text: string, isError = false) {
@@ -235,9 +258,75 @@ class GodotMcpProServer {
       case 'update_project_uids':
         return this.handleUpdateUids(args);
 
+      case 'runtime_ping':
+      case 'run_ping_runtime': {
+        // Prefer editor path when connected (uses same helpers)
+        if (this.bridge.isConnected()) {
+          return this.editorCall('run_ping_runtime', args);
+        }
+        const r = await pingGameRuntime({
+          timeoutMs: typeof args.timeout_ms === 'number' ? args.timeout_ms : 2000,
+        });
+        return r.ok ? jsonResult(r) : jsonResult(r, true);
+      }
+
+      case 'runtime_call': {
+        const command = pick(args, 'command', 'method');
+        if (!command) return textResult('command is required', true);
+        const params = (args.params as Record<string, unknown>) ?? {};
+        // Always TCP to game inspector (editor Play or standalone). Editor WS is not needed.
+        const port = typeof args.port === 'number' ? args.port : undefined;
+        const r = await callGameRuntime(command, params, {
+          timeoutMs: typeof args.timeout_ms === 'number' ? args.timeout_ms : 8000,
+          port,
+        });
+        return r.ok ? jsonResult({ ...r, transport: 'tcp' }) : jsonResult(r, true);
+      }
+
+      case 'web_serve_export': {
+        const dir = pick(args, 'export_dir', 'dir', 'path');
+        if (!dir) return textResult('export_dir required', true);
+        const port = typeof args.port === 'number' ? args.port : 8765;
+        const r = await webServeExport(dir, port);
+        return r.ok ? jsonResult(r) : jsonResult(r, true);
+      }
+
+      case 'web_serve_stop':
+        stopWebServe();
+        return jsonResult({ stopped: true });
+
+      case 'web_playwright_probe': {
+        const r = await webPlaywrightProbe({
+          url: pick(args, 'url') || undefined,
+          export_dir: pick(args, 'export_dir', 'dir') || undefined,
+          serve_port: typeof args.serve_port === 'number' ? args.serve_port : 8765,
+          wait_ms: typeof args.wait_ms === 'number' ? args.wait_ms : 3000,
+          screenshot_path: pick(args, 'screenshot_path') || undefined,
+          record_video_dir: pick(args, 'record_video_dir', 'video_dir') || undefined,
+        });
+        return r.ok ? jsonResult(r) : jsonResult(r, true);
+      }
+
       default:
         if (this.bridge.isConnected()) {
           return this.editorCall(name, args);
+        }
+        // Editor offline: try direct TCP runtime for game probe tools
+        {
+          const gameCmd = mapRunToolToGameCommand(name);
+          if (gameCmd) {
+            const params = { ...(args as Record<string, unknown>) };
+            // capture_frames needs count when used as screenshot stand-in
+            if (gameCmd === 'capture_frames' && params.count === undefined) {
+              params.count = 1;
+              params.frame_interval = 1;
+              params.half_resolution = true;
+            }
+            const r = await callGameRuntime(gameCmd, params);
+            if (r.ok) {
+              return jsonResult({ ...r, transport: 'tcp', note: 'editor offline — direct runtime TCP' });
+            }
+          }
         }
         if (LITE_EDITOR_TOOLS.some((t) => t.name === name) || EDITOR_PREFERRED.has(name)) {
           return textResult(`${name}: ${this.offlineHint()}`, true);

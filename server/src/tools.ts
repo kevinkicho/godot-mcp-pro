@@ -27,6 +27,63 @@ export const CLI_TOOLS: ToolDef[] = [
     inputSchema: emptyProps,
   },
   {
+    name: 'runtime_ping',
+    description:
+      'Ping MCPGameInspector runtime TCP (6510-6514). Works with editor Play or standalone game that has runtime autoloads.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'runtime_call',
+    description:
+      'Call a game runtime inspector command over TCP (standalone). Prefer editor tools when connected. Example command: get_scene_tree, get_run_status, find_nodes.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        command: { type: 'string' },
+        params: { type: 'object' },
+        port: { type: 'number' },
+        timeout_ms: { type: 'number' },
+        force_direct: { type: 'boolean', description: 'Skip editor even if connected' },
+      },
+      required: ['command'],
+    },
+  },
+  {
+    name: 'web_serve_export',
+    description: 'Serve a Godot HTML5 export directory on localhost (for Playwright probe).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        export_dir: { type: 'string' },
+        port: { type: 'number' },
+      },
+      required: ['export_dir'],
+    },
+  },
+  {
+    name: 'web_serve_stop',
+    description: 'Stop the static server started by web_serve_export.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'web_playwright_probe',
+    description:
+      'Optional Playwright probe of a web export (screenshot/console). Requires: npm i -D playwright && npx playwright install chromium. Not for desktop Godot.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        url: { type: 'string' },
+        export_dir: { type: 'string' },
+        serve_port: { type: 'number' },
+        wait_ms: { type: 'number' },
+        screenshot_path: { type: 'string' },
+        record_video_dir: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+
+  {
     name: 'agent_workflow_guide',
     description:
       'Project-neutral guide for agent-driven game production loops (explore → build → playtest → fix). Optional topic: production|2d|3d|ui|playtest|assets|inspector.',
@@ -1270,6 +1327,21 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     inputSchema: emptyProps,
   },
   // ── Native run plane (1.33) ──
+  {
+    name: 'run_ping_runtime',
+    description: 'Ping game runtime (TCP preferred). Same as runtime_ping via editor when connected.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'ensure_runtime_autoloads',
+    description:
+      'Permanently add MCPGameInspector/Input/Screenshot autoloads so CLI/export runs stay probeable on TCP 6510-6514.',
+    inputSchema: {
+      type: 'object',
+      properties: { permanent: { type: 'boolean' } },
+      required: [],
+    },
+  },
   {
     name: 'run_session_start',
     description:

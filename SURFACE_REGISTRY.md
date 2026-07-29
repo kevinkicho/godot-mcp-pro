@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.33.0**  
+Plugin version: **1.34.0**  
 
 ## Honesty
 
@@ -10,7 +10,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 688
+- **Registered plugin commands:** 690
 - **Command modules:** 68
 
 ## Commands by module
@@ -593,7 +593,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_custom_resource_script`
 - `duplicate_resource`
 
-### run_session_commands (11)
+### run_session_commands (13)
 
 - `run_session_start`
 - `run_session_stop`
@@ -606,6 +606,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `run_capture_timeline`
 - `run_find_nodes`
 - `run_probe_report`
+- `run_ping_runtime`
+- `ensure_runtime_autoloads`
 
 ### runtime_commands (19)
 
