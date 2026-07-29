@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.66.0**  
+Plugin version: **1.67.0**  
 
 ## Honesty
 
@@ -11,8 +11,8 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 
 ## Totals
 
-- **Registered plugin commands:** 1516
-- **Command modules:** 198
+- **Registered plugin commands:** 1573
+- **Command modules:** 204
 - **Domains:** 21
 
 ## Commands by domain
@@ -21,7 +21,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - **3d** - 56 commands
 - **agent** - 58 commands
 - **ai** - 28 commands
-- **animation** - 169 commands
+- **animation** - 226 commands
 - **assets** - 87 commands
 - **audio** - 33 commands
 - **editor** - 40 commands
@@ -555,6 +555,47 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `list_animation_tree_graph_tools`
 - `root`
 
+### animation / avatar_identity_commands (11)
+
+- `create_avatar_config_resource`
+- `create_avatar_config_script`
+- `setup_avatar_slot_rig`
+- `list_avatar_slots`
+- `equip_avatar_item`
+- `unequip_avatar_slot`
+- `set_avatar_body_scale`
+- `apply_avatar_loadout`
+- `export_avatar_loadout`
+- `hide_avatar_mesh_surfaces`
+- `list_avatar_identity_tools`
+
+### animation / avatar_mesh_commands (15)
+
+- `list_mesh_surfaces`
+- `set_surface_override_material`
+- `clear_surface_override_material`
+- `list_blend_shapes`
+- `set_blend_shape_value`
+- `batch_set_blend_shapes`
+- `apply_face_pose_preset`
+- `list_face_pose_presets`
+- `get_mesh_skin_info`
+- `apply_avatar_material_pack`
+- `apply_skin_tone`
+- `list_avatar_mesh_tools`
+- `albedo`
+- `value`
+- `value`
+
+### animation / humanoid_anim_filter_commands (6)
+
+- `create_animation_node_blend_filter`
+- `setup_upper_body_mask_tree`
+- `list_humanoid_bone_filter_presets`
+- `create_foot_ik_helper_script`
+- `setup_aim_offset_blend_space`
+- `list_humanoid_anim_filter_tools`
+
 ### animation / humanoid_commands (6)
 
 - `setup_humanoid_actor`
@@ -571,6 +612,20 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_physical_bone_params`
 - `create_ragdoll_control_script`
 - `list_ragdoll_tools`
+
+### animation / retarget_import_depth_commands (11)
+
+- `apply_humanoid_import_preset`
+- `list_humanoid_import_options`
+- `set_import_retarget_options`
+- `build_bone_map_from_skeleton`
+- `validate_bone_map_coverage`
+- `get_skeleton_profile_humanoid_info`
+- `list_animation_clips_on_import`
+- `prepare_mixamo_character_import`
+- `prepare_rpm_character_import`
+- `retarget_report_for_character`
+- `list_retarget_import_depth_tools`
 
 ### animation / retarget_pipeline_commands (3)
 
@@ -633,6 +688,26 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_skeleton_ik_target`
 - `setup_look_at_modifier`
 - `list_skeleton_ik_tools`
+
+### animation / skeleton_modifier_stack_commands (6)
+
+- `list_skeleton_modifiers`
+- `set_skeleton_modifier_active`
+- `reorder_skeleton_modifiers`
+- `apply_humanoid_modifier_preset`
+- `list_skeleton_modifier_presets`
+- `list_skeleton_modifier_stack_tools`
+
+### animation / skeleton_rest_commands (8)
+
+- `set_bone_rest`
+- `copy_skeleton_rest`
+- `apply_pose_as_rest`
+- `scale_bone_rest`
+- `tag_skeleton_body_parts`
+- `get_skeleton_body_part_map`
+- `validate_skeleton_for_humanoid`
+- `list_skeleton_rest_tools`
 
 ### animation / spring_bone_commands (3)
 

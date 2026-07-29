@@ -4,6 +4,43 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.67.0 — 2026-07-29
+
+**Humanoid avatar gaps closed** - identity, mesh/skin/materials, deep retarget/import, modifiers, anim filters.
+
+### Avatar identity
+- `setup_avatar_slot_rig`, `equip_avatar_item`, `unequip_avatar_slot`, `list_avatar_slots`
+- `set_avatar_body_scale`, `apply_avatar_loadout`, `export_avatar_loadout`
+- `create_avatar_config_resource` / script, `hide_avatar_mesh_surfaces`
+
+### Mesh / skin / materials / face
+- `list_mesh_surfaces`, `set_surface_override_material`, `clear_surface_override_material`
+- `list_blend_shapes`, `set_blend_shape_value`, `batch_set_blend_shapes`
+- `apply_face_pose_preset`, `list_face_pose_presets`
+- `get_mesh_skin_info`, `apply_avatar_material_pack`, `apply_skin_tone`
+
+### Skeleton rest authorship
+- `set_bone_rest`, `apply_pose_as_rest`, `copy_skeleton_rest`, `scale_bone_rest`
+- `tag_skeleton_body_parts`, `get_skeleton_body_part_map`, `validate_skeleton_for_humanoid`
+
+### Deep retarget / import
+- `apply_humanoid_import_preset`, `set_import_retarget_options`, `list_humanoid_import_options`
+- `prepare_mixamo_character_import`, `prepare_rpm_character_import`
+- `build_bone_map_from_skeleton`, `validate_bone_map_coverage`
+- `get_skeleton_profile_humanoid_info`, `list_animation_clips_on_import`
+- `retarget_report_for_character`
+
+### Modifier stack + anim filters
+- `list_skeleton_modifiers`, `set_skeleton_modifier_active`, `reorder_skeleton_modifiers`
+- `apply_humanoid_modifier_preset` (look_at / hand_ik / hair_spring / full stack)
+- `setup_upper_body_mask_tree`, `setup_aim_offset_blend_space`
+- `create_foot_ik_helper_script`, bone filter presets
+
+### Discovery
+- Domains: `avatar`, `avatar_mesh`, `retarget_import`, `skeleton_rest`
+
+---
+
 ## v1.66.0 — 2026-07-29
 
 **Split oversized modules + surface expansion** — finish v1.65 refactor follow-ups and add high-gain agent tools.

@@ -1,6 +1,6 @@
 # Coverage scorecard (honest agent production %)
 
-**As of:** plugin **v1.66** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
+**As of:** plugin **v1.67** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
 **Refresh:** `list_docs_coverage` · `get_production_surface_report` · `.\scripts\export-surface-registry.ps1`
 
 ---
@@ -28,7 +28,7 @@
 | **Playtest / runtime / QA** | **~90%** | High | Sequences, asserts, fix loops; GPU debugger still engine-only |
 | **2D production (pixel→ship)** | **~93%** | High | Skeleton2D, mesh2d, tiles, pixel, layers, draw, CharacterBody presets |
 | **3D production** | **~92%** | High | TPS rig, Environment/Sky/Fog, occlusion, PBR; DCC polish remains |
-| **Animation / skeleton** | **~90%** | Med | Player libraries/autoplay + Tree/Bezier/retarget; no visual graph UI |
+| **Animation / skeleton** | **~95%** | High | Avatar identity + blend shapes + rest/retarget depth + modifiers; no visual graph UI |
 | **Physics / collision** | **~92%** | High | Bodies, PhysicsMaterial resources, shapes, joints, ragdoll |
 | **Navigation / AI pathing** | **~88%** | Med | Navmesh + AStarGrid2D; live replan viz thinner |
 | **Assets / import** | **~88%** | Med | Stage/wait/presets/schemas; every importer option UI not mirrored |
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.66) | 1516 |
-| Modules | 198 |
+| Plugin commands (v1.67) | 1573 |
+| Modules | 204 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

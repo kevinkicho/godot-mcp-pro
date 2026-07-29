@@ -50,6 +50,13 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Cutscenes | `create_cutscene_player_script` / `create_simple_cutscene_json` |
 | Expression → property | `set_property_from_expression` / `batch_set_from_expressions` |
 | Resource UID | `resolve_resource_uid` / `list_resource_uids` |
+| Avatar slots / loadout | `setup_avatar_slot_rig` / `equip_avatar_item` / `apply_avatar_loadout` |
+| Blend shapes / face | `list_blend_shapes` / `apply_face_pose_preset` / `batch_set_blend_shapes` |
+| Avatar materials | `apply_skin_tone` / `apply_avatar_material_pack` / `list_mesh_surfaces` |
+| Humanoid import retarget | `prepare_mixamo_character_import` / `build_bone_map_from_skeleton` / `retarget_report_for_character` |
+| Skeleton rest edit | `set_bone_rest` / `copy_skeleton_rest` / `apply_pose_as_rest` |
+| Modifier stack | `list_skeleton_modifiers` / `apply_humanoid_modifier_preset` |
+| Upper-body anim mask | `setup_upper_body_mask_tree` / `setup_aim_offset_blend_space` |
 | Multiplayer lobby | `pipeline_multiplayer_lobby` / ready-up / spawn points |
 | Save slots JSON | `write_save_slot_json` / `capture_scene_state` |
 | Inventory component | `create_inventory_component_script` / ItemData |

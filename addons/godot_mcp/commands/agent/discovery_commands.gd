@@ -247,6 +247,35 @@ func _domains() -> Dictionary:
 			"examples": ["create_cutscene_player_script", "create_simple_cutscene_json", "setup_cutscene_player_node"],
 			"workflow": "create_cutscene_player_script -> create_simple_cutscene_json -> setup node -> playtest",
 		},
+		"avatar": {
+			"description": "Humanoid avatar identity - slots, equip, body scale, loadout",
+			"examples": [
+				"setup_avatar_slot_rig", "equip_avatar_item", "apply_avatar_loadout",
+				"export_avatar_loadout", "set_avatar_body_scale", "create_avatar_config_resource",
+			],
+			"workflow": "pipeline_character_from_gltf -> setup_avatar_slot_rig -> equip items -> export_avatar_loadout",
+		},
+		"avatar_mesh": {
+			"description": "Mesh surfaces, blend shapes, skin binds, material packs, skin tone",
+			"examples": [
+				"list_mesh_surfaces", "list_blend_shapes", "set_blend_shape_value",
+				"apply_face_pose_preset", "apply_avatar_material_pack", "apply_skin_tone", "get_mesh_skin_info",
+			],
+			"workflow": "list_mesh_surfaces -> apply_skin_tone / material pack -> list_blend_shapes -> face poses",
+		},
+		"retarget_import": {
+			"description": "Deep humanoid import + BoneMap coverage + Mixamo/RPM presets",
+			"examples": [
+				"apply_humanoid_import_preset", "prepare_mixamo_character_import", "prepare_rpm_character_import",
+				"build_bone_map_from_skeleton", "validate_bone_map_coverage", "retarget_report_for_character",
+			],
+			"workflow": "prepare_mixamo_character_import -> pipeline_character_from_gltf -> build_bone_map -> validate",
+		},
+		"skeleton_rest": {
+			"description": "Permanent skeleton rest edit, copy rest, body-part tags",
+			"examples": ["set_bone_rest", "apply_pose_as_rest", "copy_skeleton_rest", "validate_skeleton_for_humanoid", "tag_skeleton_body_parts"],
+			"workflow": "validate_skeleton_for_humanoid -> set_bone_rest / copy_skeleton_rest -> retarget",
+		},
 		"save": {
 			"description": "Capture/apply node state and JSON save slots",
 			"examples": ["capture_scene_state", "write_save_slot_json", "create_game_state_serializer_script", "read_save_slot_json"],
