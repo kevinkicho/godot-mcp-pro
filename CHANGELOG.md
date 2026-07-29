@@ -4,6 +4,23 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.43.0 — 2026-07-28
+
+**Curves & Bezier as full numerical SDK surface** — agents map control points on the Cartesian plane (time×value / 2D / 3D), not limited by GUI drag metaphors.
+
+### New module `curve_commands`
+- Curve: `create_curve_resource`, `curve_set/get_points`, `curve_sample`, `curve_sample_baked`
+- Curve2D/3D: create, set/get points (in/out + world endpoints), sample polylines
+- Path2D/3D: `path_get_curve_points`, `path_set_curve_points`
+- Animation Bezier: `bezier_list_keys_cartesian`, `bezier_set_keys_batch`, `bezier_sample_dense`, `bezier_remove_key`, `bezier_set_handle_mode`
+- `list_curve_sdk_tools`
+
+### Coverage / docs
+- `tutorials/math` → **strong** in `list_docs_coverage`
+- `docs/CURVES_AND_BEZIER.md`; animation docs reframed for agent plane fine-tune
+
+---
+
 ## v1.42.0 — 2026-07-28
 
 **Animation example → fine-tune pipeline** — agents can copy example clips and retarget/tune them like the Animation dock.

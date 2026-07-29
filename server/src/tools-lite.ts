@@ -1773,6 +1773,92 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     },
   },
   {
+    name: 'bezier_list_keys_cartesian',
+    description:
+      'List Bezier track keys as Cartesian anchors (x=time,y=value) plus handle endpoints for agent plane mapping',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        track_index: { type: 'number' },
+        track_path: { type: 'string' },
+      },
+      required: ['node_path', 'animation'],
+    },
+  },
+  {
+    name: 'bezier_set_keys_batch',
+    description:
+      'Write Bezier keys from plane data: keys=[{x|time,y|value,in_handle,out_handle|in_endpoint,out_endpoint}]',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        track_index: { type: 'number' },
+        track_path: { type: 'string' },
+        keys: { type: 'array' },
+        clear: { type: 'boolean' },
+      },
+      required: ['node_path', 'animation', 'keys'],
+    },
+  },
+  {
+    name: 'bezier_sample_dense',
+    description: 'Dense polyline of a Bezier track (shape analysis before fine-tune)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        animation: { type: 'string' },
+        track_index: { type: 'number' },
+        samples: { type: 'number' },
+        start: { type: 'number' },
+        end: { type: 'number' },
+      },
+      required: ['node_path', 'animation'],
+    },
+  },
+  {
+    name: 'curve2d_get_points',
+    description: 'Curve2D control points + in/out handle world endpoints',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' } },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'curve2d_set_points',
+    description: 'Set Curve2D points from Cartesian position/in/out data',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        points: { type: 'array' },
+      },
+      required: ['path', 'points'],
+    },
+  },
+  {
+    name: 'path_set_curve_points',
+    description: 'Replace Path2D/Path3D curve from Cartesian control points',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        points: { type: 'array' },
+      },
+      required: ['node_path', 'points'],
+    },
+  },
+  {
+    name: 'list_curve_sdk_tools',
+    description: 'Inventory of Curve/Bezier/Path MCP tools for full numerical fine-tune',
+    inputSchema: emptyProps,
+  },
+  {
     name: 'insert_method_key',
     description: 'Call Method track key (human method track in Animation editor)',
     inputSchema: {

@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.42.0**  
+Plugin version: **1.43.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 790
-- **Command modules:** 72
+- **Registered plugin commands:** 811
+- **Command modules:** 73
 
 ## Commands by module
 
@@ -268,6 +268,30 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `warnings`
 - `errors`
 - `warnings`
+
+### curve_commands (21)
+
+- `create_curve_resource`
+- `curve_set_points`
+- `curve_get_points`
+- `curve_sample`
+- `curve_sample_baked`
+- `create_curve2d_resource`
+- `create_curve3d_resource`
+- `curve2d_set_points`
+- `curve2d_get_points`
+- `curve2d_sample_polyline`
+- `curve3d_set_points`
+- `curve3d_get_points`
+- `curve3d_sample_polyline`
+- `path_get_curve_points`
+- `path_set_curve_points`
+- `bezier_list_keys_cartesian`
+- `bezier_set_keys_batch`
+- `bezier_sample_dense`
+- `bezier_remove_key`
+- `bezier_set_handle_mode`
+- `list_curve_sdk_tools`
 
 ### debugger_commands (11)
 

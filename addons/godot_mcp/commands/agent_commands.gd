@@ -275,19 +275,22 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"remap_animation_track_paths from_prefix=… to_prefix=… (hierarchy mismatch)",
 				"compare_animations source_* vs target_*",
 				"scale_animation_time / offset_animation_keys / crop_animation",
-				"set_animation_keyframe / set_bezier_key for per-key fine-tune",
+				"set_animation_keyframe / set_bezier_key / bezier_set_keys_batch for key fine-tune",
+				"bezier_list_keys_cartesian + bezier_sample_dense (time×value plane, control points)",
+				"curve2d/3d_get_points + path_set_curve_points for Path curves",
 				"sample_animation_at_time to match example pose",
 				"animation_player_play + playtest_report / get_game_screenshot",
 			]
 			guide["human_parity"] = {
 				"copy_example": "apply_example_animation or copy_animation_to_player",
-				"inspect": "dump_animation include_keys=true",
+				"inspect": "dump_animation include_keys=true; bezier_list_keys_cartesian for plane data",
 				"retarget_paths": "remap_animation_track_paths",
 				"timing": "scale_animation_time scale=0.5 (2x speed) or offset_animation_keys",
-				"tweak_key": "set_animation_keyframe track_index time value",
+				"tweak_key": "set_animation_keyframe / bezier_set_keys_batch with Cartesian {x:time,y:value,in,out}",
+				"curve_shape": "bezier_sample_dense polyline → identify extrema → set handles",
 				"tree": "create_animation_tree + travel_animation_state",
 			}
-			guide["guarantee"] = "Agents can inspect example clips, copy into target AnimationPlayer, remap tracks, scale timing, and fine-tune keys via MCP — same as Animation dock + library paste."
+			guide["guarantee"] = "Full numerical access to animation keys, Bezier control points, and Curve/Curve2D/Curve3D resources — agents map focal points on the Cartesian plane and write them via MCP."
 		"ui":
 			guide["focus"] = [
 				"scaffold_project_defaults genre=ui",
@@ -425,9 +428,11 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"list_animations", "create_animation", "add_animation_track", "set_animation_keyframe",
 				"insert_method_key", "insert_audio_key", "animation_player_play", "ensure_reset_animation",
 				"create_animation_tree", "travel_animation_state", "add_blend_space_point", "sprite_frames_*",
-				"set_bezier_key", "get_bezier_key_info", "create_bone_map", "apply_bone_map_to_skeleton",
+				"set_bezier_key", "get_bezier_key_info", "bezier_list_keys_cartesian", "bezier_set_keys_batch",
+				"bezier_sample_dense", "bezier_set_handle_mode", "create_bone_map", "apply_bone_map_to_skeleton",
+				"apply_example_animation", "dump_animation", "compare_animations",
 			],
-			"gaps": ["full Animation Retargeting importer UI parity"],
+			"gaps": ["importer auto-retarget for every DCC pipeline variant"],
 		},
 		"tutorials/assets_pipeline": {
 			"status": "strong",
@@ -665,9 +670,16 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["passthrough", "composition layers", "vendor-specific profile verification"],
 		},
 		"tutorials/math": {
-			"status": "classdb_only",
-			"tools": ["update_property Vector*/Transform*", "execute_editor_script"],
-			"gaps": ["not a dock — intentional"],
+			"status": "strong",
+			"tools": [
+				"create_curve_resource", "curve_set_points", "curve_get_points", "curve_sample", "curve_sample_baked",
+				"create_curve2d_resource", "curve2d_set_points", "curve2d_get_points", "curve2d_sample_polyline",
+				"create_curve3d_resource", "curve3d_set_points", "curve3d_get_points", "curve3d_sample_polyline",
+				"path_get_curve_points", "path_set_curve_points",
+				"bezier_list_keys_cartesian", "bezier_set_keys_batch", "bezier_sample_dense", "bezier_set_handle_mode",
+				"update_property Vector*/Transform*", "describe_class",
+			],
+			"gaps": ["symbolic CAS — use scripts for pure math"],
 		},
 		"tutorials/best_practices": {
 			"status": "partial",

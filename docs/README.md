@@ -20,6 +20,7 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [SURFACE_EXPANSION.md](SURFACE_EXPANSION.md) | v1.40 docs-gap tools (GI, joypad, i18n, …) |
 | [HEADLESS_AGENT.md](HEADLESS_AGENT.md) | IDE-parity agent sessions without friction |
 | [ANIMATION_FINE_TUNE.md](ANIMATION_FINE_TUNE.md) | Copy example animations + fine-tune via MCP |
+| [CURVES_AND_BEZIER.md](CURVES_AND_BEZIER.md) | Cartesian curve/Bezier SDK surface for agents |
 
 ### Root reference (not under `docs/`)
 

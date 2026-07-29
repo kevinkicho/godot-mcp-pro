@@ -105,8 +105,11 @@ Topic guide: `agent_workflow_guide topic=animation`
 
 ---
 
-## Honesty
+## Curves as data (not “GUI-only”)
 
-- Full visual Bezier curve GUI is not replicated; **handles are set numerically** via `set_bezier_key`.  
-- Full importer Retarget wizard UI is partial; use **BoneMap + remap paths** + pose tools.  
-- Escape hatch: `call_editor` / `execute_editor_script` for edge cases.
+Bezier and Path curves are first-class **Cartesian** tools:
+
+- `bezier_list_keys_cartesian` / `bezier_set_keys_batch` / `bezier_sample_dense`  
+- Curve / Curve2D / Curve3D resources and Path nodes — see [CURVES_AND_BEZIER.md](CURVES_AND_BEZIER.md)  
+
+Importer auto-retarget for every DCC pipeline still uses BoneMap + path remap. Escape hatch: `call_editor` / `execute_editor_script`.

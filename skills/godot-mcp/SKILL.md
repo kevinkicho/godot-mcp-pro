@@ -63,11 +63,12 @@ Work like a person in the Animation / AnimationTree / Skeleton docks.
 2. **Copy:** **`apply_example_animation`** (from `.tscn` or open player) or `copy_animation_to_player`
 3. **Retarget paths:** `remap_animation_track_paths`
 4. **Timing:** `scale_animation_time`, `offset_animation_keys`, `crop_animation`
-5. **Keys:** `set_animation_keyframe`, `set_bezier_key`
-6. **Verify:** `compare_animations`, `sample_animation_at_time`, `animation_player_play` + playtest
+5. **Keys / Bezier plane:** `set_animation_keyframe`, `bezier_list_keys_cartesian`, `bezier_set_keys_batch`, `bezier_sample_dense`
+6. **Curve/Path resources:** `curve2d_*`, `curve3d_*`, `path_set_curve_points` (Cartesian control points)
+7. **Verify:** `compare_animations`, `sample_animation_at_time`, `animation_player_play` + playtest
 
-Also: clips create/rename/duplicate, tracks, AnimationTree, Skeleton, SpriteFrames.  
-`list_animation_fine_tune_tools` · `agent_workflow_guide topic=animation` · `docs/ANIMATION_FINE_TUNE.md`.
+Map focal points as plane coordinates — full numerical SDK access.  
+`list_animation_fine_tune_tools` · `list_curve_sdk_tools` · `docs/ANIMATION_FINE_TUNE.md` · `docs/CURVES_AND_BEZIER.md`.
 
 ## Coverage honesty
 

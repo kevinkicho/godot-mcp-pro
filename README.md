@@ -44,6 +44,7 @@ Full docs live under **[`docs/`](docs/README.md)**:
 | **[docs/SURFACE_EXPANSION.md](docs/SURFACE_EXPANSION.md)** | Closing remaining Godot docs surface gaps |
 | **[docs/HEADLESS_AGENT.md](docs/HEADLESS_AGENT.md)** | Full IDE-parity agentic / headless workflow |
 | **[docs/ANIMATION_FINE_TUNE.md](docs/ANIMATION_FINE_TUNE.md)** | Example animations → fine-tune via MCP |
+| **[docs/CURVES_AND_BEZIER.md](docs/CURVES_AND_BEZIER.md)** | Numerical Curve/Bezier plane control |
 
 ### Reference
 

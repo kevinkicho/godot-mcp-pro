@@ -54,7 +54,7 @@ Compared against this fork’s plugin surface: **~735** registered methods, **71
 | Rendering advanced | **Strong** (1.40) | SDFGI/SSAO/SSR/glow/SSIL + lightmap mesh flags + compositor |
 | Best practices | **Partial** | workflow guide + analyzers |
 | Migrating | **Partial** (1.40) | scan + conservative renames; not full scene converter |
-| Math | **classdb_only** | intentional |
+| Math / curves | **Strong** (1.43) | Curve/Curve2D/3D, Path, Animation Bezier Cartesian API |
 | Class reference | **Strong (lookup)** | `describe_class` family — not one tool per method |
 
 **Weighted docs-area depth ≈ 88%** (see analysis doc for formula). **Not** “88% of ClassDB.”
