@@ -252,11 +252,15 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		"2d":
 			guide["focus"] = [
 				"scaffold_project_defaults genre=2d",
+				"apply_pixel_2d_project_preset preset=classic_pixel|hd_pixel (crisp pixel games)",
 				"create_scene root CharacterBody2D/Node2D",
-				"add_node Sprite2D/CollisionShape2D",
-				"load_sprite / ensure_imported",
+				"add_node Sprite2D/CollisionShape2D OR setup_mesh_instance_2d / convert_sprite_to_mesh_instance_2d",
+				"load_sprite / ensure_imported / apply_texture_import_preset 2d_pixel",
 				"create_input_map_preset platformer_2d|topdown_2d",
-				"tilemap_*",
+				"tileset_* + tilemap_* + tileset_add_scenes_collection_source / tilemap_stamp_pattern",
+				"setup_skeleton_2d → add_bone_2d → set_bone_2d_rest → setup_two_bone_ik_2d",
+				"setup_camera_2d / setup_canvas_modulate / setup_point_light_2d / LightOccluder2D",
+				"playtest_report / playtest_sequence",
 			]
 		"3d":
 			guide["focus"] = [
@@ -497,10 +501,13 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_character_2d", "create_platformer_controller_script", "create_topdown_controller_script",
 				"setup_camera_follow_2d", "setup_camera_2d", "setup_parallax_background", "add_parallax_layer",
 				"add_light_occluder_2d", "setup_point_light_2d", "setup_line_2d", "setup_path_2d", "setup_polygon_2d",
-				"set_y_sort_enabled", "tilemap_* incl paint_line/erase_rect/paint_cells", "tileset_* incl terrains",
+				"set_y_sort_enabled", "tilemap_* incl paint_line/erase_rect/paint_cells/stamp_pattern",
+				"tileset_* terrains, physics/nav, custom data, scenes-as-tiles, patterns",
+				"apply_pixel_2d_project_preset", "setup_skeleton_2d", "add_bone_2d", "setup_two_bone_ik_2d",
+				"setup_mesh_instance_2d", "convert_sprite_to_mesh_instance_2d", "setup_multimesh_instance_2d",
 				"sprite_frames_*", "setup_ai_agent_2d", "setup_hitbox/hurtbox",
 			],
-			"gaps": ["advanced tile atlas region tools"],
+			"gaps": ["custom CanvasItem _draw recipes (use create_script + execute_editor_script)", "full FABRIK/CCDIK 2D stack beyond TwoBoneIK"],
 		},
 		"tutorials/3d": {
 			"status": "strong",

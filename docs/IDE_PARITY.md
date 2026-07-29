@@ -18,7 +18,10 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Animation | transfer + Bezier Cartesian + libraries |
 | FileSystem | search/stage/import + `list_resources_by_type` + open path |
 | Resource move/rename | `find_files_referencing` / `remap_resource_references` / deps |
-| 2D TileMap | tilemap_* / tileset_* |
+| 2D TileMap | tilemap_* / tileset_* / scenes-as-tiles / patterns / `tilemap_stamp_pattern` |
+| 2D Skeleton / IK | `setup_skeleton_2d` / `add_bone_2d` / `setup_two_bone_ik_2d` |
+| 2D Mesh | `setup_mesh_instance_2d` / `convert_sprite_to_mesh_instance_2d` / MultiMesh2D |
+| Pixel project pack | `apply_pixel_2d_project_preset` (stretch, nearest, snap, AA) |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |

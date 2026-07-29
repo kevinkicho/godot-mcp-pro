@@ -3859,6 +3859,169 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['node_path'],
     },
   },
+  // ── v1.56 2D masterpiece ──
+  {
+    name: 'apply_pixel_2d_project_preset',
+    description:
+      'Pixel-game Project Settings pack: stretch/viewport, integer scale, nearest filter, 2D snap, AA off. presets: classic_pixel|hd_pixel|pixel_canvas_items|smooth_2d',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        preset: { type: 'string' },
+        viewport_width: { type: 'number' },
+        viewport_height: { type: 'number' },
+        stretch_mode: { type: 'string' },
+        nearest_filter: { type: 'boolean' },
+        snap: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_skeleton_2d',
+    description: 'Create Skeleton2D under parent (2D skeletal animation root)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        position: { type: 'object' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'add_bone_2d',
+    description: 'Add Bone2D under Skeleton2D or parent Bone2D; sets rest from transform',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        skeleton_path: { type: 'string' },
+        parent_bone_path: { type: 'string' },
+        name: { type: 'string' },
+        length: { type: 'number' },
+        position: { type: 'object' },
+        rotation: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_two_bone_ik_2d',
+    description: 'SkeletonModification2DTwoBoneIK on Skeleton2D (arms/legs IK)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        skeleton_path: { type: 'string' },
+        joint_one_idx: { type: 'number' },
+        joint_two_idx: { type: 'number' },
+        joint_one_path: { type: 'string' },
+        joint_two_path: { type: 'string' },
+        target_path: { type: 'string' },
+        flip_bend_direction: { type: 'boolean' },
+      },
+      required: ['skeleton_path'],
+    },
+  },
+  {
+    name: 'list_bones_2d',
+    description: 'List Bone2D hierarchy under a Skeleton2D',
+    inputSchema: {
+      type: 'object',
+      properties: { skeleton_path: { type: 'string' } },
+      required: ['skeleton_path'],
+    },
+  },
+  {
+    name: 'setup_mesh_instance_2d',
+    description: 'Create MeshInstance2D with optional quad mesh + texture',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        mesh_path: { type: 'string' },
+        texture_path: { type: 'string' },
+        size: { type: 'object' },
+        create_quad: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'convert_sprite_to_mesh_instance_2d',
+    description: 'Sprite2D → MeshInstance2D (editor Convert to MeshInstance2D parity)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        hide_sprite: { type: 'boolean' },
+        remove_sprite: { type: 'boolean' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'tileset_add_scenes_collection_source',
+    description: 'Add TileSetScenesCollectionSource (scenes-as-tiles) to a TileSet',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        tileset_path: { type: 'string' },
+        source_id: { type: 'number' },
+        scenes: { type: 'array', items: { type: 'string' } },
+      },
+      required: ['tileset_path'],
+    },
+  },
+  {
+    name: 'tileset_add_scene_tile',
+    description: 'Register a PackedScene as a scene tile on a TileSet scenes source',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        tileset_path: { type: 'string' },
+        scene_path: { type: 'string' },
+        source_id: { type: 'number' },
+        scene_tile_id: { type: 'number' },
+      },
+      required: ['tileset_path', 'scene_path'],
+    },
+  },
+  {
+    name: 'tilemap_stamp_pattern',
+    description: 'Stamp a TileSet pattern (or ad-hoc cells) onto a TileMapLayer',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        tilemap_path: { type: 'string' },
+        tileset_path: { type: 'string' },
+        pattern_index: { type: 'number' },
+        position: { type: 'object' },
+        cells: { type: 'array' },
+      },
+      required: ['tilemap_path'],
+    },
+  },
+  {
+    name: 'list_skeleton_2d_tools',
+    description: 'List Skeleton2D / Bone2D / 2D IK MCP tools',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_mesh_2d_tools',
+    description: 'List MeshInstance2D / ArrayMesh 2D MCP tools',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_pixel_2d_tools',
+    description: 'List pixel-game preset MCP tools',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_tileset_scenes_pattern_tools',
+    description: 'List TileSet scenes-as-tiles + pattern tools',
+    inputSchema: emptyProps,
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */

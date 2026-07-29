@@ -4,6 +4,37 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.56.0 — 2026-07-29
+
+**2D masterpiece stretch** — Skeleton2D/Bone2D/rest/2D IK, MeshInstance2D, pixel-game presets, TileSet scenes-as-tiles + patterns. Aimed at full agent 2D production surface (docs tutorials/2d + 2d_skeletons).
+
+### Skeleton2D
+- `find_skeletons_2d`, `setup_skeleton_2d`, `add_bone_2d`, `list_bones_2d`, `get_bone_2d_info`
+- Rest/pose: `set_bone_2d_rest`, `apply_bone_2d_rest`, `apply_all_bone_2d_rests`, `set_bone_2d_pose`, `set_bone_2d_length`
+- IK: `setup_modification_stack_2d`, `setup_two_bone_ik_2d`, `set_two_bone_ik_2d_target`, `list_modification_stack_2d`
+- `set_bone_2d_local_pose_override`
+
+### Mesh 2D
+- `setup_mesh_instance_2d`, `create_quad_mesh_2d`, `create_array_mesh_2d`, `assign_mesh_2d`
+- `set_mesh_instance_2d_texture`, `convert_sprite_to_mesh_instance_2d`, `setup_multimesh_instance_2d`
+
+### Pixel presets
+- `list_pixel_2d_presets`, `apply_pixel_2d_project_preset` (classic_pixel / pixel_canvas_items / hd_pixel / smooth_2d)
+- Stretch mode/aspect/integer scale, nearest filter, 2D snap, AA off
+- `get_pixel_2d_project_settings`, `apply_pixel_texture_import_batch`, `set_canvas_item_texture_filter`
+
+### TileSet scenes + patterns
+- `tileset_add_scenes_collection_source`, `tileset_add_scene_tile`, `tileset_list_scene_tiles`
+- `tileset_remove_scene_tile`, `tileset_set_scene_tile_placeholder`
+- Patterns: `tileset_add_pattern_from_cells`, `tileset_add_pattern_from_rect`, `tileset_list_patterns`, `tileset_remove_pattern`
+- Stamp: `tilemap_stamp_pattern`
+
+### Discovery
+- New domain **`2d`** in `list_agent_domains` / `list_tools_by_domain`
+- Expanded `agent_workflow_guide topic=2d`
+
+---
+
 ## v1.55.0 — 2026-07-29
 
 **Stretch tool surface** — groups/layers, autoloads, unique names, preload registry, tile physics/nav, compositor, clipboard, input replay, spring bones.

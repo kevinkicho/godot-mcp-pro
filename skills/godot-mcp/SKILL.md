@@ -136,6 +136,17 @@ Prefer composed pipelines for multi-step human docks:
 - Preload registry + manifest; TileSet physics/nav layers; compositor stack
 - Clipboard/duplicate nodes; input replay manifests; spring bone scaffold
 
+## v1.56+ — 2D masterpiece surface
+
+Full agent path for production 2D games (pixel + skeletal + tiles + mesh):
+
+- **Pixel project:** **`apply_pixel_2d_project_preset`** `preset=classic_pixel|hd_pixel|pixel_canvas_items|smooth_2d` (stretch, integer scale, nearest, snap, AA off)
+- **Textures:** `apply_pixel_texture_import_batch` / `apply_texture_import_preset 2d_pixel` / `set_canvas_item_texture_filter`
+- **Skeleton2D:** `setup_skeleton_2d` → `add_bone_2d` → `set_bone_2d_rest` → **`setup_two_bone_ik_2d`** / `list_bones_2d`
+- **Mesh2D:** `setup_mesh_instance_2d`, `create_quad_mesh_2d`, **`convert_sprite_to_mesh_instance_2d`**, `setup_multimesh_instance_2d`
+- **Tile scenes/patterns:** `tileset_add_scenes_collection_source`, `tileset_add_scene_tile`, `tileset_add_pattern_from_rect`, **`tilemap_stamp_pattern`**
+- Discovery domain: **`list_tools_by_domain domain=2d`** · `agent_workflow_guide topic=2d`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

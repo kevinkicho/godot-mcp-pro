@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.55.0**  
+Plugin version: **1.56.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1209
-- **Command modules:** 146
+- **Registered plugin commands:** 1257
+- **Command modules:** 150
 
 ## Commands by module
 
@@ -793,6 +793,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `media_contact_sheet`
 - `media_probe`
 
+### mesh_2d_commands (8)
+
+- `setup_mesh_instance_2d`
+- `create_quad_mesh_2d`
+- `create_array_mesh_2d`
+- `assign_mesh_2d`
+- `set_mesh_instance_2d_texture`
+- `convert_sprite_to_mesh_instance_2d`
+- `setup_multimesh_instance_2d`
+- `list_mesh_2d_tools`
+
 ### mesh_collision_commands (7)
 
 - `mesh_create_trimesh_collision`
@@ -1001,6 +1012,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_physics_debug_tools`
 - `position`
 - `normal`
+
+### pixel_2d_preset_commands (6)
+
+- `list_pixel_2d_presets`
+- `apply_pixel_2d_project_preset`
+- `get_pixel_2d_project_settings`
+- `apply_pixel_texture_import_batch`
+- `set_canvas_item_texture_filter`
+- `list_pixel_2d_tools`
 
 ### playtest_fix_commands (4)
 
@@ -1315,6 +1335,32 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_shader_include_library_preset`
 - `list_shader_include_tools`
 
+### skeleton_2d_commands (23)
+
+- `find_skeletons_2d`
+- `setup_skeleton_2d`
+- `add_bone_2d`
+- `list_bones_2d`
+- `get_bone_2d_info`
+- `set_bone_2d_rest`
+- `apply_bone_2d_rest`
+- `apply_all_bone_2d_rests`
+- `set_bone_2d_pose`
+- `set_bone_2d_length`
+- `setup_modification_stack_2d`
+- `setup_two_bone_ik_2d`
+- `set_two_bone_ik_2d_target`
+- `list_modification_stack_2d`
+- `set_bone_2d_local_pose_override`
+- `list_skeleton_2d_tools`
+- `rest`
+- `rest`
+- `rest`
+- `skeleton_rest`
+- `transform`
+- `transform`
+- `pose`
+
 ### skeleton_commands (19)
 
 - `find_skeletons`
@@ -1505,6 +1551,20 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tileset_list_physics_layers`
 - `tileset_set_tile_navigation_polygon`
 - `list_tileset_physics_nav_tools`
+
+### tileset_scenes_pattern_commands (11)
+
+- `tileset_add_scenes_collection_source`
+- `tileset_add_scene_tile`
+- `tileset_list_scene_tiles`
+- `tileset_remove_scene_tile`
+- `tileset_set_scene_tile_placeholder`
+- `tileset_add_pattern_from_cells`
+- `tileset_add_pattern_from_rect`
+- `tileset_list_patterns`
+- `tileset_remove_pattern`
+- `tilemap_stamp_pattern`
+- `list_tileset_scenes_pattern_tools`
 
 ### tileset_terrain_depth_commands (6)
 

@@ -136,6 +136,20 @@ func _domains() -> Dictionary:
 			"examples": ["list_autoloads", "set_physics_layer_names", "find_nodes_in_group", "batch_set_scene_unique_names", "create_resource_registry_script"],
 			"workflow": "scaffold_project_defaults → layer names → groups → autoloads → unique names",
 		},
+		"2d": {
+			"description": "2D masterpiece production: cameras, lights, tiles, pixel presets, Skeleton2D, MeshInstance2D",
+			"examples": [
+				"apply_pixel_2d_project_preset",
+				"setup_skeleton_2d",
+				"setup_two_bone_ik_2d",
+				"setup_mesh_instance_2d",
+				"tileset_add_scenes_collection_source",
+				"tilemap_stamp_pattern",
+				"setup_camera_2d",
+				"setup_canvas_modulate",
+			],
+			"workflow": "pixel preset → scene/camera → tiles/sprites/mesh2d → skeleton2d IK → lights → playtest",
+		},
 	}
 
 
@@ -192,6 +206,12 @@ func _list_tools_by_domain(params: Dictionary) -> Dictionary:
 			keywords = ["lightmap", "sdfgi", "lod", "environment", "decal", "gi_"]
 		"discovery":
 			keywords = ["list_agent", "search_mcp", "list_mcp", "get_tool", "list_docs"]
+		"2d":
+			keywords = [
+				"skeleton_2d", "bone_2d", "two_bone_ik", "mesh_instance_2d", "mesh_2d",
+				"pixel_2d", "tilemap", "tileset", "camera_2d", "light_2d", "parallax",
+				"sprite_frames", "canvas_modulate", "polygon_2d",
+			]
 	var matched: Array = []
 	for m in registered:
 		var n := str(m).to_lower()
