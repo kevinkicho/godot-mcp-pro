@@ -411,6 +411,65 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['from', 'to'],
     },
   },
+  {
+    name: 'setup_interaction_zone',
+    description: 'Area2D/3D interaction zone (use/talk/pickup) with shape + script meta.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        kind: { type: 'string', description: 'use|talk|pickup|trigger' },
+        is_3d: { type: 'boolean' },
+        radius: { type: 'number' },
+        prompt: { type: 'string' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'set_particle_process_params',
+    description: 'Bulk ParticleProcessMaterial / particle node numerical params.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        amount: { type: 'number' },
+        lifetime: { type: 'number' },
+        direction: { type: 'object' },
+        gravity: { type: 'object' },
+        emission_shape: { type: 'string' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'get_export_signing_checklist',
+    description: 'Platform export signing checklist (Android/iOS/desktop/web).',
+    inputSchema: {
+      type: 'object',
+      properties: { platform: { type: 'string' } },
+      required: [],
+    },
+  },
+  {
+    name: 'analyze_project_best_practices',
+    description: 'Project hygiene: main scene, autoloads, layers, input, export presets.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'create_http_client_script',
+    description: 'HTTP GET/POST JSON service script; optional autoload.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

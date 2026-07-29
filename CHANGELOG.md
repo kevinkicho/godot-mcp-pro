@@ -4,6 +4,37 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.49.0 — 2026-07-28
+
+**SDK structure expansion** — particles depth, interaction zones, export signing, HTTP/encrypted IO, physics debug, 3D structure nodes, best-practices checks. Docs audit: `docs/SDK_STRUCTURE_EXPANSION.md`.
+
+### Particles depth
+- `set_particle_process_params`, `set_particle_emission_shape`, `set_particle_turbulence`
+- `set_particle_draw_pass`, `add_gpu_particles_attractor`, `create_cpu_particles`, `restart_particles`
+
+### Interaction zones
+- `setup_interaction_zone`, `setup_interaction_prompt_ui`
+- `create_interaction_controller_script`, `bind_interaction_action`
+
+### Export signing
+- `get_export_signing_checklist`, `configure_android_keystore`
+- `get_android_signing_status`, `set_export_preset_signing_options`
+
+### HTTP + encrypted IO
+- `create_http_client_script`, `setup_http_request_node`
+- `create_encrypted_save_script`, `encrypted_file_write` / `encrypted_file_read`
+
+### Physics debug + structure
+- `set_collision_debug_visible`, `editor_raycast`, `list_physics_shapes_in_scene`
+- Runtime `physics_raycast`
+- `setup_visible_on_screen_notifier/enabler`, `setup_remote_transform`
+- `setup_world_boundary_body`, `setup_occluder_instance`, `setup_marker_3d`
+
+### Best practices
+- `analyze_project_best_practices`, `check_node_naming`, `check_autoload_hygiene`, `check_res_path_conventions`
+
+---
+
 ## v1.48.0 — 2026-07-28
 
 **Quality presets + agent pipelines + live nav path** — composed human workflows and fork docs.

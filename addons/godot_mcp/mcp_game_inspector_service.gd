@@ -250,6 +250,8 @@ func _dispatch_command(command: String, params: Dictionary) -> void:
 			_cmd_get_screenshot(params)
 		"navigation_query_path":
 			_cmd_navigation_query_path(params)
+		"physics_raycast":
+			_cmd_physics_raycast(params)
 		_:
 			_write_response({"error": "Unknown command: %s" % command})
 
@@ -479,6 +481,57 @@ func _cmd_get_screenshot(params: Dictionary) -> void:
 		"height": image.get_height(),
 		"format": "png",
 	})
+
+
+func _cmd_physics_raycast(params: Dictionary) -> void:
+	var mode: String = str(params.get("mode", "3d")).to_lower()
+	if mode == "2d":
+		var from_d: Dictionary = params.get("from", {})
+		var to_d: Dictionary = params.get("to", {})
+		var from2 := Vector2(float(from_d.get("x", 0)), float(from_d.get("y", 0)))
+		var to2 := Vector2(float(to_d.get("x", 0)), float(to_d.get("y", 0)))
+		var w2 := get_viewport().world_2d if get_viewport() else null
+		if w2 == null:
+			_write_response({"error": "No World2D", "hit": false})
+			return
+		var q2 := PhysicsRayQueryParameters2D.create(from2, to2)
+		if params.has("collision_mask"):
+			q2.collision_mask = int(params["collision_mask"])
+		var hit2 := w2.direct_space_state.intersect_ray(q2)
+		if hit2.is_empty():
+			_write_response({"hit": false, "mode": "2d"})
+		else:
+			_write_response({
+				"hit": true,
+				"mode": "2d",
+				"position": {"x": hit2.position.x, "y": hit2.position.y},
+				"collider": str(hit2.collider.get_path()) if hit2.collider is Node else str(hit2.collider),
+			})
+		return
+	var from_d3: Dictionary = params.get("from", {})
+	var to_d3: Dictionary = params.get("to", {})
+	var from3 := Vector3(float(from_d3.get("x", 0)), float(from_d3.get("y", 0)), float(from_d3.get("z", 0)))
+	var to3 := Vector3(float(to_d3.get("x", 0)), float(to_d3.get("y", 0)), float(to_d3.get("z", 0)))
+	var w3 := get_viewport().world_3d if get_viewport() else null
+	if w3 == null:
+		_write_response({"error": "No World3D", "hit": false})
+		return
+	var q := PhysicsRayQueryParameters3D.create(from3, to3)
+	if params.has("collision_mask"):
+		q.collision_mask = int(params["collision_mask"])
+	var hit := w3.direct_space_state.intersect_ray(q)
+	if hit.is_empty():
+		_write_response({"hit": false, "mode": "3d"})
+	else:
+		var pos: Vector3 = hit.get("position", Vector3.ZERO)
+		var nrm: Vector3 = hit.get("normal", Vector3.UP)
+		_write_response({
+			"hit": true,
+			"mode": "3d",
+			"position": {"x": pos.x, "y": pos.y, "z": pos.z},
+			"normal": {"x": nrm.x, "y": nrm.y, "z": nrm.z},
+			"collider": str(hit.collider.get_path()) if hit.get("collider") is Node else str(hit.get("collider")),
+		})
 
 
 func _cmd_navigation_query_path(params: Dictionary) -> void:

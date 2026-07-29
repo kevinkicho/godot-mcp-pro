@@ -589,8 +589,10 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"tools": [
 				"res_*", "config_file_get/set", "json_read/write", "user_list_dir", "user_read_text", "user_write_text",
 				"create_encrypted_save_manager_script", "create_enhanced_save_manager_script",
+				"create_http_client_script", "setup_http_request_node",
+				"create_encrypted_save_script", "encrypted_file_write", "encrypted_file_read",
 			],
-			"gaps": ["cloud save backends", "HTTPRequest as dedicated IO surface"],
+			"gaps": ["cloud save backends"],
 		},
 		"tutorials/i18n": {
 			"status": "strong",
@@ -660,9 +662,20 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"create_shader_preset", "list_shader_presets", "apply_canvas_shader_to_node",
 				"apply_spatial_shader_to_mesh", "setup_trail_vfx", "setup_flash_hurt_vfx",
 				"setup_screen_fade_overlay", "create_hit_stop_script", "create_particles",
+				"set_particle_process_params", "set_particle_turbulence", "add_gpu_particles_attractor",
+				"create_cpu_particles", "set_particle_draw_pass",
 				"create_shader", "visual_shader_*",
 			],
 			"gaps": ["full visual shader graph parity for every node type"],
+		},
+		"interaction_zones": {
+			"status": "strong",
+			"tools": [
+				"setup_interaction_zone", "setup_interaction_prompt_ui",
+				"create_interaction_controller_script", "bind_interaction_action",
+				"create_interactable_script", "bind_interaction",
+			],
+			"gaps": [],
 		},
 		"settings_save_menus": {
 			"status": "strong",
@@ -722,16 +735,19 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_soft_body", "add_physical_bone", "setup_physical_bone_simulator",
 				"mesh_create_trimesh_static_body", "mesh_create_convex_collision", "mesh_create_multiple_convex_collisions",
 				"add_collision_shape_from_mesh",
+				"set_collision_debug_visible", "editor_raycast", "list_physics_shapes_in_scene",
 			],
-			"gaps": ["joint limit fine UI", "test_move debug viz", "full ragdoll auto-generate from skeleton"],
+			"gaps": ["joint limit fine UI", "full ragdoll auto-generate from skeleton"],
 		},
 		"tutorials/export": {
 			"status": "strong",
 			"tools": [
 				"list_export_presets", "create_export_preset", "set_export_preset_option", "remove_export_preset",
 				"get_export_preset", "export_project", "run_export", "deploy_to_android", "get_export_info",
+				"get_export_signing_checklist", "configure_android_keystore", "get_android_signing_status",
+				"set_export_preset_signing_options",
 			],
-			"gaps": ["signing/notarization wizards", "export template install automation"],
+			"gaps": ["iOS notarization on non-macOS hosts", "export template download automation"],
 		},
 		"tutorials/platform": {
 			"status": "partial",
@@ -804,8 +820,11 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["symbolic CAS — use scripts for pure math"],
 		},
 		"tutorials/best_practices": {
-			"status": "partial",
-			"tools": ["agent_workflow_guide", "analyze_*", "health_check"],
+			"status": "strong",
+			"tools": [
+				"agent_workflow_guide", "analyze_*", "health_check",
+				"analyze_project_best_practices", "check_node_naming", "check_autoload_hygiene", "check_res_path_conventions",
+			],
 			"gaps": [],
 		},
 		"tutorials/migrating": {

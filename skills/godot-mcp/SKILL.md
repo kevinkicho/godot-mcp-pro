@@ -75,6 +75,17 @@ Prefer composed pipelines for multi-step human docks:
 - `apply_platform_render_pack pack=mobile|desktop|high_end`
 - `navigation_live_path from=… to=…`
 
+## Structural systems (v1.49+ / docs audit)
+
+- Particles: `set_particle_process_params`, attractors, turbulence, CPU particles  
+- Interaction: **`setup_interaction_zone`**, prompt UI, controller script, `bind_interaction_action`  
+- Export: **`get_export_signing_checklist`**, Android keystore helpers  
+- IO: `create_http_client_script`, **`encrypted_file_write`/`read`**  
+- Physics debug: `editor_raycast`, `set_collision_debug_visible`  
+- Structure: VisibleOnScreen*, RemoteTransform, WorldBoundary, Occluder, Marker  
+- Hygiene: **`analyze_project_best_practices`**  
+- Map: `docs/SDK_STRUCTURE_EXPANSION.md`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

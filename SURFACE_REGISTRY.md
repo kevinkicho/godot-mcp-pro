@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.48.0**  
+Plugin version: **1.49.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 948
-- **Command modules:** 95
+- **Registered plugin commands:** 991
+- **Command modules:** 102
 
 ## Commands by module
 
@@ -210,6 +210,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_blackboard_script`
 - `setup_behavior_tree_on_node`
 - `list_behavior_tree_recipes`
+
+### best_practices_commands (5)
+
+- `analyze_project_best_practices`
+- `check_node_naming`
+- `check_autoload_hygiene`
+- `check_res_path_conventions`
+- `list_best_practices_tools`
 
 ### character_system_commands (10)
 
@@ -413,6 +421,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_export_templates_path`
 - `has_matching_template`
 
+### export_signing_commands (5)
+
+- `get_export_signing_checklist`
+- `configure_android_keystore`
+- `get_android_signing_status`
+- `set_export_preset_signing_options`
+- `list_export_signing_tools`
+
 ### filesystem_commands (8)
 
 - `res_copy_file`
@@ -462,6 +478,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `gridmap_set_mesh_library`
 - `gridmap_paint_line`
 - `gridmap_get_info`
+
+### http_io_commands (6)
+
+- `create_http_client_script`
+- `setup_http_request_node`
+- `create_encrypted_save_script`
+- `encrypted_file_write`
+- `encrypted_file_read`
+- `list_http_io_tools`
 
 ### humanoid_commands (6)
 
@@ -534,6 +559,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_input_action_events`
 - `add_input_action_event`
 - `clear_input_action_events`
+
+### interaction_zone_commands (5)
+
+- `setup_interaction_zone`
+- `setup_interaction_prompt_ui`
+- `create_interaction_controller_script`
+- `bind_interaction_action`
+- `list_interaction_zone_tools`
 
 ### io_commands (8)
 
@@ -751,6 +784,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_particle_collision`
 - `add_gpu_particles_collision`
 
+### particle_depth_commands (8)
+
+- `set_particle_process_params`
+- `set_particle_emission_shape`
+- `set_particle_turbulence`
+- `set_particle_draw_pass`
+- `add_gpu_particles_attractor`
+- `create_cpu_particles`
+- `restart_particles`
+- `list_particle_depth_tools`
+
 ### physics_commands (18)
 
 - `setup_collision`
@@ -771,6 +815,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_physical_bone_simulator`
 - `collision_layer_info`
 - `collision_mask_info`
+
+### physics_debug_commands (7)
+
+- `set_collision_debug_visible`
+- `get_physics_debug_settings`
+- `editor_raycast`
+- `list_physics_shapes_in_scene`
+- `list_physics_debug_tools`
+- `position`
+- `normal`
 
 ### playtest_loop_commands (2)
 
@@ -1063,6 +1117,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `global_pose`
 - `rest`
 - `mapped_count`
+
+### structure_3d_commands (7)
+
+- `setup_visible_on_screen_notifier`
+- `setup_visible_on_screen_enabler`
+- `setup_remote_transform`
+- `setup_world_boundary_body`
+- `setup_occluder_instance`
+- `setup_marker_3d`
+- `list_structure_3d_tools`
 
 ### terrain_mesh_commands (4)
 

@@ -1,0 +1,48 @@
+# Godot SDK / docs → MCP structural expansion
+
+**As of:** v1.49 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
+
+## What we audited
+
+Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html) topics plus structural ClassDB systems agents need for real games (not one tool per method).
+
+## Critical structural surfaces (priority)
+
+| Structure | Why agents need it | MCP path (v1.49+) | Status |
+|-----------|--------------------|-------------------|--------|
+| **Scene tree + inspector** | Compose any content | node/*, list_property_info, call_node_method | strong |
+| **Resources + deps** | Move/rename without breaks | resource_graph_*, remap_resource_references | strong |
+| **Physics bodies/shapes** | Collision is gameplay law | physics_*, mesh_collision_*, physics_debug_* | strong |
+| **Navigation maps** | AI pathing | navigation_*, nav_debug_*, navigation_live_path | strong |
+| **Rendering / GI / LOD** | Ship visual quality | lightmap_*, lod_*, quality_preset_*, render_gi_* | strong |
+| **Particles / VFX** | Juice + feedback | particle_*, particle_depth_* | **expanded 1.49** |
+| **Interaction zones** | Use/talk/pickup loops | interaction_zone_* | **new 1.49** |
+| **HTTP + encrypted IO** | Online + secure saves | http_io_*, io_* | **expanded 1.49** |
+| **Export signing** | Store ship blockers | export_signing_* | **new 1.49** |
+| **Visibility / streaming structure** | Perf culling | structure_3d_*, scene_stream_* | **expanded 1.49** |
+| **Animation graphs** | Character motion | animation_tree_* graph recipes | strong |
+| **Best practices checks** | Hygiene before ship | best_practices_* | **new 1.49** |
+| **ClassDB long tail** | Anything else | describe_class, execute_editor_script, call_editor | strong (lookup) |
+
+## Docs areas still intentionally partial
+
+| Area | Why partial | Agent workaround |
+|------|-------------|------------------|
+| Console platforms | Vendor SDKs | Out of scope |
+| iOS codesign on Windows | Needs macOS/Xcode | Checklist only via export_signing |
+| Full VisualShader node catalog | Huge UI surface | visual_shader_* + describe_class |
+| Cloud saves / matchmaking hosts | Third-party services | Templates only |
+| One tool per ClassDB method | Unmaintainable | describe_class + call_node_method |
+
+## Expansion rule (keep using)
+
+1. Prefer **workflow recipes** (pipelines) over raw ClassDB dumps.  
+2. Expose **numbers and resources** agents can set without a GUI.  
+3. Keep **escape hatches**: `call_editor`, `execute_editor_script`, `describe_class`.  
+4. Refresh with `.\scripts\export-surface-registry.ps1` + `list_docs_coverage`.
+
+## Related
+
+- [DOCS_COVERAGE_ANALYSIS.md](DOCS_COVERAGE_ANALYSIS.md)  
+- [IDE_PARITY.md](IDE_PARITY.md)  
+- [GAPS_VS_GODOT_DOCS.md](../GAPS_VS_GODOT_DOCS.md)  
