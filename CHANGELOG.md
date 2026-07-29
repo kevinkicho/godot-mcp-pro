@@ -4,6 +4,24 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.37.0 — 2026-07-28
+
+**Refactor continued** — auto-discover commands, split tool schemas, shared autoload API.
+
+### Plugin
+- `command_router.gd` **auto-discovers** `commands/*_commands.gd` (no manual preload list)
+- `base_command.ensure_autoload` / `maybe_add_autoload` — shared singleton registration
+- Call sites use shared helpers (settings, quest, multiplayer, game_ui, vfx, run_session)
+
+### Server
+- Split `tools.ts` → `tool-types.ts` + `tools-cli.ts` + `tools-lite.ts` (+ hub re-exports)
+- `scripts/split-tools.mjs` for future regeneration
+
+### Docs
+- ARCHITECTURE notes auto-discovery
+
+---
+
 ## v1.36.0 — 2026-07-28
 
 **Refactor** — structure after the 1.29–1.35 feature sprint (behavior unchanged).

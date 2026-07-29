@@ -210,15 +210,13 @@ func _ensure_runtime_autoloads(params: Dictionary) -> Dictionary:
 	for e in entries:
 		var key: String = e[0]
 		var script: String = e[1]
+		var aname: String = key.trim_prefix("autoload/")
 		if not FileAccess.file_exists(script):
 			continue
 		if ProjectSettings.has_setting(key):
 			existing.append(key)
-		else:
-			ProjectSettings.set_setting(key, "*" + script)
+		elif ensure_autoload(aname, script, true):
 			added.append(key)
-	if permanent and not added.is_empty():
-		ProjectSettings.save()
 	return success({
 		"added": added,
 		"already_present": existing,

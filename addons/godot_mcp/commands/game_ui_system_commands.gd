@@ -439,10 +439,7 @@ func toggle_pause() -> void:
 	if optional_bool(params, "add_autoload", true):
 		var aname: String = optional_string(params, "autoload_name", "GameState")
 		var p: String = w.get("path", path)
-		if not ProjectSettings.has_setting("autoload/" + aname):
-			ProjectSettings.set_setting("autoload/" + aname, "*" + p)
-			ProjectSettings.save()
-			al = true
+		al = ensure_autoload(aname, p, true)
 	return success({"path": w.get("path", path), "autoload_added": al})
 
 
@@ -509,10 +506,7 @@ func stop_music(fade_sec: float = 0.5) -> void:
 	if optional_bool(params, "add_autoload", true):
 		var aname: String = optional_string(params, "autoload_name", "AudioManager")
 		var p: String = w.get("path", path)
-		if not ProjectSettings.has_setting("autoload/" + aname):
-			ProjectSettings.set_setting("autoload/" + aname, "*" + p)
-			ProjectSettings.save()
-			al = true
+		al = ensure_autoload(aname, p, true)
 	# Ensure SFX/Music buses exist
 	var buses_added: Array = []
 	for bus_name in ["SFX", "Music"]:

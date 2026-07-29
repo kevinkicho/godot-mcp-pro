@@ -31,6 +31,27 @@ func write_json_file(path: String, data: Dictionary, overwrite: bool = false) ->
 	return r
 
 
+## Register a singleton autoload if missing. Returns true if newly added.
+func ensure_autoload(autoload_name: String, script_path: String, singleton: bool = true) -> bool:
+	var key := "autoload/" + autoload_name
+	if ProjectSettings.has_setting(key):
+		return false
+	if not script_path.begins_with("res://"):
+		script_path = "res://" + script_path.trim_prefix("/")
+	var value := ("*" if singleton else "") + script_path
+	ProjectSettings.set_setting(key, value)
+	ProjectSettings.save()
+	return true
+
+
+## Optional autoload from params: add_autoload, autoload_name.
+func maybe_add_autoload(params: Dictionary, script_path: String, default_name: String) -> bool:
+	if not optional_bool(params, "add_autoload", false):
+		return false
+	var aname: String = optional_string(params, "autoload_name", default_name)
+	return ensure_autoload(aname, script_path, true)
+
+
 ## Helper: return a success result
 func success(data: Dictionary = {}) -> Dictionary:
 	return {"result": data}

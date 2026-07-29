@@ -33,14 +33,7 @@ func _write_script(path: String, content: String, overwrite: bool) -> Dictionary
 
 
 func _maybe_autoload(params: Dictionary, path: String, default_name: String) -> bool:
-	if not optional_bool(params, "add_autoload", false):
-		return false
-	var aname: String = optional_string(params, "autoload_name", default_name)
-	if ProjectSettings.has_setting("autoload/" + aname):
-		return false
-	ProjectSettings.set_setting("autoload/" + aname, "*" + path)
-	ProjectSettings.save()
-	return true
+	return maybe_add_autoload(params, path, default_name)
 
 
 func _create_save_manager_script(params: Dictionary) -> Dictionary:

@@ -23,10 +23,18 @@
 ## Adding a command
 
 1. Implement in `commands/*_commands.gd` extending `base_command.gd`
-2. Register `get_commands()` dict of name → Callable
-3. Preload module in `command_router.gd`
-4. Optionally add LITE schema in `server/src/tools.ts`
+2. Return methods from `get_commands()` → `{"tool_name": _handler}`
+3. **Auto-registered** by `command_router.gd` (any `*_commands.gd` under `commands/`)
+4. Optionally add LITE/CLI schema in `server/src/tools-lite.ts` or `tools-cli.ts`
 5. Bump `plugin.cfg` + CHANGELOG when shipping
+
+### Shared helpers (prefer these)
+
+| Helper | Use |
+|--------|-----|
+| `write_script_file` / `write_json_file` | Create scripts/resources |
+| `ensure_autoload` / `maybe_add_autoload` | Register singletons |
+| `send_game_command` | Runtime probe (TCP → file) |
 
 ## Run probe flow
 

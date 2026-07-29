@@ -166,10 +166,7 @@ func get_my_id() -> int:
 	var al := false
 	if optional_bool(params, "add_autoload", true):
 		var aname: String = optional_string(params, "autoload_name", "MultiplayerManager")
-		if not ProjectSettings.has_setting("autoload/" + aname):
-			ProjectSettings.set_setting("autoload/" + aname, "*" + w["path"])
-			ProjectSettings.save()
-			al = true
+		al = ensure_autoload(aname, w["path"], true)
 	return success({"path": w["path"], "autoload_added": al, "port": port, "game_scene": game_scene})
 
 

@@ -139,10 +139,8 @@ func set_sfx_volume(v: float) -> void:
 	var al := false
 	if optional_bool(params, "add_autoload", true):
 		var aname := optional_string(params, "autoload_name", "SettingsManager")
-		if not ProjectSettings.has_setting("autoload/" + aname):
-			ProjectSettings.set_setting("autoload/" + aname, "*" + w["path"])
-			ProjectSettings.save()
-			al = true
+		# force add_autoload path via ensure_autoload
+		al = ensure_autoload(aname, w["path"], true)
 	return success({"path": w["path"], "autoload_added": al})
 
 
@@ -372,10 +370,7 @@ func autosave(data: Dictionary, meta: Dictionary = {}) -> Error:
 	var al := false
 	if optional_bool(params, "add_autoload", true):
 		var aname := optional_string(params, "autoload_name", "SaveManager")
-		if not ProjectSettings.has_setting("autoload/" + aname):
-			ProjectSettings.set_setting("autoload/" + aname, "*" + w["path"])
-			ProjectSettings.save()
-			al = true
+		al = ensure_autoload(aname, w["path"], true)
 	return success({"path": w["path"], "autoload_added": al})
 
 

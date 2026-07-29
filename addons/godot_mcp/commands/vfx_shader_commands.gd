@@ -399,8 +399,5 @@ func freeze(duration: float = 0.05, time_scale: float = 0.0) -> void:
 	var al := false
 	if optional_bool(params, "add_autoload", false):
 		var aname := optional_string(params, "autoload_name", "HitStop")
-		if not ProjectSettings.has_setting("autoload/" + aname):
-			ProjectSettings.set_setting("autoload/" + aname, "*" + w["path"])
-			ProjectSettings.save()
-			al = true
+		al = ensure_autoload(aname, w["path"], true)
 	return success({"path": w["path"], "autoload_added": al})

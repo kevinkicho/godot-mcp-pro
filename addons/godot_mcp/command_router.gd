@@ -5,8 +5,10 @@ var editor_plugin: EditorPlugin
 
 var _command_handlers: Dictionary = {}  # method_name -> Callable
 var _disabled_tools: Dictionary = {}  # method_name -> true
+var _loaded_modules: Array = []  # module basenames for diagnostics
 
 const TOOL_CONFIG_PATH := "user://mcp_tool_config.cfg"
+const COMMANDS_DIR := "res://addons/godot_mcp/commands"
 
 
 func _ready() -> void:
@@ -15,97 +17,68 @@ func _ready() -> void:
 
 
 func _register_commands() -> void:
-	var command_classes := [
-		preload("res://addons/godot_mcp/commands/project_commands.gd"),
-		preload("res://addons/godot_mcp/commands/scene_commands.gd"),
-		preload("res://addons/godot_mcp/commands/node_commands.gd"),
-		preload("res://addons/godot_mcp/commands/script_commands.gd"),
-		preload("res://addons/godot_mcp/commands/editor_commands.gd"),
-		preload("res://addons/godot_mcp/commands/input_commands.gd"),
-		preload("res://addons/godot_mcp/commands/runtime_commands.gd"),
-		preload("res://addons/godot_mcp/commands/animation_commands.gd"),
-		preload("res://addons/godot_mcp/commands/tilemap_commands.gd"),
-		preload("res://addons/godot_mcp/commands/theme_commands.gd"),
-		preload("res://addons/godot_mcp/commands/profiling_commands.gd"),
-		preload("res://addons/godot_mcp/commands/batch_commands.gd"),
-		preload("res://addons/godot_mcp/commands/shader_commands.gd"),
-		preload("res://addons/godot_mcp/commands/export_commands.gd"),
-		preload("res://addons/godot_mcp/commands/resource_commands.gd"),
-		preload("res://addons/godot_mcp/commands/input_map_commands.gd"),
-		preload("res://addons/godot_mcp/commands/scene_3d_commands.gd"),
-		preload("res://addons/godot_mcp/commands/physics_commands.gd"),
-		preload("res://addons/godot_mcp/commands/analysis_commands.gd"),
-		preload("res://addons/godot_mcp/commands/animation_tree_commands.gd"),
-		preload("res://addons/godot_mcp/commands/skeleton_commands.gd"),
-		preload("res://addons/godot_mcp/commands/scene_2d_commands.gd"),
-		preload("res://addons/godot_mcp/commands/io_commands.gd"),
-		preload("res://addons/godot_mcp/commands/audio_commands.gd"),
-		preload("res://addons/godot_mcp/commands/navigation_commands.gd"),
-		preload("res://addons/godot_mcp/commands/particle_commands.gd"),
-		preload("res://addons/godot_mcp/commands/test_commands.gd"),
-		preload("res://addons/godot_mcp/commands/android_commands.gd"),
-		preload("res://addons/godot_mcp/commands/compat_commands.gd"),
-		preload("res://addons/godot_mcp/commands/agent_commands.gd"),
-		preload("res://addons/godot_mcp/commands/class_commands.gd"),
-		preload("res://addons/godot_mcp/commands/import_commands.gd"),
-		preload("res://addons/godot_mcp/commands/filesystem_commands.gd"),
-		preload("res://addons/godot_mcp/commands/i18n_commands.gd"),
-		preload("res://addons/godot_mcp/commands/multiplayer_commands.gd"),
-		preload("res://addons/godot_mcp/commands/tileset_commands.gd"),
-		preload("res://addons/godot_mcp/commands/scene_unique_commands.gd"),
-		preload("res://addons/godot_mcp/commands/xr_commands.gd"),
-		preload("res://addons/godot_mcp/commands/ui_list_commands.gd"),
-		preload("res://addons/godot_mcp/commands/debugger_commands.gd"),
-		preload("res://addons/godot_mcp/commands/visual_shader_commands.gd"),
-		preload("res://addons/godot_mcp/commands/csharp_commands.gd"),
-		preload("res://addons/godot_mcp/commands/tween_commands.gd"),
-		preload("res://addons/godot_mcp/commands/plugin_scaffold_commands.gd"),
-		preload("res://addons/godot_mcp/commands/texture_commands.gd"),
-		preload("res://addons/godot_mcp/commands/gdextension_commands.gd"),
-		preload("res://addons/godot_mcp/commands/dialogue_commands.gd"),
-		preload("res://addons/godot_mcp/commands/container_commands.gd"),
-		preload("res://addons/godot_mcp/commands/scene_flow_commands.gd"),
-		preload("res://addons/godot_mcp/commands/gameplay_template_commands.gd"),
-		preload("res://addons/godot_mcp/commands/material_2d_commands.gd"),
-		preload("res://addons/godot_mcp/commands/utility_node_commands.gd"),
-		preload("res://addons/godot_mcp/commands/control_extra_commands.gd"),
-		# Headless production macros (human IDE high-frequency actions)
-		preload("res://addons/godot_mcp/commands/production_commands.gd"),
-		# Modern game systems (controllers, AI, HUD, combat, render presets)
-		preload("res://addons/godot_mcp/commands/character_system_commands.gd"),
-		preload("res://addons/godot_mcp/commands/ai_system_commands.gd"),
-		preload("res://addons/godot_mcp/commands/game_ui_system_commands.gd"),
-		preload("res://addons/godot_mcp/commands/modern_render_commands.gd"),
-		# 3D import depth, quests/dialogue graphs, multiplayer host-join runtime
-		preload("res://addons/godot_mcp/commands/import_3d_commands.gd"),
-		preload("res://addons/godot_mcp/commands/quest_system_commands.gd"),
-		preload("res://addons/godot_mcp/commands/multiplayer_runtime_commands.gd"),
-		# v1.32: WebRTC/netcode, BT, VFX/shaders, settings/save, export polish
-		preload("res://addons/godot_mcp/commands/webrtc_multiplayer_commands.gd"),
-		preload("res://addons/godot_mcp/commands/behavior_tree_commands.gd"),
-		preload("res://addons/godot_mcp/commands/vfx_shader_commands.gd"),
-		preload("res://addons/godot_mcp/commands/settings_save_commands.gd"),
-		# Native run plane: session, video record, media (FFmpeg), GUT/GdUnit adapters
-		preload("res://addons/godot_mcp/commands/run_session_commands.gd"),
-		preload("res://addons/godot_mcp/commands/media_commands.gd"),
-		preload("res://addons/godot_mcp/commands/test_framework_commands.gd"),
-	]
-
-	for cmd_class in command_classes:
-		var cmd: Node = cmd_class.new()
+	## Auto-discover commands/*_commands.gd (skip base_command and non-modules).
+	_command_handlers.clear()
+	_loaded_modules.clear()
+	var scripts: Array = _discover_command_scripts()
+	var registered := 0
+	var modules := 0
+	for path in scripts:
+		var scr: GDScript = load(path) as GDScript
+		if scr == null:
+			push_warning("[MCP] Failed to load command module: %s" % path)
+			continue
+		var cmd: Node = scr.new()
+		if cmd == null:
+			continue
+		if not cmd.has_method("get_commands"):
+			cmd.free()
+			continue
 		cmd.editor_plugin = editor_plugin
 		add_child(cmd)
 		var methods: Dictionary = cmd.get_commands()
+		if methods.is_empty():
+			# Still keep node if it registered nothing (rare); free to avoid clutter
+			remove_child(cmd)
+			cmd.free()
+			continue
+		modules += 1
+		_loaded_modules.append(path.get_file().get_basename())
 		for method_name: String in methods:
+			if _command_handlers.has(method_name):
+				push_warning("[MCP] Duplicate command '%s' from %s (overwriting)" % [method_name, path.get_file()])
 			_command_handlers[method_name] = methods[method_name]
+			registered += 1
 
-	print("[MCP] Registered %d commands" % _command_handlers.size())
+	print("[MCP] Registered %d commands from %d modules (auto-discover)" % [registered, modules])
+
+
+func _discover_command_scripts() -> Array:
+	var paths: Array = []
+	var dir := DirAccess.open(COMMANDS_DIR)
+	if dir == null:
+		push_error("[MCP] Cannot open commands dir: %s" % COMMANDS_DIR)
+		return paths
+	dir.list_dir_begin()
+	var fname := dir.get_next()
+	while not fname.is_empty():
+		if not dir.current_is_dir() and fname.ends_with("_commands.gd"):
+			# Exclude base if ever named that way; only *_commands.gd match
+			paths.append(COMMANDS_DIR.path_join(fname))
+		fname = dir.get_next()
+	dir.list_dir_end()
+	paths.sort()
+	return paths
+
+
+func get_loaded_modules() -> Array:
+	return _loaded_modules.duplicate()
 
 
 ## Serialize all command execution so file-IPC game tools cannot race on the
 ## single mcp_game_request / mcp_input_commands files.
 var _exec_busy: bool = false
-var _exec_queue: Array = []  # Array of {method, params, resolve_placeholder not used — we await chain}
+var _exec_queue: Array = []  # reserved
 
 
 func execute(method: String, params: Dictionary) -> Dictionary:
@@ -169,9 +142,9 @@ func _load_tool_config() -> void:
 		return
 	if not cfg.has_section("disabled_tools"):
 		return
-	for method: String in cfg.get_section_keys("disabled_tools"):
-		if cfg.get_value("disabled_tools", method, false):
-			_disabled_tools[method] = true
+	for key in cfg.get_section_keys("disabled_tools"):
+		if bool(cfg.get_value("disabled_tools", key, false)):
+			_disabled_tools[key] = true
 
 
 func _save_tool_config() -> void:
