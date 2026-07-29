@@ -4,6 +4,29 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.52.0 — 2026-07-28
+
+**Agent surface expansion** — shader includes, UI containers depth, multiplayer interest, Timer/Tween recipes, SkeletonIK, Label/RichText.
+
+### Shader includes
+- `create_shader_include`, `list_shader_includes`, `shader_add_include`
+- `create_shader_include_library_preset` (common/math/noise/tonemap)
+
+### UI containers
+- TabContainer, H/VSplit, Flow, Center, AspectRatio, SubViewportContainer
+- `tab_container_add_page`
+
+### Multiplayer interest
+- `create_interest_manager_script`, visibility filter helper
+- synchronizer interval / spawner limits
+
+### Timer / Tween / IK / Labels
+- `setup_timer`, delay helper, tween recipe script
+- `setup_skeleton_ik`, LookAtModifier fallback
+- `setup_label`, `setup_richtext_label`, append BBCode, autowrap
+
+---
+
 ## v1.51.0 — 2026-07-28
 
 **Agent surface expansion** — ragdoll auto-gen, XR passthrough, TileSet atlas polish, SoftBody/vehicle/SpriteFrames depth.

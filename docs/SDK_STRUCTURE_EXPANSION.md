@@ -1,6 +1,6 @@
 # Godot SDK / docs → MCP structural expansion
 
-**As of:** v1.51 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
+**As of:** v1.52 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
 
 ## What we audited
 
@@ -34,6 +34,10 @@ Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html
 | **TileSet atlas regions** | 2D atlas authoring | tileset_atlas_depth_* | **new 1.51** |
 | **SoftBody / vehicle stacks** | Soft cloth + cars | softbody_depth_*, vehicle_depth_* | **new 1.51** |
 | **SpriteFrames depth** | 2D clip edit | sprite_frames_depth_* | **new 1.51** |
+| **Shader includes** | Shared GLSL libraries | shader_include_* | **new 1.52** |
+| **UI container depth** | Tabs/splits/flow/viewport | ui_container_depth_* | **new 1.52** |
+| **Multiplayer interest** | AOI / visibility / bandwidth | multiplayer_interest_* | **new 1.52** |
+| **Skeleton IK** | Procedural limbs/look-at | skeleton_ik_* | **new 1.52** |
 | **ClassDB long tail** | Anything else | describe_class, execute_editor_script, call_editor | strong (lookup) |
 
 ## Docs areas still intentionally partial

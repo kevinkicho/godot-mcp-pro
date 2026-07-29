@@ -624,7 +624,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_multiplayer_spawner/synchronizer", "add_spawnable_scene", "add_replication_property",
 				"setup_http_request", "list_rpc_config", "set_multiplayer_authority", "list_multiplayer_recipes",
 			],
-			"gaps": ["WebRTC peer tools", "full matchmaking/relay services", "rollback netcode"],
+			"gaps": ["full matchmaking/relay services", "rollback netcode"],
 		},
 		"narrative_quests": {
 			"status": "strong",
@@ -777,7 +777,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"create_visual_shader", "visual_shader_add_node", "visual_shader_connect", "visual_shader_get_info",
 				"assign_visual_shader_material", "visual_shader_add_preset_fresnel",
 			],
-			"gaps": ["full VisualShader node catalog UI parity", "shader include libraries"],
+			"gaps": ["full VisualShader node catalog UI parity"],
 		},
 		"tutorials/ui": {
 			"status": "strong",

@@ -101,6 +101,13 @@ Prefer composed pipelines for multi-step human docks:
 - TileSet atlas: region size, create/remove tile regions, texture origin  
 - SoftBody params/pin, **`setup_vehicle_body`**, SpriteFrames speed/loop/frame edit
 
+## v1.52+
+
+- Shader includes: `create_shader_include_library_preset`, `shader_add_include`  
+- UI: Tab/Split/Flow/Center/AspectRatio/SubViewport containers  
+- Multiplayer interest manager + synchronizer bandwidth helpers  
+- Timer, tween recipes, SkeletonIK, Label/RichText setup
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

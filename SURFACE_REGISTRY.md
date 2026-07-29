@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.51.0**  
+Plugin version: **1.52.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1058
-- **Command modules:** 115
+- **Registered plugin commands:** 1089
+- **Command modules:** 121
 
 ## Commands by module
 
@@ -629,6 +629,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_joypad_button_names`
 - `event`
 
+### label_richtext_commands (5)
+
+- `setup_label`
+- `setup_richtext_label`
+- `richtext_append_bbcode`
+- `label_set_autowrap`
+- `list_label_richtext_tools`
+
 ### level_design_commands (7)
 
 - `greybox_room`
@@ -734,6 +742,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_multiplayer_project_settings`
 - `setup_http_request`
 - `list_rpc_config`
+
+### multiplayer_interest_commands (5)
+
+- `create_interest_manager_script`
+- `setup_multiplayer_visibility_filter`
+- `set_synchronizer_replication_interval`
+- `configure_multiplayer_spawner_limits`
+- `list_multiplayer_interest_tools`
 
 ### multiplayer_runtime_commands (6)
 
@@ -1152,6 +1168,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_shader_global`
 - `list_shader_globals`
 
+### shader_include_commands (5)
+
+- `create_shader_include`
+- `list_shader_includes`
+- `shader_add_include`
+- `create_shader_include_library_preset`
+- `list_shader_include_tools`
+
 ### skeleton_commands (19)
 
 - `find_skeletons`
@@ -1173,6 +1197,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `global_pose`
 - `rest`
 - `mapped_count`
+
+### skeleton_ik_commands (4)
+
+- `setup_skeleton_ik`
+- `set_skeleton_ik_target`
+- `setup_look_at_modifier`
+- `list_skeleton_ik_tools`
 
 ### softbody_depth_commands (4)
 
@@ -1307,11 +1338,29 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tilemap_paint_terrain_cells`
 - `list_tileset_terrain_depth_tools`
 
+### timer_tween_depth_commands (4)
+
+- `setup_timer`
+- `setup_scene_tree_timer_script`
+- `create_tween_recipe_script`
+- `list_timer_tween_tools`
+
 ### tween_commands (3)
 
 - `create_tween_helper_script`
 - `list_tween_recipes`
 - `create_scene_tree_tween_snippet`
+
+### ui_container_depth_commands (8)
+
+- `setup_tab_container`
+- `setup_split_container`
+- `setup_flow_container`
+- `setup_center_container`
+- `setup_aspect_ratio_container`
+- `setup_subviewport_container`
+- `tab_container_add_page`
+- `list_ui_container_depth_tools`
 
 ### ui_list_commands (15)
 

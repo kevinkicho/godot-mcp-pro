@@ -611,6 +611,70 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['tileset_path'],
     },
   },
+  {
+    name: 'create_shader_include_library_preset',
+    description: 'Write common/math/noise/tonemap .gdshaderinc library under shaders/includes.',
+    inputSchema: {
+      type: 'object',
+      properties: { dir: { type: 'string' }, overwrite: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_tab_container',
+    description: 'TabContainer with optional pages array for UI shells.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        pages: { type: 'array', items: {} },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_interest_manager_script',
+    description: 'AOI/interest multiplayer helper script; optional autoload.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_skeleton_ik',
+    description: 'Add SkeletonIK3D under a Skeleton3D with root/tip bones.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        skeleton_path: { type: 'string' },
+        root_bone: { type: 'string' },
+        tip_bone: { type: 'string' },
+        target_node: { type: 'string' },
+        start: { type: 'boolean' },
+      },
+      required: ['skeleton_path'],
+    },
+  },
+  {
+    name: 'setup_timer',
+    description: 'Add Timer node with wait_time/one_shot/autostart.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        wait_time: { type: 'number' },
+        one_shot: { type: 'boolean' },
+        autostart: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',
