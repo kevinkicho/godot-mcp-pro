@@ -500,7 +500,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"set_y_sort_enabled", "tilemap_* incl paint_line/erase_rect/paint_cells", "tileset_* incl terrains",
 				"sprite_frames_*", "setup_ai_agent_2d", "setup_hitbox/hurtbox",
 			],
-			"gaps": ["advanced tile atlas region tools", "full TileMap editor terrain painting GUI"],
+			"gaps": ["advanced tile atlas region tools"],
 		},
 		"tutorials/3d": {
 			"status": "strong",
@@ -572,7 +572,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"add_audio_bus_effect", "get_audio_bus_layout", "save_audio_bus_layout", "load_audio_bus_layout",
 				"create_music_controller_script", "setup_music_player", "music_set_playlist",
 			],
-			"gaps": ["AudioStreamGenerator procedural waveform designer"],
+			"gaps": ["complex multi-oscillator DAW-style graphs"],
 		},
 		"tutorials/inputs": {
 			"status": "strong",
@@ -600,6 +600,8 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"get_locale", "set_locale", "add_translation", "translate_string",
 				"load_csv_translations", "load_po_translation", "list_translations",
 				"extract_translatable_strings", "export_pot_template",
+				"extract_strings_from_open_scene", "export_translation_csv", "import_translation_csv",
+				"wrap_script_strings_with_tr",
 			],
 			"gaps": ["auto-submit to translation platforms"],
 		},
@@ -737,7 +739,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"add_collision_shape_from_mesh",
 				"set_collision_debug_visible", "editor_raycast", "list_physics_shapes_in_scene",
 			],
-			"gaps": ["joint limit fine UI", "full ragdoll auto-generate from skeleton"],
+			"gaps": ["full ragdoll auto-generate from skeleton"],
 		},
 		"tutorials/export": {
 			"status": "strong",

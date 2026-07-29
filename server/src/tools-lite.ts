@@ -470,6 +470,89 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  {
+    name: 'extract_strings_from_open_scene',
+    description: 'Extract UI/text strings from the open scene for localization.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        include_node_names: { type: 'boolean' },
+        min_length: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'export_translation_csv',
+    description: 'Write locale CSV (keys + locale columns) from open scene or string list.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        locales: { type: 'array', items: { type: 'string' } },
+        from_open_scene: { type: 'boolean' },
+        from_project_scan: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'tilemap_fill_terrain_rect',
+    description: 'Fill a tilemap rect with terrain connect (auto-tile).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        x0: { type: 'number' },
+        y0: { type: 'number' },
+        x1: { type: 'number' },
+        y1: { type: 'number' },
+        terrain_set: { type: 'number' },
+        terrain: { type: 'number' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'list_import_option_schema',
+    description: 'Documented import params for texture|scene_3d|audio|font|csv.',
+    inputSchema: {
+      type: 'object',
+      properties: { type: { type: 'string' } },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_path_follow',
+    description: 'Add PathFollow2D/3D under a Path node with progress/loop options.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path_node: { type: 'string' },
+        parent_path: { type: 'string' },
+        progress_ratio: { type: 'number' },
+        loop: { type: 'boolean' },
+        rotation_mode: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'set_hinge_joint_limits',
+    description: 'Configure HingeJoint3D angular limits (degrees by default).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        limit_enabled: { type: 'boolean' },
+        limit_upper: { type: 'number' },
+        limit_lower: { type: 'number' },
+        motor_enabled: { type: 'boolean' },
+        radians: { type: 'boolean' },
+      },
+      required: ['node_path'],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

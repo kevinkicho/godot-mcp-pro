@@ -1,6 +1,6 @@
 # Godot SDK / docs → MCP structural expansion
 
-**As of:** v1.49 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
+**As of:** v1.50 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage`
 
 ## What we audited
 
@@ -22,6 +22,13 @@ Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html
 | **Visibility / streaming structure** | Perf culling | structure_3d_*, scene_stream_* | **expanded 1.49** |
 | **Animation graphs** | Character motion | animation_tree_* graph recipes | strong |
 | **Best practices checks** | Hygiene before ship | best_practices_* | **new 1.49** |
+| **i18n CSV + scene extract** | Localization pipeline | i18n_csv_* | **expanded 1.50** |
+| **TileSet terrain peering** | 2D auto-tile structure | tileset_terrain_depth_* | **expanded 1.50** |
+| **Import option schemas** | Asset pipeline discovery | import_schema_* | **new 1.50** |
+| **PathFollow** | Dolly / platforms | path_follow_* | **new 1.50** |
+| **AudioStreamGenerator** | Procedural audio | audio_generator_* | **new 1.50** |
+| **Display/window** | Platform window settings | display_window_* | **new 1.50** |
+| **Joint limits** | Physics constraints | joint_limit_* | **new 1.50** |
 | **ClassDB long tail** | Anything else | describe_class, execute_editor_script, call_editor | strong (lookup) |
 
 ## Docs areas still intentionally partial

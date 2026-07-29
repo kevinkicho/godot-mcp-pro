@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
-Generated: 2026-07-28  
-Plugin version: **1.49.0**  
+Generated: 2026-07-29  
+Plugin version: **1.50.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 991
-- **Command modules:** 102
+- **Registered plugin commands:** 1027
+- **Command modules:** 109
 
 ## Commands by module
 
@@ -192,6 +192,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_bus_volume_db`
 - `remove_audio_bus_effect`
 
+### audio_generator_commands (4)
+
+- `setup_audio_stream_generator`
+- `create_tone_generator_script`
+- `create_audio_bus_layout_preset`
+- `list_audio_generator_tools`
+
 ### batch_commands (7)
 
 - `find_nodes_by_type`
@@ -366,6 +373,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_cutscene_player_script`
 - `list_dialogue_recipes`
 
+### display_window_commands (5)
+
+- `get_display_info`
+- `set_window_project_settings`
+- `set_window_mode_live`
+- `list_screens`
+- `list_display_window_tools`
+
 ### editor_commands (19)
 
 - `get_editor_errors`
@@ -511,6 +526,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `extract_translatable_strings`
 - `export_pot_template`
 
+### i18n_csv_commands (5)
+
+- `extract_strings_from_open_scene`
+- `export_translation_csv`
+- `import_translation_csv`
+- `wrap_script_strings_with_tr`
+- `list_i18n_csv_tools`
+
 ### import_3d_commands (11)
 
 - `list_imported_scene_contents`
@@ -542,6 +565,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `ensure_imported`
 - `import_paths`
 - `stage_files_into_res`
+
+### import_schema_commands (5)
+
+- `list_import_option_schema`
+- `list_import_types`
+- `apply_import_schema_preset`
+- `get_import_options_for_path`
+- `list_import_schema_tools`
 
 ### input_commands (5)
 
@@ -578,6 +609,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `user_read_text`
 - `user_write_text`
 - `user_delete_path`
+
+### joint_limit_commands (6)
+
+- `set_pin_joint_params`
+- `set_hinge_joint_limits`
+- `set_slider_joint_limits`
+- `set_generic_6dof_joint_limits`
+- `get_joint_info`
+- `list_joint_limit_tools`
 
 ### joypad_commands (7)
 
@@ -794,6 +834,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_cpu_particles`
 - `restart_particles`
 - `list_particle_depth_tools`
+
+### path_follow_commands (5)
+
+- `setup_path_follow`
+- `path_follow_set_progress`
+- `path_follow_get_info`
+- `path_follow_set_loop`
+- `list_path_follow_tools`
 
 ### physics_commands (18)
 
@@ -1215,6 +1263,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tileset_set_tile_probability`
 - `tileset_set_atlas_margins`
 - `tileset_create_alternative_tile`
+
+### tileset_terrain_depth_commands (6)
+
+- `tileset_set_terrain_peering`
+- `tileset_set_tiles_terrain_batch`
+- `tileset_list_terrain_peering`
+- `tilemap_fill_terrain_rect`
+- `tilemap_paint_terrain_cells`
+- `list_tileset_terrain_depth_tools`
 
 ### tween_commands (3)
 

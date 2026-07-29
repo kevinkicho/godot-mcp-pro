@@ -4,6 +4,30 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.50.0 — 2026-07-28
+
+**Agent surface expansion** — i18n CSV/open-scene, TileSet terrain depth, import schemas, PathFollow, audio generator, display/window, joint limits.
+
+### i18n
+- `extract_strings_from_open_scene`, `export_translation_csv`, `import_translation_csv`
+- `wrap_script_strings_with_tr` (dry_run by default)
+
+### TileSet / TileMap terrain
+- `tileset_set_terrain_peering`, `tileset_set_tiles_terrain_batch`, `tileset_list_terrain_peering`
+- `tilemap_fill_terrain_rect`, `tilemap_paint_terrain_cells`
+
+### Import schemas
+- `list_import_types`, `list_import_option_schema`, `get_import_options_for_path`
+- `apply_import_schema_preset` (texture/scene_3d/audio presets)
+
+### PathFollow / audio / display / joints
+- `setup_path_follow`, `path_follow_set_progress`, `path_follow_get_info`
+- `setup_audio_stream_generator`, `create_tone_generator_script`, `create_audio_bus_layout_preset`
+- `get_display_info`, `set_window_project_settings`, `set_window_mode_live`, `list_screens`
+- `set_hinge_joint_limits`, `set_slider_joint_limits`, `set_generic_6dof_joint_limits`, `set_pin_joint_params`, `get_joint_info`
+
+---
+
 ## v1.49.0 — 2026-07-28
 
 **SDK structure expansion** — particles depth, interaction zones, export signing, HTTP/encrypted IO, physics debug, 3D structure nodes, best-practices checks. Docs audit: `docs/SDK_STRUCTURE_EXPANSION.md`.

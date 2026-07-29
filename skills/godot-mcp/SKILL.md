@@ -86,6 +86,14 @@ Prefer composed pipelines for multi-step human docks:
 - Hygiene: **`analyze_project_best_practices`**  
 - Map: `docs/SDK_STRUCTURE_EXPANSION.md`
 
+## v1.50+ surface growth
+
+- i18n: `extract_strings_from_open_scene`, `export_translation_csv`, `import_translation_csv`  
+- Terrain tiles: `tileset_set_terrain_peering`, `tilemap_fill_terrain_rect`  
+- Import: `list_import_option_schema`, `apply_import_schema_preset`  
+- PathFollow / AudioStreamGenerator / DisplayServer window tools  
+- Joint limits: hinge / slider / 6DOF / pin
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:
