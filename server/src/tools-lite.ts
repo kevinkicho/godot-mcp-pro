@@ -4184,6 +4184,88 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  // ── v1.58 ──
+  {
+    name: 'setup_astar_grid_controller',
+    description: 'AStarGrid2D controller node for tile/grid pathfinding',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        region: { type: 'object' },
+        cell_size: {},
+        script_path: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_standard_material_3d',
+    description: 'Create StandardMaterial3D .tres (albedo, metallic, roughness, emission, …)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        albedo_color: {},
+        metallic: { type: 'number' },
+        roughness: { type: 'number' },
+        albedo_texture: { type: 'string' },
+        overwrite: { type: 'boolean' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'assign_material_3d_to_mesh',
+    description: 'Assign material resource to MeshInstance3D (override or surface)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        material_path: { type: 'string' },
+        surface: { type: 'number' },
+        as_override: { type: 'boolean' },
+      },
+      required: ['node_path', 'material_path'],
+    },
+  },
+  {
+    name: 'create_label_settings',
+    description: 'Create LabelSettings resource (font size/color/outline/shadow)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        font_size: { type: 'number' },
+        font_color: {},
+        font_path: { type: 'string' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'get_agent_environment_report',
+    description: 'One-shot engine/OS/project/scene dump for agent session diagnostics',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'pipeline_pre_ship_check',
+    description: 'Best practices + audit + export ready + optional playtest before ship',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        playtest: { type: 'boolean' },
+        validate_scenes: { type: 'boolean' },
+        platform: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'list_docs_coverage',
+    description: 'Honest docs-area coverage map + depth score (not 100% ClassDB)',
+    inputSchema: emptyProps,
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */

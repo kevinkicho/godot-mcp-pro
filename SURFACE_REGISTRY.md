@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.57.0**  
+Plugin version: **1.58.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1294
-- **Command modules:** 156
+- **Registered plugin commands:** 1320
+- **Command modules:** 161
 
 ## Commands by module
 
@@ -25,7 +25,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `batch_editor_calls`
 - `agent_headless_status`
 
-### agent_pipeline_commands (8)
+### agent_pipeline_commands (9)
 
 - `list_agent_pipelines`
 - `pipeline_prepare_level_lighting`
@@ -35,6 +35,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `pipeline_greybox_to_playable`
 - `pipeline_2d_pixel_game`
 - `pipeline_2d_tilemap_level`
+- `pipeline_pre_ship_check`
 
 ### ai_system_commands (8)
 
@@ -175,6 +176,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `export_animation_tree_graph`
 - `list_animation_tree_graph_tools`
 - `root`
+
+### astar_pathfinding_commands (4)
+
+- `create_astar_grid_2d_script`
+- `create_astar_point_graph_script`
+- `setup_astar_grid_controller`
+- `list_astar_pathfinding_tools`
 
 ### async_resource_commands (5)
 
@@ -507,6 +515,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `duplicate_scene_file`
 - `list_editor_workspace_tools`
 
+### engine_runtime_info_commands (6)
+
+- `get_engine_info`
+- `get_os_info`
+- `get_time_info`
+- `get_project_feature_tags`
+- `get_agent_environment_report`
+- `list_engine_runtime_info_tools`
+
 ### export_commands (16)
 
 - `list_export_presets`
@@ -550,6 +567,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `res_list_dir`
 - `res_read_text`
 - `res_write_text`
+
+### font_label_settings_commands (5)
+
+- `create_font_file_resource`
+- `create_label_settings`
+- `assign_label_settings`
+- `set_label_font_size`
+- `list_font_label_tools`
 
 ### game_ui_system_commands (8)
 
@@ -799,6 +824,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_label`
 - `setup_button`
 - `setup_texture_rect`
+
+### material_3d_depth_commands (5)
+
+- `create_standard_material_3d`
+- `create_orm_material_3d`
+- `set_standard_material_params`
+- `assign_material_3d_to_mesh`
+- `list_material_3d_depth_tools`
 
 ### media_commands (6)
 
@@ -1151,6 +1184,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_resource_preview`
 - `create_custom_resource_script`
 - `duplicate_resource`
+
+### resource_format_commands (5)
+
+- `save_resource_as`
+- `convert_resource_format`
+- `duplicate_resource_to`
+- `get_resource_info`
+- `list_resource_format_tools`
 
 ### resource_graph_commands (6)
 

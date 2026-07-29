@@ -14,6 +14,7 @@ func get_commands() -> Dictionary:
 		"pipeline_greybox_to_playable": _pipeline_greybox_to_playable,
 		"pipeline_2d_pixel_game": _pipeline_2d_pixel_game,
 		"pipeline_2d_tilemap_level": _pipeline_2d_tilemap_level,
+		"pipeline_pre_ship_check": _pipeline_pre_ship_check,
 	}
 
 
@@ -27,6 +28,7 @@ func _list_pipelines(_params: Dictionary) -> Dictionary:
 			"pipeline_greybox_to_playable": "Greybox room → collision → nav → playtest",
 			"pipeline_2d_pixel_game": "Pixel preset + scaffold + input + optional main scene shell",
 			"pipeline_2d_tilemap_level": "TileSet + multi TileMapLayer stack + optional camera",
+			"pipeline_pre_ship_check": "Best practices + scene audit + export ready + optional playtest",
 		},
 		"hint": "Prefer pipelines for multi-dock human workflows; use atomic tools for fine control",
 	})
@@ -318,4 +320,33 @@ func _pipeline_2d_tilemap_level(params: Dictionary) -> Dictionary:
 		"tileset_path": tileset_path,
 		"steps": steps,
 		"next": ["tilemap_paint_cells", "tileset_add_scene_tile", "setup_navigation_region mode=2d"],
+	})
+
+
+func _pipeline_pre_ship_check(params: Dictionary) -> Dictionary:
+	## Hygiene + export readiness before ship.
+	var steps: Array = []
+	steps.append({"best_practices": await _exec("analyze_project_best_practices", {})})
+	steps.append({"audit": await _exec("audit_scene_tree", {
+		"node_path": optional_string(params, "node_path", "."),
+	})})
+	if optional_bool(params, "validate_scenes", true):
+		steps.append({"validate_scenes": await _exec("validate_all_scenes", {
+			"max": optional_int(params, "max_scenes", 50),
+		})})
+	steps.append({"export_ready": await _exec("verify_export_ready", {})})
+	if optional_bool(params, "signing_checklist", true):
+		steps.append({"signing": await _exec("get_export_signing_checklist", {
+			"platform": optional_string(params, "platform", "android"),
+		})})
+	if optional_bool(params, "playtest", false):
+		steps.append({"playtest": await _exec("playtest_report", {
+			"mode": optional_string(params, "play_mode", "main"),
+			"settle_sec": float(params.get("settle_sec", 1.0)),
+			"screenshot": true,
+		})})
+	return success({
+		"pipeline": "pre_ship_check",
+		"steps": steps,
+		"next": ["run_export", "get_export_signing_checklist", "analyze_performance_budget"],
 	})

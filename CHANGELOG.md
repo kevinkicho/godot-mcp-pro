@@ -4,6 +4,32 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.58.0 — 2026-07-29
+
+**Coverage scorecard + pathfinding/materials/fonts/engine info/resource format + pre-ship pipeline.**
+
+### Pathfinding
+- `create_astar_grid_2d_script`, `create_astar_point_graph_script`, `setup_astar_grid_controller`
+
+### Materials 3D
+- `create_standard_material_3d`, `create_orm_material_3d`, `set_standard_material_params`, `assign_material_3d_to_mesh`
+
+### Fonts / LabelSettings
+- `create_font_file_resource`, `create_label_settings`, `assign_label_settings`, `set_label_font_size`
+
+### Engine / OS diagnostics
+- `get_engine_info`, `get_os_info`, `get_time_info`, `get_project_feature_tags`, `get_agent_environment_report`
+
+### Resource format
+- `save_resource_as`, `convert_resource_format`, `duplicate_resource_to`, `get_resource_info`
+
+### Pipelines / docs
+- `pipeline_pre_ship_check`
+- **docs/COVERAGE_SCORECARD.md** — honest % estimates per surface
+- Discovery domains: `pathfinding`, `materials`
+
+---
+
 ## v1.57.0 — 2026-07-29
 
 **Structural expansion** — shape resources, canvas `_draw` recipes, SubViewport render targets, scene-instance depth, TileMapLayer stacks, audio polyphony, 2D pipelines, FABRIK 2D IK.

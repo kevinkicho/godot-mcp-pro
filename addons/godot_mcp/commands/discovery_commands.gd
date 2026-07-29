@@ -164,6 +164,16 @@ func _domains() -> Dictionary:
 			"examples": ["setup_subviewport_2d_world", "setup_viewport_texture_rect", "setup_back_buffer_copy"],
 			"workflow": "setup_subviewport_2d_world → setup_viewport_texture_rect on HUD",
 		},
+		"pathfinding": {
+			"description": "AStarGrid2D / AStar2D/3D point graphs (grid games)",
+			"examples": ["setup_astar_grid_controller", "create_astar_grid_2d_script", "create_astar_point_graph_script"],
+			"workflow": "setup_astar_grid_controller → set_solid from tiles → find_path_world",
+		},
+		"materials": {
+			"description": "StandardMaterial3D / ORM PBR authoring",
+			"examples": ["create_standard_material_3d", "set_standard_material_params", "assign_material_3d_to_mesh"],
+			"workflow": "create_standard_material_3d → assign_material_3d_to_mesh",
+		},
 	}
 
 

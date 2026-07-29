@@ -158,6 +158,16 @@ Full agent path for production 2D games (pixel + skeletal + tiles + mesh):
 - **Pipelines:** **`pipeline_2d_pixel_game`**, **`pipeline_2d_tilemap_level`**
 - **FABRIK 2D:** `setup_fabrik_ik_2d` when available
 
+## v1.58+ — pathfinding, PBR materials, fonts, diagnostics
+
+- **AStar:** `setup_astar_grid_controller` / grid + point-graph scripts (tile/grid games)
+- **PBR:** `create_standard_material_3d` / `assign_material_3d_to_mesh`
+- **UI type:** `create_label_settings` / `create_font_file_resource` / `set_label_font_size`
+- **Env dump:** `get_agent_environment_report` (engine/OS/project/scene)
+- **Resources:** `save_resource_as` / `convert_resource_format` (.tres↔.res)
+- **Ship gate:** **`pipeline_pre_ship_check`**
+- **Coverage %:** see `docs/COVERAGE_SCORECARD.md` · live `list_docs_coverage`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

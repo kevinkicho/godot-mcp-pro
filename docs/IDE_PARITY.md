@@ -28,6 +28,11 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Scene instances | `instance_packed_scene` / `set_editable_instance` / make local |
 | TileMapLayer stacks | `setup_tilemap_layer_stack` |
 | 2D pipelines | `pipeline_2d_pixel_game` / `pipeline_2d_tilemap_level` |
+| AStar grid pathfinding | `setup_astar_grid_controller` / AStar2D·3D scripts |
+| PBR materials | `create_standard_material_3d` / `assign_material_3d_to_mesh` |
+| LabelSettings / fonts | `create_label_settings` / `create_font_file_resource` |
+| Pre-ship gate | `pipeline_pre_ship_check` |
+| Coverage % | [COVERAGE_SCORECARD.md](COVERAGE_SCORECARD.md) |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |
