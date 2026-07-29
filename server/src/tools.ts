@@ -35,7 +35,7 @@ export const CLI_TOOLS: ToolDef[] = [
   {
     name: 'runtime_call',
     description:
-      'Call a game runtime inspector command over TCP (standalone). Prefer editor tools when connected. Example command: get_scene_tree, get_run_status, find_nodes.',
+      'Call a game runtime inspector command over TCP (standalone). Retries on queue_full. Optional token= or MCP_RUNTIME_TOKEN.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -43,10 +43,29 @@ export const CLI_TOOLS: ToolDef[] = [
         params: { type: 'object' },
         port: { type: 'number' },
         timeout_ms: { type: 'number' },
-        force_direct: { type: 'boolean', description: 'Skip editor even if connected' },
+        token: { type: 'string', description: 'Runtime auth token if set_runtime_token / MCP_RUNTIME_TOKEN' },
+        retries: { type: 'number' },
       },
       required: ['command'],
     },
+  },
+  {
+    name: 'set_runtime_token',
+    description:
+      'Set or clear project mcp/runtime_token for runtime TCP auth. Also set MCP_RUNTIME_TOKEN env for the MCP server process.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        token: { type: 'string' },
+        clear: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'get_runtime_info',
+    description: 'Runtime TCP status: port, queue depth, clients, auth_required.',
+    inputSchema: emptyProps,
   },
   {
     name: 'web_serve_export',

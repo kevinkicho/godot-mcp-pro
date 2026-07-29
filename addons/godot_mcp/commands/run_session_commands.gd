@@ -20,6 +20,8 @@ func get_commands() -> Dictionary:
 		"run_probe_report": _run_probe_report,
 		"run_ping_runtime": _run_ping_runtime,
 		"ensure_runtime_autoloads": _ensure_runtime_autoloads,
+		"set_runtime_token": _set_runtime_token,
+		"get_runtime_info": _get_runtime_info,
 	}
 
 
@@ -148,6 +150,51 @@ func _run_session_status(_params: Dictionary) -> Dictionary:
 
 func _run_ping_runtime(_params: Dictionary) -> Dictionary:
 	return await send_game_command("ping_runtime", {}, 3.0)
+
+
+func _set_runtime_token(params: Dictionary) -> Dictionary:
+	## Set optional shared secret for runtime TCP (also set MCP_RUNTIME_TOKEN in env for agents).
+	var token: String = optional_string(params, "token", "")
+	var clear: bool = optional_bool(params, "clear", false)
+	if clear or token.is_empty():
+		if ProjectSettings.has_setting("mcp/runtime_token"):
+			ProjectSettings.set_setting("mcp/runtime_token", null)
+		ProjectSettings.save()
+		return success({
+			"auth_required": false,
+			"message": "Runtime token cleared — TCP open on localhost only",
+			"env": "MCP_RUNTIME_TOKEN",
+		})
+	ProjectSettings.set_setting("mcp/runtime_token", token)
+	ProjectSettings.save()
+	return success({
+		"auth_required": true,
+		"message": "Runtime token saved to project settings mcp/runtime_token",
+		"env": "MCP_RUNTIME_TOKEN — set same value for MCP server / editor process",
+		"hint": "Game must restart Play session to re-read token; pass token= on each TCP request",
+	})
+
+
+func _get_runtime_info(_params: Dictionary) -> Dictionary:
+	var res := await send_game_command("get_runtime_info", {}, 3.0)
+	if res.has("error"):
+		# Offline metadata from disk
+		var meta_path := get_game_user_dir() + "/mcp_runtime_meta.json"
+		var meta := {}
+		if FileAccess.file_exists(meta_path):
+			var f := FileAccess.open(meta_path, FileAccess.READ)
+			if f:
+				var p = JSON.parse_string(f.get_as_text())
+				f.close()
+				if p is Dictionary:
+					meta = p
+		return success({
+			"reachable": false,
+			"auth_required": ProjectSettings.has_setting("mcp/runtime_token") and str(ProjectSettings.get_setting("mcp/runtime_token", "")) != "",
+			"meta_file": meta,
+			"error": res.get("error", res),
+		})
+	return success({"reachable": true, "info": res.get("result", res)})
 
 
 func _ensure_runtime_autoloads(params: Dictionary) -> Dictionary:

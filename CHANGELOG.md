@@ -4,6 +4,29 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.35.0 — 2026-07-28
+
+**Runtime TCP hardening + Playwright video path fix.**
+
+### Multi-client queue
+- Serialize TCP command dispatch with a request queue (max 48)
+- Cap concurrent sockets (max 8); reject with `max_clients` / `queue_full`
+- Drain queue after each response; clients get `queue_depth` on replies
+- Editor/server retry on `queue_full`
+
+### Optional runtime auth
+- `MCP_RUNTIME_TOKEN` env or project setting `mcp/runtime_token`
+- Requests pass `token` field; unauthorized → `auth_required`
+- `set_runtime_token` / `get_runtime_info` / `ping` reports `auth_required`
+- Still bind **127.0.0.1 only**; meta in `user://mcp_runtime_meta.json`
+
+### Playwright web probe
+- Correct `page.video().path()` after `page.close()` then `context.close()`
+- Fallback: newest `.webm`/`.mp4` in record dir
+- Separate `page_errors` vs console errors
+
+---
+
 ## v1.34.0 — 2026-07-28
 
 **Runtime TCP transport + standalone attach + optional Playwright web probe.**

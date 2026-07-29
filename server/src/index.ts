@@ -37,7 +37,7 @@ import {
 const DEBUG = process.env.DEBUG === 'true';
 const PREFERRED_PORT = parseInt(process.env.GODOT_MCP_PORT || '6505', 10);
 const LITE = parseLiteMode(process.argv);
-const SERVER_VERSION = '1.34.0';
+const SERVER_VERSION = '1.35.0';
 
 function log(msg: string): void {
   if (DEBUG) console.error(`[SERVER] ${msg}`);
@@ -274,11 +274,13 @@ class GodotMcpProServer {
         const command = pick(args, 'command', 'method');
         if (!command) return textResult('command is required', true);
         const params = (args.params as Record<string, unknown>) ?? {};
-        // Always TCP to game inspector (editor Play or standalone). Editor WS is not needed.
         const port = typeof args.port === 'number' ? args.port : undefined;
+        const token = pick(args, 'token') || process.env.MCP_RUNTIME_TOKEN || undefined;
         const r = await callGameRuntime(command, params, {
           timeoutMs: typeof args.timeout_ms === 'number' ? args.timeout_ms : 8000,
           port,
+          token,
+          retries: typeof args.retries === 'number' ? args.retries : 4,
         });
         return r.ok ? jsonResult({ ...r, transport: 'tcp' }) : jsonResult(r, true);
       }

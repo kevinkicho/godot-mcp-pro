@@ -4,9 +4,8 @@
  */
 
 import { createServer, type Server } from 'http';
-import { readFileSync, existsSync, statSync } from 'fs';
+import { readFileSync, existsSync, statSync, readdirSync, mkdirSync } from 'fs';
 import { join, extname } from 'path';
-import { pathToFileURL } from 'url';
 
 const MIME: Record<string, string> = {
   '.html': 'text/html',
@@ -25,8 +24,11 @@ export type WebProbeResult = {
   url?: string;
   screenshot_path?: string;
   video_path?: string;
+  video_paths?: string[];
   console_errors?: string[];
+  page_errors?: string[];
   title?: string;
+  wait_ms?: number;
   error?: string;
   hint?: string;
 };
@@ -83,15 +85,25 @@ export async function webServeExport(
 }
 
 async function loadPlaywright(): Promise<{
-  chromium: { launch: (opts?: object) => Promise<BrowserLike> };
+  chromium: {
+    launch: (opts?: object) => Promise<{
+      newContext: (opts?: object) => Promise<ContextLike>;
+      newPage: (opts?: object) => Promise<PageLike>;
+      close: () => Promise<void>;
+    }>;
+  };
 } | null> {
-  // Optional peer dependency — avoid static module resolution in tsc
   const tryImport = async (name: string) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-implied-eval
       const dyn = new Function('m', 'return import(m)') as (m: string) => Promise<unknown>;
       return (await dyn(name)) as {
-        chromium: { launch: (opts?: object) => Promise<BrowserLike> };
+        chromium: {
+          launch: (opts?: object) => Promise<{
+            newContext: (opts?: object) => Promise<ContextLike>;
+            newPage: (opts?: object) => Promise<PageLike>;
+            close: () => Promise<void>;
+          }>;
+        };
       };
     } catch {
       return null;
@@ -100,19 +112,36 @@ async function loadPlaywright(): Promise<{
   return (await tryImport('playwright')) ?? (await tryImport('playwright-core'));
 }
 
-type BrowserLike = {
-  newPage: (opts?: object) => Promise<PageLike>;
-  close: () => Promise<void>;
+type VideoLike = {
+  path: () => Promise<string>;
 };
 
 type PageLike = {
   goto: (url: string, opts?: object) => Promise<unknown>;
   title: () => Promise<string>;
   screenshot: (opts?: object) => Promise<Buffer>;
-  on: (ev: string, fn: (msg: { type: () => string; text: () => string }) => void) => void;
-  video: () => { path: () => Promise<string> } | null;
+  on: (ev: string, fn: (...args: unknown[]) => void) => void;
+  video: () => VideoLike | null;
   close: () => Promise<void>;
 };
+
+type ContextLike = {
+  newPage: () => Promise<PageLike>;
+  close: () => Promise<void>;
+};
+
+function newestMediaInDir(dir: string): string[] {
+  if (!existsSync(dir)) return [];
+  const files = readdirSync(dir)
+    .filter((f) => /\.(webm|mp4)$/i.test(f))
+    .map((f) => {
+      const p = join(dir, f);
+      return { p, mtime: statSync(p).mtimeMs };
+    })
+    .sort((a, b) => b.mtime - a.mtime)
+    .map((x) => x.p);
+  return files;
+}
 
 export async function webPlaywrightProbe(args: {
   url?: string;
@@ -145,31 +174,37 @@ export async function webPlaywrightProbe(args: {
 
   const waitMs = args.wait_ms ?? 3000;
   const console_errors: string[] = [];
-  let browser: BrowserLike | null = null;
+  const page_errors: string[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let browser: any = null;
 
   try {
     browser = await pw.chromium.launch({ headless: true });
-    const contextOpts: Record<string, unknown> = {};
-    if (args.record_video_dir) {
-      contextOpts.recordVideo = { dir: args.record_video_dir, size: { width: 1280, height: 720 } };
-    }
-    // chromium.launch returns Browser; newContext for video
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const browserAny = browser as any;
-    const context = contextOpts.recordVideo
-      ? await browserAny.newContext(contextOpts)
-      : null;
-    const page: PageLike = context
-      ? await context.newPage()
-      : await browser.newPage();
 
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') console_errors.push(msg.text());
+    const wantVideo = Boolean(args.record_video_dir);
+    if (wantVideo && args.record_video_dir) {
+      mkdirSync(args.record_video_dir, { recursive: true });
+    }
+
+    const context: ContextLike = await browser.newContext(
+      wantVideo
+        ? {
+            recordVideo: {
+              dir: args.record_video_dir,
+              size: { width: 1280, height: 720 },
+            },
+          }
+        : {},
+    );
+    const page = await context.newPage();
+
+    page.on('console', (...a: unknown[]) => {
+      const msg = a[0] as { type?: () => string; text?: () => string };
+      if (msg?.type?.() === 'error') console_errors.push(msg.text?.() ?? '');
     });
-    // pageerror is available on Playwright Page; type loosely
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (page as any).on('pageerror', (err: Error | string) => {
-      console_errors.push(typeof err === 'string' ? err : err?.message ?? String(err));
+    page.on('pageerror', (...a: unknown[]) => {
+      const err = a[0];
+      page_errors.push(err instanceof Error ? err.message : String(err));
     });
 
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -181,17 +216,29 @@ export async function webPlaywrightProbe(args: {
       await page.screenshot({ path: screenshot_path, fullPage: false });
     }
 
+    // Video path is only finalized after page.close(); then context.close().
     let video_path: string | undefined;
-    if (context) {
-      await page.close();
-      await context.close();
-      // video path assigned after close — best effort from record dir
-      video_path = args.record_video_dir;
-    } else {
-      await page.close();
+    const video = page.video?.() ?? null;
+    await page.close();
+    if (video) {
+      try {
+        video_path = await video.path();
+      } catch {
+        video_path = undefined;
+      }
     }
+    await context.close();
     await browser.close();
     browser = null;
+
+    // Fallback: newest file in record dir
+    let video_paths: string[] | undefined;
+    if (args.record_video_dir) {
+      video_paths = newestMediaInDir(args.record_video_dir);
+      if (!video_path && video_paths.length > 0) {
+        video_path = video_paths[0];
+      }
+    }
 
     return {
       ok: true,
@@ -199,7 +246,10 @@ export async function webPlaywrightProbe(args: {
       title,
       screenshot_path,
       video_path,
+      video_paths,
       console_errors,
+      page_errors,
+      wait_ms: waitMs,
       hint: 'Web export only. For native Godot use run_session_* / runtime TCP.',
     };
   } catch (e) {
@@ -214,10 +264,8 @@ export async function webPlaywrightProbe(args: {
       ok: false,
       error: e instanceof Error ? e.message : String(e),
       console_errors,
+      page_errors,
       url,
     };
   }
 }
-
-// silence unused import in some bundlers
-void pathToFileURL;

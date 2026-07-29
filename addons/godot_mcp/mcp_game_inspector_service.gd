@@ -85,6 +85,12 @@ var _tcp_clients: Array = []  # Array of StreamPeerTCP
 var _pending_tcp: StreamPeerTCP = null
 var _pending_tcp_id: int = 0
 var _tcp_buffers: Dictionary = {}  # instance_id -> String partial line
+# Multi-client queue — serialize dispatch so concurrent agents don't race
+var _tcp_queue: Array = []  # Array of {peer, id, command, params}
+var _dispatch_busy: bool = false
+const MAX_TCP_CLIENTS := 8
+const MAX_TCP_QUEUE := 48
+const RUNTIME_META_FILE := "user://mcp_runtime_meta.json"
 
 
 func _ready() -> void:
@@ -96,24 +102,66 @@ func _exit_tree() -> void:
 	_stop_runtime_tcp()
 
 
+func _expected_runtime_token() -> String:
+	## Optional shared secret. Empty = open on localhost only (default).
+	var t := OS.get_environment("MCP_RUNTIME_TOKEN")
+	if t.is_empty() and ProjectSettings.has_setting("mcp/runtime_token"):
+		t = str(ProjectSettings.get_setting("mcp/runtime_token", ""))
+	return t
+
+
+func _auth_required() -> bool:
+	return not _expected_runtime_token().is_empty()
+
+
+func _request_authorized(parsed: Dictionary) -> bool:
+	var expected := _expected_runtime_token()
+	if expected.is_empty():
+		return true
+	var got := str(parsed.get("token", parsed.get("auth", "")))
+	if got.is_empty() and parsed.get("params") is Dictionary:
+		got = str(parsed["params"].get("token", parsed["params"].get("auth", "")))
+	return got == expected
+
+
+func _write_runtime_meta() -> void:
+	var meta := {
+		"port": _tcp_port,
+		"host": "127.0.0.1",
+		"auth_required": _auth_required(),
+		"max_clients": MAX_TCP_CLIENTS,
+		"max_queue": MAX_TCP_QUEUE,
+		"protocol": "json_lines_v1",
+	}
+	var f := FileAccess.open(RUNTIME_META_FILE, FileAccess.WRITE)
+	if f:
+		f.store_string(JSON.stringify(meta))
+		f.close()
+	var pf := FileAccess.open(RUNTIME_PORT_FILE, FileAccess.WRITE)
+	if pf:
+		pf.store_string(str(_tcp_port))
+		pf.close()
+
+
 func _start_runtime_tcp() -> void:
 	## Always listen so editor Play AND standalone CLI/export can attach.
+	## Bind 127.0.0.1 only — never expose on 0.0.0.0.
 	_tcp = TCPServer.new()
 	for port in range(RUNTIME_PORT_START, RUNTIME_PORT_END + 1):
 		var err := _tcp.listen(port, "127.0.0.1")
 		if err == OK:
 			_tcp_port = port
-			var f := FileAccess.open(RUNTIME_PORT_FILE, FileAccess.WRITE)
-			if f:
-				f.store_string(str(port))
-				f.close()
-			print("[MCP] Runtime probe TCP listening on 127.0.0.1:%d" % port)
+			_write_runtime_meta()
+			var auth_note := " auth=on" if _auth_required() else " auth=off"
+			print("[MCP] Runtime probe TCP 127.0.0.1:%d (queue=%d%s)" % [port, MAX_TCP_QUEUE, auth_note])
 			return
 	_tcp = null
 	push_warning("[MCP] Runtime TCP ports %d-%d busy — file IPC only" % [RUNTIME_PORT_START, RUNTIME_PORT_END])
 
 
 func _stop_runtime_tcp() -> void:
+	_tcp_queue.clear()
+	_dispatch_busy = false
 	for c in _tcp_clients:
 		if c is StreamPeerTCP:
 			(c as StreamPeerTCP).disconnect_from_host()
@@ -128,7 +176,14 @@ func _stop_runtime_tcp() -> void:
 func _poll_runtime_tcp() -> void:
 	if _tcp == null:
 		return
-	if _tcp.is_connection_available():
+	# Accept new clients (cap concurrent sockets)
+	while _tcp.is_connection_available():
+		if _tcp_clients.size() >= MAX_TCP_CLIENTS:
+			var reject: StreamPeerTCP = _tcp.take_connection()
+			if reject:
+				_tcp_send(reject, {"id": 0, "ok": false, "error": "too many clients", "code": "max_clients"})
+				reject.disconnect_from_host()
+			break
 		var peer: StreamPeerTCP = _tcp.take_connection()
 		if peer:
 			_tcp_clients.append(peer)
@@ -147,7 +202,10 @@ func _poll_runtime_tcp() -> void:
 		var avail := p.get_available_bytes()
 		if avail <= 0:
 			continue
-		var chunk: PackedByteArray = p.get_data(avail)[1]
+		var got: Array = p.get_data(avail)
+		if got.size() < 2 or got[0] != OK:
+			continue
+		var chunk: PackedByteArray = got[1]
 		var id := p.get_instance_id()
 		var buf: String = str(_tcp_buffers.get(id, "")) + chunk.get_string_from_utf8()
 		while true:
@@ -160,24 +218,85 @@ func _poll_runtime_tcp() -> void:
 				_handle_tcp_line(p, line)
 		_tcp_buffers[id] = buf
 	for d in dead:
-		_tcp_clients.erase(d)
-		_tcp_buffers.erase(d.get_instance_id())
+		_drop_tcp_client(d)
+	# If idle, pull next queued request
+	if not _dispatch_busy and not _pending_command:
+		_drain_tcp_queue()
+
+
+func _drop_tcp_client(p: StreamPeerTCP) -> void:
+	# Drop queued work for this peer
+	var kept: Array = []
+	for item in _tcp_queue:
+		if item is Dictionary and item.get("peer") == p:
+			continue
+		kept.append(item)
+	_tcp_queue = kept
+	_tcp_clients.erase(p)
+	_tcp_buffers.erase(p.get_instance_id())
+	if _pending_tcp == p:
+		_pending_tcp = null
 
 
 func _handle_tcp_line(peer: StreamPeerTCP, line: String) -> void:
 	var parsed = JSON.parse_string(line)
 	if parsed == null or not parsed is Dictionary:
-		_tcp_send(peer, {"id": 0, "ok": false, "error": "Invalid JSON"})
+		_tcp_send(peer, {"id": 0, "ok": false, "error": "Invalid JSON", "code": "bad_json"})
 		return
 	var req_id: int = int(parsed.get("id", 0))
+	if not _request_authorized(parsed):
+		_tcp_send(peer, {
+			"id": req_id,
+			"ok": false,
+			"error": "unauthorized — set MCP_RUNTIME_TOKEN or mcp/runtime_token and pass token= in request",
+			"code": "auth_required",
+			"auth_required": true,
+		})
+		return
 	var command: String = str(parsed.get("command", ""))
 	var params: Dictionary = parsed.get("params", {}) if parsed.get("params") is Dictionary else {}
 	if command.is_empty():
-		_tcp_send(peer, {"id": req_id, "ok": false, "error": "command required"})
+		_tcp_send(peer, {"id": req_id, "ok": false, "error": "command required", "code": "bad_request"})
 		return
+	# Serialize: queue if a command is in flight
+	if _dispatch_busy or _pending_command:
+		if _tcp_queue.size() >= MAX_TCP_QUEUE:
+			_tcp_send(peer, {
+				"id": req_id,
+				"ok": false,
+				"error": "runtime queue full (%d)" % MAX_TCP_QUEUE,
+				"code": "queue_full",
+				"queue_depth": _tcp_queue.size(),
+			})
+			return
+		_tcp_queue.append({
+			"peer": peer,
+			"id": req_id,
+			"command": command,
+			"params": params,
+			"enqueued_ms": Time.get_ticks_msec(),
+		})
+		return
+	_begin_tcp_dispatch(peer, req_id, command, params)
+
+
+func _begin_tcp_dispatch(peer: StreamPeerTCP, req_id: int, command: String, params: Dictionary) -> void:
+	_dispatch_busy = true
 	_pending_tcp = peer
 	_pending_tcp_id = req_id
 	_dispatch_command(command, params)
+
+
+func _drain_tcp_queue() -> void:
+	if _dispatch_busy or _pending_command:
+		return
+	while not _tcp_queue.is_empty():
+		var item: Dictionary = _tcp_queue.pop_front()
+		var peer: StreamPeerTCP = item.get("peer")
+		if peer == null or peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+			continue
+		_begin_tcp_dispatch(peer, int(item.get("id", 0)), str(item.get("command", "")), item.get("params", {}))
+		return
 
 
 func _tcp_send(peer: StreamPeerTCP, obj: Dictionary) -> void:
@@ -255,7 +374,7 @@ func _dispatch_command(command: String, params: Dictionary) -> void:
 		"log_run_event", "get_run_events", "get_run_logs", "get_run_status",
 		"get_performance_monitors", "get_node_properties", "get_scene_tree",
 		"find_nodes", "assert_node_state", "batch_get_properties", "get_autoload",
-		"stop_video_record", "ping_runtime",
+		"stop_video_record", "ping_runtime", "get_runtime_info",
 	]
 	var was_video := _state == State.VIDEO_RECORDING
 	var was_timeline := _state == State.CAPTURING_TIMELINE
@@ -271,8 +390,25 @@ func _dispatch_command(command: String, params: Dictionary) -> void:
 				"tcp_port": _tcp_port,
 				"state": _state_name(),
 				"transport": "tcp" if _pending_tcp else "file",
+				"auth_required": _auth_required(),
+				"queue_depth": _tcp_queue.size(),
+				"clients": _tcp_clients.size(),
+				"max_clients": MAX_TCP_CLIENTS,
+				"max_queue": MAX_TCP_QUEUE,
 			})
-			# fallthrough restore handled below — already wrote
+		"get_runtime_info":
+			_write_response({
+				"tcp_port": _tcp_port,
+				"host": "127.0.0.1",
+				"auth_required": _auth_required(),
+				"queue_depth": _tcp_queue.size(),
+				"clients": _tcp_clients.size(),
+				"max_clients": MAX_TCP_CLIENTS,
+				"max_queue": MAX_TCP_QUEUE,
+				"dispatch_busy": _dispatch_busy,
+				"state": _state_name(),
+				"protocol": "json_lines_v1",
+			})
 		"get_scene_tree":
 			_cmd_get_scene_tree(params)
 		"get_node_properties":
@@ -1815,16 +1951,22 @@ func _write_response(data: Dictionary) -> void:
 			envelope = {"id": _pending_tcp_id, "ok": false, "error": str(data["error"]), "data": data}
 		else:
 			envelope = {"id": _pending_tcp_id, "ok": true, "data": data}
+		envelope["queue_depth"] = _tcp_queue.size()
 		_tcp_send(_pending_tcp, envelope)
 		_pending_tcp = null
 		_pending_tcp_id = 0
+		_dispatch_busy = false
+		# Drain next queued TCP request (same frame if sync command)
+		_drain_tcp_queue()
 		return
 	# File IPC fallback
+	_dispatch_busy = false
 	var json := JSON.stringify(data)
 	var file := FileAccess.open(RESPONSE_PATH, FileAccess.WRITE)
 	if file:
 		file.store_string(json)
 		file.close()
+	_drain_tcp_queue()
 
 
 # ── assert_node_state ─────────────────────────────────────────────────────────
