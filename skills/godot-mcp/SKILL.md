@@ -202,6 +202,12 @@ Ship-loop depth for agents:
 - Saves: `capture_scene_state` → `write_save_slot_json` / `create_game_state_serializer_script`
 - Inventory: `create_item_resource` + `create_inventory_component_script`
 
+## v1.62+ — XR + VisualShader catalog + Export CI
+
+- **XR:** **`pipeline_xr_setup`** / `setup_xr_player_rig` / movement · grab · teleport · pickup
+- **VisualShader:** `list_visual_shader_node_catalog` · batch nodes · presets (toon, pulse, scroll UV, triplanar, fresnel outline)
+- **Export CI:** **`pipeline_export_ci`** — preset pack + GitHub Actions + headless `.ps1`/`.sh`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

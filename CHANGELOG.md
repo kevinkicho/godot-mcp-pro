@@ -4,6 +4,29 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.62.0 — 2026-07-29
+
+**All recommended remaining waves** — XR player rig depth, VisualShader node catalog + presets, export/CI templates.
+
+### XR
+- `setup_xr_player_rig` (origin + camera + controllers + movement/grab)
+- `create_xr_movement_script`, `create_xr_grabber_script`, `create_xr_teleport_script`
+- `setup_xr_pickup_area`, `list_xr_tools_catalog`
+- **`pipeline_xr_setup`**
+
+### VisualShader catalog
+- `list_visual_shader_node_catalog` (friendly map + ClassDB VisualShaderNode* list)
+- `visual_shader_add_nodes_batch` + connections
+- Presets: toon, emission_pulse, scroll_uv, triplanar scaffold, outline_fresnel
+
+### Export / CI
+- `create_github_actions_godot_export`, `create_export_presets_pack`
+- `create_headless_export_script` (.ps1 + .sh)
+- `write_export_ci_readme`, `list_export_ci_templates`
+- **`pipeline_export_ci`**
+
+---
+
 ## v1.61.0 — 2026-07-29
 
 **Recommended deep wave: multiplayer lobby + game loop shell + save state + inventory** — closes host→play and menu↔game↔save ship loops.

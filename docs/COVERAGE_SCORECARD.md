@@ -36,9 +36,9 @@
 | **Audio / music** | **~90%** | High | Typed bus effects (reverb/EQ/compressor…), polyphony, music |
 | **Multiplayer / net** | **~90%** | High | ENet + lobby ready-up + spawns + sync bulk + interest/WebRTC; no hosted MM |
 | **Rendering advanced** | **~88%** | Med | Env/Sky/Fog + GI/compositor/lightmap; vendor GPU captures N/A |
-| **Shaders / VFX** | **~82%** | Med | Text + VisualShader presets + particles; full VS node catalog N/A |
-| **XR** | **~80%** | Med | OpenXR maps + passthrough helpers; vendor AR kits partial |
-| **Export / ship** | **~88%** | Med | Pre-ship pipeline + presets/signing; iOS needs macOS |
+| **Shaders / VFX** | **~88%** | High | Text + VS catalog/presets/batch + particles; full GUI still editor |
+| **XR** | **~88%** | High | OpenXR + full player rig + locomotion/grab/teleport; vendor AR partial |
+| **Export / ship** | **~92%** | High | Presets + CI workflows + headless scripts + signing checklist |
 | **Platform (iOS/console)** | **~45%** | High | Intentionally limited (vendor SDKs) |
 | **Migration 3→4** | **~40%** | High | Scan/replace helpers; full converter is Godot’s job |
 | **ClassDB method-for-method** | **~N/A (~lookup 100%)** | High | **Not a goal** — discovery via `describe_class` is complete |
@@ -53,11 +53,11 @@
 | 3D greybox → playable prototype | **~92%** |
 | 3D character + TPS + locomotion | **~90%** |
 | Multiplayer prototype | **~90%** |
-| XR prototype | **~75%** |
+| XR prototype | **~88%** |
 | Console-ready ship | **~50%** (platform/vendor limits) |
 
-**Overall agent production readiness (all genres blended): ~94–97%** (v1.61 lobby + game loop + saves).  
-**Remaining ~3–6%** is mostly: platform/vendor SDKs, visual editors (VS/Theme/Anim graphs), hosted matchmaking, and long-tail polish — not missing core docks.
+**Overall agent production readiness (all genres blended): ~95–97%** (v1.62 XR + VS catalog + export CI).  
+**Remaining ~3–5%** is mostly: platform/vendor SDKs, pure visual graph UIs, hosted matchmaking — not missing core production docks.
 
 ---
 
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.61) | ~1428 |
-| Modules | ~182 |
+| Plugin commands (v1.62) | ~1451 |
+| Modules | ~185 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

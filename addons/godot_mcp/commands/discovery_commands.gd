@@ -209,6 +209,21 @@ func _domains() -> Dictionary:
 			"examples": ["create_inventory_component_script", "create_item_resource", "setup_inventory_ui"],
 			"workflow": "create_item_resource → create_inventory_component_script → attach to player",
 		},
+		"xr": {
+			"description": "OpenXR rig, movement, grab, teleport, passthrough",
+			"examples": ["pipeline_xr_setup", "setup_xr_player_rig", "create_xr_movement_script", "list_xr_tools_catalog"],
+			"workflow": "pipeline_xr_setup → openxr bindings → play on device",
+		},
+		"visual_shader": {
+			"description": "VisualShader catalog + graph presets",
+			"examples": ["list_visual_shader_node_catalog", "visual_shader_preset_toon", "visual_shader_add_nodes_batch"],
+			"workflow": "create_visual_shader → preset or batch nodes → assign_visual_shader_material",
+		},
+		"export_ci": {
+			"description": "Export presets + GitHub Actions + headless scripts",
+			"examples": ["pipeline_export_ci", "create_github_actions_godot_export", "create_export_presets_pack"],
+			"workflow": "pipeline_export_ci → verify templates → run_export",
+		},
 	}
 
 

@@ -19,6 +19,8 @@ func get_commands() -> Dictionary:
 		"pipeline_multiplayer_enet": _pipeline_multiplayer_enet,
 		"pipeline_game_loop_shell": _pipeline_game_loop_shell,
 		"pipeline_multiplayer_lobby": _pipeline_multiplayer_lobby,
+		"pipeline_xr_setup": _pipeline_xr_setup,
+		"pipeline_export_ci": _pipeline_export_ci,
 	}
 
 
@@ -37,6 +39,8 @@ func _list_pipelines(_params: Dictionary) -> Dictionary:
 			"pipeline_multiplayer_enet": "ENet host/join scripts + optional MultiplayerSpawner",
 			"pipeline_game_loop_shell": "Main menu + GameFlow + scene transition + optional save serializer",
 			"pipeline_multiplayer_lobby": "ENet + lobby ready-up + spawn points + spawn service",
+			"pipeline_xr_setup": "OpenXR settings + full player rig + default controller bindings",
+			"pipeline_export_ci": "Export preset pack + GitHub Actions + headless export scripts",
 		},
 		"hint": "Prefer pipelines for multi-dock human workflows; use atomic tools for fine control",
 	})
@@ -503,4 +507,68 @@ func _pipeline_multiplayer_lobby(params: Dictionary) -> Dictionary:
 			"create_multiplayer_lobby_ui",
 			"Lobby.set_ready / start_match",
 		],
+	})
+
+
+func _pipeline_xr_setup(params: Dictionary) -> Dictionary:
+	var steps: Array = []
+	steps.append({"settings": await _exec("set_xr_project_settings", {
+		"enabled": true,
+	})})
+	# set_xr_project_settings may use different keys — also try raw
+	steps.append({"openxr_flag": await _exec("batch_set_project_settings", {
+		"settings": {
+			"xr/openxr/enabled": true,
+			"xr/shaders/enabled": true,
+		},
+		"save": true,
+	})})
+	steps.append({"rig": await _exec("setup_xr_player_rig", {
+		"parent_path": optional_string(params, "parent_path", "."),
+		"add_movement": optional_bool(params, "add_movement", true),
+		"add_grabbers": optional_bool(params, "add_grabbers", true),
+		"debug_meshes": optional_bool(params, "debug_meshes", true),
+	})})
+	if optional_bool(params, "default_bindings", true):
+		steps.append({"bindings": await _exec("openxr_create_default_controller_bindings", {
+			"path": optional_string(params, "action_map_path", "res://openxr_action_map.tres"),
+		})})
+	if optional_bool(params, "teleport_script", true):
+		steps.append({"teleport": await _exec("create_xr_teleport_script", {
+			"overwrite": optional_bool(params, "overwrite", false),
+		})})
+	if optional_bool(params, "passthrough", false):
+		steps.append({"passthrough": await _exec("set_xr_passthrough_settings", {
+			"enabled": true,
+		})})
+	return success({
+		"pipeline": "xr_setup",
+		"steps": steps,
+		"next": ["setup_xr_pickup_area", "list_xr_tools_catalog", "export with XR templates"],
+	})
+
+
+func _pipeline_export_ci(params: Dictionary) -> Dictionary:
+	var steps: Array = []
+	steps.append({"presets": await _exec("create_export_presets_pack", {
+		"platforms": params.get("platforms", ["Windows Desktop", "Linux/X11", "Web"]),
+		"output_dir": optional_string(params, "output_dir", "res://build"),
+	})})
+	steps.append({"gha": await _exec("create_github_actions_godot_export", {
+		"godot_version": optional_string(params, "godot_version", "4.3-stable"),
+		"platforms": params.get("ci_platforms", ["windows", "linux", "web"]),
+	})})
+	steps.append({"headless": await _exec("create_headless_export_script", {
+		"preset": optional_string(params, "preset", "Windows Desktop"),
+		"export_path": optional_string(params, "export_path", "build/windows/game.exe"),
+	})})
+	steps.append({"readme": await _exec("write_export_ci_readme", {
+		"overwrite": true,
+	})})
+	if optional_bool(params, "verify", true):
+		steps.append({"verify": await _exec("verify_export_ready", {})})
+	return success({
+		"pipeline": "export_ci",
+		"steps": steps,
+		"next": ["get_export_signing_checklist", "run_export", "pipeline_pre_ship_check"],
 	})

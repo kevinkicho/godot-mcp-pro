@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.61.0**  
+Plugin version: **1.62.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1428
-- **Command modules:** 182
+- **Registered plugin commands:** 1451
+- **Command modules:** 185
 
 ## Commands by module
 
@@ -25,7 +25,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `batch_editor_calls`
 - `agent_headless_status`
 
-### agent_pipeline_commands (13)
+### agent_pipeline_commands (15)
 
 - `list_agent_pipelines`
 - `pipeline_prepare_level_lighting`
@@ -40,6 +40,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `pipeline_multiplayer_enet`
 - `pipeline_game_loop_shell`
 - `pipeline_multiplayer_lobby`
+- `pipeline_xr_setup`
+- `pipeline_export_ci`
 
 ### ai_system_commands (8)
 
@@ -578,6 +580,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_fog_volume`
 - `set_environment_fog_params`
 - `list_environment_sky_tools`
+
+### export_ci_commands (6)
+
+- `list_export_ci_templates`
+- `create_github_actions_godot_export`
+- `create_export_presets_pack`
+- `create_headless_export_script`
+- `write_export_ci_readme`
+- `list_export_ci_tools`
 
 ### export_commands (16)
 
@@ -1932,6 +1943,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `editor_set_3d_camera_transform`
 - `list_viewport_focus_tools`
 
+### visual_shader_catalog_commands (8)
+
+- `list_visual_shader_node_catalog`
+- `visual_shader_add_nodes_batch`
+- `visual_shader_preset_toon`
+- `visual_shader_preset_emission_pulse`
+- `visual_shader_preset_scroll_uv`
+- `visual_shader_preset_triplanar`
+- `visual_shader_preset_outline_fresnel`
+- `list_visual_shader_catalog_tools`
+
 ### visual_shader_commands (7)
 
 - `create_visual_shader`
@@ -1988,6 +2010,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_xr_passthrough_info`
 - `create_xr_passthrough_controller_script`
 - `list_xr_passthrough_tools`
+
+### xr_player_rig_depth_commands (7)
+
+- `setup_xr_player_rig`
+- `create_xr_movement_script`
+- `create_xr_grabber_script`
+- `create_xr_teleport_script`
+- `setup_xr_pickup_area`
+- `list_xr_tools_catalog`
+- `list_xr_player_rig_tools`
 
 ## Refresh
 

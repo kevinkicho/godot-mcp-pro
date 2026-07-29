@@ -48,6 +48,9 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Multiplayer lobby | `pipeline_multiplayer_lobby` / ready-up / spawn points |
 | Save slots JSON | `write_save_slot_json` / `capture_scene_state` |
 | Inventory component | `create_inventory_component_script` / ItemData |
+| XR full rig | `pipeline_xr_setup` / `setup_xr_player_rig` / grab·teleport |
+| VisualShader catalog | `list_visual_shader_node_catalog` / batch + presets |
+| Export CI | `pipeline_export_ci` / GitHub Actions / headless scripts |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |

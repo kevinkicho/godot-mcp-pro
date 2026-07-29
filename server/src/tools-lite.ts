@@ -4606,6 +4606,79 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  // ── v1.62 XR + VisualShader + Export CI ──
+  {
+    name: 'pipeline_xr_setup',
+    description: 'OpenXR settings + XR player rig + default controller bindings',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        add_movement: { type: 'boolean' },
+        add_grabbers: { type: 'boolean' },
+        passthrough: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_xr_player_rig',
+    description: 'XROrigin3D + XRCamera3D + left/right controllers + optional movement/grab',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        add_movement: { type: 'boolean' },
+        add_grabbers: { type: 'boolean' },
+        debug_meshes: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'list_visual_shader_node_catalog',
+    description: 'Friendly VisualShader node map + ClassDB VisualShaderNode* inventory',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'visual_shader_add_nodes_batch',
+    description: 'Add many VisualShader nodes and optional connections in one call',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        nodes: { type: 'array' },
+        connections: { type: 'array' },
+      },
+      required: ['path', 'nodes'],
+    },
+  },
+  {
+    name: 'pipeline_export_ci',
+    description: 'Export presets pack + GitHub Actions workflow + headless export scripts',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        godot_version: { type: 'string' },
+        platforms: { type: 'array' },
+        verify: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_github_actions_godot_export',
+    description: 'Write .github/workflows/godot-export.yml for multi-platform export',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        godot_version: { type: 'string' },
+        platforms: { type: 'array' },
+        output_path: { type: 'string' },
+      },
+      required: [],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */
