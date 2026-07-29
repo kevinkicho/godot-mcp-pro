@@ -276,6 +276,36 @@ func _domains() -> Dictionary:
 			"examples": ["set_bone_rest", "apply_pose_as_rest", "copy_skeleton_rest", "validate_skeleton_for_humanoid", "tag_skeleton_body_parts"],
 			"workflow": "validate_skeleton_for_humanoid -> set_bone_rest / copy_skeleton_rest -> retarget",
 		},
+		"cinematic": {
+			"description": "FPS/cinematic cameras, path rails, DOF/exposure attributes",
+			"examples": ["setup_first_person_camera", "setup_cinematic_path_camera", "setup_track_to_target_camera", "create_camera_attributes_practical", "set_camera_dof"],
+			"workflow": "setup_cinematic_path_camera -> create_cinematic_camera_script -> set_camera_dof",
+		},
+		"combat": {
+			"description": "Damage packets, health, status effects (buff/debuff)",
+			"examples": ["setup_damage_pipeline_scripts", "create_damage_info_resource_script", "create_status_effect_controller_script"],
+			"workflow": "setup_damage_pipeline_scripts -> hitbox/hurtbox -> StatusEffectController",
+		},
+		"crafting": {
+			"description": "Recipes, crafting system, hotbar UI",
+			"examples": ["create_crafting_system_script", "create_recipe_json", "setup_crafting_ui", "setup_hotbar_ui"],
+			"workflow": "create_item_resource -> create_recipe_json -> crafting system -> hotbar UI",
+		},
+		"touch": {
+			"description": "Mobile virtual joystick, touch buttons, swipe",
+			"examples": ["setup_virtual_joystick_ui", "setup_mobile_touch_controls", "create_virtual_joystick_script"],
+			"workflow": "setup_mobile_touch_controls -> bind actions to existing InputMap",
+		},
+		"steering": {
+			"description": "Seek/arrive/flock steering beyond navmesh",
+			"examples": ["create_steering_behaviors_script", "setup_steering_agent_node", "create_flock_controller_script"],
+			"workflow": "create_steering_behaviors_script -> setup_steering_agent_node or flock",
+		},
+		"shader_globals": {
+			"description": "Project global shader parameters",
+			"examples": ["list_shader_global_parameters", "set_shader_global_parameter", "set_shader_globals_batch"],
+			"workflow": "add_shader_global_parameter -> set in shaders as global uniform",
+		},
 		"save": {
 			"description": "Capture/apply node state and JSON save slots",
 			"examples": ["capture_scene_state", "write_save_slot_json", "create_game_state_serializer_script", "read_save_slot_json"],

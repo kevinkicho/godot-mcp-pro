@@ -4,6 +4,38 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.68.0 — 2026-07-29
+
+**Critical production maps wave** - cameras, combat, crafting, touch, lights, geometry, shaders, steering, audio zones.
+
+### Cameras / cinematic
+- `CameraAttributes` practical/physical create + assign + DOF/exposure
+- `setup_first_person_camera`, `setup_cinematic_path_camera`, track-to-target, look-at, rail script
+
+### Combat / status
+- DamageInfo resource, HealthComponent v2, StatusEffectData + controller
+- `setup_damage_pipeline_scripts` one-shot wiring pack
+
+### Crafting / hotbar
+- CraftingRecipe + CraftingSystem scripts, recipe JSON
+- Hotbar logic + UI, crafting panel UI
+
+### 3D lights + mesh geometry
+- Omni/Spot/Directional depth setup + batch params
+- GeometryInstance3D: cast_shadow, gi_mode, material_overlay, render layers, batch
+
+### Input / UI / AI / audio / shaders
+- Virtual joystick + mobile touch pack + swipe gestures
+- Reticle/crosshair, drag-drop slots, control focus neighbors
+- Steering behaviors + flock + steering agent
+- Reverb zone Area3D + AudioListener3D
+- Global shader parameter list/set/add/batch
+
+### Discovery domains
+- `cinematic`, `combat`, `crafting`, `touch`, `steering`, `shader_globals`
+
+---
+
 ## v1.67.0 — 2026-07-29
 
 **Humanoid avatar gaps closed** - identity, mesh/skin/materials, deep retarget/import, modifiers, anim filters.

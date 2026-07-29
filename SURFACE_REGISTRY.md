@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.67.0**  
+Plugin version: **1.68.0**  
 
 ## Honesty
 
@@ -11,32 +11,32 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 
 ## Totals
 
-- **Registered plugin commands:** 1573
-- **Command modules:** 204
+- **Registered plugin commands:** 1640
+- **Command modules:** 215
 - **Domains:** 21
 
 ## Commands by domain
 
 - **2d** - 132 commands
-- **3d** - 56 commands
+- **3d** - 62 commands
 - **agent** - 58 commands
-- **ai** - 28 commands
+- **ai** - 32 commands
 - **animation** - 226 commands
 - **assets** - 87 commands
-- **audio** - 33 commands
+- **audio** - 37 commands
 - **editor** - 40 commands
 - **export** - 48 commands
-- **input** - 26 commands
+- **input** - 32 commands
 - **navigation** - 19 commands
 - **network** - 49 commands
 - **physics** - 56 commands
 - **project** - 58 commands
 - **qa_runtime** - 103 commands
-- **rendering** - 47 commands
-- **scene** - 126 commands
+- **rendering** - 62 commands
+- **scene** - 132 commands
 - **scripting** - 110 commands
-- **shaders_vfx** - 66 commands
-- **ui_gameplay** - 178 commands
+- **shaders_vfx** - 72 commands
+- **ui_gameplay** - 198 commands
 - **xr** - 27 commands
 
 ## Commands by module
@@ -230,6 +230,15 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `csg_list_shapes`
 - `list_csg_tools`
 
+### 3d / light_3d_depth_commands (6)
+
+- `setup_omni_light_3d`
+- `setup_spot_light_3d`
+- `setup_directional_light_3d`
+- `set_light_3d_params`
+- `batch_set_light_3d_params`
+- `list_light_3d_depth_tools`
+
 ### 3d / multimesh_commands (4)
 
 - `setup_multimesh_instance`
@@ -402,6 +411,13 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `create_blackboard_script`
 - `setup_behavior_tree_on_node`
 - `list_behavior_tree_recipes`
+
+### ai / steering_commands (4)
+
+- `create_steering_behaviors_script`
+- `create_flock_controller_script`
+- `setup_steering_agent_node`
+- `list_steering_tools`
 
 ### ai / utility_ai_commands (4)
 
@@ -882,6 +898,13 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `create_sfx_pool_script`
 - `list_audio_polyphony_tools`
 
+### audio / audio_reverb_zone_commands (4)
+
+- `setup_reverb_zone_3d`
+- `create_reverb_zone_script`
+- `setup_audio_listener_3d`
+- `list_audio_reverb_zone_tools`
+
 ### audio / music_commands (4)
 
 - `create_music_controller_script`
@@ -1053,6 +1076,15 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `get_action_strength_info`
 - `list_joypad_button_names`
 - `event`
+
+### input / touch_input_commands (6)
+
+- `create_virtual_joystick_script`
+- `setup_virtual_joystick_ui`
+- `create_touch_button_script`
+- `setup_mobile_touch_controls`
+- `create_swipe_gesture_script`
+- `list_touch_input_tools`
 
 ### navigation / astar_pathfinding_commands (4)
 
@@ -1456,6 +1488,16 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `run_gdunit_tests`
 - `list_test_recipes`
 
+### rendering / camera_attributes_commands (7)
+
+- `create_camera_attributes_practical`
+- `create_camera_attributes_physical`
+- `assign_camera_attributes`
+- `set_camera_attributes_params`
+- `set_camera_dof`
+- `set_camera_exposure`
+- `list_camera_attributes_tools`
+
 ### rendering / compositor_depth_commands (4)
 
 - `setup_compositor_on_environment`
@@ -1478,6 +1520,17 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_fog_volume`
 - `set_environment_fog_params`
 - `list_environment_sky_tools`
+
+### rendering / geometry_instance_depth_commands (8)
+
+- `set_geometry_instance_params`
+- `batch_set_geometry_instance_params`
+- `set_material_overlay`
+- `set_material_overlay_color`
+- `set_cast_shadows`
+- `set_gi_mode`
+- `set_geometry_render_layers`
+- `list_geometry_instance_depth_tools`
 
 ### rendering / lightmap_uv_commands (5)
 
@@ -1550,6 +1603,15 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_canvas_layer_stack`
 - `reorder_canvas_layers`
 - `list_canvas_layer_depth_tools`
+
+### scene / cinematic_camera_commands (6)
+
+- `setup_first_person_camera`
+- `setup_cinematic_path_camera`
+- `setup_camera_look_at_target`
+- `create_cinematic_camera_script`
+- `setup_track_to_target_camera`
+- `list_cinematic_camera_tools`
 
 ### scene / node_commands (11)
 
@@ -1890,6 +1952,15 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `get_shader_global`
 - `list_shader_globals`
 
+### shaders_vfx / shader_globals_commands (6)
+
+- `list_shader_global_parameters`
+- `set_shader_global_parameter`
+- `add_shader_global_parameter`
+- `remove_shader_global_parameter`
+- `set_shader_globals_batch`
+- `list_shader_globals_tools`
+
 ### shaders_vfx / shader_include_commands (5)
 
 - `create_shader_include`
@@ -1956,6 +2027,15 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `create_projectile_script`
 - `list_character_templates`
 
+### ui_gameplay / combat_status_commands (6)
+
+- `create_damage_info_resource_script`
+- `create_health_component_v2_script`
+- `create_status_effect_resource_script`
+- `create_status_effect_controller_script`
+- `setup_damage_pipeline_scripts`
+- `list_combat_status_tools`
+
 ### ui_gameplay / container_commands (8)
 
 - `setup_vbox`
@@ -1984,6 +2064,16 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_hslider`
 - `setup_line_edit`
 - `setup_text_edit`
+
+### ui_gameplay / crafting_hotbar_commands (7)
+
+- `create_crafting_recipe_resource_script`
+- `create_crafting_system_script`
+- `create_hotbar_script`
+- `setup_hotbar_ui`
+- `setup_crafting_ui`
+- `create_recipe_json`
+- `list_crafting_hotbar_tools`
 
 ### ui_gameplay / cutscene_commands (5)
 
@@ -2189,6 +2279,16 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_video_stream_player`
 - `setup_progress_bar`
 - `setup_texture_progress_bar`
+
+### ui_gameplay / ui_reticle_drag_commands (7)
+
+- `setup_reticle_ui`
+- `setup_crosshair_ui`
+- `create_drag_drop_slot_script`
+- `setup_drag_drop_inventory_row`
+- `set_control_focus_neighbors`
+- `grab_control_focus`
+- `list_ui_reticle_drag_tools`
 
 ### xr / xr_commands (15)
 

@@ -57,6 +57,17 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Skeleton rest edit | `set_bone_rest` / `copy_skeleton_rest` / `apply_pose_as_rest` |
 | Modifier stack | `list_skeleton_modifiers` / `apply_humanoid_modifier_preset` |
 | Upper-body anim mask | `setup_upper_body_mask_tree` / `setup_aim_offset_blend_space` |
+| CameraAttributes / DOF | `create_camera_attributes_practical` / `set_camera_dof` / `set_camera_exposure` |
+| FPS / cinematic cam | `setup_first_person_camera` / `setup_cinematic_path_camera` / `setup_track_to_target_camera` |
+| Combat / status FX | `setup_damage_pipeline_scripts` / StatusEffectController |
+| Crafting / hotbar | `create_crafting_system_script` / `setup_hotbar_ui` / `create_recipe_json` |
+| Touch controls | `setup_mobile_touch_controls` / `setup_virtual_joystick_ui` |
+| Omni/Spot lights | `setup_omni_light_3d` / `setup_spot_light_3d` / `set_light_3d_params` |
+| GeometryInstance depth | `set_geometry_instance_params` / `set_material_overlay` / `set_cast_shadows` |
+| Shader globals | `set_shader_global_parameter` / `list_shader_global_parameters` |
+| Steering / flock | `create_steering_behaviors_script` / `create_flock_controller_script` |
+| Reverb zones | `setup_reverb_zone_3d` / `setup_audio_listener_3d` |
+| Reticle / drag-drop | `setup_reticle_ui` / `setup_drag_drop_inventory_row` |
 | Multiplayer lobby | `pipeline_multiplayer_lobby` / ready-up / spawn points |
 | Save slots JSON | `write_save_slot_json` / `capture_scene_state` |
 | Inventory component | `create_inventory_component_script` / ItemData |

@@ -1,6 +1,6 @@
 # Coverage scorecard (honest agent production %)
 
-**As of:** plugin **v1.67** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
+**As of:** plugin **v1.68** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
 **Refresh:** `list_docs_coverage` · `get_production_surface_report` · `.\scripts\export-surface-registry.ps1`
 
 ---
@@ -30,13 +30,13 @@
 | **3D production** | **~92%** | High | TPS rig, Environment/Sky/Fog, occlusion, PBR; DCC polish remains |
 | **Animation / skeleton** | **~95%** | High | Avatar identity + blend shapes + rest/retarget depth + modifiers; no visual graph UI |
 | **Physics / collision** | **~92%** | High | Bodies, PhysicsMaterial resources, shapes, joints, ragdoll |
-| **Navigation / AI pathing** | **~88%** | Med | Navmesh + AStarGrid2D; live replan viz thinner |
+| **Navigation / AI pathing** | **~92%** | High | Navmesh + AStar + steering/flock recipes |
 | **Assets / import** | **~88%** | Med | Stage/wait/presets/schemas; every importer option UI not mirrored |
-| **UI / theme / fonts** | **~88%** | Med | Theme depth, StyleBox, LabelSettings/FontFile; Theme editor graph N/A |
-| **Audio / music** | **~90%** | High | Typed bus effects (reverb/EQ/compressor…), polyphony, music |
+| **UI / theme / fonts** | **~91%** | High | Theme + hotbar/crafting/reticle/drag-drop/focus; Theme graph N/A |
+| **Audio / music** | **~93%** | High | Bus FX + polyphony + reverb zones + listener |
 | **Multiplayer / net** | **~90%** | High | ENet + lobby ready-up + spawns + sync bulk + interest/WebRTC; no hosted MM |
-| **Rendering advanced** | **~88%** | Med | Env/Sky/Fog + GI/compositor/lightmap; vendor GPU captures N/A |
-| **Shaders / VFX** | **~88%** | High | Text + VS catalog/presets/batch + particles; full GUI still editor |
+| **Rendering advanced** | **~92%** | High | Env/Sky/Fog + GI + CameraAttributes/DOF + lights + GeometryInstance depth |
+| **Shaders / VFX** | **~91%** | High | Text + VS + particles + global shader parameters |
 | **XR** | **~88%** | High | OpenXR + full player rig + locomotion/grab/teleport; vendor AR partial |
 | **Export / ship** | **~92%** | High | Presets + CI workflows + headless scripts + signing checklist |
 | **Platform (iOS/console)** | **~45%** | High | Intentionally limited (vendor SDKs) |
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.67) | 1573 |
-| Modules | 204 |
+| Plugin commands (v1.68) | 1640 |
+| Modules | 215 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 
