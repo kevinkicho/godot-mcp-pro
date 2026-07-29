@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.47.0**  
+Plugin version: **1.48.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 936
-- **Command modules:** 93
+- **Registered plugin commands:** 948
+- **Command modules:** 95
 
 ## Commands by module
 
@@ -24,6 +24,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `agent_ensure_ready`
 - `batch_editor_calls`
 - `agent_headless_status`
+
+### agent_pipeline_commands (6)
+
+- `list_agent_pipelines`
+- `pipeline_prepare_level_lighting`
+- `pipeline_setup_prop_lods`
+- `pipeline_nav_debug_route`
+- `pipeline_character_locomotion`
+- `pipeline_greybox_to_playable`
 
 ### ai_system_commands (8)
 
@@ -669,13 +678,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `music_set_playlist`
 - `list_music_tools`
 
-### nav_debug_commands (6)
+### nav_debug_commands (7)
 
 - `navigation_set_debug_enabled`
 - `navigation_get_debug_settings`
 - `navigation_query_path`
 - `draw_debug_path`
 - `navigation_get_map_info`
+- `navigation_live_path`
 - `list_nav_debug_tools`
 
 ### navigation_commands (8)
@@ -818,6 +828,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_layer_names`
 - `get_layer_names`
 - `value`
+
+### quality_preset_commands (5)
+
+- `list_quality_presets`
+- `apply_lod_distance_preset`
+- `apply_lightmap_quality_preset`
+- `configure_lightmap_gi`
+- `apply_platform_render_pack`
 
 ### quest_system_commands (12)
 

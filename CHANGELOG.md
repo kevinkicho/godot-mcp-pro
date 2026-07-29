@@ -4,6 +4,28 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.48.0 — 2026-07-28
+
+**Quality presets + agent pipelines + live nav path** — composed human workflows and fork docs.
+
+### Quality presets
+- `list_quality_presets`, `apply_lod_distance_preset` (mobile/desktop/cinematic/city)
+- `apply_lightmap_quality_preset` (draft/medium/high/ultra/mobile)
+- `configure_lightmap_gi`, `apply_platform_render_pack`
+
+### Agent pipelines (multi-tool recipes)
+- `pipeline_prepare_level_lighting`, `pipeline_setup_prop_lods`
+- `pipeline_nav_debug_route`, `pipeline_character_locomotion`
+- `pipeline_greybox_to_playable`, `list_agent_pipelines`
+
+### Nav live path
+- `navigation_live_path` — optional auto-play, query, draw debug path, stop
+
+### Docs
+- `FORK.md` — GitHub fork notification etiquette (pushes to origin do not spam upstream)
+
+---
+
 ## v1.47.0 — 2026-07-28
 
 **Suggested parity wave** — LOD, UV2 lightmap unwrap, movie capture, nav path debug, AnimationTree graph recipes.

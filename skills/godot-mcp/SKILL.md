@@ -65,6 +65,16 @@ Also: `playtest_report` (errors + optional asserts), `simulate_*`, `run_session_
 - Nav: `navigation_query_path` → `draw_debug_path`; `navigation_set_debug_enabled`
 - Anim graph: **`create_simple_locomotion_tree`**, `create_blend_space_1d_locomotion`, `export_animation_tree_graph`
 
+## Pipelines & quality packs (v1.48+)
+
+Prefer composed pipelines for multi-step human docks:
+
+- **`list_agent_pipelines`**
+- `pipeline_prepare_level_lighting`, `pipeline_setup_prop_lods`
+- `pipeline_nav_debug_route`, `pipeline_character_locomotion`, `pipeline_greybox_to_playable`
+- `apply_platform_render_pack pack=mobile|desktop|high_end`
+- `navigation_live_path from=… to=…`
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

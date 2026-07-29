@@ -39,6 +39,9 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Movie Maker | `play_with_movie_maker` / `capture_play_session` |
 | Nav path debug | `navigation_query_path` / `draw_debug_path` / `navigation_set_debug_enabled` |
 | AnimationTree graph | `create_simple_locomotion_tree` / `export_animation_tree_graph` / blend-space recipes |
+| Quality packs | `apply_lod_distance_preset` / `apply_lightmap_quality_preset` / `apply_platform_render_pack` |
+| Agent pipelines | `list_agent_pipelines` / `pipeline_*` multi-step recipes |
+| Live nav path | `navigation_live_path` (play → query → draw) |
 
 ## Universal escape hatches
 

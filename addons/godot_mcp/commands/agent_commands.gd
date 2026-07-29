@@ -371,11 +371,21 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["guarantee"] = "Full numerical access to animation keys, Bezier control points, and Curve/Curve2D/Curve3D resources — agents map focal points on the Cartesian plane and write them via MCP."
 		"lod", "lightmap", "rendering_prep":
 			guide["focus"] = [
-				"list_lod_tools / list_lightmap_uv_tools",
-				"mesh_generate_lods + set_visibility_range",
-				"setup_lod_mesh_instances distances=[0,15,40,80]",
-				"mesh_has_uv2 → mesh_lightmap_unwrap / batch_prepare_lightmap_meshes",
-				"lightmap_bake_prepare → request_lightmap_bake",
+				"list_quality_presets / list_lod_tools / list_lightmap_uv_tools",
+				"apply_lod_distance_preset preset=desktop|mobile|cinematic",
+				"apply_lightmap_quality_preset preset=draft|medium|high|ultra",
+				"apply_platform_render_pack pack=mobile|desktop|high_end",
+				"pipeline_setup_prop_lods / pipeline_prepare_level_lighting",
+				"mesh_has_uv2 → mesh_lightmap_unwrap / lightmap_bake_prepare",
+			]
+		"pipeline", "pipelines", "macros":
+			guide["focus"] = [
+				"list_agent_pipelines",
+				"pipeline_greybox_to_playable",
+				"pipeline_prepare_level_lighting quality=medium",
+				"pipeline_setup_prop_lods node_path=… preset=desktop",
+				"pipeline_nav_debug_route from=… to=…",
+				"pipeline_character_locomotion style=state_machine|blend1d",
 			]
 		"movie", "capture", "recording":
 			guide["focus"] = [
@@ -389,9 +399,10 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["focus"] = [
 				"list_nav_debug_tools",
 				"bake_navigation_mesh",
+				"navigation_live_path from={…} to={…} (play+query+draw)",
+				"pipeline_nav_debug_route",
 				"navigation_set_debug_enabled true",
-				"navigation_query_path from={…} to={…}",
-				"draw_debug_path points=[…]",
+				"navigation_query_path / draw_debug_path",
 			]
 		"ui":
 			guide["focus"] = [

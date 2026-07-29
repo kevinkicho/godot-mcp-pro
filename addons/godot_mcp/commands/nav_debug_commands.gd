@@ -11,6 +11,7 @@ func get_commands() -> Dictionary:
 		"navigation_query_path": _navigation_query_path,
 		"draw_debug_path": _draw_debug_path,
 		"navigation_get_map_info": _navigation_get_map_info,
+		"navigation_live_path": _navigation_live_path,
 		"list_nav_debug_tools": _list_tools,
 	}
 
@@ -21,10 +22,10 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"flow": [
 			"bake_navigation_mesh",
 			"navigation_set_debug_enabled true",
-			"navigation_query_path from=… to=…",
-			"draw_debug_path points=[…]",
+			"navigation_live_path from=… to=… (query + draw while playing)",
+			"OR navigation_query_path + draw_debug_path",
 		],
-		"related": ["setup_navigation_region", "bake_navigation_mesh", "setup_navigation_agent", "set_navigation_agent_target"],
+		"related": ["setup_navigation_region", "bake_navigation_mesh", "setup_navigation_agent", "pipeline_nav_debug_route"],
 	})
 
 
@@ -262,6 +263,73 @@ func _draw_debug_path(params: Dictionary) -> Dictionary:
 		"point_count": points_in.size(),
 		"mode": "3d",
 		"baked_length": curve3.get_baked_length(),
+	})
+
+
+func _navigation_live_path(params: Dictionary) -> Dictionary:
+	## One-shot: enable debug (optional), query path (prefers play session), draw debug path in scene.
+	if not params.has("from") or not params.has("to"):
+		return error_invalid_params("from and to required")
+	var enable_debug: bool = optional_bool(params, "enable_debug", true)
+	if enable_debug:
+		_navigation_set_debug_enabled({"enabled": true})
+
+	# Prefer playing for accurate maps
+	var was_playing := EditorInterface.is_playing_scene()
+	var started_play := false
+	if not was_playing and optional_bool(params, "auto_play", true):
+		var mode: String = optional_string(params, "play_mode", "main")
+		match mode:
+			"current":
+				EditorInterface.play_current_scene()
+			"custom":
+				var p: String = optional_string(params, "path", "")
+				if not p.is_empty():
+					if not p.begins_with("res://"):
+						p = "res://" + p.trim_prefix("/")
+					EditorInterface.play_custom_scene(p)
+			_:
+				EditorInterface.play_main_scene()
+		started_play = true
+		var attempts := 40
+		while attempts > 0 and not EditorInterface.is_playing_scene():
+			await get_tree().create_timer(0.1).timeout
+			attempts -= 1
+		await get_tree().create_timer(float(params.get("settle_sec", 0.8))).timeout
+
+	var q := await _navigation_query_path(params)
+	var qdata = q.get("result", q)
+	if qdata is Dictionary and qdata.has("error") and not qdata.has("points"):
+		if started_play and optional_bool(params, "stop_after", true):
+			EditorInterface.stop_playing_scene()
+		return q
+
+	var points: Array = []
+	if qdata is Dictionary and qdata.has("points"):
+		points = qdata["points"]
+	elif qdata is Dictionary and qdata.has("result") and qdata["result"] is Dictionary:
+		points = qdata["result"].get("points", [])
+
+	var draw_res = null
+	if points.size() >= 2 and optional_bool(params, "draw", true):
+		draw_res = _draw_debug_path({
+			"mode": optional_string(params, "mode", "3d"),
+			"points": points,
+			"parent_path": optional_string(params, "parent_path", "."),
+			"name": optional_string(params, "name", "LiveNavPath"),
+			"add_mesh_line": true,
+		})
+
+	if started_play and optional_bool(params, "stop_after", true) and EditorInterface.is_playing_scene():
+		EditorInterface.stop_playing_scene()
+
+	return success({
+		"points": points,
+		"count": points.size(),
+		"query": qdata,
+		"draw": draw_res.get("result", draw_res) if draw_res is Dictionary else draw_res,
+		"played": started_play,
+		"stopped": started_play and optional_bool(params, "stop_after", true),
 	})
 
 

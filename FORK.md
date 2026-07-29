@@ -5,6 +5,29 @@ This repository is a fork of [youichi-uda/godot-mcp-pro](https://github.com/youi
 
 **Project-neutral:** install into any Godot 4 game. No game-specific paths or content.
 
+## GitHub fork etiquette / notifications
+
+**Pushing commits to `origin` (your fork) does not email or spam the upstream owner.**  
+GitHub only links your repo as a fork in the network graph (fork count). They do **not** get a notification for every commit, branch, or push on `kevinkicho/godot-mcp-pro`.
+
+What *does* notify upstream (or create work for them):
+
+| Action | Upstream notified? |
+|--------|-------------------|
+| `git push origin` (your fork) | **No** |
+| Open a **Pull Request** into `youichi-uda/godot-mcp-pro` | **Yes** (PR inbox) |
+| Comment / review on their PRs or issues | **Yes** |
+| Open an **issue** on their repo | **Yes** |
+| `@mention` them | **Yes** |
+| Force-push or push to **`upstream`** | Avoid unless you have write access (you usually don’t); use a PR instead |
+
+Safe default remotes:
+
+- **`origin`** = your fork (push freely)
+- **`upstream`** = original (fetch to sync; **do not push** unless contributing via their process)
+
+You are free to keep this fork public so others can use the open server and agent work. Upstream is not obligated to merge anything unless you open a PR and they choose to accept it.
+
 **Docs:** [README.md](README.md) · [docs/README.md](docs/README.md) (install, architecture, runtime probe, agent workflow)
 
 ## Role

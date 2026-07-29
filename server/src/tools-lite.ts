@@ -349,6 +349,68 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  {
+    name: 'list_agent_pipelines',
+    description: 'List multi-step production pipelines (lighting, LODs, nav, greybox, locomotion).',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'pipeline_prepare_level_lighting',
+    description: 'Pipeline: batch UV2 + lightmap quality preset + optional bake.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        quality: { type: 'string', description: 'draft|medium|high|ultra|mobile' },
+        texel_size: { type: 'number' },
+        request_bake: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_greybox_to_playable',
+    description: 'Pipeline: greybox room → optional collision/nav → playtest_report.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        size: { type: 'object' },
+        setup_nav: { type: 'boolean' },
+        playtest: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'apply_platform_render_pack',
+    description: 'LOD + lightmap + SDFGI pack for mobile|desktop|high_end.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        pack: { type: 'string' },
+        source_mesh_path: { type: 'string' },
+        node_path: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'navigation_live_path',
+    description: 'Play if needed, query nav path, draw debug path, optional stop.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        from: { type: 'object' },
+        to: { type: 'object' },
+        mode: { type: 'string' },
+        auto_play: { type: 'boolean' },
+        draw: { type: 'boolean' },
+        stop_after: { type: 'boolean' },
+      },
+      required: ['from', 'to'],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',
