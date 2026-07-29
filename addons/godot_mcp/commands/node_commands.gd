@@ -38,6 +38,8 @@ func get_commands() -> Dictionary:
 		"set_meta": _set_meta,
 		"remove_meta": _remove_meta,
 		"list_meta": _list_meta,
+		"set_nodes_transform": _set_nodes_transform,
+		"batch_update_property": _batch_update_property,
 	}
 
 
@@ -1473,3 +1475,88 @@ func _find_in_group_recursive(node: Node, root: Node, group_name: String, matche
 		})
 	for child in node.get_children():
 		_find_in_group_recursive(child, root, group_name, matches)
+
+
+func _set_nodes_transform(params: Dictionary) -> Dictionary:
+	## Numeric multi-node transform (gizmo parity without drag).
+	var paths: Array = params.get("node_paths", [])
+	if paths.is_empty() and params.has("node_path"):
+		paths = [params["node_path"]]
+	if paths.is_empty():
+		return error_invalid_params("node_paths or node_path required")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var changed: Array = []
+	for p in paths:
+		var node := find_node_by_path(str(p))
+		if node == null or not (node is Node2D or node is Node3D):
+			changed.append({"path": str(p), "error": "not Node2D/3D"})
+			continue
+		if node is Node3D:
+			var n3: Node3D = node
+			if params.has("position"):
+				var pos = params["position"]
+				if pos is Dictionary:
+					n3.position = Vector3(float(pos.get("x", n3.position.x)), float(pos.get("y", n3.position.y)), float(pos.get("z", n3.position.z)))
+			if params.has("rotation_degrees"):
+				var rot = params["rotation_degrees"]
+				if rot is Dictionary:
+					n3.rotation_degrees = Vector3(float(rot.get("x", 0)), float(rot.get("y", 0)), float(rot.get("z", 0)))
+			if params.has("scale"):
+				var sc = params["scale"]
+				if sc is Dictionary:
+					n3.scale = Vector3(float(sc.get("x", 1)), float(sc.get("y", 1)), float(sc.get("z", 1)))
+				elif sc is float or sc is int:
+					n3.scale = Vector3.ONE * float(sc)
+			if params.has("translate"):
+				var tr = params["translate"]
+				if tr is Dictionary:
+					n3.position += Vector3(float(tr.get("x", 0)), float(tr.get("y", 0)), float(tr.get("z", 0)))
+			changed.append({"path": str(root.get_path_to(n3)), "position": {"x": n3.position.x, "y": n3.position.y, "z": n3.position.z}})
+		elif node is Node2D:
+			var n2: Node2D = node
+			if params.has("position"):
+				var pos2 = params["position"]
+				if pos2 is Dictionary:
+					n2.position = Vector2(float(pos2.get("x", n2.position.x)), float(pos2.get("y", n2.position.y)))
+			if params.has("rotation_degrees"):
+				n2.rotation_degrees = float(params["rotation_degrees"]) if not (params["rotation_degrees"] is Dictionary) else float(params["rotation_degrees"].get("z", 0))
+			if params.has("scale"):
+				var sc2 = params["scale"]
+				if sc2 is Dictionary:
+					n2.scale = Vector2(float(sc2.get("x", 1)), float(sc2.get("y", 1)))
+				else:
+					n2.scale = Vector2.ONE * float(sc2)
+			if params.has("translate"):
+				var tr2 = params["translate"]
+				if tr2 is Dictionary:
+					n2.position += Vector2(float(tr2.get("x", 0)), float(tr2.get("y", 0)))
+			changed.append({"path": str(root.get_path_to(n2)), "position": {"x": n2.position.x, "y": n2.position.y}})
+	mark_current_scene_unsaved()
+	return success({"changed": changed, "count": changed.size()})
+
+
+func _batch_update_property(params: Dictionary) -> Dictionary:
+	## Set the same property on many nodes (multi-select inspector).
+	var paths: Array = params.get("node_paths", [])
+	if paths.is_empty():
+		return error_invalid_params("node_paths required")
+	var prop_r := require_string(params, "property")
+	if prop_r[1] != null:
+		return prop_r[1]
+	if not params.has("value"):
+		return error_invalid_params("value required")
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var results: Array = []
+	for p in paths:
+		var one := _set_object_property(root, find_node_by_path(str(p)), prop_r[0], params["value"]) if find_node_by_path(str(p)) else {"error": {"message": "not found"}}
+		if find_node_by_path(str(p)) == null:
+			results.append({"path": str(p), "error": "not found"})
+		else:
+			var node := find_node_by_path(str(p))
+			var r := _set_object_property(root, node, prop_r[0], params["value"])
+			results.append({"path": str(p), "result": r})
+	return success({"results": results, "count": results.size(), "property": prop_r[0]})

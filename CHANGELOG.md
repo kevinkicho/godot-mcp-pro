@@ -4,6 +4,33 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.44.0 — 2026-07-28
+
+**Humanoid + level design verticals** — agent recipes for characters, interaction, greybox levels, GridMap paint, MultiMesh, animation libraries.
+
+### Humanoid (`humanoid_commands`)
+- `setup_humanoid_actor`, `validate_humanoid_rig`, `create_bone_map_preset` (mixamo/rpm/humanoid)
+- `apply_locomotion_set`, `bind_interaction`, `list_humanoid_recipes`
+
+### Level design (`level_design_commands`)
+- `greybox_room`, `greybox_corridor`, `place_prop_scatter`, `stamp_scene_instances`
+- `validate_level_playable`, `level_playtest_route`, `list_level_design_tools`
+
+### GridMap + MultiMesh
+- `gridmap_set_cell`, `fill_rect`, `paint_line`, `get_cell`, `clear`, `get_used_cells`, `set_mesh_library`, `get_info`
+- `setup_multimesh_instance`, `multimesh_set_transforms`, `multimesh_scatter`, `multimesh_get_info`
+
+### Animation libraries
+- create/list/rename/remove/merge/assign/import library packs
+
+### Multi-select transforms
+- `set_nodes_transform`, `batch_update_property`
+
+### Docs
+- `docs/HUMANOID_AND_LEVELS.md`; agent_workflow topics `humanoid` / `level`
+
+---
+
 ## v1.43.0 — 2026-07-28
 
 **Curves & Bezier as full numerical SDK surface** — agents map control points on the Cartesian plane (time×value / 2D / 3D), not limited by GUI drag metaphors.

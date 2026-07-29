@@ -265,6 +265,27 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"stage_files_into_res for .glb → ensure_imported",
 				"add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_collision",
 			]
+		"humanoid", "character_interaction":
+			guide["focus"] = [
+				"list_humanoid_recipes",
+				"setup_humanoid_actor model_scene=…",
+				"validate_humanoid_rig",
+				"create_bone_map_preset profile=mixamo|rpm|humanoid",
+				"apply_locomotion_set + apply_example_animation",
+				"bind_interaction kind=talk|use",
+				"dialogue/quest tools as needed",
+				"playtest_report",
+			]
+		"level", "level_design", "greybox":
+			guide["focus"] = [
+				"list_level_design_tools",
+				"greybox_room / greybox_corridor",
+				"gridmap_* or tilemap_* paint",
+				"place_prop_scatter / multimesh_scatter / stamp_scene_instances",
+				"setup_navigation_region + bake",
+				"validate_level_playable",
+				"level_playtest_route + playtest_report",
+			]
 		"animation", "animations", "anim":
 			guide["focus"] = [
 				"list_animation_fine_tune_tools",

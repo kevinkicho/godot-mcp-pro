@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.43.0**  
+Plugin version: **1.44.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 811
-- **Command modules:** 73
+- **Registered plugin commands:** 847
+- **Command modules:** 78
 
 ## Commands by module
 
@@ -89,6 +89,18 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_bezier_key`
 - `get_bezier_key_info`
 - `apply_bone_map_to_skeleton`
+
+### animation_library_commands (9)
+
+- `create_animation_library_resource`
+- `animation_library_add_clip`
+- `animation_library_list_clips`
+- `animation_library_rename_clip`
+- `animation_library_remove_clip`
+- `animation_library_merge_from_player`
+- `animation_library_assign_to_player`
+- `animation_library_import_from_scene`
+- `list_animation_library_tools`
 
 ### animation_transfer_commands (24)
 
@@ -395,6 +407,26 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `clone_godot_cpp`
 - `setup_gdextension_full`
 
+### gridmap_commands (8)
+
+- `gridmap_set_cell`
+- `gridmap_fill_rect`
+- `gridmap_get_cell`
+- `gridmap_clear`
+- `gridmap_get_used_cells`
+- `gridmap_set_mesh_library`
+- `gridmap_paint_line`
+- `gridmap_get_info`
+
+### humanoid_commands (6)
+
+- `setup_humanoid_actor`
+- `bind_interaction`
+- `apply_locomotion_set`
+- `validate_humanoid_rig`
+- `create_bone_map_preset`
+- `list_humanoid_recipes`
+
 ### i18n_commands (11)
 
 - `get_locale`
@@ -479,6 +511,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_joypad_button_names`
 - `event`
 
+### level_design_commands (7)
+
+- `greybox_room`
+- `greybox_corridor`
+- `place_prop_scatter`
+- `stamp_scene_instances`
+- `validate_level_playable`
+- `level_playtest_route`
+- `list_level_design_tools`
+
 ### material_2d_commands (12)
 
 - `set_canvas_item_modulate`
@@ -519,6 +561,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_minimap_viewport`
 - `list_render_presets`
 
+### multimesh_commands (4)
+
+- `setup_multimesh_instance`
+- `multimesh_set_transforms`
+- `multimesh_scatter`
+- `multimesh_get_info`
+
 ### multiplayer_commands (10)
 
 - `setup_multiplayer_spawner`
@@ -552,7 +601,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_navigation_obstacle`
 - `set_navigation_agent_target`
 
-### node_commands (33)
+### node_commands (35)
 
 - `add_node`
 - `delete_node`
@@ -585,6 +634,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_meta`
 - `remove_meta`
 - `list_meta`
+- `set_nodes_transform`
+- `batch_update_property`
 - `nodes`
 - `selected`
 

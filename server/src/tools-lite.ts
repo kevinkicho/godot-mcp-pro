@@ -1859,6 +1859,124 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     inputSchema: emptyProps,
   },
   {
+    name: 'setup_humanoid_actor',
+    description: 'Humanoid CharacterBody3D stack: capsule, model instance, AnimationPlayer, interaction Area',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        model_scene: { type: 'string' },
+        with_interaction_area: { type: 'boolean' },
+        interaction_radius: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'validate_humanoid_rig',
+    description: 'Check skeleton, animations, bone names for humanoid readiness',
+    inputSchema: {
+      type: 'object',
+      properties: { node_path: { type: 'string' } },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'bind_interaction',
+    description: 'Wire Area3D talk/use interaction with prompt + input action',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        actor_path: { type: 'string' },
+        area_path: { type: 'string' },
+        prompt: { type: 'string' },
+        action: { type: 'string' },
+        kind: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'greybox_room',
+    description: 'CSG greybox room (floor + walls) with optional spawn marker',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        width: { type: 'number' },
+        depth: { type: 'number' },
+        height: { type: 'number' },
+        ceiling: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'validate_level_playable',
+    description: 'Check spawn/goal markers, navigation region, collision presence',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        spawn_name: { type: 'string' },
+        goal_name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'gridmap_set_cell',
+    description: 'Set a GridMap cell item (3D tile paint)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        x: { type: 'number' },
+        y: { type: 'number' },
+        z: { type: 'number' },
+        item: { type: 'number' },
+        orientation: { type: 'number' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'gridmap_fill_rect',
+    description: 'Fill a GridMap axis-aligned region with an item',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        x0: { type: 'number' },
+        y0: { type: 'number' },
+        z0: { type: 'number' },
+        x1: { type: 'number' },
+        y1: { type: 'number' },
+        z1: { type: 'number' },
+        item: { type: 'number' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'place_prop_scatter',
+    description: 'Seeded scatter of scene instances or box meshes in a region',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        scene_path: { type: 'string' },
+        count: { type: 'number' },
+        seed: { type: 'number' },
+        min_x: { type: 'number' },
+        max_x: { type: 'number' },
+        min_z: { type: 'number' },
+        max_z: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
     name: 'insert_method_key',
     description: 'Call Method track key (human method track in Animation editor)',
     inputSchema: {

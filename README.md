@@ -45,6 +45,7 @@ Full docs live under **[`docs/`](docs/README.md)**:
 | **[docs/HEADLESS_AGENT.md](docs/HEADLESS_AGENT.md)** | Full IDE-parity agentic / headless workflow |
 | **[docs/ANIMATION_FINE_TUNE.md](docs/ANIMATION_FINE_TUNE.md)** | Example animations → fine-tune via MCP |
 | **[docs/CURVES_AND_BEZIER.md](docs/CURVES_AND_BEZIER.md)** | Numerical Curve/Bezier plane control |
+| **[docs/HUMANOID_AND_LEVELS.md](docs/HUMANOID_AND_LEVELS.md)** | Humanoid + level design agent verticals |
 
 ### Reference
 
