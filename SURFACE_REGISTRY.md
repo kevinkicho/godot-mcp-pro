@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.31.0**  
+Plugin version: **1.32.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 627
-- **Command modules:** 61
+- **Registered plugin commands:** 667
+- **Command modules:** 65
 
 ## Commands by module
 
@@ -134,6 +134,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `find_node_references`
 - `get_scene_dependencies`
 - `cross_scene_set_property`
+
+### behavior_tree_commands (6)
+
+- `create_behavior_tree_runtime_script`
+- `create_behavior_tree_resource`
+- `create_behavior_tree_runner_script`
+- `create_blackboard_script`
+- `setup_behavior_tree_on_node`
+- `list_behavior_tree_recipes`
 
 ### character_system_commands (10)
 
@@ -262,7 +271,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_editor_camera`
 - `set_editor_camera`
 
-### export_commands (8)
+### export_commands (13)
 
 - `list_export_presets`
 - `export_project`
@@ -272,6 +281,11 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_export_preset_option`
 - `remove_export_preset`
 - `get_export_preset`
+- `set_export_filters`
+- `export_and_verify`
+- `list_export_templates`
+- `duplicate_export_preset`
+- `has_matching_template`
 
 ### filesystem_commands (8)
 
@@ -322,7 +336,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `load_po_translation`
 - `list_translations`
 
-### import_3d_commands (8)
+### import_3d_commands (11)
 
 - `list_imported_scene_contents`
 - `extract_meshes_from_scene`
@@ -331,6 +345,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `pack_mesh_library_from_scene`
 - `create_scene_from_gltf`
 - `set_gltf_import_flags`
+- `set_fbx_import_flags`
+- `list_scene_import_options`
+- `apply_scene_import_advanced`
 - `list_3d_import_tools`
 
 ### import_commands (15)
@@ -543,7 +560,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_layer_names`
 - `get_layer_names`
 
-### quest_system_commands (8)
+### quest_system_commands (12)
 
 - `create_quest_resource`
 - `create_quest_log_script`
@@ -552,6 +569,10 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `merge_dialogue_lines`
 - `create_quest_giver_script`
 - `create_objective_tracker_script`
+- `export_dialogue_graph_mermaid`
+- `export_dialogue_graph_dot`
+- `add_dialogue_graph_node`
+- `list_dialogue_graph_nodes`
 - `list_quest_recipes`
 
 ### resource_commands (6)
@@ -667,6 +688,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `attach_script`
 - `get_open_scripts`
 - `validate_script`
+
+### settings_save_commands (6)
+
+- `create_settings_resource_script`
+- `create_settings_manager_script`
+- `setup_settings_menu`
+- `setup_save_slot_menu`
+- `create_enhanced_save_manager_script`
+- `list_settings_save_recipes`
 
 ### shader_commands (9)
 
@@ -797,6 +827,19 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `remove_node_from_group`
 - `create_state_machine_script`
 
+### vfx_shader_commands (10)
+
+- `create_shader_preset`
+- `list_shader_presets`
+- `apply_canvas_shader_to_node`
+- `apply_spatial_shader_to_mesh`
+- `setup_trail_vfx`
+- `setup_flash_hurt_vfx`
+- `setup_screen_fade_overlay`
+- `create_dissolve_shader`
+- `create_outline_shader`
+- `create_hit_stop_script`
+
 ### visual_shader_commands (7)
 
 - `create_visual_shader`
@@ -806,6 +849,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `visual_shader_get_info`
 - `assign_visual_shader_material`
 - `visual_shader_add_preset_fresnel`
+
+### webrtc_multiplayer_commands (6)
+
+- `create_webrtc_multiplayer_template`
+- `create_signaling_server_script`
+- `create_matchmaking_client_script`
+- `create_input_buffer_netcode_script`
+- `create_lag_compensation_helper_script`
+- `list_webrtc_recipes`
 
 ### xr_commands (15)
 

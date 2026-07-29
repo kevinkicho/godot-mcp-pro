@@ -4,6 +4,39 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.32.0 — 2026-07-28
+
+**Full remaining slice pack:** WebRTC/matchmaking/netcode, dialogue graph viz, FBX import depth, behavior trees, export polish, VFX/shaders, settings/save menus.
+
+### WebRTC / netcode (`webrtc_multiplayer_commands`)
+- `create_webrtc_multiplayer_template`, `create_signaling_server_script`, `create_matchmaking_client_script`
+- `create_input_buffer_netcode_script` (delay-based, not full GGPO)
+- `create_lag_compensation_helper_script`, `list_webrtc_recipes`
+
+### Dialogue graph tooling (`quest_system_commands` expand)
+- `export_dialogue_graph_mermaid`, `export_dialogue_graph_dot`
+- `add_dialogue_graph_node`, `list_dialogue_graph_nodes`
+
+### FBX / scene import (`import_3d_commands` expand)
+- `list_scene_import_options`, `set_fbx_import_flags`, `apply_scene_import_advanced`
+
+### Behavior trees (`behavior_tree_commands`)
+- Runtime + blackboard + JSON trees + runner + `setup_behavior_tree_on_node`
+
+### Export polish (`export_commands` expand)
+- `set_export_filters`, `export_and_verify`, `list_export_templates`, `duplicate_export_preset`
+
+### VFX / shaders (`vfx_shader_commands`)
+- Shader presets (flash, outline, dissolve, hologram, fresnel, toon…)
+- `apply_canvas_shader_to_node`, `apply_spatial_shader_to_mesh`
+- Trail VFX, hurt flash, screen fade, hit-stop
+
+### Settings / save (`settings_save_commands`)
+- SettingsManager + settings menu UI
+- Enhanced multi-slot SaveManager + save slot menu
+
+---
+
 ## v1.31.0 — 2026-07-28
 
 **3D import depth + quest graphs + multiplayer host/join runtime.**

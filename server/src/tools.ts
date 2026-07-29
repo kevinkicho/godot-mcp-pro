@@ -1030,6 +1030,245 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     description: 'List multiplayer host/join/spawn recipes.',
     inputSchema: emptyProps,
   },
+  // ── v1.32 systems ──
+  {
+    name: 'create_webrtc_multiplayer_template',
+    description: 'WebRTC multiplayer peer helper (needs signaling + WebRTC-enabled Godot).',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, overwrite: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'create_signaling_server_script',
+    description: 'Lightweight WebSocket signaling server for WebRTC offer/answer/ICE relay.',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, port: { type: 'number' }, overwrite: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'create_matchmaking_client_script',
+    description: 'Matchmaking client: join rooms and relay WebRTC signals.',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, overwrite: { type: 'boolean' } },
+      required: [],
+    },
+  },
+  {
+    name: 'create_input_buffer_netcode_script',
+    description: 'Delay-based input-buffer netcode (not full GGPO rollback).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        input_delay_frames: { type: 'number' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_behavior_tree_on_node',
+    description: 'Attach BT runner + example JSON tree to an AI node (selector/sequence/action).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        tree_path: { type: 'string' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_behavior_tree_resource',
+    description: 'JSON behavior tree (selector/sequence/condition/action).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        name: { type: 'string' },
+        tree: { type: 'object' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'export_dialogue_graph_mermaid',
+    description: 'Export dialogue JSON graph to Mermaid flowchart for visualization.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        output_path: { type: 'string' },
+        write_file: { type: 'boolean' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'add_dialogue_graph_node',
+    description: 'Add/update a node in a dialogue graph JSON (programmatic graph editor).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        id: { type: 'string' },
+        speaker: { type: 'string' },
+        text: { type: 'string' },
+        next: { type: 'string' },
+        choices: { type: 'array' },
+        node: { type: 'object' },
+        as_start: { type: 'boolean' },
+      },
+      required: ['path', 'id'],
+    },
+  },
+  {
+    name: 'list_scene_import_options',
+    description: 'Dump .import params for glTF/FBX/scene assets (advanced import dock parity).',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' } },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'set_fbx_import_flags',
+    description: 'Set FBX/scene import flags and reimport.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        import_animations: { type: 'boolean' },
+        generate_lods: { type: 'boolean' },
+        generate_tangents: { type: 'boolean' },
+        root_type: { type: 'string' },
+        extra: { type: 'object' },
+        reimport: { type: 'boolean' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'export_and_verify',
+    description: 'Run headless export then verify output file exists/size.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        preset_name: { type: 'string' },
+        preset_index: { type: 'number' },
+        debug: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_shader_preset',
+    description:
+      'Write a polished shader preset (flash_white, outline_2d, dissolve, hologram, fresnel_glow, toon_simple…).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        preset: { type: 'string' },
+        path: { type: 'string' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'apply_canvas_shader_to_node',
+    description: 'Apply canvas_item shader preset to a CanvasItem node.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        preset: { type: 'string' },
+        shader_path: { type: 'string' },
+        params: { type: 'object' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'setup_screen_fade_overlay',
+    description: 'Fullscreen fade overlay with fade_to_black / fade_from_black API.',
+    inputSchema: {
+      type: 'object',
+      properties: { parent_path: { type: 'string' }, layer: { type: 'number' } },
+      required: [],
+    },
+  },
+  {
+    name: 'create_settings_manager_script',
+    description: 'SettingsManager autoload: volume, fullscreen, vsync, locale — user://settings.cfg.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_settings_menu',
+    description: 'Settings UI (volume sliders, fullscreen, vsync) bound to SettingsManager.',
+    inputSchema: {
+      type: 'object',
+      properties: { parent_path: { type: 'string' } },
+      required: [],
+    },
+  },
+  {
+    name: 'create_enhanced_save_manager_script',
+    description: 'Multi-slot SaveManager with metadata + autosave.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        overwrite: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_save_slot_menu',
+    description: 'Save/Load slot UI (3 slots) for SaveManager.',
+    inputSchema: {
+      type: 'object',
+      properties: { parent_path: { type: 'string' } },
+      required: [],
+    },
+  },
+  {
+    name: 'list_webrtc_recipes',
+    description: 'WebRTC, matchmaking, and netcode recipe list.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_behavior_tree_recipes',
+    description: 'Behavior tree node types and setup flow.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_shader_presets',
+    description: 'Available VFX/shader presets.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'list_settings_save_recipes',
+    description: 'Settings menu + save slot recipes.',
+    inputSchema: emptyProps,
+  },
   {
     name: 'get_filesystem_tree',
     description: 'Project file tree with optional filter (e.g. *.tscn, *.gd)',

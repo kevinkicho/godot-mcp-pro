@@ -13,6 +13,10 @@ func get_commands() -> Dictionary:
 		"merge_dialogue_lines": _merge_dialogue_lines,
 		"create_quest_giver_script": _create_quest_giver_script,
 		"create_objective_tracker_script": _create_objective_tracker_script,
+		"export_dialogue_graph_mermaid": _export_dialogue_graph_mermaid,
+		"export_dialogue_graph_dot": _export_dialogue_graph_dot,
+		"add_dialogue_graph_node": _add_dialogue_graph_node,
+		"list_dialogue_graph_nodes": _list_dialogue_graph_nodes,
 		"list_quest_recipes": _list_quest_recipes,
 	}
 
@@ -425,6 +429,189 @@ func _unhandled_input(event: InputEvent) -> void:
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "requires": ["QuestLog autoload", "player in group 'player'"]})
+
+
+func _load_dialogue_nodes(path: String) -> Dictionary:
+	if not FileAccess.file_exists(path):
+		return {}
+	var f := FileAccess.open(path, FileAccess.READ)
+	var parsed = JSON.parse_string(f.get_as_text())
+	f.close()
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	var nodes: Dictionary = {}
+	if parsed.has("nodes") and parsed["nodes"] is Dictionary:
+		return {"start": str(parsed.get("start", "")), "nodes": parsed["nodes"], "raw": parsed}
+	if parsed.has("lines") and parsed["lines"] is Array:
+		for line in parsed["lines"]:
+			if line is Dictionary and line.has("id"):
+				var n: Dictionary = line.duplicate()
+				var nid := str(n["id"])
+				n.erase("id")
+				nodes[nid] = n
+		return {"start": str(parsed.get("start", "")), "nodes": nodes, "raw": parsed}
+	return {}
+
+
+func _export_dialogue_graph_mermaid(params: Dictionary) -> Dictionary:
+	## Visual dialogue graph as Mermaid flowchart (for agents/docs/preview).
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
+	var loaded := _load_dialogue_nodes(path)
+	if loaded.is_empty():
+		return error_not_found(path)
+	var nodes: Dictionary = loaded["nodes"]
+	var start: String = str(loaded.get("start", ""))
+	var lines: PackedStringArray = PackedStringArray(["flowchart TD"])
+	if not start.is_empty():
+		lines.append("  start((start)) --> %s" % _mm_id(start))
+	for nid in nodes:
+		var n: Dictionary = nodes[nid]
+		var label := str(n.get("speaker", "")) + ": " + str(n.get("text", "")).left(40)
+		label = label.replace('"', "'")
+		lines.append('  %s["%s"]' % [_mm_id(str(nid)), label])
+		var next := str(n.get("next", ""))
+		if not next.is_empty():
+			lines.append("  %s --> %s" % [_mm_id(str(nid)), _mm_id(next)])
+		if n.has("choices") and n["choices"] is Array:
+			for ch in n["choices"]:
+				if ch is Dictionary:
+					var ct := str(ch.get("text", "choice")).replace('"', "'")
+					var cn := str(ch.get("next", ""))
+					if not cn.is_empty():
+						lines.append('  %s -->|"%s"| %s' % [_mm_id(str(nid)), ct, _mm_id(cn)])
+	var mermaid := "\n".join(lines)
+	var out_path: String = optional_string(params, "output_path", path.get_basename() + ".mmd")
+	if not out_path.begins_with("res://") and not out_path.begins_with("user://"):
+		out_path = "res://" + out_path.trim_prefix("/")
+	if optional_bool(params, "write_file", true):
+		var derr := ensure_parent_dir(out_path)
+		if derr.is_empty():
+			var f := FileAccess.open(out_path, FileAccess.WRITE)
+			if f:
+				f.store_string(mermaid)
+				f.close()
+				EditorInterface.get_resource_filesystem().update_file(out_path)
+	return success({
+		"path": path,
+		"output_path": out_path,
+		"mermaid": mermaid,
+		"node_count": nodes.size(),
+	})
+
+
+func _mm_id(s: String) -> String:
+	return s.validate_node_name().replace("-", "_").replace(" ", "_")
+
+
+func _export_dialogue_graph_dot(params: Dictionary) -> Dictionary:
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
+	var loaded := _load_dialogue_nodes(path)
+	if loaded.is_empty():
+		return error_not_found(path)
+	var nodes: Dictionary = loaded["nodes"]
+	var lines: PackedStringArray = PackedStringArray(["digraph dialogue {"])
+	lines.append('  rankdir=TB;')
+	for nid in nodes:
+		var n: Dictionary = nodes[nid]
+		var label := str(n.get("speaker", "")) + "\\n" + str(n.get("text", "")).left(32)
+		label = label.replace('"', "'")
+		lines.append('  "%s" [label="%s"];' % [nid, label])
+		var next := str(n.get("next", ""))
+		if not next.is_empty():
+			lines.append('  "%s" -> "%s";' % [nid, next])
+		if n.has("choices") and n["choices"] is Array:
+			for ch in n["choices"]:
+				if ch is Dictionary:
+					var cn := str(ch.get("next", ""))
+					var ct := str(ch.get("text", "")).replace('"', "'")
+					if not cn.is_empty():
+						lines.append('  "%s" -> "%s" [label="%s"];' % [nid, cn, ct])
+	lines.append("}")
+	var dot := "\n".join(lines)
+	var out_path: String = optional_string(params, "output_path", path.get_basename() + ".dot")
+	if optional_bool(params, "write_file", true):
+		if not out_path.begins_with("res://"):
+			out_path = "res://" + out_path.trim_prefix("/")
+		var derr := ensure_parent_dir(out_path)
+		if derr.is_empty():
+			var f := FileAccess.open(out_path, FileAccess.WRITE)
+			if f:
+				f.store_string(dot)
+				f.close()
+	return success({"path": path, "output_path": out_path, "dot": dot, "node_count": nodes.size()})
+
+
+func _add_dialogue_graph_node(params: Dictionary) -> Dictionary:
+	## Programmatic node editor: add/update one node in a dialogue graph JSON.
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
+	var id_r := require_string(params, "id")
+	if id_r[1] != null:
+		return id_r[1]
+	var nid: String = id_r[0]
+	var loaded := _load_dialogue_nodes(path)
+	var data: Dictionary = loaded.get("raw", {"start": "start", "nodes": {}, "meta": {"format": "graph"}})
+	if not data.has("nodes") or not data["nodes"] is Dictionary:
+		data["nodes"] = {}
+	var node: Dictionary = {}
+	if params.has("node") and params["node"] is Dictionary:
+		node = params["node"]
+	else:
+		if params.has("speaker"):
+			node["speaker"] = params["speaker"]
+		if params.has("text"):
+			node["text"] = params["text"]
+		if params.has("next"):
+			node["next"] = params["next"]
+		if params.has("choices"):
+			node["choices"] = params["choices"]
+		if params.has("quest_start"):
+			node["quest_start"] = params["quest_start"]
+		if params.has("set_flag"):
+			node["set_flag"] = params["set_flag"]
+	if node.is_empty():
+		return error_invalid_params("Provide node{} or speaker/text/next/choices")
+	data["nodes"][nid] = node
+	if optional_bool(params, "as_start", false):
+		data["start"] = nid
+	var w := _write_json(path, data, true)
+	if w.has("error"):
+		return w
+	return success({"path": path, "id": nid, "node": node, "node_count": data["nodes"].size()})
+
+
+func _list_dialogue_graph_nodes(params: Dictionary) -> Dictionary:
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var loaded := _load_dialogue_nodes(res_path[0])
+	if loaded.is_empty():
+		return error_not_found(res_path[0])
+	var nodes: Dictionary = loaded["nodes"]
+	var summary: Array = []
+	for nid in nodes:
+		var n: Dictionary = nodes[nid]
+		summary.append({
+			"id": nid,
+			"speaker": n.get("speaker", ""),
+			"text": str(n.get("text", "")).left(80),
+			"next": n.get("next", ""),
+			"choices": n.get("choices", []).size() if n.get("choices") is Array else 0,
+		})
+	return success({
+		"path": res_path[0],
+		"start": loaded.get("start", ""),
+		"nodes": summary,
+		"count": summary.size(),
+	})
 
 
 func _create_objective_tracker_script(params: Dictionary) -> Dictionary:

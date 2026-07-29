@@ -12,6 +12,10 @@ func get_commands() -> Dictionary:
 		"set_export_preset_option": _set_export_preset_option,
 		"remove_export_preset": _remove_export_preset,
 		"get_export_preset": _get_export_preset,
+		"set_export_filters": _set_export_filters,
+		"export_and_verify": _export_and_verify,
+		"list_export_templates": _list_export_templates,
+		"duplicate_export_preset": _duplicate_export_preset,
 	}
 
 
@@ -341,3 +345,130 @@ func _remove_export_preset(params: Dictionary) -> Dictionary:
 	if err != OK:
 		return error_internal(error_string(err))
 	return success({"removed": section, "remaining": presets.size()})
+
+
+func _set_export_filters(params: Dictionary) -> Dictionary:
+	## Set export_filter / include_filter / exclude_filter on a preset.
+	var cfg := ConfigFile.new()
+	if not FileAccess.file_exists(_presets_path()):
+		return error_not_found("export_presets.cfg")
+	cfg.load(_presets_path())
+	var section := _resolve_preset_section(cfg, params)
+	if section.is_empty():
+		return error_not_found("Export preset")
+	var applied: Dictionary = {}
+	if params.has("export_filter"):
+		cfg.set_value(section, "export_filter", str(params["export_filter"]))
+		applied["export_filter"] = params["export_filter"]
+	if params.has("include_filter"):
+		cfg.set_value(section, "include_filter", str(params["include_filter"]))
+		applied["include_filter"] = params["include_filter"]
+	if params.has("exclude_filter"):
+		cfg.set_value(section, "exclude_filter", str(params["exclude_filter"]))
+		applied["exclude_filter"] = params["exclude_filter"]
+	if params.has("export_path"):
+		cfg.set_value(section, "export_path", str(params["export_path"]))
+		applied["export_path"] = params["export_path"]
+	if applied.is_empty():
+		return error_invalid_params("Provide export_filter|include_filter|exclude_filter|export_path")
+	var err := cfg.save(_presets_path())
+	if err != OK:
+		return error_internal(error_string(err))
+	return success({"section": section, "applied": applied})
+
+
+func _export_and_verify(params: Dictionary) -> Dictionary:
+	## run_export then check export file exists and size.
+	var result := _run_export(params)
+	if result.has("error"):
+		return result
+	var data: Dictionary = result.get("result", {})
+	var export_path: String = str(data.get("export_path", ""))
+	var abs_path := export_path
+	if export_path.begins_with("res://"):
+		abs_path = ProjectSettings.globalize_path(export_path)
+	var exists := FileAccess.file_exists(abs_path) or DirAccess.dir_exists_absolute(abs_path)
+	var size_bytes := 0
+	if FileAccess.file_exists(abs_path):
+		var f := FileAccess.open(abs_path, FileAccess.READ)
+		if f:
+			size_bytes = f.get_length()
+			f.close()
+	var ok: bool = bool(data.get("ok", false)) and exists
+	return success({
+		"ok": ok,
+		"exit_code": data.get("exit_code", -1),
+		"export_path": export_path,
+		"absolute_path": abs_path,
+		"file_exists": exists,
+		"size_bytes": size_bytes,
+		"output_tail": str(data.get("output", "")).right(2000),
+		"preset": data.get("preset", ""),
+	})
+
+
+func _list_export_templates(_params: Dictionary) -> Dictionary:
+	## Scan Godot export_templates directory for installed versions.
+	var templates_path := OS.get_data_dir().path_join("export_templates")
+	var versions: Array = []
+	if DirAccess.dir_exists_absolute(templates_path):
+		var dir := DirAccess.open(templates_path)
+		if dir:
+			dir.list_dir_begin()
+			var n := dir.get_next()
+			while not n.is_empty():
+				if dir.current_is_dir() and not n.begins_with("."):
+					versions.append(n)
+				n = dir.get_next()
+			dir.list_dir_end()
+	var godot_ver: Dictionary = Engine.get_version_info()
+	var current := "%s.%s" % [godot_ver.get("major", "?"), godot_ver.get("minor", "?")]
+	if godot_ver.has("status") and str(godot_ver["status"]) != "stable":
+		current += ".%s" % godot_ver.get("status", "")
+	# Also try full version string style 4.x.x
+	var full := "%s.%s.%s" % [godot_ver.get("major", 0), godot_ver.get("minor", 0), godot_ver.get("patch", 0)]
+	return success({
+		"templates_dir": templates_path,
+		"installed_versions": versions,
+		"count": versions.size(),
+		"editor_version": godot_ver,
+		"likely_template_keys": [full, current],
+		"has_matching_template": _has_matching_template(versions, full, godot_ver),
+	})
+
+
+func _has_matching_template(versions: Array, full: String, godot_ver: Dictionary) -> bool:
+	if full in versions:
+		return true
+	var prefix := str(godot_ver.get("major", "")) + "." + str(godot_ver.get("minor", ""))
+	for v in versions:
+		if str(v).begins_with(prefix):
+			return true
+	return false
+
+
+func _duplicate_export_preset(params: Dictionary) -> Dictionary:
+	var cfg := ConfigFile.new()
+	if not FileAccess.file_exists(_presets_path()):
+		return error_not_found("export_presets.cfg")
+	cfg.load(_presets_path())
+	var section := _resolve_preset_section(cfg, params)
+	if section.is_empty():
+		return error_not_found("Export preset")
+	var new_name: String = optional_string(params, "new_name", str(cfg.get_value(section, "name", "Preset")) + " Copy")
+	var idx := _next_preset_index(cfg)
+	var dest := "preset.%d" % idx
+	for k in cfg.get_section_keys(section):
+		var val = cfg.get_value(section, k)
+		if k == "name":
+			val = new_name
+		cfg.set_value(dest, k, val)
+	var opt_src := section + ".options"
+	var opt_dst := dest + ".options"
+	if cfg.has_section(opt_src):
+		for k2 in cfg.get_section_keys(opt_src):
+			cfg.set_value(opt_dst, k2, cfg.get_value(opt_src, k2))
+	var err := cfg.save(_presets_path())
+	if err != OK:
+		return error_internal(error_string(err))
+	return success({"index": idx, "name": new_name, "source_section": section})

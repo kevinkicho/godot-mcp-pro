@@ -80,6 +80,11 @@ func _register_commands() -> void:
 		preload("res://addons/godot_mcp/commands/import_3d_commands.gd"),
 		preload("res://addons/godot_mcp/commands/quest_system_commands.gd"),
 		preload("res://addons/godot_mcp/commands/multiplayer_runtime_commands.gd"),
+		# v1.32: WebRTC/netcode, BT, VFX/shaders, settings/save, export polish
+		preload("res://addons/godot_mcp/commands/webrtc_multiplayer_commands.gd"),
+		preload("res://addons/godot_mcp/commands/behavior_tree_commands.gd"),
+		preload("res://addons/godot_mcp/commands/vfx_shader_commands.gd"),
+		preload("res://addons/godot_mcp/commands/settings_save_commands.gd"),
 	]
 
 	for cmd_class in command_classes:

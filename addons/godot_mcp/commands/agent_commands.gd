@@ -345,10 +345,59 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"tools": [
 				"create_quest_resource", "create_quest_log_script", "create_quest_giver_script",
 				"create_objective_tracker_script", "create_dialogue_graph_resource",
-				"validate_dialogue_graph", "merge_dialogue_lines", "setup_dialogue_box_ui",
-				"create_dialogue_resource", "create_dialogue_runner_script", "list_quest_recipes",
+				"validate_dialogue_graph", "merge_dialogue_lines", "add_dialogue_graph_node",
+				"list_dialogue_graph_nodes", "export_dialogue_graph_mermaid", "export_dialogue_graph_dot",
+				"setup_dialogue_box_ui", "create_dialogue_resource", "create_dialogue_runner_script",
+				"list_quest_recipes",
 			],
-			"gaps": ["visual dialogue graph editor", "localization-aware dialogue tables"],
+			"gaps": ["in-editor visual graph canvas widget", "localization-aware dialogue tables"],
+		},
+		"ai_behavior_trees": {
+			"status": "strong",
+			"tools": [
+				"create_behavior_tree_runtime_script", "create_blackboard_script",
+				"create_behavior_tree_resource", "create_behavior_tree_runner_script",
+				"setup_behavior_tree_on_node", "list_behavior_tree_recipes",
+				"create_gameplay_state_machine_script", "setup_ai_agent_2d/3d",
+			],
+			"gaps": ["visual BT editor UI", "full utility AI / GOAP planner"],
+		},
+		"networking_webrtc": {
+			"status": "partial",
+			"tools": [
+				"create_webrtc_multiplayer_template", "create_signaling_server_script",
+				"create_matchmaking_client_script", "create_input_buffer_netcode_script",
+				"create_lag_compensation_helper_script", "list_webrtc_recipes",
+			],
+			"gaps": ["commercial relay/TURN automation", "full GGPO rollback simulation"],
+		},
+		"shaders_vfx": {
+			"status": "strong",
+			"tools": [
+				"create_shader_preset", "list_shader_presets", "apply_canvas_shader_to_node",
+				"apply_spatial_shader_to_mesh", "setup_trail_vfx", "setup_flash_hurt_vfx",
+				"setup_screen_fade_overlay", "create_hit_stop_script", "create_particles",
+				"create_shader", "visual_shader_*",
+			],
+			"gaps": ["full visual shader graph parity for every node type"],
+		},
+		"settings_save_menus": {
+			"status": "strong",
+			"tools": [
+				"create_settings_manager_script", "setup_settings_menu",
+				"create_enhanced_save_manager_script", "setup_save_slot_menu",
+				"create_save_manager_script", "create_game_state_script",
+			],
+			"gaps": ["cloud save backends"],
+		},
+		"export_pipeline": {
+			"status": "strong",
+			"tools": [
+				"list_export_presets", "create_export_preset", "run_export", "export_and_verify",
+				"set_export_filters", "list_export_templates", "duplicate_export_preset",
+				"set_export_preset_option", "deploy_to_android",
+			],
+			"gaps": ["iOS code signing automation", "store upload APIs"],
 		},
 		"tutorials/performance": {
 			"status": "strong",

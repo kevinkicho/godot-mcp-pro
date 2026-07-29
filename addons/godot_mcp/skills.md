@@ -41,10 +41,23 @@ list_*_templates / list_render_presets    → discovery
 
 ```
 list_imported_scene_contents → extract_meshes_from_scene → instance_scene_as_inherited
-set_gltf_import_flags / apply_scene_import_preset
+set_gltf_import_flags / set_fbx_import_flags / list_scene_import_options
 create_quest_resource + create_quest_log_script + create_dialogue_graph_resource
+export_dialogue_graph_mermaid / add_dialogue_graph_node
 create_multiplayer_game_manager_script + create_multiplayer_lobby_ui
 setup_multiplayer_player_scene + setup_multiplayer_spawn_stack
+```
+
+### 0e. Advanced (WebRTC, BT, VFX, settings, export)
+
+```
+create_webrtc_multiplayer_template + create_signaling_server_script
+create_input_buffer_netcode_script
+setup_behavior_tree_on_node + create_behavior_tree_resource
+create_shader_preset / apply_canvas_shader_to_node / setup_screen_fade_overlay
+create_settings_manager_script + setup_settings_menu
+create_enhanced_save_manager_script + setup_save_slot_menu
+export_and_verify / list_export_templates
 ```
 
 ### 0b. Asset intake (human FileSystem + Import)

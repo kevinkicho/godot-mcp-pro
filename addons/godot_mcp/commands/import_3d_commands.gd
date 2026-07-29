@@ -14,6 +14,9 @@ func get_commands() -> Dictionary:
 		"pack_mesh_library_from_scene": _pack_mesh_library_from_scene,
 		"create_scene_from_gltf": _create_scene_from_gltf,
 		"set_gltf_import_flags": _set_gltf_import_flags,
+		"set_fbx_import_flags": _set_fbx_import_flags,
+		"list_scene_import_options": _list_scene_import_options,
+		"apply_scene_import_advanced": _apply_scene_import_advanced,
 		"list_3d_import_tools": _list_3d_import_tools,
 	}
 
@@ -22,13 +25,14 @@ func _list_3d_import_tools(_params: Dictionary) -> Dictionary:
 	return success({
 		"pipeline": [
 			"stage_files_into_res / ensure_imported for .glb/.gltf/.fbx",
-			"apply_scene_import_preset or set_gltf_import_flags",
+			"list_scene_import_options → set_gltf_import_flags / set_fbx_import_flags / apply_scene_import_advanced",
 			"list_imported_scene_contents",
 			"extract_meshes_from_scene / extract_materials_from_scene",
 			"instance_scene_as_inherited or create_scene_from_gltf",
 			"pack_mesh_library_from_scene for GridMap",
 		],
 		"tools": get_commands().keys(),
+		"fbx_notes": "FBX importer keys live in path.import [params]; use list_scene_import_options after first import.",
 	})
 
 
@@ -473,3 +477,109 @@ func _set_gltf_import_flags(params: Dictionary) -> Dictionary:
 		if fs:
 			fs.reimport_files(PackedStringArray([path]))
 	return success({"path": path, "changed": changed, "reimport_started": reimport})
+
+
+func _list_scene_import_options(params: Dictionary) -> Dictionary:
+	## Dump current .import params for a 3D/scene asset (glTF/FBX/obj).
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
+	var import_path := path + ".import"
+	if not FileAccess.file_exists(import_path):
+		return error_not_found(import_path, "Import the asset first (ensure_imported)")
+	var cfg := ConfigFile.new()
+	if cfg.load(import_path) != OK:
+		return error_internal("Cannot load .import")
+	var remap: Dictionary = {}
+	var params_out: Dictionary = {}
+	if cfg.has_section("remap"):
+		for k in cfg.get_section_keys("remap"):
+			remap[k] = cfg.get_value("remap", k)
+	if cfg.has_section("params"):
+		for k2 in cfg.get_section_keys("params"):
+			params_out[k2] = cfg.get_value("params", k2)
+	return success({
+		"path": path,
+		"importer": remap.get("importer", ""),
+		"type": remap.get("type", ""),
+		"params": params_out,
+		"param_count": params_out.size(),
+		"hint": "Pass keys to apply_scene_import_advanced options{} or set_gltf/fbx_import_flags",
+	})
+
+
+func _set_fbx_import_flags(params: Dictionary) -> Dictionary:
+	## FBX-oriented import flags (same .import params mechanism; keys vary by Godot version).
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
+	var options: Dictionary = {}
+	# Common FBX / scene importer keys
+	if params.has("import_animations"):
+		options["animation/import"] = bool(params["import_animations"])
+	if params.has("fps"):
+		options["animation/fps"] = int(params["fps"])
+	if params.has("use_fps_from_file"):
+		options["animation/trimming"] = bool(params.get("trimming", false))
+		options["animation/remove_immutable_tracks"] = bool(params.get("remove_immutable_tracks", true))
+	if params.has("generate_tangents"):
+		options["meshes/ensure_tangents"] = bool(params["generate_tangents"])
+	if params.has("generate_lods"):
+		options["meshes/generate_lods"] = bool(params["generate_lods"])
+	if params.has("create_shadow_meshes"):
+		options["meshes/create_shadow_meshes"] = bool(params["create_shadow_meshes"])
+	if params.has("light_baking"):
+		options["meshes/light_baking"] = params["light_baking"]
+	if params.has("root_type"):
+		options["nodes/root_type"] = str(params["root_type"])
+	if params.has("root_name"):
+		options["nodes/root_name"] = str(params["root_name"])
+	if params.has("import_as_skeleton"):
+		options["nodes/import_as_skeleton_bones"] = bool(params["import_as_skeleton"])
+	if params.has("use_named_skin_binds"):
+		options["skins/use_named_skins"] = bool(params["use_named_skin_binds"])
+	if params.has("allow_geometry_helper_nodes"):
+		options["nodes/apply_root_scale"] = bool(params.get("apply_root_scale", true))
+	if params.has("extra") and params["extra"] is Dictionary:
+		for k in params["extra"]:
+			options[str(k)] = params["extra"][k]
+	if options.is_empty():
+		return error_invalid_params("Provide FBX flags or extra{}. Prefer list_scene_import_options first.")
+	return _apply_scene_import_advanced({
+		"path": path,
+		"options": options,
+		"reimport": optional_bool(params, "reimport", true),
+	})
+
+
+func _apply_scene_import_advanced(params: Dictionary) -> Dictionary:
+	## Write arbitrary .import [params] for scene importers (glTF/FBX/Blender).
+	var res_path := require_res_path(params, "path")
+	if res_path[1] != null:
+		return res_path[1]
+	var path: String = res_path[0]
+	if not params.has("options") or not params["options"] is Dictionary:
+		return error_invalid_params("options{} required")
+	var options: Dictionary = params["options"]
+	var import_path := path + ".import"
+	if not FileAccess.file_exists(import_path):
+		return error_not_found(import_path, "Import the asset first")
+	var cfg := ConfigFile.new()
+	if cfg.load(import_path) != OK:
+		return error_internal("Cannot load .import")
+	var changed: Array = []
+	for k in options:
+		var key := str(k)
+		var old = cfg.get_value("params", key) if cfg.has_section_key("params", key) else null
+		cfg.set_value("params", key, options[k])
+		changed.append({"key": key, "old": old, "new": options[k]})
+	if cfg.save(import_path) != OK:
+		return error_internal("Cannot save .import")
+	var reimport: bool = optional_bool(params, "reimport", true)
+	if reimport:
+		var fs := EditorInterface.get_resource_filesystem()
+		if fs:
+			fs.reimport_files(PackedStringArray([path]))
+	return success({"path": path, "changed": changed, "count": changed.size(), "reimport_started": reimport})
