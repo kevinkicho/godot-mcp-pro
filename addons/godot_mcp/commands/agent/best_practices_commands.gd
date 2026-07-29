@@ -55,8 +55,8 @@ func _analyze_project_best_practices(params: Dictionary) -> Dictionary:
 		issues.append({
 			"severity": "info",
 			"id": "unnamed_physics_layers",
-			"message": "Physics layers 1-8 have no names — hard for agents/humans",
-			"fix": "scaffold_project_defaults or set_project_setting layer_names/…",
+			"message": "Physics layers 1-8 have no names - hard for agents/humans",
+			"fix": "scaffold_project_defaults or set_project_setting layer_names/...",
 		})
 	else:
 		ok_items.append("physics_layer_names")
@@ -108,7 +108,7 @@ func _walk_names(n: Node, root: Node, issues: Array, checked: int) -> void:
 	if nm.is_empty():
 		issues.append({"severity": "warning", "path": str(root.get_path_to(n)), "message": "Empty name"})
 	elif nm.contains("@"):
-		issues.append({"severity": "info", "path": str(root.get_path_to(n)), "message": "Engine auto-name %s — rename for stable paths" % nm})
+		issues.append({"severity": "info", "path": str(root.get_path_to(n)), "message": "Engine auto-name %s - rename for stable paths" % nm})
 	elif nm.begins_with("Node") and nm.length() <= 6:
 		issues.append({"severity": "info", "path": str(root.get_path_to(n)), "message": "Generic name %s" % nm})
 	# duplicate sibling names are illegal in Godot so skip
@@ -138,7 +138,7 @@ func _check_autoload_hygiene(_params: Dictionary) -> Dictionary:
 				elif not FileAccess.file_exists(path) and not ResourceLoader.exists(path):
 					issues.append({"severity": "error", "id": "autoload_missing", "message": "Autoload %s missing file %s" % [key, path]})
 				if key == key.to_lower() and key.length() > 0:
-					issues.append({"severity": "info", "id": "autoload_case", "message": "Autoload '%s' is lowercase — PascalCase common for singletons" % key})
+					issues.append({"severity": "info", "id": "autoload_case", "message": "Autoload '%s' is lowercase - PascalCase common for singletons" % key})
 	var has_err := false
 	for i in issues:
 		if str(i.get("severity", "")) == "error":
@@ -156,7 +156,7 @@ func _check_res_path_conventions(params: Dictionary) -> Dictionary:
 	for f in files:
 		var p: String = str(f)
 		if p.contains(" "):
-			issues.append({"severity": "warning", "path": p, "message": "Space in path — prefer snake_case"})
+			issues.append({"severity": "warning", "path": p, "message": "Space in path - prefer snake_case"})
 		var base := p.get_file()
 		if base != base.to_lower() and p.ends_with(".gd"):
 			# GDScript files often snake_case

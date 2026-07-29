@@ -4,6 +4,35 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.66.0 — 2026-07-29
+
+**Split oversized modules + surface expansion** — finish v1.65 refactor follow-ups and add high-gain agent tools.
+
+### Refactor / split
+- Merged `scene_flow_depth` into `scene_flow_commands` (game loop + pause + main menu)
+- Split `node_commands` into:
+  - `node_commands` (tree/select)
+  - `node_property_commands` (inspector/resources)
+  - `node_signal_meta_commands` (signals/meta/groups)
+- Split `animation_commands` into:
+  - `animation_commands` (clips/libraries)
+  - `animation_track_commands` (tracks/keys/Bezier)
+  - `animation_playback_commands` (play/stop/seek)
+  - `animation_sprite_frames_commands`
+- Fixed `PropertyParser` preloads on split node modules
+- Normalized mojibake em-dashes/ellipsis across command modules
+- De-duplicated overlapping registrations (`find_nodes_in_group`, `setup_timer`, `setup_camera_2d` dual sources)
+
+### Surface expansion
+- **process**: `set_process_mode`, `batch_set_process_mode`, priorities, `call_group_in_scene`
+- **canvas layers**: stack recipe, order, follow viewport, custom viewport, list/reorder
+- **cutscene**: player script, JSON sequence, setup node
+- **expression apply**: `set_property_from_expression`, `batch_set_from_expressions`
+- **resource UID**: resolve/list/stats for `uid://` sidecars
+- Discovery domains: `process`, `canvas_layers`, `cutscene`
+
+---
+
 ## v1.65.0 — 2026-07-29
 
 **Continue refactor** — split oversized domains, merge thin siblings, rebalance for management.

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Editor plugin packaging helpers — zip addon folder, plugin.cfg validate.
+## Editor plugin packaging helpers - zip addon folder, plugin.cfg validate.
 
 
 func get_commands() -> Dictionary:
@@ -87,7 +87,7 @@ func _validate_cfg(params: Dictionary) -> Dictionary:
 
 
 func _package_addon(params: Dictionary) -> Dictionary:
-	## Copy addon to a package folder (zip requires external tools — we stage a clean folder).
+	## Copy addon to a package folder (zip requires external tools - we stage a clean folder).
 	var addon: String = optional_string(params, "addon", "")
 	if addon.is_empty():
 		return error_invalid_params("addon folder name under res://addons required")

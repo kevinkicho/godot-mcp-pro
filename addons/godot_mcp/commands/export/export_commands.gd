@@ -493,14 +493,14 @@ func _get_export_template_guide(_params: Dictionary) -> Dictionary:
 		"editor_version": godot_ver,
 		"expected_template_folder": full,
 		"install_steps": [
-			"Open Godot Editor → Editor → Manage Export Templates…",
+			"Open Godot Editor -> Editor -> Manage Export Templates...",
 			"Download and install templates matching this editor version",
 			"Or download from https://godotengine.org/download and extract into export_templates/",
 			"list_export_templates to verify",
 		],
 		"templates_dir": OS.get_data_dir().path_join("export_templates"),
 		"agent_note": "Godot does not provide a stable plugin API to download templates; agents guide humans or open the manager UI.",
-		"cli_hint": "Some builds: open Editor → Manage Export Templates. No official headless download flag.",
+		"cli_hint": "Some builds: open Editor -> Manage Export Templates. No official headless download flag.",
 	})
 
 
@@ -520,7 +520,7 @@ func _verify_export_ready(params: Dictionary) -> Dictionary:
 	if not FileAccess.file_exists(presets_path):
 		issues.append({
 			"severity": "error",
-			"message": "No export_presets.cfg — create_export_preset first",
+			"message": "No export_presets.cfg - create_export_preset first",
 		})
 	else:
 		var cfg := ConfigFile.new()

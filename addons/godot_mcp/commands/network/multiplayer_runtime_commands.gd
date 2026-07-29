@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Multiplayer host/join runtime polish — lobby UI, player spawn stack, WebSocket peer.
+## Multiplayer host/join runtime polish - lobby UI, player spawn stack, WebSocket peer.
 
 
 func get_commands() -> Dictionary:
@@ -39,7 +39,7 @@ func _create_multiplayer_game_manager_script(params: Dictionary) -> Dictionary:
 	var max_clients: int = optional_int(params, "max_clients", 8)
 	var game_scene: String = optional_string(params, "game_scene", "res://scenes/main.tscn")
 	var content := """extends Node
-## MCP MultiplayerManager autoload — ENet host/join + scene change + player roster.
+## MCP MultiplayerManager autoload - ENet host/join + scene change + player roster.
 
 const DEFAULT_PORT := %d
 const MAX_CLIENTS := %d
@@ -76,7 +76,7 @@ func join(address: String, port: int = DEFAULT_PORT) -> Error:
 		return err
 	multiplayer.multiplayer_peer = peer
 	_wire()
-	lobby_message.emit("Connecting to %%s:%%d…" %% [address, port])
+	lobby_message.emit("Connecting to %%s:%%d..." %% [address, port])
 	return OK
 
 func leave() -> void:
@@ -247,7 +247,7 @@ func _create_multiplayer_lobby_ui(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/multiplayer_lobby_ui.gd")
 	var scr := """extends CanvasLayer
-## MCP multiplayer lobby UI — wires to MultiplayerManager autoload.
+## MCP multiplayer lobby UI - wires to MultiplayerManager autoload.
 
 @onready var name_edit: LineEdit = $Center/Panel/VBox/NameEdit
 @onready var addr_edit: LineEdit = $Center/Panel/VBox/AddressEdit
@@ -373,7 +373,7 @@ func _setup_multiplayer_player_scene(params: Dictionary) -> Dictionary:
 	var script_content: String
 	if is_3d:
 		script_content = """extends CharacterBody3D
-## MCP networked player 3D — authority-only input.
+## MCP networked player 3D - authority-only input.
 
 @export var speed: float = %.2f
 
@@ -400,7 +400,7 @@ func _physics_process(delta: float) -> void:
 """ % speed
 	else:
 		script_content = """extends CharacterBody2D
-## MCP networked player 2D — authority-only input.
+## MCP networked player 2D - authority-only input.
 
 @export var speed: float = %.1f
 
@@ -530,7 +530,7 @@ func _setup_multiplayer_spawn_stack(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/multiplayer_spawner_host.gd")
 	var scr := """extends Node
-## MCP host spawn helper — spawn one player pawn per peer at SpawnPoints.
+## MCP host spawn helper - spawn one player pawn per peer at SpawnPoints.
 
 @export var player_scene: PackedScene
 @export var spawn_points_path: NodePath = ^"../SpawnPoints"

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Polyphonic SFX — max_polyphony, AudioStreamPolyphonic recipes for overlapping sounds.
+## Polyphonic SFX - max_polyphony, AudioStreamPolyphonic recipes for overlapping sounds.
 
 
 func get_commands() -> Dictionary:
@@ -87,7 +87,7 @@ func _create_sfx_pool(params: Dictionary) -> Dictionary:
 		return res[1]
 	path = res[0]
 	var content := """extends Node
-## Simple SFX pool — play overlapping one-shots without cutting prior sounds.
+## Simple SFX pool - play overlapping one-shots without cutting prior sounds.
 
 @export var player_path: NodePath
 @export var default_bus: StringName = &"SFX"
@@ -130,5 +130,5 @@ func play_path(path: String, volume_db: float = 0.0, pitch_scale: float = 1.0) -
 	return success({
 		"path": path,
 		"autoload_added": added_al,
-		"hint": "setup_polyphonic_player then set player_path; call play_path(res://…)",
+		"hint": "setup_polyphonic_player then set player_path; call play_path(res://...)",
 	})

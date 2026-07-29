@@ -68,7 +68,7 @@ func _find_unused_resources(params: Dictionary) -> Dictionary:
 				idx = end
 
 	# Step 3b: Seed references held by the engine via ProjectSettings
-	# (main scene, audio bus layout, icon, autoloads…) — these may be default
+	# (main scene, audio bus layout, icon, autoloads...) - these may be default
 	# values that never appear as literals in project.godot
 	for setting in ProjectSettings.get_property_list():
 		var setting_name: String = setting["name"]
@@ -129,7 +129,7 @@ func _collect_signal_data(node: Node, root: Node, out: Array) -> void:
 		var connections := node.get_signal_connection_list(sig_name)
 		var targets: Array = []
 		for conn in connections:
-			# Skip editor-internal bookkeeping connections — only persistent
+			# Skip editor-internal bookkeeping connections - only persistent
 			# (scene-serialized) connections are user-relevant
 			if int(conn.get("flags", 0)) & Object.CONNECT_PERSIST == 0:
 				continue
@@ -379,7 +379,7 @@ func _dfs_detect_cycle(node: String, graph: Dictionary, visited: Dictionary,
 				# Scene referenced but not in our graph (might not exist or outside scope)
 				continue
 			if visited[d] == "visiting":
-				# Found a cycle — extract it from the stack
+				# Found a cycle - extract it from the stack
 				var cycle_start := path_stack.find(d)
 				var cycle: Array = path_stack.slice(cycle_start)
 				cycle.append(d)  # Close the cycle

@@ -22,7 +22,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["setup_collision", "create_physics_body", "mesh_create_trimesh_static_body"],
 		"workflow": [
 			"create_shape_resource path=res://shapes/player_capsule.tres type=capsule2d radius=8 height=24",
-			"setup_collision_from_shape_resource parent_path=Player shape_path=…",
+			"setup_collision_from_shape_resource parent_path=Player shape_path=...",
 		],
 	})
 
@@ -62,7 +62,7 @@ func _build_shape(params: Dictionary) -> Array:
 	## Returns [shape_resource, error_or_null]
 	var type_name: String = optional_string(params, "type", optional_string(params, "shape_type", "")).to_lower()
 	if type_name.is_empty():
-		return [null, error_invalid_params("type required — list_shape_resource_types")]
+		return [null, error_invalid_params("type required - list_shape_resource_types")]
 	var shape: Resource = null
 	match type_name:
 		"circle", "circle2d":
@@ -256,7 +256,7 @@ func _assign_shape(params: Dictionary) -> Dictionary:
 			return error_invalid_params("CollisionShape3D needs Shape3D, got %s" % shape.get_class())
 		(node as CollisionShape3D).shape = shape
 	elif node is CollisionPolygon2D:
-		return error_invalid_params("Use polygon points on CollisionPolygon2D — not Shape resources")
+		return error_invalid_params("Use polygon points on CollisionPolygon2D - not Shape resources")
 	else:
 		return error_invalid_params("Node must be CollisionShape2D or CollisionShape3D")
 	mark_current_scene_unsaved()

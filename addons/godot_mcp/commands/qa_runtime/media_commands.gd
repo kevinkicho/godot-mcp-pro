@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## FFmpeg media tools for run recordings — keyframes, clips, contact sheets.
+## FFmpeg media tools for run recordings - keyframes, clips, contact sheets.
 ## Does not reimplement codecs; shells out to system ffmpeg when available.
 
 

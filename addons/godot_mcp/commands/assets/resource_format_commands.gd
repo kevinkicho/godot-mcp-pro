@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Resource format helpers — text/binary save, duplicate path, take over, reimport touch.
+## Resource format helpers - text/binary save, duplicate path, take over, reimport touch.
 
 
 func get_commands() -> Dictionary:
@@ -82,7 +82,7 @@ func _save_as(params: Dictionary) -> Dictionary:
 
 
 func _convert_format(params: Dictionary) -> Dictionary:
-	## Convert .tres ↔ .res by re-saving with appropriate extension.
+	## Convert .tres <-> .res by re-saving with appropriate extension.
 	var from_r := require_res_path(params, "path")
 	if from_r[1] != null:
 		return from_r[1]

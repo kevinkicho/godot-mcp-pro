@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## AnimationLibrary asset packs — bulk clip import, rename, merge for humanoid sets.
+## AnimationLibrary asset packs - bulk clip import, rename, merge for humanoid sets.
 
 
 func get_commands() -> Dictionary:

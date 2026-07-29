@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Named collision layer/mask bits — agents set layers by name not raw bitmasks.
+## Named collision layer/mask bits - agents set layers by name not raw bitmasks.
 
 
 func get_commands() -> Dictionary:
@@ -70,7 +70,7 @@ func _names_to_mask(names: Array, dim: String) -> Array:
 		elif map.has(key):
 			idx = int(map[key])
 		if idx < 1 or idx > 32:
-			return [0, error_invalid_params("Unknown layer '%s' — set_physics_layer_names or use 1-32" % key), []]
+			return [0, error_invalid_params("Unknown layer '%s' - set_physics_layer_names or use 1-32" % key), []]
 		mask |= (1 << (idx - 1))
 		resolved.append({"name": key, "layer_index": idx, "bit": idx - 1})
 	return [mask, null, resolved]

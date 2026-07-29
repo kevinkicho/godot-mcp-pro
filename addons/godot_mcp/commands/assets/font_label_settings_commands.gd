@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## FontFile / LabelSettings — UI typography agents need beyond theme colors.
+## FontFile / LabelSettings - UI typography agents need beyond theme colors.
 
 
 func get_commands() -> Dictionary:

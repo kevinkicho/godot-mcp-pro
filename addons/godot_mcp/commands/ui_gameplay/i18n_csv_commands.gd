@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## i18n polish — open-scene extract, CSV locale tables, string wrap helpers.
+## i18n polish - open-scene extract, CSV locale tables, string wrap helpers.
 
 
 func get_commands() -> Dictionary:
@@ -21,7 +21,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"flow": [
 			"extract_strings_from_open_scene",
 			"export_translation_csv locales=[en,es,ja]",
-			"import_translation_csv path=… then load_csv_translations",
+			"import_translation_csv path=... then load_csv_translations",
 		],
 	})
 
@@ -83,7 +83,7 @@ func _add(found: Dictionary, key: String, source: String) -> void:
 
 
 func _export_translation_csv(params: Dictionary) -> Dictionary:
-	## keys + locales → CSV (first column keys, then locale columns).
+	## keys + locales -> CSV (first column keys, then locale columns).
 	var out_path: String = optional_string(params, "path", "res://locale/translations.csv")
 	if not out_path.begins_with("res://"):
 		out_path = "res://" + out_path.trim_prefix("/")

@@ -465,7 +465,7 @@ func _get_editor_icon(icon_name: String) -> Texture2D:
 
 ## Find the debugger "Continue" button without relying on UI text.
 ## The editor is translated, so matching tooltip/label text breaks for
-## non-English editors (issue #34: Italian → "Continua"). Match by the editor
+## non-English editors (issue #34: Italian -> "Continua"). Match by the editor
 ## theme icon "DebugContinue" first, falling back to the English text only if
 ## the icon can't be resolved.
 func _find_debugger_continue_button() -> Button:

@@ -154,7 +154,7 @@ func _get_bone_info(params: Dictionary) -> Dictionary:
 
 
 func _set_bone_pose(params: Dictionary) -> Dictionary:
-	## Set pose position / rotation (quaternion or euler degrees) / scale — human skeleton dock
+	## Set pose position / rotation (quaternion or euler degrees) / scale - human skeleton dock
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]
@@ -195,7 +195,7 @@ func _set_bone_pose(params: Dictionary) -> Dictionary:
 			var src = params.get("rotation_degrees", params.get("rotation", {}))
 			if src is Dictionary:
 				e = Vector3(float(src.get("x", 0)), float(src.get("y", 0)), float(src.get("z", 0)))
-			# degrees → quaternion via Basis
+			# degrees -> quaternion via Basis
 			var basis := Basis.from_euler(Vector3(deg_to_rad(e.x), deg_to_rad(e.y), deg_to_rad(e.z)))
 			sk.set_bone_pose_rotation(i, basis.get_rotation_quaternion())
 			changed.append("rotation_degrees")
@@ -380,7 +380,7 @@ func _count_mapped(mappings: Array) -> int:
 
 
 func _set_bone_map_mapping(params: Dictionary) -> Dictionary:
-	## Map one profile bone name → skeleton bone name (empty string clears).
+	## Map one profile bone name -> skeleton bone name (empty string clears).
 	var res := require_res_path(params, "path")
 	if res[1] != null:
 		return res[1]
@@ -421,8 +421,8 @@ func _auto_map_bones_by_name(params: Dictionary) -> Dictionary:
 		return error_not_found("Skeleton3D at '%s'" % sk_path_r[0])
 	var profile: SkeletonProfile = bm.profile
 	if profile == null:
-		return error_invalid_params("BoneMap has no profile — create_bone_map with profile=humanoid first")
-	# Build lowercase name → actual skeleton name
+		return error_invalid_params("BoneMap has no profile - create_bone_map with profile=humanoid first")
+	# Build lowercase name -> actual skeleton name
 	var sk_names := {}
 	for i in sk.get_bone_count():
 		var bn := sk.get_bone_name(i)
@@ -454,7 +454,7 @@ func _auto_map_bones_by_name(params: Dictionary) -> Dictionary:
 
 
 func _add_bone_attachment(params: Dictionary) -> Dictionary:
-	## BoneAttachment3D under skeleton — attach weapons/props like human dock.
+	## BoneAttachment3D under skeleton - attach weapons/props like human dock.
 	var r0 := require_string(params, "skeleton_path")
 	if r0[1] != null:
 		return r0[1]

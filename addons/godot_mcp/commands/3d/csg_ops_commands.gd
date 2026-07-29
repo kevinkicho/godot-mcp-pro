@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## CSG composition — operations + bake to MeshInstance (level greybox finalization).
+## CSG composition - operations + bake to MeshInstance (level greybox finalization).
 
 
 func get_commands() -> Dictionary:
@@ -144,7 +144,7 @@ func _csg_bake_to_mesh_instance(params: Dictionary) -> Dictionary:
 
 	if mesh == null:
 		return error_internal(
-			"Could not extract mesh from CSG — ensure shape is root CSG combiner with children, or use editor Mesh → Create MeshInstance"
+			"Could not extract mesh from CSG - ensure shape is root CSG combiner with children, or use editor Mesh -> Create MeshInstance"
 		)
 
 	var parent: Node = csg.get_parent()

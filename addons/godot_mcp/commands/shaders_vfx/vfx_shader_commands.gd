@@ -300,7 +300,7 @@ func _setup_flash_hurt_vfx(params: Dictionary) -> Dictionary:
 		_apply_canvas_shader_to_node({"node_path": node_r[0], "preset": "flash_white"})
 	var script_path: String = optional_string(params, "script_path", "res://scripts/hurt_flash.gd")
 	var content := """extends Node
-## MCP hurt flash — parent must be CanvasItem with flash shader param.
+## MCP hurt flash - parent must be CanvasItem with flash shader param.
 @export var flash_time: float = 0.12
 var _t: float = 0.0
 @onready var target: CanvasItem = get_parent() as CanvasItem
@@ -354,7 +354,7 @@ func _setup_screen_fade_overlay(params: Dictionary) -> Dictionary:
 	add_child_with_undo(layer, rect, root, "MCP: FadeRect")
 	var sp: String = optional_string(params, "script_path", "res://scripts/screen_fade.gd")
 	var scr := """extends CanvasLayer
-## MCP screen fade — fade_to_black / fade_from_black
+## MCP screen fade - fade_to_black / fade_from_black
 
 @onready var rect: ColorRect = $FadeRect
 
@@ -382,7 +382,7 @@ func fade_to_color(color: Color, duration: float = 0.5) -> void:
 func _create_hit_stop_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/hit_stop.gd")
 	var content := """extends Node
-## MCP hit-stop / freeze frames — call HitStop.freeze(0.05) on heavy hits.
+## MCP hit-stop / freeze frames - call HitStop.freeze(0.05) on heavy hits.
 
 func freeze(duration: float = 0.05, time_scale: float = 0.0) -> void:
 	var prev := Engine.time_scale

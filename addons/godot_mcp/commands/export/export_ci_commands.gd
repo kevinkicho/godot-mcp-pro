@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Export CI templates — GitHub Actions, export preset packs, headless export scripts.
+## Export CI templates - GitHub Actions, export preset packs, headless export scripts.
 
 
 func get_commands() -> Dictionary:
@@ -28,10 +28,10 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _list_templates(_params: Dictionary) -> Dictionary:
 	return success({
 		"templates": {
-			"github_actions_export": "create_github_actions_godot_export — Windows/Linux/Web matrix",
-			"export_presets_pack": "create_export_presets_pack — desktop+web presets in export_presets.cfg",
-			"headless_export_script": "create_headless_export_script — local .ps1/.sh export helpers",
-			"ci_readme": "write_export_ci_readme — agent checklist",
+			"github_actions_export": "create_github_actions_godot_export - Windows/Linux/Web matrix",
+			"export_presets_pack": "create_export_presets_pack - desktop+web presets in export_presets.cfg",
+			"headless_export_script": "create_headless_export_script - local .ps1/.sh export helpers",
+			"ci_readme": "write_export_ci_readme - agent checklist",
 		},
 		"note": "CI cannot install proprietary console SDKs; Android signing needs secrets",
 	})
@@ -262,14 +262,14 @@ func _write_readme(params: Dictionary) -> Dictionary:
 1. `verify_export_ready` / `pipeline_pre_ship_check`
 2. `create_export_presets_pack` or Project > Export
 3. Install export templates matching editor version
-4. `run_export` preset=… **or** `scripts/export-release.ps1`
+4. `run_export` preset=... **or** `scripts/export-release.ps1`
 
 ## GitHub Actions
 
 1. `create_github_actions_godot_export`
 2. Align **preset names** in `export_presets.cfg` with workflow matrix
 3. Commit `export_presets.cfg` (no secrets)
-4. Android: store keystore in GitHub Secrets — see `get_export_signing_checklist`
+4. Android: store keystore in GitHub Secrets - see `get_export_signing_checklist`
 
 ## MCP tools
 

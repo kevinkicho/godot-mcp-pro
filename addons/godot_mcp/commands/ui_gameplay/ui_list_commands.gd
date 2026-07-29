@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## UI list widgets — ItemList, Tree, OptionButton, PopupMenu (human populate surface).
+## UI list widgets - ItemList, Tree, OptionButton, PopupMenu (human populate surface).
 
 
 func get_commands() -> Dictionary:

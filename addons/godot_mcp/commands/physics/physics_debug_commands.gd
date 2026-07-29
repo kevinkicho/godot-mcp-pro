@@ -37,7 +37,7 @@ func _set_collision_debug_visible(params: Dictionary) -> Dictionary:
 		if vp and optional_bool(params, "viewport_wireframe", false) and "debug_draw" in vp:
 			vp.set("debug_draw", Viewport.DEBUG_DRAW_WIREFRAME if enabled else Viewport.DEBUG_DRAW_DISABLED)
 	# Visible collision shapes in running game: project setting
-	# application/run/max_fps etc. — use debug option
+	# application/run/max_fps etc. - use debug option
 	if ProjectSettings.has_setting("debug/settings/stdout/print_fps"):
 		pass
 	# Godot 4: "debug/shapes/collision/..." 
@@ -105,7 +105,7 @@ func _editor_raycast(params: Dictionary) -> Dictionary:
 		if w3 == null and root.get_viewport():
 			w3 = root.get_viewport().world_3d
 		if w3 == null:
-			return error_internal("No World3D — play scene for physics raycast")
+			return error_internal("No World3D - play scene for physics raycast")
 		var space := w3.direct_space_state
 		var q := PhysicsRayQueryParameters3D.create(from, to)
 		if params.has("collision_mask"):

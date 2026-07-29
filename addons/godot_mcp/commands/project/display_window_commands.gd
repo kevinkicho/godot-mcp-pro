@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## DisplayServer / window project settings — platform window surface for agents.
+## DisplayServer / window project settings - platform window surface for agents.
 
 
 func get_commands() -> Dictionary:

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Inventory component recipes — high-gain gameplay loop for RPG/action agents.
+## Inventory component recipes - high-gain gameplay loop for RPG/action agents.
 
 
 func get_commands() -> Dictionary:

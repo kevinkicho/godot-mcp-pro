@@ -79,7 +79,7 @@ func _setup_hud(params: Dictionary) -> Dictionary:
 	if optional_bool(params, "attach_script", true):
 		var sp: String = optional_string(params, "script_path", "res://scripts/hud.gd")
 		var scr := """extends CanvasLayer
-## MCP HUD — call set_health / set_score from gameplay.
+## MCP HUD - call set_health / set_score from gameplay.
 
 @onready var health_label: Label = $Margin/VBox/HealthLabel
 @onready var health_bar: ProgressBar = $Margin/VBox/HealthBar
@@ -159,7 +159,7 @@ func _setup_pause_menu(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/pause_menu.gd")
 	var scr := """extends CanvasLayer
-## MCP pause menu — toggle with pause action or Escape.
+## MCP pause menu - toggle with pause action or Escape.
 
 @onready var dimmer: ColorRect = $Dimmer
 @onready var resume_btn: Button = $Dimmer/Center/Buttons/ResumeButton
@@ -247,7 +247,7 @@ func _setup_inventory_ui(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/inventory_ui.gd")
 	var scr := """extends CanvasLayer
-## MCP inventory UI — toggle with 'inventory' action or I key fallback.
+## MCP inventory UI - toggle with 'inventory' action or I key fallback.
 
 signal item_clicked(slot_index: int)
 
@@ -345,7 +345,7 @@ func _setup_dialogue_box_ui(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/dialogue_box.gd")
 	var scr := """extends CanvasLayer
-## MCP dialogue box — show_lines([{speaker, text}, ...])
+## MCP dialogue box - show_lines([{speaker, text}, ...])
 
 signal dialogue_finished
 
@@ -401,7 +401,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _create_game_state_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/game_state.gd")
 	var content := """extends Node
-## MCP GameState autoload — score, flags, pause helpers.
+## MCP GameState autoload - score, flags, pause helpers.
 
 signal score_changed(score: int)
 signal flag_changed(key: String, value: Variant)
@@ -443,7 +443,7 @@ func toggle_pause() -> void:
 func _create_audio_manager_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/audio_manager.gd")
 	var content := """extends Node
-## MCP AudioManager autoload — SFX oneshots + music crossfade on Music bus.
+## MCP AudioManager autoload - SFX oneshots + music crossfade on Music bus.
 
 @export var sfx_bus: String = "SFX"
 @export var music_bus: String = "Music"
@@ -518,7 +518,7 @@ func stop_music(fade_sec: float = 0.5) -> void:
 func _set_scene_tree_paused(params: Dictionary) -> Dictionary:
 	## Editor-side note: pausing only applies while playing.
 	if not EditorInterface.is_playing_scene():
-		return error(-32000, "No scene playing — play_scene first", {})
+		return error(-32000, "No scene playing - play_scene first", {})
 	var paused: bool = optional_bool(params, "paused", true)
 	# Runtime pause via game command if available
 	var res: Dictionary = await send_game_command("execute_script", {

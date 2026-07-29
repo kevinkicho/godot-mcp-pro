@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.65.0**  
+Plugin version: **1.66.0**  
 
 ## Honesty
 
@@ -11,18 +11,18 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 
 ## Totals
 
-- **Registered plugin commands:** 1490
-- **Command modules:** 189
+- **Registered plugin commands:** 1516
+- **Command modules:** 198
 - **Domains:** 21
 
 ## Commands by domain
 
-- **2d** - 133 commands
+- **2d** - 132 commands
 - **3d** - 56 commands
 - **agent** - 58 commands
 - **ai** - 28 commands
-- **animation** - 170 commands
-- **assets** - 82 commands
+- **animation** - 169 commands
+- **assets** - 87 commands
 - **audio** - 33 commands
 - **editor** - 40 commands
 - **export** - 48 commands
@@ -30,13 +30,13 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - **navigation** - 19 commands
 - **network** - 49 commands
 - **physics** - 56 commands
-- **project** - 59 commands
+- **project** - 58 commands
 - **qa_runtime** - 103 commands
 - **rendering** - 47 commands
-- **scene** - 110 commands
-- **scripting** - 107 commands
+- **scene** - 126 commands
+- **scripting** - 110 commands
 - **shaders_vfx** - 66 commands
-- **ui_gameplay** - 173 commands
+- **ui_gameplay** - 178 commands
 - **xr** - 27 commands
 
 ## Commands by module
@@ -97,7 +97,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_canvas_item_texture_filter`
 - `list_pixel_2d_tools`
 
-### 2d / scene_2d_commands (17)
+### 2d / scene_2d_commands (16)
 
 - `setup_camera_2d`
 - `setup_parallax_background`
@@ -112,7 +112,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_y_sort_enabled`
 - `setup_canvas_layer`
 - `setup_directional_light_2d`
-- `setup_timer`
 - `setup_remote_transform_2d`
 - `setup_visible_on_screen_notifier_2d`
 - `add_camera_shake_to_camera2d`
@@ -424,7 +423,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `remove_node_from_group`
 - `create_state_machine_script`
 
-### animation / animation_commands (36)
+### animation / animation_commands (12)
 
 - `list_animations`
 - `create_animation`
@@ -438,30 +437,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `list_animation_libraries`
 - `add_animation_library`
 - `remove_animation_library`
-- `add_animation_track`
-- `remove_animation_track`
-- `set_animation_keyframe`
-- `remove_animation_key`
-- `insert_method_key`
-- `insert_audio_key`
-- `insert_animation_playback_key`
-- `set_track_enabled`
-- `set_track_interpolation`
-- `animation_player_play`
-- `animation_player_stop`
-- `animation_player_seek`
-- `animation_player_queue`
-- `animation_player_get_current`
-- `animation_player_set_autoplay`
-- `animation_player_set_speed`
-- `set_root_motion_track`
-- `sprite_frames_create`
-- `sprite_frames_add_animation`
-- `sprite_frames_add_frame`
-- `sprite_frames_assign`
-- `set_bezier_key`
-- `get_bezier_key_info`
-- `apply_bone_map_to_skeleton`
 
 ### animation / animation_library_commands (9)
 
@@ -475,15 +450,47 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `animation_library_import_from_scene`
 - `list_animation_library_tools`
 
-### animation / animation_player_depth_commands (7)
+### animation / animation_playback_commands (8)
+
+- `animation_player_play`
+- `animation_player_stop`
+- `animation_player_seek`
+- `animation_player_queue`
+- `animation_player_get_current`
+- `animation_player_set_autoplay`
+- `animation_player_set_speed`
+- `set_root_motion_track`
+
+### animation / animation_player_depth_commands (6)
 
 - `set_animation_player_autoplay`
 - `set_animation_player_speed`
 - `list_animation_player_libraries`
 - `assign_animation_library`
 - `get_animation_player_status`
-- `animation_player_stop`
 - `list_animation_player_depth_tools`
+
+### animation / animation_sprite_frames_commands (4)
+
+- `sprite_frames_create`
+- `sprite_frames_add_animation`
+- `sprite_frames_add_frame`
+- `sprite_frames_assign`
+
+### animation / animation_track_commands (12)
+
+- `add_animation_track`
+- `remove_animation_track`
+- `set_animation_keyframe`
+- `remove_animation_key`
+- `insert_method_key`
+- `insert_audio_key`
+- `insert_animation_playback_key`
+- `set_track_enabled`
+- `set_track_interpolation`
+- `set_bezier_key`
+- `get_bezier_key_info`
+- `apply_bone_map_to_skeleton`
 
 ### animation / animation_transfer_commands (24)
 
@@ -736,6 +743,14 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `write_preload_manifest`
 - `validate_preload_manifest`
 - `list_resource_preload_tools`
+
+### assets / resource_uid_commands (5)
+
+- `resolve_resource_uid`
+- `get_resource_uid`
+- `list_resource_uids`
+- `uid_cache_stats`
+- `list_resource_uid_tools`
 
 ### assets / resource_unique_commands (4)
 
@@ -1170,14 +1185,13 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `get_agent_environment_report`
 - `list_engine_runtime_info_tools`
 
-### project / group_layer_commands (8)
+### project / group_layer_commands (7)
 
 - `list_project_groups`
 - `set_physics_layer_names`
 - `get_physics_layer_names`
 - `set_render_layer_names`
 - `get_render_layer_names`
-- `find_nodes_in_group`
 - `batch_set_node_groups`
 - `list_group_layer_tools`
 
@@ -1441,9 +1455,8 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_mesh_lightmap_params`
 - `list_gi_tools`
 
-### scene / camera_depth_commands (9)
+### scene / camera_depth_commands (8)
 
-- `setup_camera_2d`
 - `setup_camera_3d_node`
 - `set_camera_2d_limits`
 - `set_camera_3d_params`
@@ -1453,12 +1466,45 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `set_camera_2d_limits_from_node_bounds`
 - `list_camera_depth_tools`
 
-### scene / node_commands (35)
+### scene / canvas_layer_depth_commands (7)
+
+- `set_canvas_layer_order`
+- `set_canvas_layer_follow_viewport`
+- `set_canvas_layer_custom_viewport`
+- `list_canvas_layers`
+- `setup_canvas_layer_stack`
+- `reorder_canvas_layers`
+- `list_canvas_layer_depth_tools`
+
+### scene / node_commands (11)
 
 - `add_node`
 - `delete_node`
 - `duplicate_node`
 - `move_node`
+- `rename_node`
+- `set_nodes_transform`
+- `get_editor_selection`
+- `select_nodes`
+- `clear_editor_selection`
+- `nodes`
+- `selected`
+
+### scene / node_process_commands (10)
+
+- `set_process_mode`
+- `batch_set_process_mode`
+- `set_process_priority`
+- `set_physics_process_priority`
+- `get_node_process_info`
+- `call_group_in_scene`
+- `list_node_process_tools`
+- `process_mode_name`
+- `old_name`
+- `process_mode_name`
+
+### scene / node_property_commands (15)
+
 - `update_property`
 - `update_properties`
 - `get_property`
@@ -1473,23 +1519,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `add_resource`
 - `remove_resource`
 - `set_anchor_preset`
-- `rename_node`
-- `connect_signal`
-- `disconnect_signal`
-- `get_node_groups`
-- `set_node_groups`
-- `find_nodes_in_group`
-- `get_editor_selection`
-- `select_nodes`
-- `clear_editor_selection`
-- `get_meta`
-- `set_meta`
-- `remove_meta`
-- `list_meta`
-- `set_nodes_transform`
 - `batch_update_property`
-- `nodes`
-- `selected`
 
 ### scene / node_query_commands (6)
 
@@ -1499,6 +1529,18 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `count_nodes_by_class`
 - `reorder_node`
 - `list_node_query_tools`
+
+### scene / node_signal_meta_commands (9)
+
+- `connect_signal`
+- `disconnect_signal`
+- `get_node_groups`
+- `set_node_groups`
+- `find_nodes_in_group`
+- `get_meta`
+- `set_meta`
+- `remove_meta`
+- `list_meta`
 
 ### scene / path_follow_commands (5)
 
@@ -1529,15 +1571,12 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `save_scene`
 - `get_scene_exports`
 
-### scene / scene_flow_commands (4)
+### scene / scene_flow_commands (9)
 
 - `create_scene_transition_script`
 - `create_loading_screen_scene`
 - `list_scene_flow_recipes`
 - `set_main_scene`
-
-### scene / scene_flow_depth_commands (5)
-
 - `set_scene_tree_paused_state`
 - `create_game_flow_controller_script`
 - `setup_main_menu_scene`
@@ -1667,6 +1706,12 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `bezier_remove_key`
 - `bezier_set_handle_mode`
 - `list_curve_sdk_tools`
+
+### scripting / expression_batch_commands (3)
+
+- `set_property_from_expression`
+- `batch_set_from_expressions`
+- `list_expression_batch_tools`
 
 ### scripting / expression_eval_commands (3)
 
@@ -1864,6 +1909,14 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `setup_hslider`
 - `setup_line_edit`
 - `setup_text_edit`
+
+### ui_gameplay / cutscene_commands (5)
+
+- `create_cutscene_player_script`
+- `create_cutscene_sequence_resource_script`
+- `setup_cutscene_player_node`
+- `create_simple_cutscene_json`
+- `list_cutscene_tools`
 
 ### ui_gameplay / dialogue_commands (5)
 

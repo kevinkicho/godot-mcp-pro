@@ -1,4 +1,4 @@
-# Command modules layout (v1.65+)
+# Command modules layout (v1.66+)
 
 Command modules are **auto-discovered recursively** as `**/*_commands.gd`.
 

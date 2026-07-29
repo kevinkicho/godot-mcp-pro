@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## AStar2D / AStar3D / AStarGrid2D pathfinding — grid games, tactical maps, point graphs.
+## AStar2D / AStar3D / AStarGrid2D pathfinding - grid games, tactical maps, point graphs.
 
 
 func get_commands() -> Dictionary:

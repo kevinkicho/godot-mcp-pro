@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Advanced UI containers — Tab/Split/Flow/Center/Aspect/SubViewport.
+## Advanced UI containers - Tab/Split/Flow/Center/Aspect/SubViewport.
 
 
 func get_commands() -> Dictionary:

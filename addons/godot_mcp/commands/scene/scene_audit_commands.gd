@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Scene audit — signal wiring dump, missing scripts, batch scene load checks.
+## Scene audit - signal wiring dump, missing scripts, batch scene load checks.
 
 
 func get_commands() -> Dictionary:

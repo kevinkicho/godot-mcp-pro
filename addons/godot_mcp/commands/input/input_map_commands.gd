@@ -24,7 +24,7 @@ func _get_input_actions(params: Dictionary) -> Dictionary:
 			# Skip built-in UI actions
 			if action_str.begins_with("ui_"):
 				continue
-			# Skip editor-registered actions (spatial_editor/*, etc.) — the addon
+			# Skip editor-registered actions (spatial_editor/*, etc.) - the addon
 			# runs in the editor process, so InputMap also carries the editor's
 			# own actions, which are not part of the project's InputMap
 			if not ProjectSettings.has_setting("input/" + action_str):

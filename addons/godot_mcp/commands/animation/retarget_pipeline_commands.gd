@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Character pipeline: glTF/scene → bone map → humanoid → locomotion (Wave 3).
+## Character pipeline: glTF/scene -> bone map -> humanoid -> locomotion (Wave 3).
 
 
 func get_commands() -> Dictionary:
@@ -18,7 +18,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["set_gltf_import_flags", "create_bone_map_preset", "setup_humanoid_actor", "apply_example_animation", "create_simple_locomotion_tree"],
 		"flow": [
 			"ensure_imported gltf",
-			"pipeline_character_from_gltf gltf_path=… profile=mixamo",
+			"pipeline_character_from_gltf gltf_path=... profile=mixamo",
 			"pipeline_retarget_animations if needed",
 			"playtest_report",
 		],

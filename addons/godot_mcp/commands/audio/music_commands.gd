@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Interactive music — playlist / state crossfade scaffolds (docs tutorials/audio).
+## Interactive music - playlist / state crossfade scaffolds (docs tutorials/audio).
 
 
 func get_commands() -> Dictionary:
@@ -28,7 +28,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _create_music_controller(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/music_controller.gd")
 	var content := """extends Node
-## MCP MusicController — stateful BGM with crossfade between two players.
+## MCP MusicController - stateful BGM with crossfade between two players.
 signal state_changed(state: String)
 
 @export var fade_time: float = 1.0
@@ -129,7 +129,7 @@ func _music_set_playlist(params: Dictionary) -> Dictionary:
 		path = "res://" + path.trim_prefix("/")
 	var states: Dictionary = params.get("states", params.get("playlist", {}))
 	if states.is_empty():
-		return error_invalid_params("states/playlist Dictionary required: {explore: res://…, combat: res://…}")
+		return error_invalid_params("states/playlist Dictionary required: {explore: res://..., combat: res://...}")
 	var derr := ensure_parent_dir(path)
 	if not derr.is_empty():
 		return derr

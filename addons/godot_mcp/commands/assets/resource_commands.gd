@@ -267,7 +267,7 @@ func _create_custom_resource_script(params: Dictionary) -> Dictionary:
 	if not instance_path.is_empty():
 		if not instance_path.begins_with("res://"):
 			instance_path = "res://" + instance_path.trim_prefix("/")
-		# Wait: script must be loaded — ResourceLoader may need scan
+		# Wait: script must be loaded - ResourceLoader may need scan
 		EditorInterface.get_resource_filesystem().scan()
 		var scr: Script = load(path) as Script
 		if scr:

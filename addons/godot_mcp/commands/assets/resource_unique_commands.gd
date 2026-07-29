@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Make unique / local_to_scene — inspector Resource dropdown parity for agents.
+## Make unique / local_to_scene - inspector Resource dropdown parity for agents.
 
 
 func get_commands() -> Dictionary:
@@ -17,7 +17,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 	return success({
 		"tools": get_commands().keys(),
 		"related": ["add_resource", "update_property", "duplicate_resource", "get_resource_info"],
-		"workflow": "inspect_node deep → make_resource_unique node_path=… property=material_override",
+		"workflow": "inspect_node deep -> make_resource_unique node_path=... property=material_override",
 	})
 
 

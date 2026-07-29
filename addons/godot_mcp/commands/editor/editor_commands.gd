@@ -433,7 +433,7 @@ func _guard_editor_script_file_io(code: String, allow_unsafe_editor_io: bool) ->
 		unsafe_patterns.append("FileAccess.open WRITE")
 	if _contains_any(compact, ["DirAccess.remove_absolute(", "DirAccess.rename_absolute(", "DirAccess.copy_absolute(", "DirAccess.make_dir_absolute(", "DirAccess.make_dir_recursive_absolute("]):
 		unsafe_patterns.append("DirAccess filesystem mutation")
-	# Process / shell escape hatches — require explicit allow_unsafe_editor_io
+	# Process / shell escape hatches - require explicit allow_unsafe_editor_io
 	if _contains_any(compact, ["OS.execute(", "OS.create_process(", "OS.create_instance(", "OS.shell_open(", "OS.execute_with_pipe("]):
 		unsafe_patterns.append("OS process execution")
 	if _contains_any(compact, ["JavaScriptBridge", "ClassDB.instantiate(\"HTTPRequest\")"]):
@@ -752,7 +752,7 @@ func _get_open_scripts_info(_params: Dictionary) -> Dictionary:
 
 
 func _set_main_screen(params: Dictionary) -> Dictionary:
-	## Switch main editor screen: 2D, 3D, Script, AssetLib, …
+	## Switch main editor screen: 2D, 3D, Script, AssetLib, ...
 	var name_s: String = optional_string(params, "name", "3D")
 	if EditorInterface.has_method("set_main_screen_editor"):
 		EditorInterface.set_main_screen_editor(name_s)

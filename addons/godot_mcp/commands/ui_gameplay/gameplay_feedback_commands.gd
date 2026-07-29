@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Combat/UI feedback recipes — floating damage, hit flash, screen shake signal hooks.
+## Combat/UI feedback recipes - floating damage, hit flash, screen shake signal hooks.
 
 
 func get_commands() -> Dictionary:
@@ -27,7 +27,7 @@ func _create_floating_text(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node2D
-## Floating damage/heal text — spawn and forget.
+## Floating damage/heal text - spawn and forget.
 
 @export var lifetime: float = 0.8
 @export var rise_speed: float = 40.0
@@ -76,7 +76,7 @@ func _create_hit_flash(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node
-## Flash CanvasItem modulate on hit — attach to sprite parent.
+## Flash CanvasItem modulate on hit - attach to sprite parent.
 
 @export var target_path: NodePath
 @export var flash_color: Color = Color(1, 1, 1, 1)

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Save/load game state from node trees — agents capture/apply world snapshots.
+## Save/load game state from node trees - agents capture/apply world snapshots.
 
 
 func get_commands() -> Dictionary:
@@ -26,8 +26,8 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		],
 		"workflow": [
 			"create_game_state_serializer_script add_autoload=true",
-			"write_save_slot_json slot=1 data={...} OR capture_scene_state → write",
-			"read_save_slot_json slot=1 → apply via serializer",
+			"write_save_slot_json slot=1 data={...} OR capture_scene_state -> write",
+			"read_save_slot_json slot=1 -> apply via serializer",
 		],
 	})
 
@@ -183,7 +183,7 @@ func _create_serializer(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node
-## Runtime save/load helper — JSON slots under user://saves/
+## Runtime save/load helper - JSON slots under user://saves/
 
 signal saved(slot: String)
 signal loaded(slot: String)

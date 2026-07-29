@@ -243,7 +243,7 @@ func _get_shader_params(params: Dictionary) -> Dictionary:
 
 
 func _set_shader_global(params: Dictionary) -> Dictionary:
-	## RenderingServer global shader parameters (Project Settings → Shader Globals).
+	## RenderingServer global shader parameters (Project Settings -> Shader Globals).
 	var name_r := require_string(params, "name")
 	if name_r[1] != null:
 		return name_r[1]

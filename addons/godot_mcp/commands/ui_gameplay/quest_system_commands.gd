@@ -80,7 +80,7 @@ func _create_quest_resource(params: Dictionary) -> Dictionary:
 func _create_quest_log_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/quest_log.gd")
 	var content := """extends Node
-## MCP QuestLog autoload — track quests/objectives from JSON resources.
+## MCP QuestLog autoload - track quests/objectives from JSON resources.
 
 signal quest_started(quest_id: String)
 signal quest_completed(quest_id: String)
@@ -198,7 +198,7 @@ func _create_dialogue_graph_resource(params: Dictionary) -> Dictionary:
 	if params.has("nodes") and params["nodes"] is Dictionary:
 		nodes = params["nodes"]
 	elif params.has("lines") and params["lines"] is Array:
-		# Convert lines array → nodes map
+		# Convert lines array -> nodes map
 		for line in params["lines"]:
 			if line is Dictionary and line.has("id"):
 				var n: Dictionary = line.duplicate()
@@ -278,13 +278,13 @@ func _validate_dialogue_graph(params: Dictionary) -> Dictionary:
 			continue
 		var next := str(n.get("next", ""))
 		if not next.is_empty() and not nodes.has(next):
-			issues.append("Node %s next→ missing '%s'" % [nid, next])
+			issues.append("Node %s next-> missing '%s'" % [nid, next])
 		if n.has("choices") and n["choices"] is Array:
 			for ch in n["choices"]:
 				if ch is Dictionary:
 					var cn := str(ch.get("next", ""))
 					if not cn.is_empty() and not nodes.has(cn):
-						issues.append("Node %s choice next→ missing '%s'" % [nid, cn])
+						issues.append("Node %s choice next-> missing '%s'" % [nid, cn])
 	return success({
 		"path": path,
 		"ok": issues.is_empty(),
@@ -356,7 +356,7 @@ func _merge_dialogue_lines(params: Dictionary) -> Dictionary:
 func _create_quest_giver_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/quest_giver.gd")
 	var content := """extends Area2D
-## MCP quest giver — on interact, starts quest + optional dialogue.
+## MCP quest giver - on interact, starts quest + optional dialogue.
 
 @export var quest_id: String = ""
 @export var dialogue_path: String = ""
@@ -582,7 +582,7 @@ func _list_dialogue_graph_nodes(params: Dictionary) -> Dictionary:
 func _create_objective_tracker_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/objective_tracker.gd")
 	var content := """extends Area2D
-## MCP objective trigger — reports to QuestLog when player enters.
+## MCP objective trigger - reports to QuestLog when player enters.
 
 @export var event_type: String = "reach"
 @export var target: String = "gate"

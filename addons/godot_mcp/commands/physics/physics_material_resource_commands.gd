@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## PhysicsMaterial resources — friction/bounce shared across bodies.
+## PhysicsMaterial resources - friction/bounce shared across bodies.
 
 
 func get_commands() -> Dictionary:
@@ -71,6 +71,6 @@ func _assign(params: Dictionary) -> Dictionary:
 	elif "physics_material" in node:
 		node.set("physics_material", mat)
 	else:
-		return error_invalid_params("Node has no physics_material(_override) — StaticBody/RigidBody/etc.")
+		return error_invalid_params("Node has no physics_material(_override) - StaticBody/RigidBody/etc.")
 	mark_current_scene_unsaved()
 	return success({"node_path": r0[0], "material_path": mat_r[0]})

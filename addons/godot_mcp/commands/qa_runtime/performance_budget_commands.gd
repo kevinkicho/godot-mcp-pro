@@ -113,7 +113,7 @@ func _analyze_performance_budget(params: Dictionary) -> Dictionary:
 				})
 				report["ok"] = false
 	else:
-		report["runtime"]["note"] = "Not playing — scene node budget only; play for FPS/memory"
+		report["runtime"]["note"] = "Not playing - scene node budget only; play for FPS/memory"
 	# Editor complexity helper
 	var router = get_parent()
 	if router and router.has_method("execute") and optional_bool(params, "include_complexity", true) and root:

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Remaining UI editor surfaces — CodeEdit, RichText effects, OptionButton bulk.
+## Remaining UI editor surfaces - CodeEdit, RichText effects, OptionButton bulk.
 
 
 func get_commands() -> Dictionary:
@@ -62,7 +62,7 @@ func _setup_rte(params: Dictionary) -> Dictionary:
 	rtl.scroll_active = optional_bool(params, "scroll_active", true)
 	var bb: String = optional_string(params, "bbcode", "[b]Hello[/b] [i]world[/i]\n[color=yellow]BBCode[/color] enabled")
 	rtl.text = bb
-	# Custom effects need script resources — document for agent
+	# Custom effects need script resources - document for agent
 	if params.has("min_size") and params["min_size"] is Dictionary:
 		var s: Dictionary = params["min_size"]
 		rtl.custom_minimum_size = Vector2(float(s.get("x", 300)), float(s.get("y", 100)))
@@ -71,7 +71,7 @@ func _setup_rte(params: Dictionary) -> Dictionary:
 	return success({
 		"node_path": str(root.get_path_to(rtl)),
 		"bbcode_enabled": true,
-		"hint": "Custom RichTextEffect requires a Script extending RichTextEffect — use create_script",
+		"hint": "Custom RichTextEffect requires a Script extending RichTextEffect - use create_script",
 		"sample_bbcode": bb,
 	})
 

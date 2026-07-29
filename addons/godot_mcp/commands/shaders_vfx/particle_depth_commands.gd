@@ -22,9 +22,9 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"tools": get_commands().keys(),
 		"related": ["create_particles", "set_particle_material", "apply_particle_preset", "set_particle_trail"],
 		"flow": [
-			"create_particles → set_particle_process_params",
+			"create_particles -> set_particle_process_params",
 			"set_particle_emission_shape / set_particle_turbulence",
-			"set_particle_draw_pass mesh=…",
+			"set_particle_draw_pass mesh=...",
 			"add_gpu_particles_attractor for force fields",
 		],
 	})

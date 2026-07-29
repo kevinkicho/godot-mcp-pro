@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Remaining runtime systems — logging, achievements, day/night, feature flags, accessibility.
+## Remaining runtime systems - logging, achievements, day/night, feature flags, accessibility.
 
 
 func get_commands() -> Dictionary:
@@ -93,7 +93,7 @@ func _create_achievements(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node
-## Local achievements — unlock + persist to user://
+## Local achievements - unlock + persist to user://
 
 signal unlocked(id: StringName)
 
@@ -259,7 +259,7 @@ func _create_a11y(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node
-## Accessibility helpers — font scale, subtitles, reduce motion, colorblind-safe palette hint.
+## Accessibility helpers - font scale, subtitles, reduce motion, colorblind-safe palette hint.
 
 signal changed
 

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Level design vertical — greybox, scatter, playability checks, route playtest hooks.
+## Level design vertical - greybox, scatter, playability checks, route playtest hooks.
 
 
 func get_commands() -> Dictionary:
@@ -262,10 +262,10 @@ func _validate_level_playable(params: Dictionary) -> Dictionary:
 	var nav := _find_type(root, "NavigationRegion3D")
 	var nav2 := _find_type(root, "NavigationRegion2D")
 	if nav == null and nav2 == null:
-		issues.append({"severity": "warning", "message": "No NavigationRegion — bake nav for AI/path checks"})
+		issues.append({"severity": "warning", "message": "No NavigationRegion - bake nav for AI/path checks"})
 	var colliders := _count_type(root, "CollisionShape3D") + _count_type(root, "CollisionShape2D")
 	if colliders == 0:
-		issues.append({"severity": "warning", "message": "No collision shapes — level may not be solid"})
+		issues.append({"severity": "warning", "message": "No collision shapes - level may not be solid"})
 	var dist := -1.0
 	if spawn is Node3D and goal is Node3D:
 		dist = (spawn as Node3D).global_position.distance_to((goal as Node3D).global_position)

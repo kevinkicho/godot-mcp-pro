@@ -269,7 +269,7 @@ func _export_mesh_library(params: Dictionary) -> Dictionary:
 				mesh_library.set_item_shapes(item_id, [col.shape, col.transform])
 				break
 
-		# set_item_preview requires Texture2D — never pass Mesh (parse/runtime type errors).
+		# set_item_preview requires Texture2D - never pass Mesh (parse/runtime type errors).
 		var preview_tex: Texture2D = null
 		if EditorInterface.has_method("make_mesh_previews"):
 			var previews: Array = EditorInterface.make_mesh_previews([mesh_instance.mesh], 64)
@@ -392,7 +392,7 @@ func _list_mcp_commands(params: Dictionary) -> Dictionary:
 
 
 func _group_commands_by_surface(methods: Array) -> Dictionary:
-	## Map plugin commands → human editor surfaces (for agent discovery parity).
+	## Map plugin commands -> human editor surfaces (for agent discovery parity).
 	var groups := {
 		"animation": [],
 		"skeleton": [],

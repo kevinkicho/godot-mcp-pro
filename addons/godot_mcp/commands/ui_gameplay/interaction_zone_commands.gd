@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Interaction zones — Area2D/3D use/talk/pickup structure (gameplay systems).
+## Interaction zones - Area2D/3D use/talk/pickup structure (gameplay systems).
 
 
 func get_commands() -> Dictionary:
@@ -128,7 +128,7 @@ func _write_zone_script(path: String, is_3d: bool, kind: String) -> void:
 		return
 	var body_type := "CharacterBody3D" if is_3d else "CharacterBody2D"
 	var content := """extends Area%s
-## MCP interaction zone — overlap + interact action.
+## MCP interaction zone - overlap + interact action.
 signal interacted(who: Node)
 signal player_entered(who: Node)
 signal player_exited(who: Node)
@@ -230,7 +230,7 @@ func _create_interaction_controller_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/interaction_controller.gd")
 	var is_3d: bool = optional_bool(params, "is_3d", true)
 	var content := """extends Node
-## MCP interaction controller — finds nearest zone / listens to global interact.
+## MCP interaction controller - finds nearest zone / listens to global interact.
 ## Attach to player or use as child of CharacterBody.
 
 @export var interact_action: String = "interact"

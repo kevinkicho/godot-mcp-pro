@@ -28,7 +28,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 
 
 func _list_catalog(_params: Dictionary) -> Dictionary:
-	## Map friendly names → ClassDB type for agents.
+	## Map friendly names -> ClassDB type for agents.
 	var catalog := {
 		"constants": {
 			"float_constant": "VisualShaderNodeFloatConstant",
@@ -109,7 +109,7 @@ func _list_catalog(_params: Dictionary) -> Dictionary:
 		"catalog": catalog,
 		"classdb_visual_shader_nodes": classdb_nodes,
 		"classdb_count": classdb_nodes.size(),
-		"usage": "visual_shader_add_node path=… type=float_op|VisualShaderNodeFloatOp",
+		"usage": "visual_shader_add_node path=... type=float_op|VisualShaderNodeFloatOp",
 		"presets": [
 			"visual_shader_preset_toon",
 			"visual_shader_preset_emission_pulse",
@@ -297,7 +297,7 @@ func _preset_toon(params: Dictionary) -> Dictionary:
 		"path": path,
 		"preset": "toon_scaffold",
 		"nodes": {"albedo": albedo, "steps": steps, "normal": n, "light_dir": light_dir, "dot": dotn, "clamp": clampn, "mul": mul},
-		"hint": "Connect clamp→vector mul B and mul→ALBEDO; tune light_dir constant",
+		"hint": "Connect clamp->vector mul B and mul->ALBEDO; tune light_dir constant",
 	})
 
 

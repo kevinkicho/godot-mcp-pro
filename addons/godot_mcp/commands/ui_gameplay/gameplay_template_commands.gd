@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Gameplay templates — save system, signal bus, object pool, camera shake (project-neutral).
+## Gameplay templates - save system, signal bus, object pool, camera shake (project-neutral).
 
 
 func get_commands() -> Dictionary:
@@ -33,7 +33,7 @@ func _maybe_autoload(params: Dictionary, path: String, default_name: String) -> 
 func _create_save_manager_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/save_manager.gd")
 	var content := """extends Node
-## MCP SaveManager — JSON slots under user://saves/
+## MCP SaveManager - JSON slots under user://saves/
 signal save_completed(slot: String)
 signal load_completed(slot: String, data: Dictionary)
 
@@ -117,7 +117,7 @@ signal score_changed(score: int)
 signal dialogue_requested(id: String)
 """
 	var content := """extends Node
-## MCP EventBus autoload — decouple systems without hard node paths.
+## MCP EventBus autoload - decouple systems without hard node paths.
 %s
 # Generic bag for one-off events
 signal event(name: String, payload: Variant)
@@ -137,7 +137,7 @@ func _create_object_pool_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/object_pool.gd")
 	var wpath := path if path.begins_with("res://") else "res://" + path.trim_prefix("/")
 	var content := """extends Node
-## MCP ObjectPool — acquire/release for bullets, VFX, etc.
+## MCP ObjectPool - acquire/release for bullets, VFX, etc.
 ## Usage: pool.setup(preload("res://bullet.tscn"), 32); var b = pool.acquire()
 
 var _scene: PackedScene
@@ -203,7 +203,7 @@ func _create_camera_shake_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/camera_shake.gd")
 	var wpath := path if path.begins_with("res://") else "res://" + path.trim_prefix("/")
 	var content := """extends Node
-## MCP camera shake — attach as child of Camera2D or Camera3D (or set camera_path).
+## MCP camera shake - attach as child of Camera2D or Camera3D (or set camera_path).
 ## Trauma model: add_trauma(0.2..1.0); decays each frame.
 
 @export var camera_path: NodePath

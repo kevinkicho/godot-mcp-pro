@@ -94,7 +94,7 @@ func _simulate_mouse_move(params: Dictionary) -> Dictionary:
 	}
 	# Auto-enable unhandled for drag motions (camera-pan use case) ONLY when
 	# the caller did NOT explicitly pass an "unhandled" key. If they passed
-	# one — true or false — honor it. This lets UI drag-and-drop tests opt
+	# one - true or false - honor it. This lets UI drag-and-drop tests opt
 	# back into normal GUI dispatch by passing unhandled: false explicitly.
 	if unhandled_explicit:
 		event["unhandled"] = unhandled

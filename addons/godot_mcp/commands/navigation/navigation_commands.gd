@@ -476,7 +476,7 @@ func _collect_navigation_nodes(node: Node, regions: Array, agents: Array) -> voi
 
 
 func _setup_navigation_link(params: Dictionary) -> Dictionary:
-	## NavigationLink2D/3D — off-mesh connections (doors, jumps, ladders).
+	## NavigationLink2D/3D - off-mesh connections (doors, jumps, ladders).
 	var parent_path: String = optional_string(params, "parent_path", ".")
 	var root := get_edited_root()
 	if root == null:

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Audio bus effects depth — reverb, compressor, EQ, limiter (Audio dock parity).
+## Audio bus effects depth - reverb, compressor, EQ, limiter (Audio dock parity).
 
 
 func get_commands() -> Dictionary:
@@ -96,7 +96,7 @@ func _add_typed(params: Dictionary) -> Dictionary:
 		return error_not_found("Audio bus '%s'" % bus_name)
 	var type_name: String = optional_string(params, "type", optional_string(params, "effect_type", ""))
 	if type_name.is_empty():
-		return error_invalid_params("type required — list_audio_bus_effect_types")
+		return error_invalid_params("type required - list_audio_bus_effect_types")
 	var cls := _effect_class(type_name)
 	if cls.is_empty() or not ClassDB.class_exists(cls):
 		return error_invalid_params("Unknown or unavailable effect type '%s'" % type_name)

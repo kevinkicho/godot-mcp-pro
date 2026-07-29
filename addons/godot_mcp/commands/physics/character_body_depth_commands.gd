@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## CharacterBody2D/3D motion surface — floor/wall/snap/up_direction (human CharacterBody inspector).
+## CharacterBody2D/3D motion surface - floor/wall/snap/up_direction (human CharacterBody inspector).
 
 
 func get_commands() -> Dictionary:
@@ -116,7 +116,7 @@ func _set_motion(params: Dictionary) -> Dictionary:
 		b.set("collision_mask", int(params["collision_mask"]))
 		applied["collision_mask"] = b.get("collision_mask")
 	if applied.is_empty():
-		return error_invalid_params("Provide motion fields (floor_snap_length, up_direction, motion_mode, …)")
+		return error_invalid_params("Provide motion fields (floor_snap_length, up_direction, motion_mode, ...)")
 	mark_current_scene_unsaved()
 	return success({"node_path": r0[0], "applied": applied})
 
@@ -177,6 +177,6 @@ func _apply_preset(params: Dictionary) -> Dictionary:
 				"safe_margin": 0.001,
 			}
 		_:
-			return error_invalid_params("Unknown preset — platformer_2d|topdown_2d|fps_3d|third_person_3d")
+			return error_invalid_params("Unknown preset - platformer_2d|topdown_2d|fps_3d|third_person_3d")
 	cfg["node_path"] = r0[0]
 	return _set_motion(cfg)

@@ -176,7 +176,7 @@ func _create_chase_ai_script(params: Dictionary) -> Dictionary:
 	var content: String
 	if is_3d:
 		content = """extends CharacterBody3D
-## MCP chase AI 3D — put player in group '%s'. Needs NavigationRegion3D baked + NavigationAgent3D child.
+## MCP chase AI 3D - put player in group '%s'. Needs NavigationRegion3D baked + NavigationAgent3D child.
 
 @export var speed: float = %.2f
 @export var target_group: String = "%s"
@@ -212,7 +212,7 @@ func _retarget() -> void:
 """ % [group, speed, group]
 	else:
 		content = """extends CharacterBody2D
-## MCP chase AI 2D — put player in group '%s'. Needs NavigationRegion2D + NavigationAgent2D.
+## MCP chase AI 2D - put player in group '%s'. Needs NavigationRegion2D + NavigationAgent2D.
 
 @export var speed: float = %.1f
 @export var target_group: String = "%s"
@@ -255,7 +255,7 @@ func _create_patrol_ai_script(params: Dictionary) -> Dictionary:
 	var content: String
 	if is_3d:
 		content = """extends CharacterBody3D
-## MCP patrol AI 3D — assign waypoint_paths (NodePaths to Marker3D) or children named Waypoint*
+## MCP patrol AI 3D - assign waypoint_paths (NodePaths to Marker3D) or children named Waypoint*
 
 @export var speed: float = %.2f
 @export var waypoint_paths: Array[NodePath] = []
@@ -295,7 +295,7 @@ func _physics_process(delta: float) -> void:
 """ % speed
 	else:
 		content = """extends CharacterBody2D
-## MCP patrol AI 2D — assign waypoint_paths or Marker2D children named Waypoint*
+## MCP patrol AI 2D - assign waypoint_paths or Marker2D children named Waypoint*
 
 @export var speed: float = %.1f
 @export var waypoint_paths: Array[NodePath] = []
@@ -374,7 +374,7 @@ func _setup_detection_area(params: Dictionary) -> Dictionary:
 func _create_gameplay_state_machine_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/state_machine.gd")
 	var content := """extends Node
-## MCP gameplay FSM — attach states as child nodes with enter/exit/update methods.
+## MCP gameplay FSM - attach states as child nodes with enter/exit/update methods.
 ## Or use string states via change_state("idle").
 
 signal state_changed(from_state: String, to_state: String)
@@ -416,7 +416,7 @@ func is_state(name: String) -> bool:
 func _create_interactable_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/interactable.gd")
 	var content := """extends Area2D
-## MCP interactable — player presses 'interact' while overlapping.
+## MCP interactable - player presses 'interact' while overlapping.
 
 signal interacted(by: Node)
 

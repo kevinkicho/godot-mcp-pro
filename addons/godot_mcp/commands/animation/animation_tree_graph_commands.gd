@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Deeper AnimationTree graph editing — positions, recipes, blend connections dump.
+## Deeper AnimationTree graph editing - positions, recipes, blend connections dump.
 
 
 func get_commands() -> Dictionary:
@@ -173,7 +173,7 @@ func _get_blend_tree_connections(params: Dictionary) -> Dictionary:
 		if pname.begins_with("nodes/") and pname.ends_with("/node"):
 			var nm := pname.get_slice("/", 1)
 			nodes.append(nm)
-	# Godot BlendTree: get_node_list not always available — use connect_node graph
+	# Godot BlendTree: get_node_list not always available - use connect_node graph
 	# Read "node_connections" array property if present
 	if bt.get("node_connections") != null:
 		var nc = bt.get("node_connections")
@@ -198,7 +198,7 @@ func _get_blend_tree_connections(params: Dictionary) -> Dictionary:
 			input_count = 1
 		# output is special sink
 		for port in range(maxi(input_count, 4)):
-			# No public get_connection API in all versions — property scan
+			# No public get_connection API in all versions - property scan
 			pass
 	# Property-based connection dump
 	for prop in bt.get_property_list():
@@ -286,13 +286,13 @@ func _create_simple_locomotion_tree(params: Dictionary) -> Dictionary:
 		an.animation = StringName(str(s["anim"]))
 		sm.add_node(StringName(str(s["name"])), an, s["pos"])
 
-	# Start → Idle
+	# Start -> Idle
 	var t0 := AnimationNodeStateMachineTransition.new()
 	t0.advance_mode = AnimationNodeStateMachineTransition.ADVANCE_MODE_AUTO
 	t0.xfade_time = xfade
 	sm.add_transition(&"Start", &"Idle", t0)
 
-	# Bidirectional Idle↔Walk↔Run
+	# Bidirectional Idle<->Walk<->Run
 	for pair in [["Idle", "Walk"], ["Walk", "Idle"], ["Walk", "Run"], ["Run", "Walk"], ["Idle", "Run"], ["Run", "Idle"]]:
 		var tr := AnimationNodeStateMachineTransition.new()
 		tr.advance_mode = AnimationNodeStateMachineTransition.ADVANCE_MODE_ENABLED

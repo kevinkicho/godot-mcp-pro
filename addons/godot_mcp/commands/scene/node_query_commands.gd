@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Find nodes by class/script/name pattern — agent scene navigation (biggest discovery gain).
+## Find nodes by class/script/name pattern - agent scene navigation (biggest discovery gain).
 
 
 func get_commands() -> Dictionary:
@@ -175,7 +175,7 @@ func _total(counts: Dictionary) -> int:
 
 
 func _reorder(params: Dictionary) -> Dictionary:
-	## move_child to index — Scene dock reorder.
+	## move_child to index - Scene dock reorder.
 	var root := get_edited_root()
 	if root == null:
 		return error_no_scene()

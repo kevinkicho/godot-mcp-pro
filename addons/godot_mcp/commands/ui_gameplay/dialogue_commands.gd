@@ -2,7 +2,7 @@
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
 ## Project-neutral dialogue + cutscene helpers (resources + runner script).
-## Not a full dialogue plugin — structured data agents can author and play.
+## Not a full dialogue plugin - structured data agents can author and play.
 
 
 func get_commands() -> Dictionary:
@@ -25,7 +25,7 @@ func _list_dialogue_recipes(_params: Dictionary) -> Dictionary:
 			"choices": [{"text": "Yes", "next": "yes_branch"}, {"text": "No", "next": "no_branch"}],
 		},
 		"cutscene_step_types": ["wait", "dialogue", "animate", "move", "signal", "set_property", "call"],
-		"flow": "create_dialogue_resource → create_dialogue_runner_script → attach runner → load resource path",
+		"flow": "create_dialogue_resource -> create_dialogue_runner_script -> attach runner -> load resource path",
 	})
 
 
@@ -48,7 +48,7 @@ func _create_dialogue_resource(params: Dictionary) -> Dictionary:
 					{"text": "Not yet", "next": "no"},
 				],
 			},
-			{"id": "yes", "speaker": "Guide", "text": "Great — let's go.", "next": ""},
+			{"id": "yes", "speaker": "Guide", "text": "Great - let's go.", "next": ""},
 			{"id": "no", "speaker": "Guide", "text": "Take your time.", "next": ""},
 		]
 	var data := {
@@ -80,7 +80,7 @@ func _create_cutscene_resource(params: Dictionary) -> Dictionary:
 	if not steps is Array or steps.is_empty():
 		steps = [
 			{"type": "wait", "seconds": 0.5},
-			{"type": "dialogue", "speaker": "Narrator", "text": "A new adventure begins…"},
+			{"type": "dialogue", "speaker": "Narrator", "text": "A new adventure begins..."},
 			{"type": "wait", "seconds": 1.0},
 			{"type": "signal", "name": "cutscene_finished"},
 		]
@@ -109,7 +109,7 @@ func _create_dialogue_runner_script(params: Dictionary) -> Dictionary:
 	if FileAccess.file_exists(path) and not optional_bool(params, "overwrite", false):
 		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
 	var content := """extends Node
-## MCP dialogue runner — loads JSON from create_dialogue_resource.
+## MCP dialogue runner - loads JSON from create_dialogue_resource.
 signal line_shown(speaker: String, text: String)
 signal choices_presented(choices: Array)
 signal dialogue_finished
@@ -159,7 +159,7 @@ func _show_current() -> void:
 	var choices: Array = line.get("choices", [])
 	if choices is Array and choices.size() > 0:
 		choices_presented.emit(choices)
-	# auto-advance if no choices and next set — caller may call advance()
+	# auto-advance if no choices and next set - caller may call advance()
 
 func advance() -> void:
 	var line := _find_line(_current_id)
@@ -206,7 +206,7 @@ func _create_cutscene_player_script(params: Dictionary) -> Dictionary:
 	if FileAccess.file_exists(path) and not optional_bool(params, "overwrite", false):
 		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
 	var content := """extends Node
-## MCP cutscene player — sequential JSON steps from create_cutscene_resource.
+## MCP cutscene player - sequential JSON steps from create_cutscene_resource.
 signal step_started(index: int, step: Dictionary)
 signal cutscene_finished
 signal dialogue_line(speaker: String, text: String)

@@ -109,7 +109,7 @@ func _setup_collision(params: Dictionary) -> Dictionary:
 				shape.a = Vector2(float(params.get("ax", 0.0)), float(params.get("ay", 0.0)))
 				shape.b = Vector2(float(params.get("bx", 32.0)), float(params.get("by", 0.0)))
 			"custom":
-				# ConvexPolygonShape2D — expects "points" as array of [x,y] pairs
+				# ConvexPolygonShape2D - expects "points" as array of [x,y] pairs
 				shape = ConvexPolygonShape2D.new()
 				var points_data: Array = params.get("points", [])
 				var pool: PackedVector2Array = PackedVector2Array()
@@ -599,7 +599,7 @@ func _setup_physics_body(params: Dictionary) -> Dictionary:
 	elif node is StaticBody2D or node is StaticBody3D or node is AnimatableBody2D or node is AnimatableBody3D:
 		# StaticBody / AnimatableBody shared properties
 		if params.has("physics_material_override"):
-			# We just note it — use add_resource for complex resource assignment
+			# We just note it - use add_resource for complex resource assignment
 			return error_invalid_params("Use add_resource to set physics_material_override")
 	else:
 		return error_invalid_params("Node '%s' (%s) is not a recognized physics body type. Supported: CharacterBody2D/3D, RigidBody2D/3D, StaticBody2D/3D, AnimatableBody2D/3D" % [node_path, node.get_class()])
@@ -851,7 +851,7 @@ func _setup_joint(params: Dictionary) -> Dictionary:
 
 
 func _add_shape_cast(params: Dictionary) -> Dictionary:
-	## ShapeCast2D/3D — human "cast shape" probes (not only rays).
+	## ShapeCast2D/3D - human "cast shape" probes (not only rays).
 	var parent_path: String = optional_string(params, "parent_path", optional_string(params, "node_path", "."))
 	var root := get_edited_root()
 	if root == null:
@@ -975,7 +975,7 @@ func _set_physics_material(params: Dictionary) -> Dictionary:
 
 
 func _create_physics_body(params: Dictionary) -> Dictionary:
-	## Create CharacterBody/RigidBody/StaticBody/VehicleBody with optional shape — one-shot human setup.
+	## Create CharacterBody/RigidBody/StaticBody/VehicleBody with optional shape - one-shot human setup.
 	var parent_path: String = optional_string(params, "parent_path", ".")
 	var body_type: String = optional_string(params, "body_type", "CharacterBody2D")
 	var name: String = optional_string(params, "name", body_type)
@@ -1076,7 +1076,7 @@ func _setup_physical_bone_simulator(params: Dictionary) -> Dictionary:
 	if root == null:
 		return error_no_scene()
 	if not ClassDB.class_exists("PhysicalBoneSimulator3D"):
-		return error_internal("PhysicalBoneSimulator3D not in this Godot build — use add_physical_bone under skeleton")
+		return error_internal("PhysicalBoneSimulator3D not in this Godot build - use add_physical_bone under skeleton")
 	var sim: Node = ClassDB.instantiate("PhysicalBoneSimulator3D")
 	sim.name = optional_string(params, "name", "PhysicalBoneSimulator3D")
 	add_child_with_undo(sk, sim, root, "MCP: Add PhysicalBoneSimulator3D")

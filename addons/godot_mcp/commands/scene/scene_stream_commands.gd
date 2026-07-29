@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Level/scene streaming helpers — load/unload chunk scenes for large worlds.
+## Level/scene streaming helpers - load/unload chunk scenes for large worlds.
 
 
 func get_commands() -> Dictionary:
@@ -30,7 +30,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _create_stream_manager_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/stream_manager.gd")
 	var content := """extends Node
-## MCP StreamManager — load/unload packed scene chunks under a holder node.
+## MCP StreamManager - load/unload packed scene chunks under a holder node.
 signal chunk_loaded(id: String, node: Node)
 signal chunk_unloaded(id: String)
 

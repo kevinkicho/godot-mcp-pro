@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## SubViewport / ViewportTexture / BackBufferCopy — minimaps, portals, offscreen render.
+## SubViewport / ViewportTexture / BackBufferCopy - minimaps, portals, offscreen render.
 
 
 func get_commands() -> Dictionary:
@@ -22,7 +22,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["setup_subviewport", "create_minimap_viewport", "setup_camera_2d", "get_game_screenshot"],
 		"workflow_minimap": [
 			"setup_subviewport_2d_world size={x:128,y:128}",
-			"setup_viewport_texture_rect viewport_path=… parent_path=HUD",
+			"setup_viewport_texture_rect viewport_path=... parent_path=HUD",
 		],
 	})
 
@@ -101,7 +101,7 @@ func _setup_sv_2d(params: Dictionary) -> Dictionary:
 		"viewport_path": str(root.get_path_to(sv)),
 		"world_path": str(root.get_path_to(world_root)) if world_root else "",
 		"size": {"x": size.x, "y": size.y},
-		"hint": "setup_viewport_texture_rect viewport_path=… or setup_sprite_from_subviewport",
+		"hint": "setup_viewport_texture_rect viewport_path=... or setup_sprite_from_subviewport",
 	})
 
 

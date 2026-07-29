@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## AnimationPlayer depth — autoplay, speed, libraries, active clip (Animation dock).
+## AnimationPlayer depth  -  autoplay, speed, libraries, active clip (Animation dock).
 
 
 func get_commands() -> Dictionary:
@@ -11,7 +11,6 @@ func get_commands() -> Dictionary:
 		"list_animation_player_libraries": _list_libs,
 		"assign_animation_library": _assign_lib,
 		"get_animation_player_status": _get_status,
-		"animation_player_stop": _stop,
 		"list_animation_player_depth_tools": _list_tools,
 	}
 
@@ -64,7 +63,7 @@ func _set_speed(params: Dictionary) -> Dictionary:
 		p.set("playback_default_blend_time", float(params["playback_default_blend_time"]))
 		applied["playback_default_blend_time"] = p.get("playback_default_blend_time")
 	if applied.is_empty():
-		return error_invalid_params("Provide speed_scale, active, callback_mode_process, …")
+		return error_invalid_params("Provide speed_scale, active, callback_mode_process, ...")
 	mark_current_scene_unsaved()
 	return success({"node_path": r0[0], "applied": applied})
 

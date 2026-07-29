@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Import option schemas by asset type — agent-facing Import dock documentation.
+## Import option schemas by asset type - agent-facing Import dock documentation.
 
 
 func get_commands() -> Dictionary:
@@ -126,7 +126,7 @@ func _list_import_option_schema(params: Dictionary) -> Dictionary:
 		elif type_name in ["wav", "ogg", "mp3"]:
 			type_name = "audio"
 	if not s.has(type_name):
-		return error_invalid_params("Unknown type — call list_import_types")
+		return error_invalid_params("Unknown type - call list_import_types")
 	return success({"type": type_name, "schema": s[type_name]})
 
 
@@ -228,7 +228,7 @@ func _apply_import_schema_preset(params: Dictionary) -> Dictionary:
 	# Write via set_import_options pattern
 	var import_path := path + ".import"
 	if not FileAccess.file_exists(import_path):
-		return error_not_found(".import for %s — import asset first" % path)
+		return error_not_found(".import for %s - import asset first" % path)
 	var cfg := ConfigFile.new()
 	if cfg.load(import_path) != OK:
 		return error_internal("load import failed")

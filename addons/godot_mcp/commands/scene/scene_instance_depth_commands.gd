@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Scene instance depth — editable children, placeholders, make local, owner fixups.
+## Scene instance depth - editable children, placeholders, make local, owner fixups.
 ## Mirrors Scene dock instance workflows humans use constantly.
 
 
@@ -117,7 +117,7 @@ func _setup_placeholder(params: Dictionary) -> Dictionary:
 		"node_path": str(root.get_path_to(ph)),
 		"scene_path": scene_path,
 		"class": "InstancePlaceholder",
-		"hint": "Loads deferred at runtime — good for large levels",
+		"hint": "Loads deferred at runtime - good for large levels",
 	})
 
 
@@ -161,7 +161,7 @@ func _make_local(params: Dictionary) -> Dictionary:
 		"node_path": str(root.get_path_to(local_copy)),
 		"was_scene": node.scene_file_path if is_instance_valid(node) else "",
 		"made_local": true,
-		"warning": "Breaks inheritance — edits no longer follow the source .tscn",
+		"warning": "Breaks inheritance - edits no longer follow the source .tscn",
 	})
 
 

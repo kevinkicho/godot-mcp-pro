@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## 2D lighting structure — CanvasModulate, LightOccluder2D, PointLight2D tune.
+## 2D lighting structure - CanvasModulate, LightOccluder2D, PointLight2D tune.
 
 
 func get_commands() -> Dictionary:

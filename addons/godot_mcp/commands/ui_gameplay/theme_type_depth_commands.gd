@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Full Theme type surface — fonts, icons, bulk type seed (Wave 4).
+## Full Theme type surface - fonts, icons, bulk type seed (Wave 4).
 
 
 func get_commands() -> Dictionary:

@@ -199,7 +199,7 @@ func _setup_camera_follow_2d(params: Dictionary) -> Dictionary:
 		# Reparent approach: put camera under target
 		var target := find_node_by_path(target_path)
 		if target:
-			# Already added under parent; user can reparent manually — use RemoteTransform instead
+			# Already added under parent; user can reparent manually - use RemoteTransform instead
 			pass
 
 	if not target_path.is_empty() and mode != "child":
@@ -290,7 +290,7 @@ func _setup_third_person_camera(params: Dictionary) -> Dictionary:
 	if optional_bool(params, "attach_look_script", true):
 		var sp: String = optional_string(params, "script_path", "res://scripts/third_person_camera.gd")
 		var scr := """extends Node3D
-## MCP third-person camera pivot — mouse look. Attach to CameraPivot (parent of SpringArm3D).
+## MCP third-person camera pivot - mouse look. Attach to CameraPivot (parent of SpringArm3D).
 
 @export var mouse_sensitivity: float = 0.003
 @export var min_pitch_deg: float = -60.0
@@ -349,7 +349,7 @@ func _setup_orbit_camera_3d(params: Dictionary) -> Dictionary:
 	add_child_with_undo(pivot, cam, root, "MCP: Orbit camera")
 	var sp: String = optional_string(params, "script_path", "res://scripts/orbit_camera.gd")
 	var scr := """extends Node3D
-## MCP orbit camera — LMB drag rotate, wheel zoom.
+## MCP orbit camera - LMB drag rotate, wheel zoom.
 
 @export var rotate_sensitivity: float = 0.005
 @export var zoom_sensitivity: float = 1.0

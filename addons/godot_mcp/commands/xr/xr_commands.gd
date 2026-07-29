@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## XR / OpenXR surface — project settings + scene node scaffold.
+## XR / OpenXR surface - project settings + scene node scaffold.
 
 
 func get_commands() -> Dictionary:
@@ -83,7 +83,7 @@ func _set_xr_project_settings(params: Dictionary) -> Dictionary:
 		ProjectSettings.set_setting("xr/openxr/enabled", enable)
 		applied["xr/openxr/enabled"] = enable
 	if params.has("form_factor"):
-		# 0=Other, 1=Handheld, 2=HeadMounted — store as int if present
+		# 0=Other, 1=Handheld, 2=HeadMounted - store as int if present
 		ProjectSettings.set_setting("xr/openxr/form_factor", int(params["form_factor"]))
 		applied["xr/openxr/form_factor"] = int(params["form_factor"])
 	if params.has("submit_depth_buffer"):
@@ -251,7 +251,7 @@ func _openxr_add_action(params: Dictionary) -> Dictionary:
 				found_set = s
 				break
 	if found_set == null:
-		return error_not_found("Action set '%s' — create with openxr_add_action_set" % set_name)
+		return error_not_found("Action set '%s' - create with openxr_add_action_set" % set_name)
 	if found_set.has_method("add_action"):
 		found_set.call("add_action", action)
 	elif "actions" in found_set:
@@ -326,7 +326,7 @@ func _add_xr_hand_modifier(params: Dictionary) -> Dictionary:
 		if ClassDB.class_exists("XRNode3D"):
 			class_name_str = "XRNode3D"
 		else:
-			return error_internal("%s not available — use describe_class XR* for this Godot version" % class_name_str)
+			return error_internal("%s not available - use describe_class XR* for this Godot version" % class_name_str)
 	var node: Node = ClassDB.instantiate(class_name_str)
 	node.name = optional_string(params, "name", class_name_str)
 	if "hand" in node and params.has("hand"):
@@ -433,7 +433,7 @@ func _openxr_bind_action(params: Dictionary) -> Dictionary:
 	# Resolve action resource from map
 	var action_res: Resource = _find_action_in_map(am, action_name_r[0])
 	if action_res == null:
-		return error_not_found("Action '%s' in map — use openxr_add_action first" % action_name_r[0])
+		return error_not_found("Action '%s' in map - use openxr_add_action first" % action_name_r[0])
 	# Find or create interaction profile
 	var profile: Resource = _find_interaction_profile(am, profile_path)
 	if profile == null and ClassDB.class_exists("OpenXRInteractionProfile"):
@@ -553,7 +553,7 @@ func _openxr_create_default_controller_bindings(params: Dictionary) -> Dictionar
 			"name": a["name"],
 			"action_type": a["action_type"],
 		})
-		# Ignore "already exists" style failures — still list
+		# Ignore "already exists" style failures - still list
 		created.append({"action": a["name"], "ok": not r.has("error")})
 	var profile_path: String = optional_string(
 		params, "profile_path",

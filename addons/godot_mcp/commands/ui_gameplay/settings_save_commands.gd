@@ -34,7 +34,7 @@ func _list_recipes(_params: Dictionary) -> Dictionary:
 func _create_settings_resource_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/game_settings.gd")
 	var content := """extends Resource
-## MCP GameSettings resource — volume, graphics, accessibility.
+## MCP GameSettings resource - volume, graphics, accessibility.
 class_name GameSettings
 
 @export var master_volume: float = 1.0
@@ -56,7 +56,7 @@ class_name GameSettings
 func _create_settings_manager_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/settings_manager.gd")
 	var content := """extends Node
-## MCP SettingsManager autoload — load/save user://settings.cfg and apply audio/window.
+## MCP SettingsManager autoload - load/save user://settings.cfg and apply audio/window.
 
 signal settings_changed
 
@@ -222,7 +222,7 @@ func _setup_settings_menu(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/settings_menu_ui.gd")
 	var scr := """extends CanvasLayer
-## MCP settings menu UI — binds to SettingsManager autoload.
+## MCP settings menu UI - binds to SettingsManager autoload.
 
 @onready var master_s: HSlider = $Center/Panel/VBox/MasterSlider
 @onready var music_s: HSlider = $Center/Panel/VBox/MusicSlider
@@ -270,7 +270,7 @@ func _on_apply() -> void:
 func _create_enhanced_save_manager(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/save_manager_enhanced.gd")
 	var content := """extends Node
-## MCP enhanced SaveManager — multi-slot metadata, autosave, screenshot thumb optional.
+## MCP enhanced SaveManager - multi-slot metadata, autosave, screenshot thumb optional.
 
 signal save_completed(slot: String)
 signal load_completed(slot: String, data: Dictionary)
@@ -377,7 +377,7 @@ func _create_encrypted_save_manager(params: Dictionary) -> Dictionary:
 	## FileAccess encrypted user saves (AES via password). Project-neutral scaffold.
 	var path: String = optional_string(params, "path", "res://scripts/encrypted_save_manager.gd")
 	var content := """extends Node
-## MCP EncryptedSaveManager — FileAccess open_encrypted_with_pass on user://saves.
+## MCP EncryptedSaveManager - FileAccess open_encrypted_with_pass on user://saves.
 signal save_completed(slot: String)
 signal load_completed(slot: String, data: Dictionary)
 
@@ -508,7 +508,7 @@ func _setup_save_slot_menu(params: Dictionary) -> Dictionary:
 
 	var sp: String = optional_string(params, "script_path", "res://scripts/save_slot_menu.gd")
 	var scr := """extends CanvasLayer
-## MCP save slot menu — uses SaveManager autoload.
+## MCP save slot menu - uses SaveManager autoload.
 
 signal save_requested(slot: String)
 signal load_requested(slot: String)
@@ -546,7 +546,7 @@ func refresh() -> void:
 		var ts := int(m2.get("timestamp", 0))
 		var label := str(m2.get("title", m2.get("slot", "?")))
 		if ts > 0:
-			label += " — " + Time.get_datetime_string_from_unix_time(ts)
+			label += " - " + Time.get_datetime_string_from_unix_time(ts)
 		slot_list.add_item(label)
 
 func _selected_slot() -> String:

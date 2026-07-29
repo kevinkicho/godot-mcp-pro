@@ -115,7 +115,7 @@ func _setup_character_2d(params: Dictionary) -> Dictionary:
 			if scr:
 				body.set_script(scr)
 		elif script_result.has("error") and not optional_bool(params, "overwrite", false):
-			# Script may already exist — still try attach
+			# Script may already exist - still try attach
 			if FileAccess.file_exists(script_path):
 				var scr2 = load(script_path)
 				if scr2:
@@ -225,7 +225,7 @@ func _create_platformer_controller_script(params: Dictionary) -> Dictionary:
 	var speed: float = float(params.get("speed", 200.0))
 	var jump_v: float = float(params.get("jump_velocity", -400.0))
 	var content := """extends CharacterBody2D
-## MCP platformer controller — InputMap: move_left/right, jump
+## MCP platformer controller - InputMap: move_left/right, jump
 
 @export var speed: float = %.1f
 @export var jump_velocity: float = %.1f
@@ -254,7 +254,7 @@ func _create_topdown_controller_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/player_topdown.gd")
 	var speed: float = float(params.get("speed", 200.0))
 	var content := """extends CharacterBody2D
-## MCP top-down controller — InputMap: move_left/right/up/down
+## MCP top-down controller - InputMap: move_left/right/up/down
 
 @export var speed: float = %.1f
 
@@ -274,7 +274,7 @@ func _create_fps_controller_script(params: Dictionary) -> Dictionary:
 	var speed: float = float(params.get("speed", 5.0))
 	var jump_v: float = float(params.get("jump_velocity", 4.5))
 	var content := """extends CharacterBody3D
-## MCP FPS controller — InputMap: move_*, jump. Mouse look on Head/Camera3D.
+## MCP FPS controller - InputMap: move_*, jump. Mouse look on Head/Camera3D.
 
 @export var speed: float = %.2f
 @export var jump_velocity: float = %.2f
@@ -325,7 +325,7 @@ func _create_health_component_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/health_component.gd")
 	var max_hp: float = float(params.get("max_health", 100.0))
 	var content := """extends Node
-## MCP HealthComponent — attach to any actor. Connect damaged/died for VFX/UI.
+## MCP HealthComponent - attach to any actor. Connect damaged/died for VFX/UI.
 
 class_name HealthComponent
 signal health_changed(current: float, maximum: float)
@@ -422,7 +422,7 @@ func _setup_combat_area(params: Dictionary, default_name: String, monitoring: bo
 		var dmg: float = float(params.get("damage", 10.0))
 		var sp: String = optional_string(params, "script_path", "res://scripts/hitbox.gd")
 		var scr_body := """extends Area2D
-## MCP Hitbox — deals damage to bodies with take_damage or HealthComponent child.
+## MCP Hitbox - deals damage to bodies with take_damage or HealthComponent child.
 
 @export var damage: float = %.1f
 @export var one_shot: bool = false

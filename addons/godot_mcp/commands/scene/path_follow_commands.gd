@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## PathFollow2D/3D control — progress, offsets, rotation modes.
+## PathFollow2D/3D control - progress, offsets, rotation modes.
 
 
 func get_commands() -> Dictionary:

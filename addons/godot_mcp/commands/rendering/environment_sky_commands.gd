@@ -267,7 +267,7 @@ func _set_fog_params(params: Dictionary) -> Dictionary:
 			if we and we.environment:
 				env = we.environment
 	if env == null:
-		return error_not_found("Environment — pass environment_path or WorldEnvironment node_path")
+		return error_not_found("Environment - pass environment_path or WorldEnvironment node_path")
 	var applied := {}
 	if params.has("fog_enabled"):
 		env.fog_enabled = bool(params["fog_enabled"])

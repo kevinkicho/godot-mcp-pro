@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## HTTP + encrypted IO — tutorials/io structural surface for agents.
+## HTTP + encrypted IO - tutorials/io structural surface for agents.
 
 
 func get_commands() -> Dictionary:
@@ -30,7 +30,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _create_http_client_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/http_client_service.gd")
 	var content := """extends Node
-## MCP HTTP client service — JSON GET/POST via HTTPRequest child.
+## MCP HTTP client service - JSON GET/POST via HTTPRequest child.
 signal request_completed(ok: bool, result: Variant, response_code: int)
 
 var _http: HTTPRequest
@@ -101,8 +101,8 @@ func _setup_http_request_node(params: Dictionary) -> Dictionary:
 func _create_encrypted_save_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/encrypted_save_manager.gd")
 	var content := """extends Node
-## MCP encrypted save — FileAccess open_encrypted_with_pass (AES).
-## password from game settings / user input — never hardcode production secrets.
+## MCP encrypted save - FileAccess open_encrypted_with_pass (AES).
+## password from game settings / user input - never hardcode production secrets.
 
 signal save_completed(slot: String)
 signal load_completed(slot: String, data: Dictionary)

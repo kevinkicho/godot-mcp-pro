@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## GDExtension scaffold — project-neutral C++/extension starter files.
+## GDExtension scaffold - project-neutral C++/extension starter files.
 
 
 func get_commands() -> Dictionary:
@@ -203,7 +203,7 @@ void %s::_ready() {
 
 	# SConstruct stub (godot-cpp style)
 	var scons := """#!/usr/bin/env python
-# Minimal SConstruct stub — clone godot-cpp next to this file.
+# Minimal SConstruct stub - clone godot-cpp next to this file.
 # https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_cpp_example.html
 
 env = SConscript("godot-cpp/SConstruct")
@@ -225,7 +225,7 @@ Default(library)
 1. Clone **godot-cpp** into `%s/godot-cpp` matching your Godot version.
 2. Install SCons + a C++ toolchain (MSVC / clang / gcc).
 3. Build: `scons platform=windows target=template_debug` (adjust platform).
-4. Open this Godot project — the `%s.gdextension` file loads binaries from `bin/`.
+4. Open this Godot project - the `%s.gdextension` file loads binaries from `bin/`.
 5. Use the registered class `%s` from the Create Node dialog after reload.
 
 This is a **starter skeleton**, not a full build system.
@@ -286,7 +286,7 @@ func _run_gdextension_scons_build(params: Dictionary) -> Dictionary:
 	# Prefer scons on PATH; allow custom
 	var scons_cmd: String = optional_string(params, "scons", "scons")
 	var output: Array = []
-	# OS.execute doesn't set cwd on all platforms equally — use shell
+	# OS.execute doesn't set cwd on all platforms equally - use shell
 	var shell_cmd: String
 	var shell_args: PackedStringArray
 	if OS.get_name() == "Windows":

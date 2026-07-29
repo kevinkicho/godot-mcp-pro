@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## StandardMaterial3D / ORMMaterial3D authoring — shared PBR materials for agents.
+## StandardMaterial3D / ORMMaterial3D authoring - shared PBR materials for agents.
 
 
 func get_commands() -> Dictionary:
@@ -57,7 +57,7 @@ func _apply_common(mat: BaseMaterial3D, params: Dictionary) -> Dictionary:
 			mat.emission_energy_multiplier = e
 		applied["emission_energy"] = e
 	if params.has("transparency"):
-		# 0 disabled, 1 alpha, 2 alpha scissor, …
+		# 0 disabled, 1 alpha, 2 alpha scissor, ...
 		mat.transparency = int(params["transparency"]) as BaseMaterial3D.Transparency
 		applied["transparency"] = mat.transparency
 	if params.has("cull_mode"):
@@ -157,7 +157,7 @@ func _set_params(params: Dictionary) -> Dictionary:
 				mat = (mi.get_active_material(0) as BaseMaterial3D).duplicate() as BaseMaterial3D
 				mi.material_override = mat
 		if mat == null:
-			return error_invalid_params("No BaseMaterial3D on node — pass path= or create first")
+			return error_invalid_params("No BaseMaterial3D on node - pass path= or create first")
 	var applied := _apply_common(mat, params)
 	if mat is StandardMaterial3D and params.has("specular"):
 		(mat as StandardMaterial3D).metallic_specular = float(params["specular"])

@@ -25,7 +25,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _create_async_loader_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/async_resource_loader.gd")
 	var content := """extends Node
-## Async ResourceLoader helper — request paths, poll status, emit when ready.
+## Async ResourceLoader helper - request paths, poll status, emit when ready.
 signal load_finished(path: String, resource: Resource)
 signal load_failed(path: String, status: int)
 

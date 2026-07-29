@@ -23,7 +23,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _create_resource_registry_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/resource_registry.gd")
 	var content := """extends Node
-## Central preload/cache registry — load paths once, fetch by id.
+## Central preload/cache registry - load paths once, fetch by id.
 signal loaded(id: StringName, resource: Resource)
 
 @export var manifest_path: String = \"res://data/preload_manifest.json\"

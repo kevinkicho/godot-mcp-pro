@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## TileSet authoring — tutorials/2d tilemaps
+## TileSet authoring - tutorials/2d tilemaps
 
 
 func get_commands() -> Dictionary:
@@ -265,7 +265,7 @@ func _tileset_remove_source(params: Dictionary) -> Dictionary:
 
 
 func _tileset_add_terrain_set(params: Dictionary) -> Dictionary:
-	## Add a terrain set (match corners / sides) — TileSet terrain painting surface.
+	## Add a terrain set (match corners / sides) - TileSet terrain painting surface.
 	var res_path := require_res_path(params, "tileset_path")
 	if res_path[1] != null:
 		return res_path[1]
@@ -304,7 +304,7 @@ func _tileset_add_terrain(params: Dictionary) -> Dictionary:
 		return error_not_found("TileSet")
 	var terrain_set: int = int(params.get("terrain_set", 0))
 	if terrain_set < 0 or terrain_set >= ts.get_terrain_sets_count():
-		return error_invalid_params("Invalid terrain_set — call tileset_add_terrain_set first")
+		return error_invalid_params("Invalid terrain_set - call tileset_add_terrain_set first")
 	var tname: String = optional_string(params, "name", "Terrain")
 	var color := Color(0.3, 0.7, 0.3)
 	if params.has("color"):

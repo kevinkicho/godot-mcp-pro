@@ -121,7 +121,7 @@ script = ExtResource("1")
 		"folder": base,
 		"files": files,
 		"with_dock": with_dock,
-		"hint": "Project > Project Settings > Plugins — enable '%s'. Or add to [editor_plugins] enabled list." % display_name,
+		"hint": "Project > Project Settings > Plugins - enable '%s'. Or add to [editor_plugins] enabled list." % display_name,
 	})
 
 

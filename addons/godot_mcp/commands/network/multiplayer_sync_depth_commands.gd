@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## MultiplayerSynchronizer replication config bulk — biggest net multiplayer gain.
+## MultiplayerSynchronizer replication config bulk - biggest net multiplayer gain.
 
 
 func get_commands() -> Dictionary:
@@ -70,7 +70,7 @@ func _add_props_bulk(params: Dictionary) -> Dictionary:
 	if sync == null:
 		return error_not_found("MultiplayerSynchronizer")
 	if not params.has("properties") or not (params["properties"] is Array):
-		return error_invalid_params("properties array required — [\"position\", \"velocity\"] or [{path, spawn, sync, watch}]")
+		return error_invalid_params("properties array required - [\"position\", \"velocity\"] or [{path, spawn, sync, watch}]")
 	var config: SceneReplicationConfig = sync.replication_config
 	if config == null:
 		config = SceneReplicationConfig.new()
@@ -106,7 +106,7 @@ func _add_props_bulk(params: Dictionary) -> Dictionary:
 		if config.has_method("property_set_spawn"):
 			config.property_set_spawn(prop_path, spawn)
 		if config.has_method("property_set_replication_mode"):
-			# 0 never, 1 always, 2 on_change — map bool sync
+			# 0 never, 1 always, 2 on_change - map bool sync
 			var mode := 1 if sync_prop else 0
 			if item is Dictionary and item.has("replication_mode"):
 				mode = int(item["replication_mode"])
@@ -158,7 +158,7 @@ func _list_config(params: Dictionary) -> Dictionary:
 
 
 func _set_rpc(params: Dictionary) -> Dictionary:
-	## Call node.set_rpc or configure via script — document RPC for a method name.
+	## Call node.set_rpc or configure via script - document RPC for a method name.
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]

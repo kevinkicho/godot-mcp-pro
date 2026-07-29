@@ -137,7 +137,7 @@ func _setup_xr_composition_layer_quad(params: Dictionary) -> Dictionary:
 			"node_path": str(root.get_path_to(mi)),
 			"class": "MeshInstance3D+QuadMesh",
 			"placeholder": true,
-			"hint": "OpenXRCompositionLayerQuad not in this build — placeholder mesh for layout",
+			"hint": "OpenXRCompositionLayerQuad not in this build - placeholder mesh for layout",
 		})
 	node.name = optional_string(params, "name", "OpenXRCompositionLayerQuad")
 	if params.has("layer") and "layer" in node:

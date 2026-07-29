@@ -21,8 +21,8 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["tileset_create", "tileset_assign_to_tilemap", "tilemap_set_cell", "tilemap_paint_cells"],
 		"workflow": [
 			"tileset_create path=res://tiles/world.tres",
-			"setup_tilemap_layer_stack layers=[{name:Ground},{name:Decor,z_index:1}] tileset_path=…",
-			"tilemap_set_cell node_path=Ground …",
+			"setup_tilemap_layer_stack layers=[{name:Ground},{name:Decor,z_index:1}] tileset_path=...",
+			"tilemap_set_cell node_path=Ground ...",
 		],
 	})
 
@@ -68,7 +68,7 @@ func _setup_layer(params: Dictionary) -> Dictionary:
 
 
 func _setup_stack(params: Dictionary) -> Dictionary:
-	## layers: [{name, z_index, y_sort_enabled, …}] or names: ["Ground","Walls","Decor"]
+	## layers: [{name, z_index, y_sort_enabled, ...}] or names: ["Ground","Walls","Decor"]
 	var root := get_edited_root()
 	if root == null:
 		return error_no_scene()

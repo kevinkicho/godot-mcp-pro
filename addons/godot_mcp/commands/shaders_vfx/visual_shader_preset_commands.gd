@@ -54,7 +54,7 @@ func _add_node(vs: VisualShader, class_name_str: String, pos: Vector2) -> int:
 
 
 func _preset_pbr(params: Dictionary) -> Dictionary:
-	## Rough PBR fragment: albedo color + metallic/roughness floats → output.
+	## Rough PBR fragment: albedo color + metallic/roughness floats -> output.
 	var path_r := require_res_path(params, "path")
 	if path_r[1] != null:
 		return path_r[1]
@@ -75,7 +75,7 @@ func _preset_pbr(params: Dictionary) -> Dictionary:
 	var rou = vs.get_node(VisualShader.TYPE_FRAGMENT, ids["roughness"])
 	if rou and "constant" in rou:
 		rou.set("constant", float(params.get("roughness", 0.5)))
-	# Connect to output ports if API allows — port names vary; best-effort
+	# Connect to output ports if API allows - port names vary; best-effort
 	var out_id := VisualShader.NODE_OUTPUT
 	if ids["albedo"] >= 0:
 		vs.connect_nodes(VisualShader.TYPE_FRAGMENT, ids["albedo"], 0, out_id, 0)  # often Albedo

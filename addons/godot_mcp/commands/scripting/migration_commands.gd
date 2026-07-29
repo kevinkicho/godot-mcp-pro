@@ -28,7 +28,7 @@ func _get_migration_guide(_params: Dictionary) -> Dictionary:
 			"Fix remaining via list_migration_replacements + edit_script",
 			"validate_script / playtest_report",
 		],
-		"honesty": "Not a full automated 3â†’4 migrator; covers common GDScript renames and flags.",
+		"honesty": "Not a full automated 3->4 migrator; covers common GDScript renames and flags.",
 	})
 
 
@@ -37,19 +37,19 @@ func _list_migration_replacements(_params: Dictionary) -> Dictionary:
 
 
 func _replacements() -> Array:
-	## Conservative GDScript 3â†’4 string replacements (order matters for some).
+	## Conservative GDScript 3->4 string replacements (order matters for some).
 	return [
-		{"from": "yield(", "to": "await ", "note": "yieldâ†’await; may need manual Coroutine fixes"},
+		{"from": "yield(", "to": "await ", "note": "yield->await; may need manual Coroutine fixes"},
 		{"from": ".instance()", "to": ".instantiate()", "note": "PackedScene"},
-		{"from": "Spatial", "to": "Node3D", "note": "type renames â€” verify class contexts"},
+		{"from": "Spatial", "to": "Node3D", "note": "type renames  -  verify class contexts"},
 		{"from": "KinematicBody", "to": "CharacterBody3D", "note": "or CharacterBody2D"},
 		{"from": "KinematicBody2D", "to": "CharacterBody2D", "note": ""},
 		{"from": "RigidBody", "to": "RigidBody3D", "note": "disambiguate 2D"},
 		{"from": "RigidBody2D", "to": "RigidBody2D", "note": "unchanged"},
 		{"from": "StaticBody", "to": "StaticBody3D", "note": ""},
 		{"from": "Area", "to": "Area3D", "note": "careful with Area2D"},
-		{"from": "move_and_slide()", "to": "move_and_slide()", "note": "API changed â€” velocity property"},
-		{"from": "export(", "to": "@export ", "note": "export var â†’ @export var (manual tweak)"},
+		{"from": "move_and_slide()", "to": "move_and_slide()", "note": "API changed  -  velocity property"},
+		{"from": "export(", "to": "@export ", "note": "export var -> @export var (manual tweak)"},
 		{"from": "onready var", "to": "@onready var", "note": ""},
 		{"from": "tool", "to": "@tool", "note": "first line"},
 		{"from": "OS.get_ticks_msec()", "to": "Time.get_ticks_msec()", "note": ""},
@@ -299,14 +299,14 @@ func _scan_tscn(params: Dictionary) -> Dictionary:
 			if text.contains(m):
 				found.append(m)
 		if text.contains("format=2"):
-			found.append("format=2 (Godot 3 scene â€” open in Godot 4 converter)")
+			found.append("format=2 (Godot 3 scene  -  open in Godot 4 converter)")
 		if not found.is_empty():
 			hits.append({"path": fpath, "markers": found})
 	return success({
 		"files_scanned": files.size(),
 		"hits": hits,
 		"count": hits.size(),
-		"hint": "format=2 scenes need Godot Project Manager conversion â€” not MCP auto-rewrite",
+		"hint": "format=2 scenes need Godot Project Manager conversion  -  not MCP auto-rewrite",
 	})
 
 
@@ -316,7 +316,7 @@ func _out_of_scope(_params: Dictionary) -> Dictionary:
 			"Full automatic .tscn/.tres binary format conversion (use Godot Project Converter)",
 			"C# API renames across all assemblies",
 			"Plugin API breaks for editor plugins written for Godot 3",
-			"Custom GDNative â†’ GDExtension automatic port",
+			"Custom GDNative -> GDExtension automatic port",
 		],
 		"in_scope": [
 			"GDScript string renames (scan + apply)",

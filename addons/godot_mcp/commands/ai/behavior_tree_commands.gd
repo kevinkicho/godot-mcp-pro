@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Behavior tree runtime for NPCs — beyond simple FSM.
+## Behavior tree runtime for NPCs - beyond simple FSM.
 
 
 func get_commands() -> Dictionary:
@@ -33,7 +33,7 @@ func _list_bt_recipes(_params: Dictionary) -> Dictionary:
 func _create_blackboard(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/bt_blackboard.gd")
 	var content := """extends RefCounted
-## MCP BT Blackboard — shared key/value memory for behavior trees.
+## MCP BT Blackboard - shared key/value memory for behavior trees.
 class_name BTBlackboard
 
 signal value_changed(key: String, value: Variant)
@@ -68,7 +68,7 @@ func as_dict() -> Dictionary:
 func _create_bt_runtime(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/bt_runtime.gd")
 	var content := """extends RefCounted
-## MCP behavior tree runtime — evaluate JSON tree against actor + blackboard.
+## MCP behavior tree runtime - evaluate JSON tree against actor + blackboard.
 ## Status: SUCCESS=1, FAILURE=0, RUNNING=2
 class_name BTRuntime
 
@@ -273,7 +273,7 @@ func _create_bt_resource(params: Dictionary) -> Dictionary:
 func _create_bt_runner(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/bt_runner.gd")
 	var content := """extends Node
-## MCP BT runner — attach as child of AI actor. Loads JSON tree each tick.
+## MCP BT runner - attach as child of AI actor. Loads JSON tree each tick.
 
 @export var tree_path: String = "res://ai/example_bt.json"
 @export var tick_every_physics: bool = true

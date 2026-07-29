@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Control extras — tooltips, cursors, clip, drag, ninepatch, color rect (human UI polish).
+## Control extras - tooltips, cursors, clip, drag, ninepatch, color rect (human UI polish).
 
 
 func get_commands() -> Dictionary:

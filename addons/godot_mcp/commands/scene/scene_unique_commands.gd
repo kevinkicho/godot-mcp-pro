@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Scene unique names — scripting/scene_unique_nodes.rst
+## Scene unique names - scripting/scene_unique_nodes.rst
 
 
 func get_commands() -> Dictionary:
@@ -20,7 +20,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 
 
 func _batch_set_scene_unique_names(params: Dictionary) -> Dictionary:
-	## items: [{node_path, unique_name?}] — default unique_name = node name
+	## items: [{node_path, unique_name?}] - default unique_name = node name
 	if not params.has("items") or not params["items"] is Array:
 		return error_invalid_params("items array required")
 	var root := get_edited_root()

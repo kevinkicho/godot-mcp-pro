@@ -857,7 +857,7 @@ func _bake_voxel_gi(params: Dictionary) -> Dictionary:
 			gi.call("bake")
 		mark_current_scene_unsaved()
 		return success({"node_path": r0[0], "baked": true})
-	return error_internal("VoxelGI.bake() not available — bake from editor UI or execute_editor_script")
+	return error_internal("VoxelGI.bake() not available - bake from editor UI or execute_editor_script")
 
 
 func _request_lightmap_bake(params: Dictionary) -> Dictionary:
@@ -874,8 +874,8 @@ func _request_lightmap_bake(params: Dictionary) -> Dictionary:
 	else:
 		gi = _find_first_lightmap(root)
 	if gi == null:
-		return error_not_found("LightmapGI in scene — use add_lightmap_gi first")
-	# Godot's LightmapGI bake is primarily editor plugin — try method
+		return error_not_found("LightmapGI in scene - use add_lightmap_gi first")
+	# Godot's LightmapGI bake is primarily editor plugin - try method
 	if gi.has_method("bake"):
 		gi.call("bake")
 		mark_current_scene_unsaved()
@@ -1233,7 +1233,7 @@ func _add_compositor_effect(params: Dictionary) -> Dictionary:
 		return error_no_scene()
 	var we := _find_world_environment(root)
 	if we == null:
-		return error_not_found("WorldEnvironment — call setup_compositor first")
+		return error_not_found("WorldEnvironment - call setup_compositor first")
 	if not ("compositor" in we) or we.get("compositor") == null:
 		var sc := _setup_compositor({})
 		if sc.has("error"):

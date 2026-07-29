@@ -47,7 +47,7 @@ func _setup_spring_bone_simulator(params: Dictionary) -> Dictionary:
 		return success({
 			"node_path": str(root.get_path_to(m)),
 			"placeholder": true,
-			"hint": "SpringBoneSimulator3D not in this Godot build — upgrade engine or use custom secondary bone script",
+			"hint": "SpringBoneSimulator3D not in this Godot build - upgrade engine or use custom secondary bone script",
 		})
 	node.name = optional_string(params, "name", "SpringBoneSimulator3D")
 	add_child_with_undo(sk, node, root, "MCP: SpringBoneSimulator3D")

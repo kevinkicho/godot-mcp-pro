@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## IO / save helpers — ConfigFile, JSON, user:// browsing (tutorials/io).
+## IO / save helpers - ConfigFile, JSON, user:// browsing (tutorials/io).
 
 
 func get_commands() -> Dictionary:

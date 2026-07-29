@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## ClassDB example snippets — generate agent-usable usage patterns from ClassDB metadata.
+## ClassDB example snippets - generate agent-usable usage patterns from ClassDB metadata.
 
 
 func get_commands() -> Dictionary:
@@ -54,7 +54,7 @@ func _get_examples(params: Dictionary) -> Dictionary:
 		examples.append({
 			"title": "Set position",
 			"gdscript": "node.position = Vector2(0, 0) # or Vector3",
-			"mcp": "update_property node_path=… property=position value={x:0,y:0}",
+			"mcp": "update_property node_path=... property=position value={x:0,y:0}",
 		})
 	# Method call examples for first few non-virtual methods
 	var shown := 0
@@ -64,7 +64,7 @@ func _get_examples(params: Dictionary) -> Dictionary:
 		examples.append({
 			"title": "Call %s" % m,
 			"gdscript": "node.%s()" % m,
-			"mcp": "call_node_method node_path=… method=%s" % m,
+			"mcp": "call_node_method node_path=... method=%s" % m,
 		})
 		shown += 1
 		if shown >= 5:
@@ -133,4 +133,4 @@ func _suggest_for_task(params: Dictionary) -> Dictionary:
 		suggestions.append({"class_name": "Node2D", "reason": "default 2D container"})
 		suggestions.append({"class_name": "Node3D", "reason": "default 3D container"})
 		suggestions.append({"class_name": "Control", "reason": "default UI root"})
-	return success({"task": task, "suggestions": suggestions, "hint": "get_class_usage_examples class_name=…"})
+	return success({"task": task, "suggestions": suggestions, "hint": "get_class_usage_examples class_name=..."})

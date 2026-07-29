@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Heightmap → MeshInstance3D terrain (engine-native; no third-party Terrain3D required).
+## Heightmap -> MeshInstance3D terrain (engine-native; no third-party Terrain3D required).
 
 
 func get_commands() -> Dictionary:

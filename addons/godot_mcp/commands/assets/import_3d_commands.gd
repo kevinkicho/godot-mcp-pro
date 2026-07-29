@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## 3D asset import depth — human Import dock / Advanced Import Settings workflows.
+## 3D asset import depth - human Import dock / Advanced Import Settings workflows.
 ## Extract meshes, instance as inherited, list scene contents, pack MeshLibraries.
 
 
@@ -25,7 +25,7 @@ func _list_3d_import_tools(_params: Dictionary) -> Dictionary:
 	return success({
 		"pipeline": [
 			"stage_files_into_res / ensure_imported for .glb/.gltf/.fbx",
-			"list_scene_import_options → set_gltf_import_flags / set_fbx_import_flags / apply_scene_import_advanced",
+			"list_scene_import_options -> set_gltf_import_flags / set_fbx_import_flags / apply_scene_import_advanced",
 			"list_imported_scene_contents",
 			"extract_meshes_from_scene / extract_materials_from_scene",
 			"instance_scene_as_inherited or create_scene_from_gltf",
@@ -246,7 +246,7 @@ func _extract_mats_walk(node: Node, root: Node, dest_dir: String, seen: Dictiona
 
 
 func _instance_scene_as_inherited(params: Dictionary) -> Dictionary:
-	## Human: Scene → New Inherited Scene… then save.
+	## Human: Scene -> New Inherited Scene... then save.
 	var key := "source_path" if params.has("source_path") else "path"
 	var res_path := require_res_path(params, key)
 	if res_path[1] != null:
@@ -375,7 +375,7 @@ func _collect_for_library(node: Node, root: Node, lib: MeshLibrary, _start_id: i
 
 
 func _create_scene_from_gltf(params: Dictionary) -> Dictionary:
-	## Instance imported glTF into a new editable .tscn (not inherited — full copy of tree as editable).
+	## Instance imported glTF into a new editable .tscn (not inherited - full copy of tree as editable).
 	var res_path := require_res_path(params, "path")
 	if res_path[1] != null:
 		return res_path[1]
@@ -457,7 +457,7 @@ func _set_gltf_import_flags(params: Dictionary) -> Dictionary:
 			options[str(k)] = params["extra"][k]
 	if options.is_empty():
 		return error_invalid_params("Provide flags: import_animations, fps, ensure_tangents, generate_lods, create_shadow_meshes, root_type, extra{}")
-	# Reuse import_commands path via project filesystem — write .import directly
+	# Reuse import_commands path via project filesystem - write .import directly
 	var import_path := path + ".import"
 	if not FileAccess.file_exists(import_path):
 		return error_not_found(import_path, "Import the asset first (ensure_imported)")

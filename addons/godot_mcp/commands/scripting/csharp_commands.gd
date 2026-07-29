@@ -341,7 +341,7 @@ func _run_dotnet_build(params: Dictionary) -> Dictionary:
 		elif not csprojs.is_empty():
 			target = str(csprojs[0])
 		else:
-			return error_not_found("No .sln/.csproj — run ensure_csharp_csproj first")
+			return error_not_found("No .sln/.csproj - run ensure_csharp_csproj first")
 	if not target.begins_with("res://"):
 		if FileAccess.file_exists(target):
 			pass
@@ -438,7 +438,7 @@ func _run_godot_csharp_build(params: Dictionary) -> Dictionary:
 
 func _get_last_build_log(_params: Dictionary) -> Dictionary:
 	if not FileAccess.file_exists(_BUILD_LOG_PATH):
-		return success({"exists": false, "message": "No build log yet — run_dotnet_build or run_godot_csharp_build"})
+		return success({"exists": false, "message": "No build log yet - run_dotnet_build or run_godot_csharp_build"})
 	var f := FileAccess.open(_BUILD_LOG_PATH, FileAccess.READ)
 	var text := f.get_as_text()
 	f.close()

@@ -45,6 +45,11 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Camera limits from map | `set_camera_2d_limits_from_tilemap` |
 | Make resource unique | `make_resource_unique` |
 | Game loop shell | `pipeline_game_loop_shell` / main menu / GameFlow |
+| process_mode / call_group | `set_process_mode` / `batch_set_process_mode` / `call_group_in_scene` |
+| CanvasLayer stacks | `setup_canvas_layer_stack` / `set_canvas_layer_order` / `list_canvas_layers` |
+| Cutscenes | `create_cutscene_player_script` / `create_simple_cutscene_json` |
+| Expression → property | `set_property_from_expression` / `batch_set_from_expressions` |
+| Resource UID | `resolve_resource_uid` / `list_resource_uids` |
 | Multiplayer lobby | `pipeline_multiplayer_lobby` / ready-up / spawn points |
 | Save slots JSON | `write_save_slot_json` / `capture_scene_state` |
 | Inventory component | `create_inventory_component_script` / ItemData |

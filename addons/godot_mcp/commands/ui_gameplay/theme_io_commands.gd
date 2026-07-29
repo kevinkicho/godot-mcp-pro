@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Theme resource I/O — export/import/duplicate project themes for agents.
+## Theme resource I/O - export/import/duplicate project themes for agents.
 
 
 func get_commands() -> Dictionary:

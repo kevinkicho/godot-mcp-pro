@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Resource dependency graph — human FileSystem move/rename + broken-ref fix.
+## Resource dependency graph - human FileSystem move/rename + broken-ref fix.
 
 
 func get_commands() -> Dictionary:
@@ -21,7 +21,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"flow": [
 			"list_resource_dependencies path=res://scenes/main.tscn",
 			"find_files_referencing path=res://textures/old.png",
-			"remap_resource_references from=… to=… dry_run=true then false",
+			"remap_resource_references from=... to=... dry_run=true then false",
 			"validate_scene_dependencies",
 		],
 	})
@@ -38,7 +38,7 @@ func _list_resource_dependencies(params: Dictionary) -> Dictionary:
 	var out: Array = []
 	var missing: Array = []
 	for d in deps:
-		# Godot may return "uid://…::res://path" or plain path
+		# Godot may return "uid://...::res://path" or plain path
 		var p := _dep_to_path(str(d))
 		var exists := ResourceLoader.exists(p) or FileAccess.file_exists(p)
 		out.append({"path": p, "raw": str(d), "exists": exists})
@@ -152,7 +152,7 @@ func _remap_resource_references(params: Dictionary) -> Dictionary:
 		# Skip binary-ish
 		var ext := str(cpath).get_extension().to_lower()
 		if ext in ["scn", "res"]:
-			skipped.append({"path": cpath, "reason": "binary resource — re-save in editor or use UID remap"})
+			skipped.append({"path": cpath, "reason": "binary resource - re-save in editor or use UID remap"})
 			continue
 		var f := FileAccess.open(cpath, FileAccess.READ)
 		if f == null:
@@ -167,9 +167,9 @@ func _remap_resource_references(params: Dictionary) -> Dictionary:
 		if dry_run:
 			changed.append({"path": cpath, "would_replace": true})
 		else:
-			# Soft guard for open scenes — require force=true
+			# Soft guard for open scenes - require force=true
 			if is_scene_resource_path(str(cpath)) and is_scene_path_open(str(cpath)) and not optional_bool(params, "force", false):
-				skipped.append({"path": cpath, "reason": "scene open in editor — pass force=true or close first"})
+				skipped.append({"path": cpath, "reason": "scene open in editor - pass force=true or close first"})
 				continue
 			var w := FileAccess.open(cpath, FileAccess.WRITE)
 			if w == null:
@@ -217,7 +217,7 @@ func _list_orphaned_resources(params: Dictionary) -> Dictionary:
 		"path": asset_root,
 		"orphans": orphans,
 		"count": orphans.size(),
-		"note": "Heuristic — UIDs and dynamic load() paths may false-positive",
+		"note": "Heuristic - UIDs and dynamic load() paths may false-positive",
 	})
 
 

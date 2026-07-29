@@ -289,7 +289,7 @@ func _set_particle_color_gradient(params: Dictionary) -> Dictionary:
 		return error_invalid_params("stops array must not be empty")
 
 	# Gradient.remove_point refuses to drop below 2 points, so a fresh Gradient
-	# cannot be cleared point by point — assign offsets/colors wholesale instead.
+	# cannot be cleared point by point - assign offsets/colors wholesale instead.
 	var offsets := PackedFloat32Array()
 	var colors := PackedColorArray()
 	for stop in stops:
@@ -705,7 +705,7 @@ func _set_particle_subemitter(params: Dictionary) -> Dictionary:
 		return error_invalid_params("No sub_emitter property")
 	node.set("sub_emitter", NodePath(sub_r[0]))
 	if params.has("mode") and "sub_emitter_mode" in node:
-		# 0=disabled, 1=constant, 2=at_end, 3=at_collision — accept int or string
+		# 0=disabled, 1=constant, 2=at_end, 3=at_collision - accept int or string
 		var mode = params["mode"]
 		if mode is String:
 			match str(mode):

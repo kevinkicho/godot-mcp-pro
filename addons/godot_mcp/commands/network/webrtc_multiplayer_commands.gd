@@ -29,7 +29,7 @@ func _list_webrtc_recipes(_params: Dictionary) -> Dictionary:
 			"WebRTC in Godot requires WebRTCMultiplayerPeer + a signaling channel (WebSocket/HTTP).",
 			"Full GGPO-style rollback is not provided; input buffer is a practical mid-tier netcode base.",
 			"Matchmaking here is a project-neutral lobby room protocol, not a commercial relay.",
-			"TURN credentials are supplied by your infra — MCP scaffolds ICE config only.",
+			"TURN credentials are supplied by your infra - MCP scaffolds ICE config only.",
 		],
 		"flow": [
 			"create_webrtc_ice_config_script (STUN/TURN urls)",
@@ -145,7 +145,7 @@ func _create_signaling_server_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/webrtc_signaling_server.gd")
 	var port: int = optional_int(params, "port", 9081)
 	var content := """extends Node
-## MCP WebSocket signaling server — relays JSON messages between peers in a room.
+## MCP WebSocket signaling server - relays JSON messages between peers in a room.
 ## Protocol (JSON lines/text frames):
 ##   {"type":"join","room":"lobby","id":1}
 ##   {"type":"signal","room":"lobby","to":2,"payload":{...}}
@@ -255,7 +255,7 @@ func stop() -> void:
 func _create_matchmaking_client_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/matchmaking_client.gd")
 	var content := """extends Node
-## MCP matchmaking client — connects to signaling server, joins room, relays WebRTC signals.
+## MCP matchmaking client - connects to signaling server, joins room, relays WebRTC signals.
 
 signal room_joined(self_id: int, peers: Array)
 signal peer_joined(peer_id: int)
@@ -343,7 +343,7 @@ func _create_input_buffer_netcode_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/input_buffer_netcode.gd")
 	var delay: int = optional_int(params, "input_delay_frames", 2)
 	var content := """extends Node
-## MCP input-buffer netcode — fixed input delay for peer-to-peer lockstep-ish feel.
+## MCP input-buffer netcode - fixed input delay for peer-to-peer lockstep-ish feel.
 ## Not full rollback/GGPO. Good base for fighters/platform fighters prototypes.
 
 signal frame_ready(frame: int, inputs: Dictionary)
@@ -411,7 +411,7 @@ func get_current_frame() -> int:
 func _create_lag_compensation_helper_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/lag_compensation.gd")
 	var content := """extends RefCounted
-## MCP lag compensation helpers — rewind positions by RTT for hit validation (server-side).
+## MCP lag compensation helpers - rewind positions by RTT for hit validation (server-side).
 ## class_name LagCompensation
 
 class_name LagCompensation
@@ -469,7 +469,7 @@ func _create_webrtc_ice_config(params: Dictionary) -> Dictionary:
 	var turn_pass: String = optional_string(params, "turn_password", "")
 	var content := """extends RefCounted
 class_name WebRTCIceConfig
-## MCP ICE configuration — STUN always; TURN optional (set project settings or args).
+## MCP ICE configuration - STUN always; TURN optional (set project settings or args).
 
 static func default_stun() -> PackedStringArray:
 	return PackedStringArray(["stun:stun.l.google.com:19302"])

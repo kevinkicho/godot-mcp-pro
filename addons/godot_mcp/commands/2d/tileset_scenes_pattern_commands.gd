@@ -32,13 +32,13 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 			"tilemap_fill_rect",
 		],
 		"workflow_scenes": [
-			"tileset_add_scenes_collection_source tileset_path=…",
-			"tileset_add_scene_tile tileset_path=… source_id=… scene_path=res://props/chest.tscn",
+			"tileset_add_scenes_collection_source tileset_path=...",
+			"tileset_add_scene_tile tileset_path=... source_id=... scene_path=res://props/chest.tscn",
 			"tilemap_set_cell with atlas_coords={x:0,y:0} alternative_tile=<scene_id>",
 		],
 		"workflow_patterns": [
-			"tileset_add_pattern_from_rect tilemap_path=… tileset_path=… from={x,y} to={x,y}",
-			"tilemap_stamp_pattern tilemap_path=… pattern_index=0 position={x,y}",
+			"tileset_add_pattern_from_rect tilemap_path=... tileset_path=... from={x,y} to={x,y}",
+			"tilemap_stamp_pattern tilemap_path=... pattern_index=0 position={x,y}",
 		],
 	})
 

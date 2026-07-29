@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Shader include libraries (.gdshaderinc) — shaders docs gap.
+## Shader include libraries (.gdshaderinc) - shaders docs gap.
 
 
 func get_commands() -> Dictionary:
@@ -20,7 +20,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["create_shader", "edit_shader", "assign_shader_material", "set_shader_param"],
 		"flow": [
 			"create_shader_include_library_preset",
-			"create_shader path=… then shader_add_include",
+			"create_shader path=... then shader_add_include",
 		],
 	})
 

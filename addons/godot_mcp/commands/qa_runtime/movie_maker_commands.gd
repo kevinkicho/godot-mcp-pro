@@ -22,7 +22,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"flow": [
 			"set_movie_maker_output path=user://movie.avi fps=30",
 			"play_with_movie_maker mode=main duration_sec=5",
-			"OR capture_play_session (frame screenshots → media_frames_to_video)",
+			"OR capture_play_session (frame screenshots -> media_frames_to_video)",
 			"run_session_start record=true for TCP run-plane video",
 		],
 		"related": ["run_record_start", "media_frames_to_video", "playtest_sequence"],
@@ -39,7 +39,7 @@ func _set_movie_maker_enabled(params: Dictionary) -> Dictionary:
 		return success({
 			"enabled": enabled,
 			"via": "partial",
-			"hint": "set_movie_maker_enabled API missing — use play_with_movie_maker / capture_play_session",
+			"hint": "set_movie_maker_enabled API missing - use play_with_movie_maker / capture_play_session",
 		})
 	var actual := false
 	if EditorInterface.has_method("is_movie_maker_enabled"):

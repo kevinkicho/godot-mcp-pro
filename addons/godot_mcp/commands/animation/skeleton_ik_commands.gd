@@ -116,5 +116,5 @@ func _setup_look_at_modifier(params: Dictionary) -> Dictionary:
 		"node_path": str(root.get_path_to(marker)),
 		"class": "Marker3D",
 		"placeholder": true,
-		"hint": "LookAtModifier3D unavailable — use Marker3D as target for custom look-at script",
+		"hint": "LookAtModifier3D unavailable - use Marker3D as target for custom look-at script",
 	})

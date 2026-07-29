@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Godot curve surface — Curve / Curve2D / Curve3D / Path curves / Animation Bezier tracks.
+## Godot curve surface - Curve / Curve2D / Curve3D / Path curves / Animation Bezier tracks.
 ## Agents operate on Cartesian control points and handles (SDK-complete numerical API).
 ## docs: tutorials/math (interpolation), animation tracks, Path2D/3D.
 
@@ -45,7 +45,7 @@ func _list_curve_sdk_tools(_params: Dictionary) -> Dictionary:
 			"Animation TYPE_BEZIER tracks",
 		],
 		"agent_model": [
-			"Control points and handles are (x,y) or (x,y,z) numbers — full fine-tune without GUI drag",
+			"Control points and handles are (x,y) or (x,y,z) numbers - full fine-tune without GUI drag",
 			"bezier_list_keys_cartesian exposes anchors + handle endpoints for plane mapping",
 			"bezier_sample_dense / curve*_sample_polyline return dense polylines for analysis",
 		],
@@ -559,7 +559,7 @@ func _bezier_set_keys_batch(params: Dictionary) -> Dictionary:
 		var val := float(item.get("value", item.get("y", 0.0)))
 		var ih := _v2(item.get("in_handle", item.get("in", {"x": -0.25, "y": 0})))
 		var oh := _v2(item.get("out_handle", item.get("out", {"x": 0.25, "y": 0})))
-		# Absolute endpoints → convert to offsets if agent sent in_endpoint
+		# Absolute endpoints -> convert to offsets if agent sent in_endpoint
 		if item.has("in_endpoint"):
 			var ie := _v2(item["in_endpoint"])
 			ih = Vector2(ie.x - t, ie.y - val)
@@ -677,7 +677,7 @@ func _bezier_set_handle_mode(params: Dictionary) -> Dictionary:
 			oh = dir * mag
 			ih = -dir * mag
 		_:
-			pass  # free — leave as-is unless overrides provided
+			pass  # free - leave as-is unless overrides provided
 	if params.has("in_handle"):
 		ih = _v2(params["in_handle"])
 	if params.has("out_handle"):

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Editor workspace parity — run modes, open scenes, snap, selection transforms, resource browser helpers.
+## Editor workspace parity - run modes, open scenes, snap, selection transforms, resource browser helpers.
 
 
 func get_commands() -> Dictionary:
@@ -74,7 +74,7 @@ func _set_editor_3d_snap(params: Dictionary) -> Dictionary:
 			pass
 		if es.has_setting("editors/3d/grid_size"):
 			pass
-		# Documented approach: project snap via Node3DEditor — limited API
+		# Documented approach: project snap via Node3DEditor - limited API
 		applied["translate_snap_requested"] = float(params["translate_snap"])
 	if params.has("rotate_snap_degrees"):
 		applied["rotate_snap_degrees"] = float(params["rotate_snap_degrees"])
@@ -112,7 +112,7 @@ func _close_scene(params: Dictionary) -> Dictionary:
 		EditorInterface.close_scene_from_path(path)
 		return success({"closed": path})
 	# Fallback: reload empty
-	return error_internal("close_scene_from_path unavailable — close tab manually or use EditorInterface API in this Godot version")
+	return error_internal("close_scene_from_path unavailable - close tab manually or use EditorInterface API in this Godot version")
 
 
 func _save_all_scenes(_params: Dictionary) -> Dictionary:

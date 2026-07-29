@@ -17,14 +17,14 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 	return success({
 		"tools": get_commands().keys(),
 		"related": ["create_behavior_tree_runtime_script", "setup_ai_agent_2d", "create_chase_ai_script"],
-		"note": "Recipes for agent-authored AI — not full visual planners",
+		"note": "Recipes for agent-authored AI - not full visual planners",
 	})
 
 
 func _create_utility_ai_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/utility_ai.gd")
 	var content := """extends Node
-## Simple utility AI — scores actions by consideration curves and picks max.
+## Simple utility AI - scores actions by consideration curves and picks max.
 class_name UtilityAI
 
 signal action_selected(action_id: StringName, score: float)

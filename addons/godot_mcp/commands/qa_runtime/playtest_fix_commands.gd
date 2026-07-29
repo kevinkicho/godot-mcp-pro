@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Closed-loop playtest → diagnose → agent fix hints (Wave 2).
+## Closed-loop playtest -> diagnose -> agent fix hints (Wave 2).
 
 
 func get_commands() -> Dictionary:
@@ -117,10 +117,10 @@ func _diagnose_playtest_failure(params: Dictionary) -> Dictionary:
 	var scene_issues: Array = []
 	var root := get_edited_root()
 	if root == null:
-		scene_issues.append("No scene open — open_scene or create_scene")
+		scene_issues.append("No scene open - open_scene or create_scene")
 	var main: String = str(ProjectSettings.get_setting("application/run/main_scene", ""))
 	if main.is_empty():
-		scene_issues.append("No main scene — set_main_scene")
+		scene_issues.append("No main scene - set_main_scene")
 	return success({
 		"error_count": errors.size(),
 		"errors": errors,

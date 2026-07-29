@@ -2,7 +2,7 @@
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
 ## Example-based animation transfer & fine-tune.
-## Agents: inspect example → copy → remap paths → scale/offset → keyframe tune → playtest.
+## Agents: inspect example -> copy -> remap paths -> scale/offset -> keyframe tune -> playtest.
 
 const PropertyParser := preload("res://addons/godot_mcp/utils/property_parser.gd")
 
@@ -396,7 +396,7 @@ func _copy_animation_track(params: Dictionary) -> Dictionary:
 
 
 func _remap_animation_track_paths(params: Dictionary) -> Dictionary:
-	## Replace path prefixes (example Armature/… → target character paths).
+	## Replace path prefixes (example Armature/... -> target character paths).
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]
@@ -534,7 +534,7 @@ func _offset_animation_keys(params: Dictionary) -> Dictionary:
 
 
 func _crop_animation(params: Dictionary) -> Dictionary:
-	## Keep keys within [start, end], shift so start→0.
+	## Keep keys within [start, end], shift so start->0.
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]
@@ -720,7 +720,7 @@ func _find_players_recursive(node: Node, out: Array, root: Node) -> void:
 
 
 func _apply_example_animation(params: Dictionary) -> Dictionary:
-	## One-shot: copy example clip → target player, optional path remap + time scale.
+	## One-shot: copy example clip -> target player, optional path remap + time scale.
 	## Supports example from another AnimationPlayer in the open scene OR a scene file.
 	var scene_path: String = optional_string(params, "example_scene_path", "")
 	var src_player_path: String = optional_string(params, "source_node_path", "")

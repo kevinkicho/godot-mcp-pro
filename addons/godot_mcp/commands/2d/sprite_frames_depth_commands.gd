@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## SpriteFrames depth — list/remove frames, FPS, looping (2D animation polish).
+## SpriteFrames depth - list/remove frames, FPS, looping (2D animation polish).
 
 
 func get_commands() -> Dictionary:

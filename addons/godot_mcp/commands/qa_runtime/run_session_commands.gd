@@ -2,7 +2,7 @@
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
 ## Agent-facing native run plane: session lifecycle, video record, timeline, events.
-## Builds on MCPGameInspector IPC — structure first, video for motion/feel.
+## Builds on MCPGameInspector IPC - structure first, video for motion/feel.
 
 
 func get_commands() -> Dictionary:
@@ -100,7 +100,7 @@ func _run_session_start(params: Dictionary) -> Dictionary:
 			"run_find_nodes / get_game_node_properties / assert_node_state",
 			"run_log_event for markers",
 			"run_capture_timeline for property time series",
-			"run_record_stop → media_frames_to_video",
+			"run_record_stop -> media_frames_to_video",
 			"run_session_stop",
 		],
 	})
@@ -162,7 +162,7 @@ func _set_runtime_token(params: Dictionary) -> Dictionary:
 		ProjectSettings.save()
 		return success({
 			"auth_required": false,
-			"message": "Runtime token cleared — TCP open on localhost only",
+			"message": "Runtime token cleared - TCP open on localhost only",
 			"env": "MCP_RUNTIME_TOKEN",
 		})
 	ProjectSettings.set_setting("mcp/runtime_token", token)
@@ -170,7 +170,7 @@ func _set_runtime_token(params: Dictionary) -> Dictionary:
 	return success({
 		"auth_required": true,
 		"message": "Runtime token saved to project settings mcp/runtime_token",
-		"env": "MCP_RUNTIME_TOKEN — set same value for MCP server / editor process",
+		"env": "MCP_RUNTIME_TOKEN - set same value for MCP server / editor process",
 		"hint": "Game must restart Play session to re-read token; pass token= on each TCP request",
 	})
 
@@ -294,7 +294,7 @@ func _run_capture_timeline(params: Dictionary) -> Dictionary:
 	if not err.is_empty():
 		return err
 	var duration: float = float(params.get("duration_sec", params.get("duration", 2.0)))
-	# IPC is async on game side — wait duration + buffer
+	# IPC is async on game side - wait duration + buffer
 	var timeout: float = duration + 8.0
 	return await send_game_command("capture_timeline", params, timeout)
 
@@ -307,7 +307,7 @@ func _run_find_nodes(params: Dictionary) -> Dictionary:
 
 
 func _run_probe_report(params: Dictionary) -> Dictionary:
-	## One-shot: ensure playing → optional record → settle → tree/status/logs/screenshot → stop.
+	## One-shot: ensure playing -> optional record -> settle -> tree/status/logs/screenshot -> stop.
 	var start := await _run_session_start({
 		"mode": optional_string(params, "mode", "main"),
 		"path": optional_string(params, "path", ""),
@@ -342,7 +342,7 @@ func _run_probe_report(params: Dictionary) -> Dictionary:
 
 	if optional_bool(params, "screenshot", true):
 		var shot := await send_game_command("get_screenshot", {}, 8.0)
-		# get_screenshot may not exist on inspector — use capture_frames count=1 fallback
+		# get_screenshot may not exist on inspector - use capture_frames count=1 fallback
 		if shot.has("error") or (shot.get("result") is Dictionary and shot["result"].has("error")):
 			shot = await send_game_command("capture_frames", {"count": 1, "frame_interval": 1, "half_resolution": true}, 12.0)
 		report["screenshot"] = shot.get("result", shot)
@@ -374,5 +374,5 @@ func _run_probe_report(params: Dictionary) -> Dictionary:
 			if ar2 is Dictionary and ar2.get("passed", true) == false:
 				ok = false
 	report["ok"] = ok
-	report["summary"] = "run_probe %s — %d debugger errors" % ["PASS" if ok else "FAIL", errors.size()]
+	report["summary"] = "run_probe %s - %d debugger errors" % ["PASS" if ok else "FAIL", errors.size()]
 	return success(report)

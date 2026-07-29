@@ -1,12 +1,11 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Camera2D/3D fine control — limits, current, FOV, cull, drag.
+## Camera2D/3D fine control - limits, current, FOV, cull, drag.
 
 
 func get_commands() -> Dictionary:
 	return {
-		"setup_camera_2d": _setup_camera_2d,
 		"setup_camera_3d_node": _setup_camera_3d,
 		"set_camera_2d_limits": _set_camera_2d_limits,
 		"set_camera_3d_params": _set_camera_3d_params,
@@ -243,7 +242,7 @@ func _set_limits_tilemap(params: Dictionary) -> Dictionary:
 		# map_to_local is center of cell in Godot 4
 		top_left = layer.to_global(top_left)
 		bottom_right = layer.to_global(bottom_right)
-		# Convert to camera parent space if needed â€” limits are in world/canvas
+		# Convert to camera parent space if needed  -  limits are in world/canvas
 		rect = Rect2(top_left, bottom_right - top_left)
 	elif tm.get_class() == "TileMap":
 		var used2: Rect2i = tm.call("get_used_rect")

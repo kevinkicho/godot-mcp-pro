@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Editor viewport focus — human "F to frame selection" / orbit around node.
+## Editor viewport focus - human "F to frame selection" / orbit around node.
 
 
 func get_commands() -> Dictionary:
@@ -74,7 +74,7 @@ func _editor_frame_selection(params: Dictionary) -> Dictionary:
 					EditorInterface.get_selection().add_node(n)
 			sel = EditorInterface.get_selection().get_selected_nodes()
 	if sel.is_empty():
-		return error_invalid_params("No selection — pass node_paths or select_nodes first")
+		return error_invalid_params("No selection - pass node_paths or select_nodes first")
 
 	var centers: Array = []
 	var is_3d := false
@@ -188,7 +188,7 @@ func _set_editor_cam_look_at(target: Vector3, distance: float) -> Dictionary:
 		return {
 			"focus": false,
 			"target": {"x": target.x, "y": target.y, "z": target.z},
-			"hint": "Could not access editor camera — node still selected",
+			"hint": "Could not access editor camera - node still selected",
 		}
 	var node3d := cam as Node3D
 	var offset := Vector3(distance * 0.6, distance * 0.5, distance * 0.6)

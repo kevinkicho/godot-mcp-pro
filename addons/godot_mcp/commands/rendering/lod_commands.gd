@@ -93,7 +93,7 @@ func _mesh_generate_lods(params: Dictionary) -> Dictionary:
 			method_used = "ArrayMesh.generate_lods"
 		else:
 			new_mesh = source
-			method_used = "passthrough — use setup_lod_mesh_instances for discrete LODs; ImporterMesh unavailable or failed"
+			method_used = "passthrough - use setup_lod_mesh_instances for discrete LODs; ImporterMesh unavailable or failed"
 
 	if optional_bool(params, "duplicate_resource", true) and new_mesh:
 		new_mesh = new_mesh.duplicate(true) as ArrayMesh
@@ -175,7 +175,7 @@ func _lod_info_from_mesh(mesh: Mesh) -> Dictionary:
 
 
 func _set_visibility_range(params: Dictionary) -> Dictionary:
-	## GeometryInstance3D visibility ranges — discrete distance LOD / culling.
+	## GeometryInstance3D visibility ranges - discrete distance LOD / culling.
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]

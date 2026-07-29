@@ -874,7 +874,7 @@ func _connect_blend_tree_nodes(params: Dictionary) -> Dictionary:
 		return bt_result[1]
 	var bt: AnimationNodeBlendTree = bt_result[0]
 	var input_port: int = optional_int(params, "input_port", 0)
-	# Godot: connect_node(input_node, input_index, output_node) — output_node → input_node:port
+	# Godot: connect_node(input_node, input_index, output_node) - output_node -> input_node:port
 	bt.connect_node(StringName(input_r[0]), input_port, StringName(output_r[0]))
 	mark_current_scene_unsaved()
 	return success({

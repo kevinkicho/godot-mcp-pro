@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Joypad / gamepad InputMap surface — docs tutorials/inputs joypad section.
+## Joypad / gamepad InputMap surface - docs tutorials/inputs joypad section.
 
 
 func get_commands() -> Dictionary:

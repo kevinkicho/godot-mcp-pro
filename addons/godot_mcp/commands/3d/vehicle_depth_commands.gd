@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## VehicleBody3D stack setup — body + wheels recipe.
+## VehicleBody3D stack setup - body + wheels recipe.
 
 
 func get_commands() -> Dictionary:

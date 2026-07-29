@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## GridMap deep paint — 3D level cell placement (TileMap parity for GridMap).
+## GridMap deep paint - 3D level cell placement (TileMap parity for GridMap).
 
 
 func get_commands() -> Dictionary:
@@ -70,7 +70,7 @@ func _gridmap_fill_rect(params: Dictionary) -> Dictionary:
 				gm.set_cell_item(Vector3i(x, y, z), item, orientation)
 				count += 1
 				if count > 20000:
-					return error_invalid_params("Fill exceeds 20000 cells — shrink region")
+					return error_invalid_params("Fill exceeds 20000 cells - shrink region")
 	mark_current_scene_unsaved()
 	return success({"cells_set": count, "item": item})
 

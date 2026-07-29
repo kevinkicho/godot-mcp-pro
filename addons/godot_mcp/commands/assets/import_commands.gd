@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Assets pipeline — import_process.rst coverage.
+## Assets pipeline - import_process.rst coverage.
 
 
 func get_commands() -> Dictionary:
@@ -45,7 +45,7 @@ func _reimport_files(params: Dictionary) -> Dictionary:
 	if fs == null:
 		return error_internal("EditorFileSystem unavailable")
 	fs.reimport_files(packed)
-	return success({"reimporting": packed, "count": packed.size(), "message": "Reimport started — use wait_for_import"})
+	return success({"reimporting": packed, "count": packed.size(), "message": "Reimport started - use wait_for_import"})
 
 
 func _wait_for_import(params: Dictionary) -> Dictionary:
@@ -83,7 +83,7 @@ func _get_import_info(params: Dictionary) -> Dictionary:
 		return success({
 			"path": path,
 			"has_import_file": false,
-			"message": "No .import yet — file may not be imported. Call scan_filesystem / wait_for_import.",
+			"message": "No .import yet - file may not be imported. Call scan_filesystem / wait_for_import.",
 		})
 	var cfg := ConfigFile.new()
 	var err := cfg.load(import_path)
@@ -236,7 +236,7 @@ func _ensure_imported(params: Dictionary) -> Dictionary:
 	var reimport: bool = optional_bool(params, "reimport", false)
 	var fs := _fs()
 	if fs == null:
-		return error_internal("EditorFileSystem unavailable — open Godot editor with plugin for import")
+		return error_internal("EditorFileSystem unavailable - open Godot editor with plugin for import")
 	var normalized: Array = []
 	for p in paths:
 		normalized.append(_normalize_res(str(p)))
@@ -399,8 +399,8 @@ func _list_import_presets(_params: Dictionary) -> Dictionary:
 			"lossless": "VRAM uncompressed / lossless for pixel art UI",
 			"vram_compressed": "GPU compressed for large textures",
 			"lossy": "Lossy disk compress",
-			"2d_pixel": "Nearest filter, no mipmaps — pixel art",
-			"2d_smooth": "Linear + mipmaps — general 2D",
+			"2d_pixel": "Nearest filter, no mipmaps - pixel art",
+			"2d_smooth": "Linear + mipmaps - general 2D",
 		},
 		"scene_3d": {
 			"static": "Meshes as static, generate collision optional",
@@ -458,7 +458,7 @@ func _apply_texture_import_preset(params: Dictionary) -> Dictionary:
 
 
 func _apply_scene_import_preset(params: Dictionary) -> Dictionary:
-	## glTF/FBX .import params — keys vary by importer; set common ones.
+	## glTF/FBX .import params - keys vary by importer; set common ones.
 	var res_path := require_res_path(params, "path")
 	if res_path[1] != null:
 		return res_path[1]

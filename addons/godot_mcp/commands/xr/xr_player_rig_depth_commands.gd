@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## XR player rig depth — full VR avatar stack, movement, grab, teleport scaffolds.
+## XR player rig depth - full VR avatar stack, movement, grab, teleport scaffolds.
 
 
 func get_commands() -> Dictionary:
@@ -140,7 +140,7 @@ func _create_movement(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node
-## Continuous XR locomotion — thumbstick on right controller moves XROrigin.
+## Continuous XR locomotion - thumbstick on right controller moves XROrigin.
 
 @export var origin_path: NodePath
 @export var camera_path: NodePath
@@ -196,7 +196,7 @@ func _create_grabber(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node3D
-## XR grabber — pick up RigidBody3D in nearby Area3D on grip.
+## XR grabber - pick up RigidBody3D in nearby Area3D on grip.
 
 @export var grab_action: StringName = &\"grip\"
 @export var grab_area_path: NodePath
@@ -267,7 +267,7 @@ func _create_teleport(params: Dictionary) -> Dictionary:
 		return vr[1]
 	path = vr[0]
 	var content := """extends Node
-## Simple XR teleport — ray from controller, teleport origin on trigger release.
+## Simple XR teleport - ray from controller, teleport origin on trigger release.
 
 @export var origin_path: NodePath
 @export var controller_path: NodePath

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## UV2 lightmap unwrap + batch bake prep (human Mesh → UV2 for LightmapGI).
+## UV2 lightmap unwrap + batch bake prep (human Mesh -> UV2 for LightmapGI).
 
 
 func get_commands() -> Dictionary:
@@ -109,7 +109,7 @@ func _mesh_lightmap_unwrap(params: Dictionary) -> Dictionary:
 		method = "MeshInstance3D.lightmap_unwrap"
 		am = mi.mesh as ArrayMesh if mi.mesh is ArrayMesh else am
 	else:
-		return error_internal("lightmap_unwrap not available on this mesh type — convert to ArrayMesh first")
+		return error_internal("lightmap_unwrap not available on this mesh type - convert to ArrayMesh first")
 
 	if err != OK and method == "ArrayMesh.lightmap_unwrap":
 		return error_internal("lightmap_unwrap failed: %s (mesh may need indices/unique verts)" % error_string(err))

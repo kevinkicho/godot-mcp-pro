@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Debugger intelligence — parse errors → file/line → fix plan (Wave 5).
+## Debugger intelligence - parse errors -> file/line -> fix plan (Wave 5).
 
 
 func get_commands() -> Dictionary:
@@ -144,7 +144,7 @@ func _open_error_source(params: Dictionary) -> Dictionary:
 					line = int(e.get("line", 1))
 					break
 	if path.is_empty():
-		return error_not_found("No script path in errors — pass path=")
+		return error_not_found("No script path in errors - pass path=")
 	var router = get_parent()
 	if router and router.has_method("execute"):
 		return await router.execute("open_script_at_line", {"path": path, "line": line})

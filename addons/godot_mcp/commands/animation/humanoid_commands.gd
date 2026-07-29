@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Humanoid actor vertical — rig + interaction + locomotion recipes for agents.
+## Humanoid actor vertical - rig + interaction + locomotion recipes for agents.
 
 
 func get_commands() -> Dictionary:
@@ -18,7 +18,7 @@ func get_commands() -> Dictionary:
 func _list_recipes(_params: Dictionary) -> Dictionary:
 	return success({
 		"flow": [
-			"import glTF → ensure_imported",
+			"import glTF -> ensure_imported",
 			"setup_humanoid_actor (or setup_character_3d + mesh)",
 			"validate_humanoid_rig",
 			"create_bone_map_preset profile=mixamo|humanoid|rpm",
@@ -163,14 +163,14 @@ func _bind_interaction(params: Dictionary) -> Dictionary:
 			if ia is Area3D:
 				area = ia
 	if area == null:
-		return error_not_found("Area3D — provide area_path or actor_path with InteractionArea")
+		return error_not_found("Area3D - provide area_path or actor_path with InteractionArea")
 
 	var prompt: String = optional_string(params, "prompt", "Press E to interact")
 	var action: String = optional_string(params, "action", "interact")
 	var kind: String = optional_string(params, "kind", "use")  # use|talk|pickup
 	var script_path: String = optional_string(params, "script_path", "res://scripts/interaction_area.gd")
 	var content := """extends Area3D
-## MCP interaction area — body_entered tracking + action prompt.
+## MCP interaction area - body_entered tracking + action prompt.
 signal interacted(body: Node)
 signal prompt_changed(visible: bool, text: String)
 
@@ -305,7 +305,7 @@ func _validate_humanoid_rig(params: Dictionary) -> Dictionary:
 		"animations": [],
 	}
 	if sk == null:
-		issues.append({"severity": "warning", "message": "No Skeleton3D under node — mesh may be static"})
+		issues.append({"severity": "warning", "message": "No Skeleton3D under node - mesh may be static"})
 	else:
 		var expected: Array = params.get("expected_bones", [
 			"Hips", "Spine", "Head", "LeftUpperArm", "RightUpperArm", "LeftUpperLeg", "RightUpperLeg",
@@ -323,14 +323,14 @@ func _validate_humanoid_rig(params: Dictionary) -> Dictionary:
 		if hits < 3 and sk.get_bone_count() > 0:
 			issues.append({
 				"severity": "info",
-				"message": "Few standard bone names matched — use create_bone_map_preset + auto_map_bones_by_name",
+				"message": "Few standard bone names matched - use create_bone_map_preset + auto_map_bones_by_name",
 			})
 		# Scale sanity
 		var sc: Vector3 = sk.scale if "scale" in sk else Vector3.ONE
 		if sc.x < 0.01 or sc.x > 100.0:
 			issues.append({"severity": "warning", "message": "Unusual skeleton scale %s" % str(sc)})
 	if player == null:
-		issues.append({"severity": "warning", "message": "No AnimationPlayer — add apply_locomotion_set"})
+		issues.append({"severity": "warning", "message": "No AnimationPlayer - add apply_locomotion_set"})
 	else:
 		for an in player.get_animation_list():
 			info["animations"].append(an)

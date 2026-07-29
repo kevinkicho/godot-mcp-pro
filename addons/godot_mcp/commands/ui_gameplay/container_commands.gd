@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## UI container recipes — HBox/VBox/Grid/Margin packs like a human layout pass.
+## UI container recipes - HBox/VBox/Grid/Margin packs like a human layout pass.
 
 
 func get_commands() -> Dictionary:

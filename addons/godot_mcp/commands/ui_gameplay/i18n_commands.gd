@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Internationalization — tutorials/i18n
+## Internationalization - tutorials/i18n
 
 
 func get_commands() -> Dictionary:

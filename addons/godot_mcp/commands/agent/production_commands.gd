@@ -1,8 +1,8 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Headless-oriented production macros — match high-frequency human IDE actions.
-## Prefer these when building a game end-to-end (brief → content → playtest).
+## Headless-oriented production macros - match high-frequency human IDE actions.
+## Prefer these when building a game end-to-end (brief -> content -> playtest).
 
 
 func get_commands() -> Dictionary:
@@ -149,7 +149,7 @@ grow_vertical = 2
 
 func _create_input_map_preset(params: Dictionary) -> Dictionary:
 	## Common InputMap packs so agents don't reinvent WASD every game.
-	## Writes ProjectSettings + live InputMap (matches Project → Input Map dock).
+	## Writes ProjectSettings + live InputMap (matches Project -> Input Map dock).
 	var preset: String = optional_string(params, "preset", "platformer_2d")
 	var actions: Dictionary = {}
 	match preset:
@@ -197,7 +197,7 @@ func _create_input_map_preset(params: Dictionary) -> Dictionary:
 				var ev: InputEvent = _make_input_event(e)
 				if ev:
 					events.append(ev)
-		# Persist to project.godot (Project Settings → Input Map)
+		# Persist to project.godot (Project Settings -> Input Map)
 		ProjectSettings.set_setting("input/" + action_str, {
 			"deadzone": deadzone,
 			"events": events,
@@ -245,7 +245,7 @@ func _make_input_event(spec: Dictionary) -> InputEvent:
 
 
 func _keycode_from_string(s: String) -> Key:
-	## Prefer engine resolver (handles "A", "Space", "Left", "Escape", …).
+	## Prefer engine resolver (handles "A", "Space", "Left", "Escape", ...).
 	if s.is_empty():
 		return KEY_NONE
 	var from_os: Key = OS.find_keycode_from_string(s) as Key
@@ -291,7 +291,7 @@ func _keycode_from_string(s: String) -> Key:
 
 
 func _wire_signal_to_new_method(params: Dictionary) -> Dictionary:
-	## Human Signal dock: Connect → create method on target script (or create script).
+	## Human Signal dock: Connect -> create method on target script (or create script).
 	var source_r := require_string(params, "source_path")
 	if source_r[1] != null:
 		return source_r[1]
@@ -382,7 +382,7 @@ func _wire_signal_to_new_method(params: Dictionary) -> Dictionary:
 			script.reload(true)
 		EditorInterface.get_resource_filesystem().update_file(script_path)
 
-	# Connect persistent (scene connection — human Signal dock)
+	# Connect persistent (scene connection - human Signal dock)
 	var already := source.is_connected(signal_r[0], Callable(target, method_name))
 	if not already:
 		var flags: int = Object.CONNECT_PERSIST
@@ -509,7 +509,7 @@ func _playtest_report(params: Dictionary) -> Dictionary:
 				assert_results.append(entry)
 			report["asserts"] = assert_results
 
-	# Screenshot (may be large — include path/meta only if tool returns base64, truncate)
+	# Screenshot (may be large - include path/meta only if tool returns base64, truncate)
 	if take_screenshot and EditorInterface.is_playing_scene():
 		# Reuse game inspector screenshot via editor command pattern if available
 		var shot: Dictionary = await send_game_command("get_screenshot", {}, 8.0)
@@ -543,7 +543,7 @@ func _playtest_report(params: Dictionary) -> Dictionary:
 			if ar is Dictionary and not ar.get("ok", false):
 				ok = false
 	report["ok"] = ok
-	report["summary"] = "playtest %s — %d debugger errors" % [
+	report["summary"] = "playtest %s - %d debugger errors" % [
 		"PASS" if ok else "FAIL",
 		errors.size(),
 	]
@@ -568,9 +568,9 @@ func _agent_production_status(_params: Dictionary) -> Dictionary:
 	if command_count == 0:
 		issues.append("No commands registered")
 	if root == null:
-		issues.append("No scene open — open_scene or create_scene")
+		issues.append("No scene open - open_scene or create_scene")
 	if scanning:
-		issues.append("Filesystem still scanning/importing — wait_for_import / ensure_imported")
+		issues.append("Filesystem still scanning/importing - wait_for_import / ensure_imported")
 	return success({
 		"plugin_version": plugin_version,
 		"command_count": command_count,
@@ -590,6 +590,6 @@ func _agent_production_status(_params: Dictionary) -> Dictionary:
 			"build scenes/scripts",
 			"wire_signal_to_new_method",
 			"playtest_report",
-			"fix → repeat",
+			"fix -> repeat",
 		],
 	})

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## SpringArm3D third-person camera stack — human TPS camera setup.
+## SpringArm3D third-person camera stack - human TPS camera setup.
 
 
 func get_commands() -> Dictionary:
@@ -63,7 +63,7 @@ func _setup_spring_arm(params: Dictionary) -> Dictionary:
 
 
 func _setup_tps_rig(params: Dictionary) -> Dictionary:
-	## Pivot (yaw) → SpringArm (pitch+length) → Camera3D under character.
+	## Pivot (yaw) -> SpringArm (pitch+length) -> Camera3D under character.
 	var root := get_edited_root()
 	if root == null:
 		return error_no_scene()

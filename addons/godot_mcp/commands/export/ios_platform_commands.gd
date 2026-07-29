@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## iOS / platform export helpers — checklists & scaffolds (full Xcode still needs macOS).
+## iOS / platform export helpers - checklists & scaffolds (full Xcode still needs macOS).
 
 
 func get_commands() -> Dictionary:
@@ -45,7 +45,7 @@ func _ios_checklist(_params: Dictionary) -> Dictionary:
 			"NSMotionUsageDescription if using IMU",
 			"Tracking / ATT if advertising",
 		],
-		"windows_linux_note": "Cannot complete iOS signing on this host — use ensure_ios_export_preset + checklist only",
+		"windows_linux_note": "Cannot complete iOS signing on this host - use ensure_ios_export_preset + checklist only",
 	})
 
 
@@ -90,9 +90,9 @@ Full iOS App Store shipping **requires macOS + Xcode**. On Windows/Linux, use th
 ## Finish on macOS
 
 1. Install matching iOS export templates
-2. Export project from Godot → `.xcodeproj` / `.ipa` flow
-3. Open in Xcode → Signing & Capabilities
-4. Archive → Distribute App
+2. Export project from Godot -> `.xcodeproj` / `.ipa` flow
+3. Open in Xcode -> Signing & Capabilities
+4. Archive -> Distribute App
 
 ## MCP
 

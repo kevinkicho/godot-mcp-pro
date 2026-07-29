@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Structural 3D nodes agents need constantly — notifiers, remote transform, world boundary.
+## Structural 3D nodes agents need constantly - notifiers, remote transform, world boundary.
 
 
 func get_commands() -> Dictionary:
@@ -20,7 +20,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 	return success({
 		"tools": get_commands().keys(),
 		"related": ["setup_orbit_camera_3d", "add_occluder_instance_3d", "set_visibility_range", "create_stream_manager_script"],
-		"docs": "Visibility notifiers, RemoteTransform, WorldBoundaryShape — core scene structure",
+		"docs": "Visibility notifiers, RemoteTransform, WorldBoundaryShape - core scene structure",
 	})
 
 
@@ -75,7 +75,7 @@ func _setup_visible_on_screen_enabler(params: Dictionary) -> Dictionary:
 	add_child_with_undo(parent, node, root, "MCP: VisibleOnScreenEnabler")
 	mark_current_scene_unsaved()
 	return success({"node_path": str(root.get_path_to(node)), "class": node.get_class(),
-		"hint": "Disables process/visibility when off-screen — pairs with streaming/LOD"})
+		"hint": "Disables process/visibility when off-screen - pairs with streaming/LOD"})
 
 
 func _setup_remote_transform(params: Dictionary) -> Dictionary:
@@ -112,7 +112,7 @@ func _setup_remote_transform(params: Dictionary) -> Dictionary:
 
 
 func _setup_world_boundary_body(params: Dictionary) -> Dictionary:
-	## Infinite plane collider — floors/kill planes.
+	## Infinite plane collider - floors/kill planes.
 	var root := get_edited_root()
 	if root == null:
 		return error_no_scene()

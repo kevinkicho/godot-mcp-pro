@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Groups + physics/render layer naming — project structure agents always need.
+## Groups + physics/render layer naming - project structure agents always need.
 
 
 func get_commands() -> Dictionary:
@@ -11,7 +11,6 @@ func get_commands() -> Dictionary:
 		"get_physics_layer_names": _get_physics_layer_names,
 		"set_render_layer_names": _set_render_layer_names,
 		"get_render_layer_names": _get_render_layer_names,
-		"find_nodes_in_group": _find_nodes_in_group,
 		"batch_set_node_groups": _batch_set_node_groups,
 		"list_group_layer_tools": _list_tools,
 	}

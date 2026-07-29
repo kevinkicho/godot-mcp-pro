@@ -19,7 +19,6 @@ func get_commands() -> Dictionary:
 		"set_y_sort_enabled": _set_y_sort_enabled,
 		"setup_canvas_layer": _setup_canvas_layer,
 		"setup_directional_light_2d": _setup_directional_light_2d,
-		"setup_timer": _setup_timer,
 		"setup_remote_transform_2d": _setup_remote_transform_2d,
 		"setup_visible_on_screen_notifier_2d": _setup_visible_on_screen_notifier_2d,
 		"add_camera_shake_to_camera2d": _add_camera_shake_to_camera2d,

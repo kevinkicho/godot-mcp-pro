@@ -2,7 +2,7 @@
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
 ## Skeleton2D / Bone2D / rest poses / SkeletonModificationStack2D + TwoBoneIK.
-## Docs: tutorials/animation/2d_skeletons — agent 2D skeletal animation surface.
+## Docs: tutorials/animation/2d_skeletons - agent 2D skeletal animation surface.
 
 
 func get_commands() -> Dictionary:
@@ -33,10 +33,10 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["setup_polygon_2d", "setup_remote_transform_2d", "create_simple_locomotion_tree", "setup_skeleton_ik"],
 		"workflow": [
 			"setup_skeleton_2d parent_path=.",
-			"add_bone_2d skeleton_path=… name=Root length=32",
-			"add_bone_2d parent_bone_path=… name=Arm length=24",
+			"add_bone_2d skeleton_path=... name=Root length=32",
+			"add_bone_2d parent_bone_path=... name=Arm length=24",
 			"set_bone_2d_rest (or apply after positioning)",
-			"setup_modification_stack_2d → setup_two_bone_ik_2d",
+			"setup_modification_stack_2d -> setup_two_bone_ik_2d",
 		],
 		"docs": "https://docs.godotengine.org/en/stable/tutorials/animation/2d_skeletons.html",
 	})
@@ -122,7 +122,7 @@ func _setup_skeleton_2d(params: Dictionary) -> Dictionary:
 	return success({
 		"node_path": str(root.get_path_to(sk)),
 		"class": "Skeleton2D",
-		"hint": "add_bone_2d skeleton_path=… then set_bone_2d_rest / setup_two_bone_ik_2d",
+		"hint": "add_bone_2d skeleton_path=... then set_bone_2d_rest / setup_two_bone_ik_2d",
 	})
 
 
@@ -359,7 +359,7 @@ func _setup_modification_stack_2d(params: Dictionary) -> Dictionary:
 		"created": created,
 		"enabled": stack.get("enabled") if "enabled" in stack else true,
 		"modification_count": stack.get("modification_count") if "modification_count" in stack else 0,
-		"hint": "setup_two_bone_ik_2d skeleton_path=… joint_one_idx=0 joint_two_idx=1 target_path=…",
+		"hint": "setup_two_bone_ik_2d skeleton_path=... joint_one_idx=0 joint_two_idx=1 target_path=...",
 	})
 
 
@@ -453,7 +453,7 @@ func _set_two_bone_ik_2d_target(params: Dictionary) -> Dictionary:
 		return error_not_found("Skeleton2D at '%s'" % r0[0])
 	var stack: Resource = sk.get_modification_stack()
 	if stack == null:
-		return error_not_found("modification stack — call setup_two_bone_ik_2d first")
+		return error_not_found("modification stack - call setup_two_bone_ik_2d first")
 	var idx: int = optional_int(params, "modification_index", 0)
 	if not stack.has_method("get_modification"):
 		return error_internal("Cannot read modifications")

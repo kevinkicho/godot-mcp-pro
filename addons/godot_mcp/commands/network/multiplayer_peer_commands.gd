@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Multiplayer peer recipes — ENet host/join scripts (tutorials/networking).
+## Multiplayer peer recipes - ENet host/join scripts (tutorials/networking).
 
 
 func get_commands() -> Dictionary:

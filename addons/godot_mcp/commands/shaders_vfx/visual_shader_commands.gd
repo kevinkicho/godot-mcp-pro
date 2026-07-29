@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## VisualShader graph scaffolding — create graph, add common nodes, connect, assign.
+## VisualShader graph scaffolding - create graph, add common nodes, connect, assign.
 
 
 func get_commands() -> Dictionary:
@@ -22,7 +22,7 @@ func _create_visual_shader(params: Dictionary) -> Dictionary:
 		return res[1]
 	var path: String = res[0]
 	if not path.ends_with(".tres") and not path.ends_with(".res") and not path.ends_with(".vs"):
-		# allow .gdshader mode visual — prefer .tres
+		# allow .gdshader mode visual - prefer .tres
 		if not path.contains("."):
 			path += ".tres"
 	var mode_str: String = optional_string(params, "mode", "spatial")
@@ -58,7 +58,7 @@ func _load_vs(path: String) -> VisualShader:
 
 
 func _type_name_to_class(type_name: String) -> String:
-	## Map short names → VisualShaderNode* class names
+	## Map short names -> VisualShaderNode* class names
 	var t := type_name
 	if t.begins_with("VisualShaderNode"):
 		return t
@@ -316,7 +316,7 @@ func _assign_visual_shader_material(params: Dictionary) -> Dictionary:
 
 
 func _visual_shader_add_preset_fresnel(params: Dictionary) -> Dictionary:
-	## Quick fresnel edge highlight graph on fragment: Fresnel → ALBEDO-ish via color mix.
+	## Quick fresnel edge highlight graph on fragment: Fresnel -> ALBEDO-ish via color mix.
 	var res := require_res_path(params, "path")
 	if res[1] != null:
 		return res[1]
@@ -345,7 +345,7 @@ func _visual_shader_add_preset_fresnel(params: Dictionary) -> Dictionary:
 	vs.add_node(type_id, color_c, Vector2(-300, 160), id_color)
 	vs.add_node(type_id, power, Vector2(-500, 0), id_power)
 	# Connect fresnel output to OUTPUT albedo if possible (output node is usually 0)
-	# Port indices vary by Godot version — try connect and ignore failure
+	# Port indices vary by Godot version - try connect and ignore failure
 	vs.connect_nodes(type_id, id_fresnel, 0, 0, 0)  # may map to albedo
 	var err := ResourceSaver.save(vs, res[0])
 	if err != OK:

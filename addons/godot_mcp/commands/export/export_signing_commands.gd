@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Export signing / packaging checklist — Android keystore + docs-level readiness.
+## Export signing / packaging checklist - Android keystore + docs-level readiness.
 
 
 func get_commands() -> Dictionary:
@@ -28,7 +28,7 @@ func _get_export_signing_checklist(params: Dictionary) -> Dictionary:
 	match platform:
 		"android":
 			items = [
-				{"id": "templates", "desc": "Export templates installed (Editor → Manage Export Templates)", "tool": "list_export_templates"},
+				{"id": "templates", "desc": "Export templates installed (Editor -> Manage Export Templates)", "tool": "list_export_templates"},
 				{"id": "preset", "desc": "Android export preset exists", "tool": "list_export_presets"},
 				{"id": "keystore_debug", "desc": "Debug keystore configured (auto or custom)", "tool": "get_android_signing_status"},
 				{"id": "keystore_release", "desc": "Release keystore path + user + password for store builds", "tool": "configure_android_keystore"},
@@ -149,7 +149,7 @@ func _configure_android_keystore(params: Dictionary) -> Dictionary:
 		return error_invalid_params("Provide debug_keystore, android_sdk_path, and/or java_sdk_path")
 	return success({
 		"applied": applied,
-		"note": "EditorSettings are machine-local — not written to project.godot",
+		"note": "EditorSettings are machine-local - not written to project.godot",
 	})
 
 
@@ -159,7 +159,7 @@ func _set_export_preset_signing_options(params: Dictionary) -> Dictionary:
 	var preset_name: String = optional_string(params, "preset_name", "")
 	var cfg_path := "res://export_presets.cfg"
 	if not FileAccess.file_exists(cfg_path):
-		return error_not_found("export_presets.cfg — create_export_preset first")
+		return error_not_found("export_presets.cfg - create_export_preset first")
 	var cfg := ConfigFile.new()
 	if cfg.load(cfg_path) != OK:
 		return error_internal("Failed to load export_presets.cfg")
@@ -207,9 +207,9 @@ func _set_export_preset_signing_options(params: Dictionary) -> Dictionary:
 			applied[str(k)] = params["options"][k]
 	if applied.is_empty():
 		return error_invalid_params("Provide package_name, version_*, release_keystore, or options{}")
-	# Never write plaintext password if user passes release_password — warn
+	# Never write plaintext password if user passes release_password - warn
 	if params.has("release_password"):
-		return error_invalid_params("Do not store release_password in export_presets.cfg via MCP — set in editor UI or CI secrets")
+		return error_invalid_params("Do not store release_password in export_presets.cfg via MCP - set in editor UI or CI secrets")
 	var err := cfg.save(cfg_path)
 	if err != OK:
 		return error_internal(error_string(err))

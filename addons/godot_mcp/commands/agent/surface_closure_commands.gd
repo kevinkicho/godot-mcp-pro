@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Surface closure — honest remaining out-of-scope + production completeness report.
+## Surface closure - honest remaining out-of-scope + production completeness report.
 
 
 func get_commands() -> Dictionary:
@@ -53,12 +53,12 @@ func _list_oos(_params: Dictionary) -> Dictionary:
 				"agent_path": "get_performance_monitors + get_gpu_profiling_hints",
 			},
 			{
-				"area": "Full automatic Godot 3→4 scene converter",
+				"area": "Full automatic Godot 3->4 scene converter",
 				"reason": "Official Project Converter owns format rewrite",
 				"agent_path": "scan_project_migration_report + apply_migration_replacements",
 			},
 		],
-		"production_complete_claim": "Agent production surfacing is complete when workflows + discovery + ClassDB escapes cover shipping content — not when every ClassDB method has a tool.",
+		"production_complete_claim": "Agent production surfacing is complete when workflows + discovery + ClassDB escapes cover shipping content - not when every ClassDB method has a tool.",
 	})
 
 
@@ -78,7 +78,7 @@ func _production_report(_params: Dictionary) -> Dictionary:
 		"plugin_commands_registered": methods.size(),
 		"command_modules": modules,
 		"command_domains": domains,
-		"production_readiness_estimate_percent": 97,
+		"production_readiness_estimate_percent": 98,
 		"docs_area_estimate_percent": 96,
 		"classdb_method_coverage": "lookup_100_percent_via_describe_class_not_1to1_tools",
 		"pillars": {

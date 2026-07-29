@@ -114,7 +114,7 @@ func _apply_lightmap_quality_preset(params: Dictionary) -> Dictionary:
 			parent = root
 		add_child_with_undo(parent, gi, root, "MCP: LightmapGI quality preset")
 	if gi == null:
-		return error_not_found("LightmapGI — pass create_if_missing or add_lightmap_gi first")
+		return error_not_found("LightmapGI - pass create_if_missing or add_lightmap_gi first")
 
 	var applied := _apply_gi_preset(gi, preset)
 	mark_current_scene_unsaved()

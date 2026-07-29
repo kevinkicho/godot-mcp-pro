@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Full ClassDB surface — covers official class-reference docs for every engine type.
+## Full ClassDB surface - covers official class-reference docs for every engine type.
 
 
 func get_commands() -> Dictionary:

@@ -62,12 +62,12 @@ func _health_check(_params: Dictionary) -> Dictionary:
 	if command_count == 0:
 		issues.append({
 			"severity": "error",
-			"message": "No commands registered — plugin failed to load command modules",
+			"message": "No commands registered - plugin failed to load command modules",
 		})
 	if root == null:
 		issues.append({
 			"severity": "info",
-			"message": "No scene open in editor — open or create a scene before node tools",
+			"message": "No scene open in editor - open or create a scene before node tools",
 		})
 
 	var has_hard_error := false
@@ -120,7 +120,7 @@ func _agent_ensure_ready(params: Dictionary) -> Dictionary:
 			actions.append({"ensure_runtime_autoloads": r})
 		else:
 			actions.append({
-				"ensure_runtime_autoloads": "command not registered — enable run_session module",
+				"ensure_runtime_autoloads": "command not registered - enable run_session module",
 			})
 	if optional_bool(params, "open_main_if_empty", true):
 		var root := get_edited_root()
@@ -130,7 +130,7 @@ func _agent_ensure_ready(params: Dictionary) -> Dictionary:
 				EditorInterface.open_scene_from_path(main_scene)
 				actions.append({"opened_main_scene": main_scene})
 			else:
-				actions.append({"open_scene": "none — create_scene or set main scene"})
+				actions.append({"open_scene": "none - create_scene or set main scene"})
 	health = _health_check({})
 	h = health.get("result", health)
 	return success({
@@ -221,7 +221,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		"purpose": "Use Godot MCP as the primary control plane for agent-driven game production.",
 		"principles": [
 			"Prefer live editor tools (UndoRedo) when the plugin is connected.",
-			"Explore before mutate: get_project_info → get_filesystem_tree / get_scene_tree → read_script.",
+			"Explore before mutate: get_project_info -> get_filesystem_tree / get_scene_tree -> read_script.",
 			"Mutate via MCP tools, not raw project.godot edits.",
 			"After significant script/scene work: save_scene, validate_script, play_scene, inspect errors.",
 			"Keep paths under res:// for all writes.",
@@ -229,7 +229,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		],
 		"production_loop": [
 			{"step": 1, "action": "health_check / agent_production_status", "why": "Confirm editor + MCP link + import idle"},
-			{"step": 2, "action": "scaffold_project_defaults (once per new project)", "why": "Folders, viewport, layers, input preset, main scene — human first-hour setup"},
+			{"step": 2, "action": "scaffold_project_defaults (once per new project)", "why": "Folders, viewport, layers, input preset, main scene - human first-hour setup"},
 			{"step": 3, "action": "stage_files_into_res / ensure_imported / import_paths", "why": "Drop assets + wait until loadable (Import dock)"},
 			{"step": 4, "action": "get_project_info + get_filesystem_tree + get_scene_tree / open_scene", "why": "Orient before mutate"},
 			{"step": 5, "action": "create_scene / add_node / update_property / create_script / attach_script", "why": "Build content like the Scene/Inspector docks"},
@@ -237,7 +237,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			{"step": 7, "action": "save_scene + validate_script", "why": "Persist and check compile"},
 			{"step": 8, "action": "playtest_report or playtest_sequence (inputs+asserts)", "why": "Hit Play, interact like a human, inspect Output"},
 			{"step": 9, "action": "simulate_action / get_game_node_properties / audit_scene_tree", "why": "Interact, assert runtime, audit wiring"},
-			{"step": 10, "action": "stop_scene → fix → repeat", "why": "Close the feedback loop"},
+			{"step": 10, "action": "stop_scene -> fix -> repeat", "why": "Close the feedback loop"},
 		],
 		"headless_principle": "Agents work as if a human uses the Godot IDE. Prefer MCP tools over raw filesystem edits of .tscn / project.godot. Full import/playtest needs editor + plugin; file scaffolding works when plugin is up.",
 		"when_editor_offline": [
@@ -258,7 +258,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"load_sprite / ensure_imported / apply_texture_import_preset 2d_pixel",
 				"create_input_map_preset platformer_2d|topdown_2d",
 				"tileset_* + tilemap_* + tileset_add_scenes_collection_source / tilemap_stamp_pattern",
-				"setup_skeleton_2d → add_bone_2d → set_bone_2d_rest → setup_two_bone_ik_2d",
+				"setup_skeleton_2d -> add_bone_2d -> set_bone_2d_rest -> setup_two_bone_ik_2d",
 				"setup_camera_2d / setup_canvas_modulate / setup_point_light_2d / LightOccluder2D",
 				"playtest_report / playtest_sequence",
 			]
@@ -266,13 +266,13 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["focus"] = [
 				"scaffold_project_defaults genre=3d",
 				"create_scene root Node3D/CharacterBody3D",
-				"stage_files_into_res for .glb → ensure_imported",
+				"stage_files_into_res for .glb -> ensure_imported",
 				"add_mesh_instance", "setup_lighting", "setup_camera_3d", "setup_collision",
 			]
 		"humanoid", "character_interaction":
 			guide["focus"] = [
 				"list_humanoid_recipes",
-				"setup_humanoid_actor model_scene=…",
+				"setup_humanoid_actor model_scene=...",
 				"validate_humanoid_rig",
 				"create_bone_map_preset profile=mixamo|rpm|humanoid",
 				"apply_locomotion_set + apply_example_animation",
@@ -306,15 +306,15 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"list_mesh_collision_tools",
 				"mesh_create_trimesh_static_body (Mesh menu parity)",
 				"mesh_create_convex_collision / mesh_create_multiple_convex_collisions",
-				"add_collision_shape_from_mesh body_path=… mesh_path=…",
+				"add_collision_shape_from_mesh body_path=... mesh_path=...",
 				"get_collision_info / playtest_report",
 			]
 		"resources", "dependencies", "remap":
 			guide["focus"] = [
 				"list_resource_graph_tools",
-				"list_resource_dependencies path=…",
-				"find_files_referencing path=…",
-				"remap_resource_references from=… to=… dry_run=true then false",
+				"list_resource_dependencies path=...",
+				"find_files_referencing path=...",
+				"remap_resource_references from=... to=... dry_run=true then false",
 				"validate_scene_dependencies / list_orphaned_resources",
 				"validate_all_scenes before export",
 			]
@@ -348,11 +348,11 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		"animation", "animations", "anim":
 			guide["focus"] = [
 				"list_animation_fine_tune_tools / list_animation_tree_graph_tools",
-				"EXAMPLE → TARGET: extract_animations_from_scene OR list_animations on example player",
+				"EXAMPLE -> TARGET: extract_animations_from_scene OR list_animations on example player",
 				"dump_animation / get_animation_info include_keys=true (read example tracks+keys)",
-				"apply_example_animation example_scene_path=… source_animation=Walk target_node_path=Player/Anim",
-				"OR copy_animation_to_player source_node_path=… target_node_path=…",
-				"remap_animation_track_paths from_prefix=… to_prefix=… (hierarchy mismatch)",
+				"apply_example_animation example_scene_path=... source_animation=Walk target_node_path=Player/Anim",
+				"OR copy_animation_to_player source_node_path=... target_node_path=...",
+				"remap_animation_track_paths from_prefix=... to_prefix=... (hierarchy mismatch)",
 				"create_simple_locomotion_tree / create_blend_space_1d_locomotion",
 				"export_animation_tree_graph mermaid=true",
 				"compare_animations source_* vs target_*",
@@ -369,10 +369,10 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"retarget_paths": "remap_animation_track_paths",
 				"timing": "scale_animation_time scale=0.5 (2x speed) or offset_animation_keys",
 				"tweak_key": "set_animation_keyframe / bezier_set_keys_batch with Cartesian {x:time,y:value,in,out}",
-				"curve_shape": "bezier_sample_dense polyline → identify extrema → set handles",
+				"curve_shape": "bezier_sample_dense polyline -> identify extrema -> set handles",
 				"tree": "create_simple_locomotion_tree + travel_animation_state",
 			}
-			guide["guarantee"] = "Full numerical access to animation keys, Bezier control points, and Curve/Curve2D/Curve3D resources — agents map focal points on the Cartesian plane and write them via MCP."
+			guide["guarantee"] = "Full numerical access to animation keys, Bezier control points, and Curve/Curve2D/Curve3D resources - agents map focal points on the Cartesian plane and write them via MCP."
 		"lod", "lightmap", "rendering_prep":
 			guide["focus"] = [
 				"list_quality_presets / list_lod_tools / list_lightmap_uv_tools",
@@ -380,15 +380,15 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"apply_lightmap_quality_preset preset=draft|medium|high|ultra",
 				"apply_platform_render_pack pack=mobile|desktop|high_end",
 				"pipeline_setup_prop_lods / pipeline_prepare_level_lighting",
-				"mesh_has_uv2 → mesh_lightmap_unwrap / lightmap_bake_prepare",
+				"mesh_has_uv2 -> mesh_lightmap_unwrap / lightmap_bake_prepare",
 			]
 		"pipeline", "pipelines", "macros":
 			guide["focus"] = [
 				"list_agent_pipelines",
 				"pipeline_greybox_to_playable",
 				"pipeline_prepare_level_lighting quality=medium",
-				"pipeline_setup_prop_lods node_path=… preset=desktop",
-				"pipeline_nav_debug_route from=… to=…",
+				"pipeline_setup_prop_lods node_path=... preset=desktop",
+				"pipeline_nav_debug_route from=... to=...",
 				"pipeline_character_locomotion style=state_machine|blend1d",
 			]
 		"movie", "capture", "recording":
@@ -403,7 +403,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["focus"] = [
 				"list_nav_debug_tools",
 				"bake_navigation_mesh",
-				"navigation_live_path from={…} to={…} (play+query+draw)",
+				"navigation_live_path from={...} to={...} (play+query+draw)",
 				"pipeline_nav_debug_route",
 				"navigation_set_debug_enabled true",
 				"navigation_query_path / draw_debug_path",
@@ -418,7 +418,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		"assets", "import":
 			guide["focus"] = [
 				"stage_files_into_res files=[{from,to}] dest_dir=res://assets",
-				"ensure_imported paths=[…] / import_paths",
+				"ensure_imported paths=[...] / import_paths",
 				"wait_for_import / reimport_files",
 				"apply_texture_import_preset / apply_scene_import_preset",
 				"get_import_info / set_import_options",
@@ -427,24 +427,24 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			guide["focus"] = [
 				"select_nodes / get_editor_selection",
 				"inspect_node deep=true OR list_property_info (enums/ranges/usage)",
-				"list_property_info recurse_resources=true — expand shape.*, material.*, etc.",
+				"list_property_info recurse_resources=true - expand shape.*, material.*, etc.",
 				"search_properties query=radius|albedo|collision",
-				"get_property → update_property / update_properties (batch)",
+				"get_property -> update_property / update_properties (batch)",
 				"reset_property when can_revert",
 				"describe_class class_name=CharacterBody3D for full ClassDB surface",
-				"list_node_methods → call_node_method for non-property API",
+				"list_node_methods -> call_node_method for non-property API",
 				"Nested resources: add_resource then update_property property='shape.radius'",
 				"wire_signal_to_new_method / connect_signal / get_signals",
 				"set_meta / list_meta / save_scene",
 			]
 			guide["human_parity"] = {
 				"tune_transform": "update_properties node_path=Player properties={position, rotation, scale}",
-				"tune_collision": "add_resource property=shape resource_type=CircleShape2D → update_property property=shape.radius value=16",
-				"tune_material": "add_resource property=material_override resource_type=StandardMaterial3D resource_properties={albedo_color:'#ff0000'} → update_property property=material_override.roughness value=0.4",
+				"tune_collision": "add_resource property=shape resource_type=CircleShape2D -> update_property property=shape.radius value=16",
+				"tune_material": "add_resource property=material_override resource_type=StandardMaterial3D resource_properties={albedo_color:'#ff0000'} -> update_property property=material_override.roughness value=0.4",
 				"enum_by_name": "update_property property=process_mode value=PROCESS_MODE_ALWAYS (or list_property_info enum_options)",
 				"discover_every_field": "list_property_info recurse_resources=true include_headers=true",
 				"unknown_type": "describe_class + list_class_properties include_inherited=true",
-				"call_api": "list_node_methods filter=play → call_node_method method=play args=[]",
+				"call_api": "list_node_methods filter=play -> call_node_method method=play args=[]",
 				"wire_button": "wire_signal_to_new_method source_path=UI/Button signal_name=pressed target_path=.",
 				"script_exports": "list_property_info shows @export; edit_script to add/remove @export then reload_project",
 			}
@@ -460,7 +460,7 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 
 
 func _list_docs_coverage(_params: Dictionary) -> Dictionary:
-	## Honest map of docs areas → MCP depth. Status values:
+	## Honest map of docs areas -> MCP depth. Status values:
 	## strong | partial | thin | classdb_only
 	## NOTE: This is NOT "100% of the SDK". ClassDB lookup ≠ workflow tools.
 	var areas := {
@@ -836,7 +836,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"bezier_list_keys_cartesian", "bezier_set_keys_batch", "bezier_sample_dense", "bezier_set_handle_mode",
 				"update_property Vector*/Transform*", "describe_class",
 			],
-			"gaps": ["symbolic CAS — use scripts for pure math"],
+			"gaps": ["symbolic CAS - use scripts for pure math"],
 		},
 		"tutorials/best_practices": {
 			"status": "strong",
@@ -863,7 +863,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"list_class_properties", "list_class_constants", "get_class_inheritance",
 				"get_class_usage_examples", "list_instantiateable_classes", "suggest_class_for_task",
 			],
-			"note": "Lookup of any ClassDB type — NOT a dedicated tool per method of every class",
+			"note": "Lookup of any ClassDB type - NOT a dedicated tool per method of every class",
 			"gaps": ["offline full docs RST dump"],
 		},
 	}
@@ -911,7 +911,7 @@ func _list_surface_registry(_params: Dictionary) -> Dictionary:
 		"domains": domains.keys(),
 		"modules": modules,
 		"commands": all_methods,
-		"registry_doc": "SURFACE_REGISTRY.md — scripts/export-surface-registry.ps1",
+		"registry_doc": "SURFACE_REGISTRY.md - scripts/export-surface-registry.ps1",
 		"layout": "commands/<domain>/*_commands.gd (recursive auto-discover)",
-		"honest_note": "Workflow surface inventory — not 100% ClassDB. Use list_docs_coverage / get_production_surface_report.",
+		"honest_note": "Workflow surface inventory - not 100% ClassDB. Use list_docs_coverage / get_production_surface_report.",
 	})

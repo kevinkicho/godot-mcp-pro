@@ -24,7 +24,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"related": ["setup_polygon_2d", "load_sprite", "create_shader", "assign_shader_material"],
 		"workflow": [
 			"create_quad_mesh_2d path=res://meshes/quad.tres size={x:64,y:64}",
-			"setup_mesh_instance_2d mesh_path=… texture_path=…",
+			"setup_mesh_instance_2d mesh_path=... texture_path=...",
 			"OR convert_sprite_to_mesh_instance_2d node_path=Sprite2D",
 		],
 		"docs": "https://docs.godotengine.org/en/stable/tutorials/2d/2d_meshes.html",
@@ -147,7 +147,7 @@ func _create_quad_mesh_2d(params: Dictionary) -> Dictionary:
 
 
 func _create_array_mesh_2d(params: Dictionary) -> Dictionary:
-	## vertices: [{x,y},…] or [[x,y],…]; optional uvs, colors, indices.
+	## vertices: [{x,y},...] or [[x,y],...]; optional uvs, colors, indices.
 	var res_path := require_res_path(params, "path")
 	if res_path[1] != null:
 		return res_path[1]
@@ -278,7 +278,7 @@ func _set_texture(params: Dictionary) -> Dictionary:
 
 
 func _convert_sprite_to_mesh(params: Dictionary) -> Dictionary:
-	## Approximate editor "Sprite2D → Convert to MeshInstance2D" for a rectangular sprite.
+	## Approximate editor "Sprite2D -> Convert to MeshInstance2D" for a rectangular sprite.
 	var root := get_edited_root()
 	if root == null:
 		return error_no_scene()

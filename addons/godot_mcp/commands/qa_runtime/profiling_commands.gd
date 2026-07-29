@@ -96,7 +96,7 @@ func _capture_performance_sample(params: Dictionary) -> Dictionary:
 
 
 func _capture_performance_timeline(params: Dictionary) -> Dictionary:
-	## Sample N frames over duration (editor process only — use while editor is idle or playing for editor-side).
+	## Sample N frames over duration (editor process only - use while editor is idle or playing for editor-side).
 	## For game-side multi-sample, samples game monitors repeatedly via IPC when playing.
 	var samples_n: int = clampi(optional_int(params, "samples", 10), 2, 60)
 	var interval_sec: float = clampf(float(params.get("interval_sec", 0.1)), 0.05, 2.0)
@@ -242,9 +242,9 @@ func _export_performance_report(params: Dictionary) -> Dictionary:
 func _get_gpu_profiling_hints(_params: Dictionary) -> Dictionary:
 	return success({
 		"engine_ui": [
-			"Debugger → Profiler / Monitors / Visual Profiler",
-			"Editor → Editor Settings → Network → Remote FS (for device)",
-			"Project Settings → Rendering → Driver / V-Sync",
+			"Debugger -> Profiler / Monitors / Visual Profiler",
+			"Editor -> Editor Settings -> Network -> Remote FS (for device)",
+			"Project Settings -> Rendering -> Driver / V-Sync",
 		],
 		"mcp_tools": [
 			"get_performance_monitors (game)",

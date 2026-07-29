@@ -30,7 +30,7 @@ func _run_test_scenario(params: Dictionary) -> Dictionary:
 	##   - input: {type:"input", action:str, pressed:bool} or {type:"input", keycode:str}
 	##   - wait: {type:"wait", seconds:float} or {type:"wait", node_path:str, timeout:float}
 	##   - assert: {type:"assert", node_path:str, property:str, expected:val, operator:str}
-	##   - screenshot: {type:"screenshot"} — captures a frame for visual inspection
+	##   - screenshot: {type:"screenshot"} - captures a frame for visual inspection
 
 	if not params.has("steps") or not params["steps"] is Array:
 		return error_invalid_params("Missing required parameter: steps (Array)")
@@ -97,7 +97,7 @@ func _run_test_scenario(params: Dictionary) -> Dictionary:
 					pass_count += 1
 				else:
 					fail_count += 1
-				# Only assertion steps carry a verdict — store just these for
+				# Only assertion steps carry a verdict - store just these for
 				# get_test_report (input/wait/screenshot steps have no "passed").
 				_test_results.append(step_result)
 
@@ -170,7 +170,7 @@ func _assert_node_state(params: Dictionary) -> Dictionary:
 	if result.has("error"):
 		return result
 
-	# The game reply is wrapped twice ({"result": {"result": {...}}}) — unwrap
+	# The game reply is wrapped twice ({"result": {"result": {...}}}) - unwrap
 	# defensively before storing/returning so "passed" sits at the top level.
 	var payload := unwrap_game_result(result)
 	if payload.has("passed"):
@@ -405,7 +405,7 @@ func _execute_input_step(step: Dictionary) -> Dictionary:
 			"ctrl": step.get("ctrl", false),
 			"alt": step.get("alt", false),
 		})
-		# Auto-release if pressed, mirroring the action branch — otherwise the
+		# Auto-release if pressed, mirroring the action branch - otherwise the
 		# key stays held for the rest of the session and corrupts later steps
 		if pressed and step.get("auto_release", true):
 			events.append({
@@ -485,7 +485,7 @@ func _execute_assert_step(step: Dictionary) -> Dictionary:
 		}, 5.0)
 		if result.has("error"):
 			return {"passed": false, "error": str(result["error"])}
-		# Game replies are double-wrapped — unwrap until "passed" surfaces
+		# Game replies are double-wrapped - unwrap until "passed" surfaces
 		var payload := unwrap_game_result(result)
 		if payload.has("passed"):
 			return payload

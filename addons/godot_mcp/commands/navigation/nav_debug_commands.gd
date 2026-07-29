@@ -22,7 +22,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"flow": [
 			"bake_navigation_mesh",
 			"navigation_set_debug_enabled true",
-			"navigation_live_path from=… to=… (query + draw while playing)",
+			"navigation_live_path from=... to=... (query + draw while playing)",
 			"OR navigation_query_path + draw_debug_path",
 		],
 		"related": ["setup_navigation_region", "bake_navigation_mesh", "setup_navigation_agent", "pipeline_nav_debug_route"],
@@ -42,7 +42,7 @@ func _navigation_set_debug_enabled(params: Dictionary) -> Dictionary:
 	# Master toggle varies by version
 	if ProjectSettings.has_setting("debug/shapes/navigation/enable_navigation_debug"):
 		ProjectSettings.set_setting("debug/shapes/navigation/enable_navigation_debug", enabled)
-	# Godot 4 often uses visible_collision_shapes style — also try NavigationServer
+	# Godot 4 often uses visible_collision_shapes style - also try NavigationServer
 	if enabled:
 		for k in keys:
 			if ProjectSettings.has_setting(k):
@@ -132,7 +132,7 @@ func _navigation_query_path(params: Dictionary) -> Dictionary:
 		var to2 := _parse_vec2(params["to"])
 		var map_rid: RID
 		if params.has("map_rid"):
-			# can't pass RID easily — use world maps
+			# can't pass RID easily - use world maps
 			pass
 		var world_2d = EditorInterface.get_edited_scene_root().get_world_2d() if get_edited_root() else null
 		if world_2d == null and get_edited_root() and get_edited_root().is_inside_tree():
@@ -150,7 +150,7 @@ func _navigation_query_path(params: Dictionary) -> Dictionary:
 		# Editor-side: use NavigationServer2D default map if available
 		var maps: Array = NavigationServer2D.get_maps() if NavigationServer2D.has_method("get_maps") else []
 		if maps.is_empty():
-			return error_internal("No NavigationServer2D maps — bake NavigationRegion2D and play scene for accurate paths")
+			return error_internal("No NavigationServer2D maps - bake NavigationRegion2D and play scene for accurate paths")
 		map_rid = maps[0]
 		var path2: PackedVector2Array = NavigationServer2D.map_get_path(map_rid, from2, to2, optimize)
 		var pts: Array = []
@@ -176,7 +176,7 @@ func _navigation_query_path(params: Dictionary) -> Dictionary:
 
 	var maps3: Array = NavigationServer3D.get_maps() if NavigationServer3D.has_method("get_maps") else []
 	if maps3.is_empty():
-		return error_internal("No NavigationServer3D maps in editor — bake region and prefer play session for queries")
+		return error_internal("No NavigationServer3D maps in editor - bake region and prefer play session for queries")
 	var map3: RID = maps3[0]
 	var path3: PackedVector3Array = NavigationServer3D.map_get_path(map3, from3, to3, optimize)
 	var pts3: Array = []

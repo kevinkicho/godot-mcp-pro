@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## SDFGI / SSAO / SSR / glow / lightmap mesh flags — rendering docs depth.
+## SDFGI / SSAO / SSR / glow / lightmap mesh flags - rendering docs depth.
 
 
 func get_commands() -> Dictionary:
@@ -44,7 +44,7 @@ func _find_env(params: Dictionary) -> Dictionary:
 	if we == null:
 		we = _find_we(root)
 	if we == null:
-		return {"error": error_not_found("WorldEnvironment — use setup_world_environment or apply_environment_preset")}
+		return {"error": error_not_found("WorldEnvironment - use setup_world_environment or apply_environment_preset")}
 	if we.environment == null:
 		we.environment = Environment.new()
 	return {"root": root, "env": we.environment, "owner": we, "we": we}
@@ -176,7 +176,7 @@ func _set_mesh_lightmap_params(params: Dictionary) -> Dictionary:
 	var mi: MeshInstance3D = node
 	var applied := {}
 	if params.has("gi_mode"):
-		# 0 disabled, 1 static, 2 dynamic — GeometryInstance3D.GIMode
+		# 0 disabled, 1 static, 2 dynamic - GeometryInstance3D.GIMode
 		var mode = params["gi_mode"]
 		if mode is String:
 			match str(mode).to_lower():
@@ -205,7 +205,7 @@ func _set_mesh_lightmap_params(params: Dictionary) -> Dictionary:
 			mi.mesh.call("lightmap_unwrap", mi.global_transform, float(params.get("texel_size", 0.1)))
 			unwrap_note = "called mesh.lightmap_unwrap"
 		else:
-			unwrap_note = "UV2 unwrap not available via API — use Mesh menu Lightmap Unwrap in editor"
+			unwrap_note = "UV2 unwrap not available via API - use Mesh menu Lightmap Unwrap in editor"
 	mark_current_scene_unsaved()
 	return success({
 		"node_path": str(root.get_path_to(mi)),

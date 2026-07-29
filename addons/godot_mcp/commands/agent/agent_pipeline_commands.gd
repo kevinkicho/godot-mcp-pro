@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Multi-step agent pipelines — compose existing tools into human production sequences.
+## Multi-step agent pipelines - compose existing tools into human production sequences.
 
 
 func get_commands() -> Dictionary:
@@ -31,7 +31,7 @@ func _list_pipelines(_params: Dictionary) -> Dictionary:
 			"pipeline_setup_prop_lods": "Generate LODs + distance preset on mesh",
 			"pipeline_nav_debug_route": "Bake nav + query path + draw debug + enable debug",
 			"pipeline_character_locomotion": "Humanoid or simple AnimationTree locomotion",
-			"pipeline_greybox_to_playable": "Greybox room → collision → nav → playtest",
+			"pipeline_greybox_to_playable": "Greybox room -> collision -> nav -> playtest",
 			"pipeline_2d_pixel_game": "Pixel preset + scaffold + input + optional main scene shell",
 			"pipeline_2d_tilemap_level": "TileSet + multi TileMapLayer stack + optional camera",
 			"pipeline_pre_ship_check": "Best practices + scene audit + export ready + optional playtest",
@@ -193,7 +193,7 @@ func _pipeline_character_locomotion(params: Dictionary) -> Dictionary:
 		})})
 
 	if optional_bool(params, "export_graph", false):
-		# Try to find tree path from last step — agent can re-export by path
+		# Try to find tree path from last step - agent can re-export by path
 		steps.append({"hint": "export_animation_tree_graph on the created tree path"})
 
 	return success({
@@ -205,7 +205,7 @@ func _pipeline_character_locomotion(params: Dictionary) -> Dictionary:
 
 
 func _pipeline_greybox_to_playable(params: Dictionary) -> Dictionary:
-	## Greybox room → optional CSG bake → collision on meshes → nav bake → playtest.
+	## Greybox room -> optional CSG bake -> collision on meshes -> nav bake -> playtest.
 	var steps: Array = []
 	var parent_path: String = optional_string(params, "parent_path", ".")
 	var size = params.get("size", {"x": 10, "y": 3, "z": 10})
@@ -236,7 +236,7 @@ func _pipeline_greybox_to_playable(params: Dictionary) -> Dictionary:
 			"node_path": parent_path,
 			"mode": "3d",
 		})})
-		# bake if we can find region — best effort via optional path
+		# bake if we can find region - best effort via optional path
 		var region_path: String = optional_string(params, "region_path", "")
 		if not region_path.is_empty():
 			steps.append({"nav_bake": await _exec("bake_navigation_mesh", {"node_path": region_path})})
@@ -256,7 +256,7 @@ func _pipeline_greybox_to_playable(params: Dictionary) -> Dictionary:
 
 
 func _pipeline_2d_pixel_game(params: Dictionary) -> Dictionary:
-	## Pixel project preset + scaffold + input map — agent first-hour 2D game shell.
+	## Pixel project preset + scaffold + input map - agent first-hour 2D game shell.
 	var steps: Array = []
 	var preset: String = optional_string(params, "pixel_preset", "classic_pixel")
 	var genre: String = optional_string(params, "genre", "2d")
@@ -433,7 +433,7 @@ func _pipeline_multiplayer_enet(params: Dictionary) -> Dictionary:
 
 
 func _pipeline_game_loop_shell(params: Dictionary) -> Dictionary:
-	## Menu ↔ game shell for any project.
+	## Menu <-> game shell for any project.
 	var steps: Array = []
 	var main_menu: String = optional_string(params, "main_menu_scene", "res://scenes/main_menu.tscn")
 	var game_scene: String = optional_string(params, "game_scene", "res://scenes/main.tscn")
@@ -515,7 +515,7 @@ func _pipeline_xr_setup(params: Dictionary) -> Dictionary:
 	steps.append({"settings": await _exec("set_xr_project_settings", {
 		"enabled": true,
 	})})
-	# set_xr_project_settings may use different keys — also try raw
+	# set_xr_project_settings may use different keys - also try raw
 	steps.append({"openxr_flag": await _exec("batch_set_project_settings", {
 		"settings": {
 			"xr/openxr/enabled": true,

@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Multiplayer lobby / ready-up / player roster — closes host→play production gap.
+## Multiplayer lobby / ready-up / player roster - closes host->play production gap.
 
 
 func get_commands() -> Dictionary:

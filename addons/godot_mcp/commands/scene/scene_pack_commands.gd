@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Pack branch / selection as scene — highest-gain Scene dock workflow for agents.
+## Pack branch / selection as scene - highest-gain Scene dock workflow for agents.
 
 
 func get_commands() -> Dictionary:
@@ -45,7 +45,7 @@ func _pack_node(params: Dictionary) -> Dictionary:
 	if node == null:
 		return error_not_found("Node '%s'" % r0[0])
 	if node == root and optional_bool(params, "allow_root", false) == false:
-		return error_invalid_params("Packing root is just save_scene — pass allow_root=true or save_scene")
+		return error_invalid_params("Packing root is just save_scene - pass allow_root=true or save_scene")
 
 	# Duplicate tree so we don't detach the live scene unless requested
 	var packed_root: Node = node.duplicate(DUPLICATE_SIGNALS | DUPLICATE_GROUPS | DUPLICATE_SCRIPTS)
@@ -107,7 +107,7 @@ func _pack_selection(params: Dictionary) -> Dictionary:
 		return error_no_scene()
 	var sel: Array = EditorInterface.get_selection().get_selected_nodes()
 	if sel.is_empty():
-		return error_invalid_params("No editor selection — select nodes or use pack_node_as_scene")
+		return error_invalid_params("No editor selection - select nodes or use pack_node_as_scene")
 	if sel.size() == 1:
 		params = params.duplicate()
 		params["node_path"] = str(root.get_path_to(sel[0]))

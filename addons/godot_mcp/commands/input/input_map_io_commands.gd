@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## InputMap export/import JSON — port actions between projects / version control.
+## InputMap export/import JSON - port actions between projects / version control.
 
 
 func get_commands() -> Dictionary:

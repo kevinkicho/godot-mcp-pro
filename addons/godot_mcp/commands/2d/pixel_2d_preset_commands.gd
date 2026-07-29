@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Pixel-game project presets — stretch, integer scale, nearest filter, snap, AA off.
+## Pixel-game project presets - stretch, integer scale, nearest filter, snap, AA off.
 ## Matches human Project Settings + Import defaults for crisp 2D pixel art.
 
 
@@ -27,7 +27,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		],
 		"workflow": [
 			"apply_pixel_2d_project_preset preset=classic_pixel viewport_width=320 viewport_height=180",
-			"apply_pixel_texture_import_batch paths=[res://assets/…]  OR apply_texture_import_preset preset=2d_pixel",
+			"apply_pixel_texture_import_batch paths=[res://assets/...]  OR apply_texture_import_preset preset=2d_pixel",
 			"tilemap + sprites with nearest filter",
 		],
 	})
@@ -49,12 +49,12 @@ func _list_presets(_params: Dictionary) -> Dictionary:
 				"stretch_aspect": "keep",
 			},
 			"hd_pixel": {
-				"description": "Higher base resolution (1280x720) with nearest + snap — modern pixel",
+				"description": "Higher base resolution (1280x720) with nearest + snap - modern pixel",
 				"typical_viewport": "1280x720",
 				"stretch_mode": "canvas_items",
 			},
 			"smooth_2d": {
-				"description": "Linear filter, no forced pixel snap — non-pixel 2D",
+				"description": "Linear filter, no forced pixel snap - non-pixel 2D",
 				"filter": "linear",
 			},
 		},
@@ -147,7 +147,7 @@ func _apply_project_preset(params: Dictionary) -> Dictionary:
 			disable_aa = false
 		_:
 			return error_invalid_params(
-				"Unknown preset '%s' — classic_pixel | pixel_canvas_items | hd_pixel | smooth_2d" % preset
+				"Unknown preset '%s' - classic_pixel | pixel_canvas_items | hd_pixel | smooth_2d" % preset
 			)
 
 	# Allow overrides
@@ -290,7 +290,7 @@ func _walk_textures(res_dir: String, abs_dir: String, out: Array) -> void:
 
 
 func _set_node_filter(params: Dictionary) -> Dictionary:
-	## CanvasItem.texture_filter: 0 Parent, 1 Nearest, 2 Linear, …
+	## CanvasItem.texture_filter: 0 Parent, 1 Nearest, 2 Linear, ...
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]

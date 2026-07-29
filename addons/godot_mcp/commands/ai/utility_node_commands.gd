@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Utility nodes — SpringArm, RemoteTransform3D, notifiers, markers, groups helpers.
+## Utility nodes - SpringArm, RemoteTransform3D, notifiers, markers, groups helpers.
 
 
 func get_commands() -> Dictionary:
@@ -119,7 +119,7 @@ func _setup_ray_cast_query_script(params: Dictionary) -> Dictionary:
 	if FileAccess.file_exists(path) and not optional_bool(params, "overwrite", false):
 		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
 	var content := """extends RefCounted
-## MCP raycast utilities — call from any node with get_world_2d/3d().
+## MCP raycast utilities - call from any node with get_world_2d/3d().
 
 static func ray_3d(world: World3D, from: Vector3, to: Vector3, mask: int = 0xFFFFFFFF, collide_areas := false) -> Dictionary:
 	var space := world.direct_space_state
@@ -208,7 +208,7 @@ func _create_state_machine_script(params: Dictionary) -> Dictionary:
 	if FileAccess.file_exists(path) and not optional_bool(params, "overwrite", false):
 		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
 	var content := """extends Node
-## MCP generic state machine — assign state Node children or register callables.
+## MCP generic state machine - assign state Node children or register callables.
 signal state_changed(from_state: StringName, to_state: StringName)
 
 @export var initial_state: StringName = &""

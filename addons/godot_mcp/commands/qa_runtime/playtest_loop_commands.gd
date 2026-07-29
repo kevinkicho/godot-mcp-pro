@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Closed-loop interactive playtest — human "play, press keys, check state" as one agent call.
+## Closed-loop interactive playtest - human "play, press keys, check state" as one agent call.
 ## steps: wait | action | key | mouse_click | mouse_move | sequence | assert | screenshot | log
 
 
@@ -333,7 +333,7 @@ func _playtest_sequence(params: Dictionary) -> Dictionary:
 
 	report["ok"] = all_ok
 	report["elapsed_ms"] = Time.get_ticks_msec() - start
-	report["summary"] = "playtest_sequence %s — %d steps" % [
+	report["summary"] = "playtest_sequence %s - %d steps" % [
 		"PASS" if all_ok else "FAIL",
 		report["step_results"].size(),
 	]

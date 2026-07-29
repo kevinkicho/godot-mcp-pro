@@ -29,7 +29,7 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 func _create_interest_manager_script(params: Dictionary) -> Dictionary:
 	var path: String = optional_string(params, "path", "res://scripts/interest_manager.gd")
 	var content := """extends Node
-## Simple interest / AOI manager — tracks watchers and which peers should see an entity.
+## Simple interest / AOI manager - tracks watchers and which peers should see an entity.
 ## Use with MultiplayerSynchronizer visibility or custom spawn filters.
 
 signal interest_changed(entity_id: StringName, peer_ids: Array)
@@ -183,7 +183,7 @@ func _configure_multiplayer_spawner_limits(params: Dictionary) -> Dictionary:
 		n.set("spawn_path", NodePath(str(params["spawn_path"])))
 		applied["spawn_path"] = str(n.get("spawn_path"))
 	if params.has("spawn_function") and "spawn_function" in n:
-		# Callable hard via MCP — document
+		# Callable hard via MCP - document
 		applied["spawn_function_note"] = "Set spawn_function in script; not set via free-form Callable here"
 	mark_current_scene_unsaved()
 	return success({"node_path": r0[0], "applied": applied})

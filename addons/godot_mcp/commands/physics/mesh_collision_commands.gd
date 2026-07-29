@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Mesh → collision (human MeshInstance right-click menu parity).
+## Mesh -> collision (human MeshInstance right-click menu parity).
 ## create_trimesh_static_body / create_convex_collision / multiple convex.
 
 
@@ -20,7 +20,7 @@ func get_commands() -> Dictionary:
 func _list_tools(_params: Dictionary) -> Dictionary:
 	return success({
 		"tools": get_commands().keys(),
-		"human_menu": "MeshInstance3D → Mesh → Create Trimesh / Convex Collision Sibling / Static Body",
+		"human_menu": "MeshInstance3D -> Mesh -> Create Trimesh / Convex Collision Sibling / Static Body",
 		"flow": [
 			"mesh_create_trimesh_static_body on level mesh",
 			"or mesh_create_convex_collision as sibling under existing body",
@@ -132,7 +132,7 @@ func _mesh_create_multiple_convex(params: Dictionary) -> Dictionary:
 		if one:
 			shapes.append(one)
 	if shapes.is_empty():
-		return error_internal("convex_decompose unavailable — use mesh_create_convex_collision")
+		return error_internal("convex_decompose unavailable - use mesh_create_convex_collision")
 	var paths: Array = []
 	var i := 0
 	for s in shapes:
@@ -150,7 +150,7 @@ func _mesh_create_multiple_convex(params: Dictionary) -> Dictionary:
 
 
 func _mesh_create_trimesh_static_body(params: Dictionary) -> Dictionary:
-	## Human "Create Trimesh Static Body" — StaticBody3D child + trimesh shape.
+	## Human "Create Trimesh Static Body" - StaticBody3D child + trimesh shape.
 	var r0 := require_string(params, "node_path")
 	if r0[1] != null:
 		return r0[1]
@@ -239,7 +239,7 @@ func _add_collision_shape_from_mesh(params: Dictionary) -> Dictionary:
 	var col := CollisionShape3D.new()
 	col.name = optional_string(params, "name", "CollisionShape3D")
 	col.shape = shape
-	# Align to mesh if under different branch — use global transform relative to body
+	# Align to mesh if under different branch - use global transform relative to body
 	if body is Node3D and mi is Node3D:
 		col.global_transform = mi.global_transform
 	add_child_with_undo(body, col, root, "MCP: Collision from mesh")

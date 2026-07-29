@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## MultiMesh bulk placement — large prop fields without thousands of nodes.
+## MultiMesh bulk placement - large prop fields without thousands of nodes.
 
 
 func get_commands() -> Dictionary:
@@ -101,7 +101,7 @@ func _multimesh_scatter(params: Dictionary) -> Dictionary:
 		return r0[1]
 	var node := find_node_by_path(r0[0])
 	if node == null or not (node is MultiMeshInstance3D):
-		return error_not_found("MultiMeshInstance3D — call setup_multimesh_instance first")
+		return error_not_found("MultiMeshInstance3D - call setup_multimesh_instance first")
 	var mmi: MultiMeshInstance3D = node
 	var mm: MultiMesh = mmi.multimesh
 	if mm == null:

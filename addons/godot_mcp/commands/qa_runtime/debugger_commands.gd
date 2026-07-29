@@ -253,7 +253,7 @@ func _set_source_breakpoint(params: Dictionary) -> Dictionary:
 		"path": path,
 		"line": insert_at + 1,
 		"inserted": "breakpoint",
-		"note": "Source keyword breakpoint — hits when this line executes under the debugger",
+		"note": "Source keyword breakpoint - hits when this line executes under the debugger",
 	})
 
 

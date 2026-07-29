@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## CanvasItem _draw recipe scripts — fills the custom-draw gap agents hit for debug/UI overlays.
+## CanvasItem _draw recipe scripts - fills the custom-draw gap agents hit for debug/UI overlays.
 
 
 func get_commands() -> Dictionary:
@@ -215,7 +215,7 @@ func _draw() -> void:
 		drawing = not drawing
 """
 		_:
-			return header + """# Blank custom draw — call queue_redraw() when exports change.
+			return header + """# Blank custom draw - call queue_redraw() when exports change.
 
 @export var color: Color = Color.WHITE
 
@@ -244,7 +244,7 @@ func _create_draw_script(params: Dictionary) -> Dictionary:
 		"path": path,
 		"recipe": recipe,
 		"class_name": class_name_str,
-		"hint": "setup_canvas_draw_node path=… OR attach_script",
+		"hint": "setup_canvas_draw_node path=... OR attach_script",
 	})
 
 

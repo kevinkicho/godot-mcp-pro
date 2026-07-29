@@ -1,7 +1,7 @@
 @tool
 extends "res://addons/godot_mcp/commands/base_command.gd"
 
-## Thin adapters over GUT / GdUnit4 — do not reinvent test frameworks.
+## Thin adapters over GUT / GdUnit4 - do not reinvent test frameworks.
 
 
 func get_commands() -> Dictionary:
@@ -16,8 +16,8 @@ func get_commands() -> Dictionary:
 func _list_test_recipes(_params: Dictionary) -> Dictionary:
 	return success({
 		"frameworks": {
-			"GUT": "https://github.com/bitwes/Gut — GDScript unit/integration tests",
-			"GdUnit4": "https://github.com/godot-gdunit-labs/gdUnit4 — editor-integrated tests",
+			"GUT": "https://github.com/bitwes/Gut - GDScript unit/integration tests",
+			"GdUnit4": "https://github.com/godot-gdunit-labs/gdUnit4 - editor-integrated tests",
 		},
 		"mcp_role": "Detect + invoke CLI; agents author tests in project. Prefer live run_session_* for interactive probe.",
 		"flow": [
@@ -87,7 +87,7 @@ func _run_gut_tests(params: Dictionary) -> Dictionary:
 		elif FileAccess.file_exists("res://addons/gut/cli/gut_cli.gd"):
 			script = "res://addons/gut/cli/gut_cli.gd"
 		else:
-			return error_not_found(script, "GUT cmdln script missing — check GUT version")
+			return error_not_found(script, "GUT cmdln script missing - check GUT version")
 
 	var gdir: String = optional_string(params, "test_dir", "res://test")
 	if not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(gdir)):
@@ -116,7 +116,7 @@ func _run_gut_tests(params: Dictionary) -> Dictionary:
 	var code := OS.execute(godot, args, output, true, false)
 	var log_text := "\n".join(PackedStringArray(output))
 	var passed := code == 0 and not log_text.contains("FAILED") and not log_text.contains("[Failed]")
-	# GUT often exits 0 even with fails — scan summary
+	# GUT often exits 0 even with fails - scan summary
 	if log_text.contains("Failures:") or log_text.contains("tests failed"):
 		# try crude parse
 		if log_text.contains("Failures: 0") or log_text.contains("0 failed"):
@@ -144,7 +144,7 @@ func _run_gdunit_tests(params: Dictionary) -> Dictionary:
 		})
 	var godot := OS.get_executable_path()
 	var project := ProjectSettings.globalize_path("res://").rstrip("/\\")
-	# GdUnit4 CLI varies by version — common pattern:
+	# GdUnit4 CLI varies by version - common pattern:
 	# godot --headless --path . -s res://addons/gdUnit4/bin/GdUnitCmdTool.gd
 	var candidates: Array = [
 		"res://addons/gdUnit4/bin/GdUnitCmdTool.gd",
