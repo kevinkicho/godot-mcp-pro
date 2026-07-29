@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.54.0**  
+Plugin version: **1.55.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1168
-- **Command modules:** 137
+- **Registered plugin commands:** 1209
+- **Command modules:** 146
 
 ## Commands by module
 
@@ -207,6 +207,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_audio_bus_layout_preset`
 - `list_audio_generator_tools`
 
+### autoload_depth_commands (5)
+
+- `list_autoloads`
+- `remove_autoload`
+- `set_autoload`
+- `rename_autoload`
+- `list_autoload_depth_tools`
+
 ### batch_commands (7)
 
 - `find_nodes_by_type`
@@ -286,6 +294,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_projects`
 - `launch_editor`
 - `list_mcp_commands`
+
+### compositor_depth_commands (4)
+
+- `setup_compositor_on_environment`
+- `compositor_list_effects`
+- `compositor_clear_effects`
+- `list_compositor_depth_tools`
 
 ### container_commands (8)
 
@@ -432,6 +447,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_screens`
 - `list_display_window_tools`
 
+### editor_clipboard_commands (5)
+
+- `clipboard_set_text`
+- `clipboard_get_text`
+- `duplicate_nodes`
+- `copy_node_path_to_clipboard`
+- `list_editor_clipboard_tools`
+
 ### editor_commands (19)
 
 - `get_editor_errors`
@@ -551,6 +574,17 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `gridmap_paint_line`
 - `gridmap_get_info`
 
+### group_layer_commands (8)
+
+- `list_project_groups`
+- `set_physics_layer_names`
+- `get_physics_layer_names`
+- `set_render_layer_names`
+- `get_render_layer_names`
+- `find_nodes_in_group`
+- `batch_set_node_groups`
+- `list_group_layer_tools`
+
 ### http_io_commands (6)
 
 - `create_http_client_script`
@@ -647,6 +681,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_input_action_events`
 - `add_input_action_event`
 - `clear_input_action_events`
+
+### input_record_commands (3)
+
+- `write_input_replay_manifest`
+- `run_input_replay_manifest`
+- `list_input_record_tools`
 
 ### interaction_zone_commands (5)
 
@@ -1085,6 +1125,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `validate_scene_dependencies`
 - `list_resource_graph_tools`
 
+### resource_preload_commands (4)
+
+- `create_resource_registry_script`
+- `write_preload_manifest`
+- `validate_preload_manifest`
+- `list_resource_preload_tools`
+
 ### retarget_pipeline_commands (3)
 
 - `pipeline_character_from_gltf`
@@ -1221,6 +1268,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `find_node_by_unique_name`
 - `list_scene_unique_names`
 
+### scene_unique_depth_commands (4)
+
+- `batch_set_scene_unique_names`
+- `find_node_by_unique_name`
+- `list_scene_unique_names`
+- `list_scene_unique_depth_tools`
+
 ### script_commands (7)
 
 - `list_scripts`
@@ -1296,6 +1350,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `soft_body_pin_point`
 - `soft_body_get_info`
 - `list_softbody_depth_tools`
+
+### spring_bone_commands (3)
+
+- `setup_spring_bone_simulator`
+- `spring_bone_add_chain`
+- `list_spring_bone_tools`
 
 ### sprite_frames_depth_commands (7)
 
@@ -1437,6 +1497,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tileset_set_tile_custom_data`
 - `tileset_get_tile_custom_data`
 - `list_tileset_custom_data_tools`
+
+### tileset_physics_nav_commands (5)
+
+- `tileset_add_physics_layer`
+- `tileset_add_navigation_layer`
+- `tileset_list_physics_layers`
+- `tileset_set_tile_navigation_polygon`
+- `list_tileset_physics_nav_tools`
 
 ### tileset_terrain_depth_commands (6)
 

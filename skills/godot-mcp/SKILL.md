@@ -128,6 +128,14 @@ Prefer composed pipelines for multi-step human docks:
 - **Perf:** `analyze_performance_budget`
 - **VisualShader presets + tile custom data layers**
 
+## v1.55+
+
+- Groups/layers: `set_physics_layer_names`, `find_nodes_in_group`, `batch_set_node_groups`
+- Autoloads: `list_autoloads`, `set_autoload`, `remove_autoload`
+- Unique names: `batch_set_scene_unique_names`, `find_node_by_unique_name`
+- Preload registry + manifest; TileSet physics/nav layers; compositor stack
+- Clipboard/duplicate nodes; input replay manifests; spring bone scaffold
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

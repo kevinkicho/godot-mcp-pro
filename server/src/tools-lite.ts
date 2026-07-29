@@ -851,6 +851,69 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: ['theme_path'],
     },
   },
+  {
+    name: 'list_autoloads',
+    description: 'List project autoloads (name, path, singleton).',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'set_physics_layer_names',
+    description: 'Name physics layers 1-32 (2d or 3d) via ProjectSettings.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        dimension: { type: 'string', description: '2d|3d' },
+        names: { type: 'object', description: '{1:"player",2:"world"}' },
+      },
+      required: ['names'],
+    },
+  },
+  {
+    name: 'find_nodes_in_group',
+    description: 'Find nodes in open scene belonging to a group.',
+    inputSchema: {
+      type: 'object',
+      properties: { group: { type: 'string' }, max: { type: 'number' } },
+      required: ['group'],
+    },
+  },
+  {
+    name: 'write_input_replay_manifest',
+    description: 'Write JSON input replay for playtest_sequence / run_input_replay_manifest.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        events: { type: 'array', items: { type: 'object' } },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_resource_registry_script',
+    description: 'Preload/cache ResourceRegistry script; optional autoload.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'duplicate_nodes',
+    description: 'Duplicate node_paths or current selection with optional offset.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_paths: { type: 'array', items: { type: 'string' } },
+        suffix: { type: 'string' },
+        offset: { type: 'object' },
+      },
+      required: [],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

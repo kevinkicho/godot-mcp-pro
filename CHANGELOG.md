@@ -4,6 +4,28 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.55.0 — 2026-07-29
+
+**Stretch tool surface** — groups/layers, autoloads, unique names, preload registry, tile physics/nav, compositor, clipboard, input replay, spring bones.
+
+### Project structure
+- `list_project_groups`, `batch_set_node_groups`, `find_nodes_in_group`
+- Physics/render layer name get/set
+- Autoload list/set/remove/rename
+- Scene unique names batch + find/list
+
+### Assets / tiles / render
+- Resource preload manifest + registry script + validate
+- TileSet physics/navigation layers + tile nav polygon
+- Compositor setup/list/clear on WorldEnvironment
+
+### Agent ergonomics
+- Clipboard get/set, duplicate_nodes, copy path
+- Input replay manifest write/run via playtest_sequence
+- SpringBoneSimulator3D scaffold (version-dependent)
+
+---
+
 ## v1.54.0 — 2026-07-29
 
 **100% agent production surfacing roadmap** — discovery plane, playtest fix loops, retarget pipeline, theme/dialogue depth, debugger intel, perf budgets, VisualShader presets, tile custom data.

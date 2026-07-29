@@ -131,6 +131,11 @@ func _domains() -> Dictionary:
 			"examples": ["list_agent_domains", "search_mcp_tools", "list_mcp_commands", "get_tool_examples"],
 			"workflow": "list_agent_domains → list_tools_by_domain → get_tool_examples",
 		},
+		"project_structure": {
+			"description": "Autoloads, groups, layer names, unique names, preload registry",
+			"examples": ["list_autoloads", "set_physics_layer_names", "find_nodes_in_group", "batch_set_scene_unique_names", "create_resource_registry_script"],
+			"workflow": "scaffold_project_defaults → layer names → groups → autoloads → unique names",
+		},
 	}
 
 
