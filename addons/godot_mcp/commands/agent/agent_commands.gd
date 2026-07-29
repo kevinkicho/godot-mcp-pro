@@ -893,20 +893,12 @@ func _list_surface_registry(_params: Dictionary) -> Dictionary:
 	if router != null and router.has_method("get_available_methods"):
 		all_methods = router.get_available_methods()
 	all_methods.sort()
-	# Group by heuristic prefixes / known modules
-	var by_module := {}
-	var cmd_dir := "res://addons/godot_mcp/commands"
-	var dir := DirAccess.open(cmd_dir)
-	if dir:
-		dir.list_dir_begin()
-		var fname := dir.get_next()
-		while not fname.is_empty():
-			if fname.ends_with(".gd") and not dir.current_is_dir():
-				var path := cmd_dir.path_join(fname)
-				# Count registrations by loading script is heavy; report file presence
-				by_module[fname.get_basename()] = {"source": path}
-			fname = dir.get_next()
-		dir.list_dir_end()
+	var modules: Array = []
+	var domains: Dictionary = {}
+	if router != null and router.has_method("get_loaded_modules"):
+		modules = router.get_loaded_modules()
+	if router != null and router.has_method("get_command_domains"):
+		domains = router.get_command_domains()
 	var cfg := ConfigFile.new()
 	var plugin_version := "unknown"
 	if cfg.load("res://addons/godot_mcp/plugin.cfg") == OK:
@@ -914,9 +906,12 @@ func _list_surface_registry(_params: Dictionary) -> Dictionary:
 	return success({
 		"plugin_version": plugin_version,
 		"command_count": all_methods.size(),
+		"module_count": modules.size(),
+		"domain_count": domains.size(),
+		"domains": domains.keys(),
+		"modules": modules,
 		"commands": all_methods,
-		"module_files": by_module.keys(),
-		"module_file_count": by_module.size(),
-		"registry_doc": "SURFACE_REGISTRY.md (repo root) — regenerate via scripts/export-surface-registry.ps1",
-		"honest_note": "Workflow surface inventory — not 100% ClassDB. Use list_docs_coverage for area depth/gaps.",
+		"registry_doc": "SURFACE_REGISTRY.md — scripts/export-surface-registry.ps1",
+		"layout": "commands/<domain>/*_commands.gd (recursive auto-discover)",
+		"honest_note": "Workflow surface inventory — not 100% ClassDB. Use list_docs_coverage / get_production_surface_report.",
 	})

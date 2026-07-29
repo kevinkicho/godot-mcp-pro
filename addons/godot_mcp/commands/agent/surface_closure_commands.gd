@@ -68,19 +68,16 @@ func _production_report(_params: Dictionary) -> Dictionary:
 	if router and router.has_method("get_available_methods"):
 		methods = router.get_available_methods()
 	var modules := 0
-	var cmd_dir := "res://addons/godot_mcp/commands"
-	var da := DirAccess.open(ProjectSettings.globalize_path(cmd_dir))
-	if da:
-		da.list_dir_begin()
-		var fn := da.get_next()
-		while fn != "":
-			if fn.ends_with("_commands.gd"):
-				modules += 1
-			fn = da.get_next()
-		da.list_dir_end()
+	var domains := 0
+	var router = get_parent()
+	if router and router.has_method("get_loaded_modules"):
+		modules = router.get_loaded_modules().size()
+	if router and router.has_method("get_command_domains"):
+		domains = router.get_command_domains().size()
 	return success({
 		"plugin_commands_registered": methods.size(),
-		"command_modules_approx": modules,
+		"command_modules": modules,
+		"command_domains": domains,
 		"production_readiness_estimate_percent": 97,
 		"docs_area_estimate_percent": 96,
 		"classdb_method_coverage": "lookup_100_percent_via_describe_class_not_1to1_tools",

@@ -593,3 +593,76 @@ func find_node_by_path(node_path: String) -> Node:
 		if root.has_node(rel):
 			return root.get_node(rel)
 	return null
+
+
+# ── Shared param / resource helpers (refactor: modules should prefer these) ──
+
+const MCPParamsUtil := preload("res://addons/godot_mcp/utils/mcp_params.gd")
+
+
+func parse_vec2(v: Variant, default: Vector2 = Vector2.ZERO) -> Vector2:
+	return MCPParamsUtil.parse_vec2(v, default)
+
+
+func parse_vec3(v: Variant, default: Vector3 = Vector3.ZERO) -> Vector3:
+	return MCPParamsUtil.parse_vec3(v, default)
+
+
+func parse_vec2i(v: Variant, default: Vector2i = Vector2i.ZERO) -> Vector2i:
+	return MCPParamsUtil.parse_vec2i(v, default)
+
+
+func parse_color(v: Variant, default: Color = Color.WHITE) -> Color:
+	return MCPParamsUtil.parse_color(v, default)
+
+
+func parse_rect2(v: Variant, default: Rect2 = Rect2()) -> Rect2:
+	return MCPParamsUtil.parse_rect2(v, default)
+
+
+## Standard list_*_tools response for command modules.
+func list_tools_payload(related: Array = [], extra: Dictionary = {}) -> Dictionary:
+	var data := {
+		"tools": get_commands().keys(),
+		"related": related,
+	}
+	for k in extra:
+		data[k] = extra[k]
+	return success(data)
+
+
+## Save a Resource to res:// with parent dir create + filesystem update.
+func save_resource_to_res(res: Resource, path: String, overwrite: bool = false) -> Dictionary:
+	var vr := validate_res_path(path)
+	if vr[1] != null:
+		return vr[1]
+	path = vr[0]
+	if FileAccess.file_exists(path) and not overwrite:
+		return error(-32000, "File exists: %s" % path, {"suggestion": "overwrite=true"})
+	var derr := ensure_parent_dir(path)
+	if not derr.is_empty():
+		return derr
+	var err := ResourceSaver.save(res, path)
+	if err != OK:
+		return error_internal(error_string(err))
+	EditorInterface.get_resource_filesystem().update_file(path)
+	return success({"path": path, "class": res.get_class()})
+
+
+## Write plain text under res:// (docs, yml-in-res, etc.).
+func write_text_res(path: String, content: String, overwrite: bool = false) -> Dictionary:
+	var vr := validate_res_path(path)
+	if vr[1] != null:
+		return vr[1]
+	path = vr[0]
+	if FileAccess.file_exists(path) and not overwrite:
+		return error(-32000, "File exists: %s" % path, {"suggestion": "overwrite=true"})
+	var derr := ensure_parent_dir(path)
+	if not derr.is_empty():
+		return derr
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return error_internal("Cannot write %s" % path)
+	f.store_string(content)
+	f.close()
+	return success({"path": path})

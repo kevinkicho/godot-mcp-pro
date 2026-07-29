@@ -11,6 +11,8 @@ func get_commands() -> Dictionary:
 		"search_mcp_tools": _search_mcp_tools,
 		"get_tool_examples": _get_tool_examples,
 		"get_agent_capability_map": _get_agent_capability_map,
+		"list_command_modules": _list_command_modules,
+		"list_command_domains": _list_command_domains,
 		"list_discovery_tools": _list_tools,
 	}
 
@@ -21,11 +23,42 @@ func _list_tools(_params: Dictionary) -> Dictionary:
 		"purpose": "Make 1000+ plugin commands discoverable for agents",
 		"flow": [
 			"list_agent_domains",
+			"list_command_domains",
+			"list_command_modules domain=animation",
 			"list_tools_by_domain domain=playtest",
 			"get_tool_examples tool=playtest_sequence",
 			"search_mcp_tools query=collision",
 		],
 	})
+
+
+func _list_command_domains(_params: Dictionary) -> Dictionary:
+	## Filesystem domain folders under commands/ (refactor layout).
+	var router = get_parent()
+	if router == null or not router.has_method("get_command_domains"):
+		return error_internal("Router missing get_command_domains — update plugin")
+	var idx: Dictionary = router.get_command_domains()
+	var out: Array = []
+	for d in idx.keys():
+		out.append({
+			"domain": d,
+			"module_count": (idx[d] as Array).size(),
+			"modules": idx[d],
+		})
+	out.sort_custom(func(a, b): return str(a.get("domain")) < str(b.get("domain")))
+	return success({
+		"domains": out,
+		"count": out.size(),
+		"hint": "list_command_modules domain=<name>",
+	})
+
+
+func _list_command_modules(params: Dictionary) -> Dictionary:
+	var router = get_parent()
+	if router == null or not router.has_method("get_modules_by_domain"):
+		return error_internal("Router missing get_modules_by_domain")
+	var domain: String = optional_string(params, "domain", "")
+	return success(router.get_modules_by_domain(domain))
 
 
 func _domains() -> Dictionary:

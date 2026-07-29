@@ -221,6 +221,12 @@ Production surface is **complete for agent shipping** (workflows + discovery + C
 
 **Not goals:** console SDKs, 1 tool per ClassDB method, hosted backends, pure visual graph UIs.
 
+## v1.64+ — structural refactor
+
+- Modules in **`commands/<domain>/`** (recursive discover) — `list_command_domains` / `list_command_modules`
+- Shared parsers: prefer base `parse_vec2` / `parse_color` / `save_resource_to_res`
+- Registry groups by domain; no tool renames (API stable)
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

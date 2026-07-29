@@ -4,6 +4,26 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.64.0 — 2026-07-29
+
+**Structural refactor** — domain folders, recursive discovery, shared param utils, richer module index.
+
+### Layout
+- Command modules moved under `commands/<domain>/` (15 domains: agent, animation, 2d, 3d, core, …)
+- `command_router` recursive auto-discover; tracks method → module source + domain
+- `scripts/organize-command-modules.ps1` + updated `export-surface-registry.ps1`
+- `commands/README.md` layout guide
+
+### Shared helpers
+- `utils/mcp_params.gd` — Vector2/3/Color/Rect parsers
+- `base_command`: `parse_vec2/3`, `parse_color`, `list_tools_payload`, `save_resource_to_res`, `write_text_res`
+
+### Discovery
+- `list_command_domains`, `list_command_modules`
+- `list_surface_registry` returns live domain/module inventory from router
+
+---
+
 ## v1.63.0 — 2026-07-29
 
 **Remaining production surface closure** — migration depth, iOS/platform matrix, theme I/O, ClassDB examples, runtime systems, plugin packaging, UI leftovers, honesty report.

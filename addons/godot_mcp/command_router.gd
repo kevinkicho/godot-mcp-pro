@@ -4,8 +4,10 @@ extends Node
 var editor_plugin: EditorPlugin
 
 var _command_handlers: Dictionary = {}  # method_name -> Callable
+var _command_source: Dictionary = {}  # method_name -> module path (res://)
 var _disabled_tools: Dictionary = {}  # method_name -> true
-var _loaded_modules: Array = []  # module basenames for diagnostics
+var _loaded_modules: Array = []  # {name, path, domain, command_count}
+var _domain_index: Dictionary = {}  # domain -> [module names]
 
 const TOOL_CONFIG_PATH := "user://mcp_tool_config.cfg"
 const COMMANDS_DIR := "res://addons/godot_mcp/commands"
@@ -17,9 +19,11 @@ func _ready() -> void:
 
 
 func _register_commands() -> void:
-	## Auto-discover commands/*_commands.gd (skip base_command and non-modules).
+	## Auto-discover commands/**/**_commands.gd (recursive domain folders).
 	_command_handlers.clear()
+	_command_source.clear()
 	_loaded_modules.clear()
+	_domain_index.clear()
 	var scripts: Array = _discover_command_scripts()
 	var registered := 0
 	var modules := 0
@@ -38,41 +42,98 @@ func _register_commands() -> void:
 		add_child(cmd)
 		var methods: Dictionary = cmd.get_commands()
 		if methods.is_empty():
-			# Still keep node if it registered nothing (rare); free to avoid clutter
 			remove_child(cmd)
 			cmd.free()
 			continue
 		modules += 1
-		_loaded_modules.append(path.get_file().get_basename())
+		var base_name: String = path.get_file().get_basename()
+		var domain: String = _domain_from_path(path)
+		_loaded_modules.append({
+			"name": base_name,
+			"path": path,
+			"domain": domain,
+			"command_count": methods.size(),
+		})
+		if not _domain_index.has(domain):
+			_domain_index[domain] = []
+		(_domain_index[domain] as Array).append(base_name)
 		for method_name: String in methods:
 			if _command_handlers.has(method_name):
-				push_warning("[MCP] Duplicate command '%s' from %s (overwriting)" % [method_name, path.get_file()])
+				push_warning("[MCP] Duplicate command '%s' from %s (overwriting %s)" % [
+					method_name, path.get_file(), _command_source.get(method_name, "?")
+				])
 			_command_handlers[method_name] = methods[method_name]
+			_command_source[method_name] = path
 			registered += 1
 
-	print("[MCP] Registered %d commands from %d modules (auto-discover)" % [registered, modules])
+	print("[MCP] Registered %d commands from %d modules in %d domains (recursive auto-discover)" % [
+		registered, modules, _domain_index.size()
+	])
+
+
+func _domain_from_path(path: String) -> String:
+	## res://addons/godot_mcp/commands/<domain>/foo_commands.gd → domain
+	## res://addons/godot_mcp/commands/foo_commands.gd → "root"
+	var rel := path.trim_prefix(COMMANDS_DIR).trim_prefix("/").trim_prefix("\\")
+	if rel.contains("/"):
+		return rel.get_slice("/", 0)
+	if rel.contains("\\"):
+		return rel.get_slice("\\", 0)
+	return "root"
 
 
 func _discover_command_scripts() -> Array:
 	var paths: Array = []
-	var dir := DirAccess.open(COMMANDS_DIR)
-	if dir == null:
-		push_error("[MCP] Cannot open commands dir: %s" % COMMANDS_DIR)
-		return paths
-	dir.list_dir_begin()
-	var fname := dir.get_next()
-	while not fname.is_empty():
-		if not dir.current_is_dir() and fname.ends_with("_commands.gd"):
-			# Exclude base if ever named that way; only *_commands.gd match
-			paths.append(COMMANDS_DIR.path_join(fname))
-		fname = dir.get_next()
-	dir.list_dir_end()
+	_discover_command_scripts_recursive(COMMANDS_DIR, paths)
 	paths.sort()
 	return paths
 
 
+func _discover_command_scripts_recursive(dir_path: String, paths: Array) -> void:
+	var dir := DirAccess.open(dir_path)
+	if dir == null:
+		if dir_path == COMMANDS_DIR:
+			push_error("[MCP] Cannot open commands dir: %s" % COMMANDS_DIR)
+		return
+	dir.list_dir_begin()
+	var fname := dir.get_next()
+	while not fname.is_empty():
+		if fname.begins_with("."):
+			fname = dir.get_next()
+			continue
+		var child := dir_path.path_join(fname)
+		if dir.current_is_dir():
+			_discover_command_scripts_recursive(child, paths)
+		elif fname.ends_with("_commands.gd"):
+			paths.append(child)
+		fname = dir.get_next()
+	dir.list_dir_end()
+
+
 func get_loaded_modules() -> Array:
-	return _loaded_modules.duplicate()
+	return _loaded_modules.duplicate(true)
+
+
+func get_command_domains() -> Dictionary:
+	return _domain_index.duplicate(true)
+
+
+func get_command_source(method: String) -> String:
+	return str(_command_source.get(method, ""))
+
+
+func get_modules_by_domain(domain: String = "") -> Dictionary:
+	if domain.is_empty():
+		return {
+			"domains": _domain_index.keys(),
+			"modules": _loaded_modules.duplicate(true),
+			"domain_index": _domain_index.duplicate(true),
+		}
+	var list: Array = []
+	for m in _loaded_modules:
+		if str(m.get("domain", "")) == domain:
+			list.append(m)
+	return {"domain": domain, "modules": list, "count": list.size()}
 
 
 ## Serialize all command execution so file-IPC game tools cannot race on the
@@ -113,6 +174,21 @@ func execute(method: String, params: Dictionary) -> Dictionary:
 
 func get_available_methods() -> Array:
 	return _command_handlers.keys()
+
+
+func get_available_methods_detailed() -> Array:
+	## method + source module path + domain for agent discovery.
+	var out: Array = []
+	for m in _command_handlers.keys():
+		var src := str(_command_source.get(m, ""))
+		out.append({
+			"method": m,
+			"module": src.get_file().get_basename() if not src.is_empty() else "",
+			"path": src,
+			"domain": _domain_from_path(src) if not src.is_empty() else "root",
+		})
+	out.sort_custom(func(a, b): return str(a.get("method")) < str(b.get("method")))
+	return out
 
 
 func is_tool_disabled(method: String) -> bool:
