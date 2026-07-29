@@ -17,8 +17,11 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Scene / Inspector | node/scene tools + `list_property_info` / `update_property` |
 | Animation | transfer + Bezier Cartesian + libraries |
 | FileSystem | search/stage/import + `list_resources_by_type` + open path |
+| Resource move/rename | `find_files_referencing` / `remap_resource_references` / deps |
 | 2D TileMap | tilemap_* / tileset_* |
 | 3D GridMap | gridmap_* |
+| Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
+| CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |
 | Terrain (height) | `create_heightmap_terrain` |
 | Large world | `stream_load_chunk` / StreamManager |
 | MultiMesh props | multimesh_* |
@@ -26,7 +29,9 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | Level greybox | greybox_* / validate_level_playable |
 | Navigation | navigation_* |
 | Audio / music | audio_* / music_* |
-| Play | play_main/current/custom + playtest_report + runtime TCP |
+| Viewport focus | `editor_focus_node` / `editor_frame_selection` (F key) |
+| Play / QA | `playtest_report` + **`playtest_sequence`** (inputs+asserts) + runtime TCP |
+| Scene health | `audit_scene_tree` / `list_scene_signals` / `validate_all_scenes` |
 | Export | export_* / verify_export_ready |
 | Curves | curve_* / bezier_* |
 

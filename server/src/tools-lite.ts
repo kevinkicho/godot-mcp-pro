@@ -169,6 +169,107 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
       required: [],
     },
   },
+  {
+    name: 'playtest_sequence',
+    description:
+      'Closed-loop playtest: play scene, run ordered steps (wait/action/key/mouse/assert/screenshot), stop. Human "play and press keys" as one call.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mode: { type: 'string', description: 'main | current | custom' },
+        path: { type: 'string' },
+        settle_sec: { type: 'number' },
+        stop_after: { type: 'boolean' },
+        stop_on_fail: { type: 'boolean' },
+        steps: {
+          type: 'array',
+          description:
+            '[{type:wait|action|key|mouse_click|assert|screenshot|get_tree, ...}]',
+          items: { type: 'object' },
+        },
+      },
+      required: ['steps'],
+    },
+  },
+  {
+    name: 'mesh_create_trimesh_static_body',
+    description:
+      'MeshInstance3D Mesh menu: Create Trimesh Static Body (StaticBody3D + ConcavePolygonShape).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        body_name: { type: 'string' },
+        collision_layer: { type: 'number' },
+        collision_mask: { type: 'number' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'mesh_create_convex_collision',
+    description: 'Create convex CollisionShape3D sibling from MeshInstance3D mesh.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        name: { type: 'string' },
+        clean: { type: 'boolean' },
+        simplify: { type: 'boolean' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'remap_resource_references',
+    description:
+      'Rewrite res:// references after move/rename (dry_run first). Text .tscn/.tres/.gd files.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        from: { type: 'string' },
+        to: { type: 'string' },
+        dry_run: { type: 'boolean' },
+        search_root: { type: 'string' },
+        force: { type: 'boolean' },
+      },
+      required: ['from', 'to'],
+    },
+  },
+  {
+    name: 'audit_scene_tree',
+    description:
+      'Open-scene health: node counts, missing scripts, empty collision shapes, cameras/lights stats.',
+    inputSchema: {
+      type: 'object',
+      properties: { max_depth: { type: 'number' } },
+      required: [],
+    },
+  },
+  {
+    name: 'editor_focus_node',
+    description: 'Select node and frame editor viewport (F-key parity for 3D).',
+    inputSchema: {
+      type: 'object',
+      properties: { node_path: { type: 'string' } },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'csg_bake_to_mesh_instance',
+    description: 'Bake CSGShape3D to MeshInstance3D; optional trimesh/convex StaticBody.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        name: { type: 'string' },
+        add_collision: { type: 'boolean' },
+        collision_mode: { type: 'string', description: 'trimesh | convex' },
+        hide_csg: { type: 'boolean' },
+      },
+      required: ['node_path'],
+    },
+  },
   // ── Modern game systems (sophisticated games need these composed tools) ──
   {
     name: 'setup_character_2d',

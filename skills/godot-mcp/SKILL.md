@@ -20,7 +20,7 @@ You control Godot through the **godot** MCP server (open Pro bridge). This is th
 6. Docs map: **`list_docs_coverage`**.
 7. After assets: **`scan_filesystem`** → **`wait_for_import`** / **`ensure_imported`**.
 
-**IDE parity:** With the plugin connected, prefer MCP for everything a human does in Godot (scenes, inspector numbers, animation/curves, humanoid, levels, GridMap, streaming chunks, music, playtest). Use **`call_editor`** for any registered method not typed in the client. Batch with **`batch_call_editor`**. Offline: `write_project_file`, headless scene ops, `run_project`. Docs: `docs/IDE_PARITY.md`, `docs/HEADLESS_AGENT.md`, `docs/HUMANOID_AND_LEVELS.md`.
+**IDE parity:** With the plugin connected, prefer MCP for everything a human does in Godot (scenes, inspector numbers, animation/curves, humanoid, levels, GridMap, mesh collision, CSG bake, resource remaps, viewport focus, streaming, music, interactive playtest). Use **`call_editor`** for any registered method not typed in the client. Batch with **`batch_call_editor`**. Offline: `write_project_file`, headless scene ops, `run_project`. Docs: `docs/IDE_PARITY.md`, `docs/HEADLESS_AGENT.md`, `docs/HUMANOID_AND_LEVELS.md`.
 
 ## Production loop (default)
 
@@ -29,11 +29,33 @@ health_check
   → get_project_info / get_filesystem_tree
   → get_scene_tree or open_scene
   → mutate (create_scene, add_node, update_property, create_script, attach_script, …)
-  → save_scene / validate_script
-  → play_scene → get_game_screenshot / get_editor_errors / get_game_node_properties
-  → simulate_action or simulate_key as needed
+  → mesh_create_trimesh_static_body / csg_bake as needed
+  → save_scene / validate_script / audit_scene_tree
+  → playtest_report OR playtest_sequence (wait/action/assert/screenshot)
   → stop_scene → fix → repeat
 ```
+
+## Closed-loop playtest (human “play and press keys”)
+
+Prefer **`playtest_sequence`** when you need interaction, not just a boot check:
+
+```
+playtest_sequence mode=main steps=[
+  {type:action, action:ui_right, pressed:true, auto_release:true, hold_sec:0.4},
+  {type:wait, sec:0.3},
+  {type:assert, node_path:Player, property:position},
+  {type:screenshot}
+]
+```
+
+Also: `playtest_report` (errors + optional asserts), `simulate_*`, `run_session_*` for long captures.
+
+## Mesh collision & level finalization
+
+- Mesh menu: **`mesh_create_trimesh_static_body`**, `mesh_create_convex_collision`, multi-convex
+- CSG: `csg_set_operation` → **`csg_bake_to_mesh_instance`** (+ collision)
+- Resource move: `find_files_referencing` → **`remap_resource_references`** (dry_run first)
+- Focus viewport: **`editor_focus_node`** / `editor_frame_selection`
 
 ## Human-like inspector fine-tuning (full parameter control)
 

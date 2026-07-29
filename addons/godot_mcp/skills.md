@@ -11,9 +11,20 @@ This is the control plane for **agent-driven game production**: create scenes, w
 
 **Start every session with `health_check`.** Use `agent_production_status` / `agent_workflow_guide` for the production loop.
 
-**Headless principle:** work as if a human is using the Godot IDE. MCP surfaces the docks (FileSystem, Import, Inspector, Signals, Play). Prefer tools over hand-editing `.tscn` / `project.godot`.
+**Headless principle:** work as if a human is using the Godot IDE. MCP surfaces the docks (FileSystem, Import, Inspector, Signals, Play, Mesh menu, CSG). Prefer tools over hand-editing `.tscn` / `project.godot`.
 
-You have access to a large set of editor tools (500+) when connected, plus CLI tools when the editor is offline.
+You have access to a large set of editor tools (900+) when connected, plus CLI tools when the editor is offline.
+
+### Human workflow parity (v1.46+)
+
+```
+mesh_create_trimesh_static_body / mesh_create_convex_collision  → Mesh menu
+playtest_sequence steps=[wait,action,assert,screenshot]         → play + press keys
+remap_resource_references (dry_run first)                       → move/rename assets
+editor_focus_node / editor_frame_selection                      → F-key frame
+csg_set_operation + csg_bake_to_mesh_instance                   → greybox finalize
+audit_scene_tree / list_scene_signals / validate_all_scenes     → scene health
+```
 
 ## Essential Workflows
 

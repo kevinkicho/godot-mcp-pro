@@ -8,7 +8,7 @@ Fork of [youichi-uda/godot-mcp-pro](https://github.com/youichi-uda/godot-mcp-pro
 |--|--|
 | **Plugin** | `addons/godot_mcp/` (Godot 4.4+) |
 | **Server** | `server/` (Node 18+, stdio MCP) |
-| **Surface** | ~**690+** registered plugin commands · [SURFACE_REGISTRY.md](SURFACE_REGISTRY.md) |
+| **Surface** | ~**900+** registered plugin commands · [SURFACE_REGISTRY.md](SURFACE_REGISTRY.md) |
 | **Version** | see `addons/godot_mcp/plugin.cfg` |
 
 ---

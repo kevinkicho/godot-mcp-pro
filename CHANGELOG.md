@@ -4,6 +4,40 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.46.0 — 2026-07-28
+
+**Human workflow parity** — mesh collision menu, interactive playtest loops, resource graph remaps, viewport focus, CSG bake, scene audits.
+
+### Mesh → collision (MeshInstance menu parity)
+- `mesh_create_trimesh_static_body`, `mesh_create_convex_static_body`
+- `mesh_create_trimesh_collision`, `mesh_create_convex_collision`, `mesh_create_multiple_convex_collisions`
+- `add_collision_shape_from_mesh`, `list_mesh_collision_tools`
+
+### Closed-loop playtest
+- `playtest_sequence` — ordered steps: wait, action, key, mouse, assert, screenshot, get_tree
+- `list_playtest_loop_tools`
+
+### Resource dependency graph
+- `list_resource_dependencies`, `find_files_referencing`, `remap_resource_references`
+- `list_orphaned_resources`, `validate_scene_dependencies`, `list_resource_graph_tools`
+
+### Editor viewport focus
+- `editor_focus_node`, `editor_frame_selection` (F-key parity)
+- `editor_get_3d_camera`, `editor_set_3d_camera_transform`
+
+### CSG composition
+- `csg_set_operation`, `csg_set_use_collision`, `csg_get_info`
+- `csg_bake_to_mesh_instance`, `csg_list_shapes`, `list_csg_tools`
+
+### Scene audit
+- `list_scene_signals`, `list_missing_scripts`, `validate_all_scenes`, `audit_scene_tree`
+
+### Docs / discovery
+- Agent topics: `playtest`, `collision`, `resources`, `audit`
+- IDE_PARITY updated for new planes
+
+---
+
 ## v1.45.0 — 2026-07-28
 
 **IDE parity expansion** — streaming chunks, heightmap terrain, interactive music, editor workspace play/browse.

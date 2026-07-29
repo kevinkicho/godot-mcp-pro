@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.45.0**  
+Plugin version: **1.46.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 872
-- **Command modules:** 82
+- **Registered plugin commands:** 903
+- **Command modules:** 88
 
 ## Commands by module
 
@@ -261,6 +261,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_hslider`
 - `setup_line_edit`
 - `setup_text_edit`
+
+### csg_ops_commands (6)
+
+- `csg_set_operation`
+- `csg_set_use_collision`
+- `csg_get_info`
+- `csg_bake_to_mesh_instance`
+- `csg_list_shapes`
+- `list_csg_tools`
 
 ### csharp_commands (16)
 
@@ -559,6 +568,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `media_contact_sheet`
 - `media_probe`
 
+### mesh_collision_commands (7)
+
+- `mesh_create_trimesh_collision`
+- `mesh_create_convex_collision`
+- `mesh_create_multiple_convex_collisions`
+- `mesh_create_trimesh_static_body`
+- `mesh_create_convex_static_body`
+- `add_collision_shape_from_mesh`
+- `list_mesh_collision_tools`
+
 ### migration_commands (4)
 
 - `scan_godot3_patterns`
@@ -695,6 +714,11 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `collision_layer_info`
 - `collision_mask_info`
 
+### playtest_loop_commands (2)
+
+- `playtest_sequence`
+- `list_playtest_loop_tools`
+
 ### plugin_scaffold_commands (2)
 
 - `create_editor_plugin`
@@ -781,6 +805,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_custom_resource_script`
 - `duplicate_resource`
 
+### resource_graph_commands (6)
+
+- `list_resource_dependencies`
+- `find_files_referencing`
+- `remap_resource_references`
+- `list_orphaned_resources`
+- `validate_scene_dependencies`
+- `list_resource_graph_tools`
+
 ### run_session_commands (15)
 
 - `run_session_start`
@@ -866,6 +899,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_world_environment`
 - `setup_compositor`
 - `add_compositor_effect`
+
+### scene_audit_commands (5)
+
+- `list_scene_signals`
+- `list_missing_scripts`
+- `validate_all_scenes`
+- `audit_scene_tree`
+- `list_scene_audit_tools`
 
 ### scene_commands (10)
 
@@ -1094,6 +1135,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_dissolve_shader`
 - `create_outline_shader`
 - `create_hit_stop_script`
+
+### viewport_focus_commands (5)
+
+- `editor_focus_node`
+- `editor_frame_selection`
+- `editor_get_3d_camera`
+- `editor_set_3d_camera_transform`
+- `list_viewport_focus_tools`
 
 ### visual_shader_commands (7)
 

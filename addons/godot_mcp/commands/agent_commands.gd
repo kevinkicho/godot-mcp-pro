@@ -235,8 +235,8 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 			{"step": 5, "action": "create_scene / add_node / update_property / create_script / attach_script", "why": "Build content like the Scene/Inspector docks"},
 			{"step": 6, "action": "wire_signal_to_new_method (or connect_signal)", "why": "Signal dock: create method + persistent connect"},
 			{"step": 7, "action": "save_scene + validate_script", "why": "Persist and check compile"},
-			{"step": 8, "action": "playtest_report (or play_scene → screenshot/errors)", "why": "Hit Play, inspect Output, optional asserts"},
-			{"step": 9, "action": "simulate_action / get_game_node_properties", "why": "Interact and assert runtime state"},
+			{"step": 8, "action": "playtest_report or playtest_sequence (inputs+asserts)", "why": "Hit Play, interact like a human, inspect Output"},
+			{"step": 9, "action": "simulate_action / get_game_node_properties / audit_scene_tree", "why": "Interact, assert runtime, audit wiring"},
 			{"step": 10, "action": "stop_scene → fix → repeat", "why": "Close the feedback loop"},
 		],
 		"headless_principle": "Agents work as if a human uses the Godot IDE. Prefer MCP tools over raw filesystem edits of .tscn / project.godot. Full import/playtest needs editor + plugin; file scaffolding works when plugin is up.",
@@ -279,13 +279,48 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 		"level", "level_design", "greybox":
 			guide["focus"] = [
 				"list_level_design_tools",
-				"greybox_room / greybox_corridor",
+				"greybox_room / greybox_corridor / csg_*",
+				"csg_set_operation + csg_bake_to_mesh_instance",
+				"mesh_create_trimesh_static_body on level meshes",
 				"create_heightmap_terrain / gridmap_* / tilemap_*",
 				"stream_load_chunk for large worlds",
 				"place_prop_scatter / multimesh_scatter / stamp_scene_instances",
 				"setup_navigation_region + bake",
-				"validate_level_playable",
-				"level_playtest_route + playtest_report",
+				"validate_level_playable / audit_scene_tree",
+				"level_playtest_route + playtest_sequence",
+			]
+		"playtest", "play", "qa":
+			guide["focus"] = [
+				"list_playtest_loop_tools",
+				"playtest_report (one-shot play + errors + optional asserts)",
+				"playtest_sequence steps=[wait,action,assert,screenshot]",
+				"simulate_action / simulate_sequence for finer control",
+				"run_session_start + run_capture_timeline for long sessions",
+			]
+		"collision", "mesh_collision":
+			guide["focus"] = [
+				"list_mesh_collision_tools",
+				"mesh_create_trimesh_static_body (Mesh menu parity)",
+				"mesh_create_convex_collision / mesh_create_multiple_convex_collisions",
+				"add_collision_shape_from_mesh body_path=… mesh_path=…",
+				"get_collision_info / playtest_report",
+			]
+		"resources", "dependencies", "remap":
+			guide["focus"] = [
+				"list_resource_graph_tools",
+				"list_resource_dependencies path=…",
+				"find_files_referencing path=…",
+				"remap_resource_references from=… to=… dry_run=true then false",
+				"validate_scene_dependencies / list_orphaned_resources",
+				"validate_all_scenes before export",
+			]
+		"audit", "signals_audit":
+			guide["focus"] = [
+				"list_scene_audit_tools",
+				"audit_scene_tree",
+				"list_scene_signals only_connected=true",
+				"list_missing_scripts",
+				"validate_all_scenes",
 			]
 		"audio", "music":
 			guide["focus"] = [
@@ -301,6 +336,8 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"play_main_scene / play_current_scene / play_custom_scene",
 				"list_open_scenes / save_all_scenes",
 				"list_resources_by_type",
+				"editor_focus_node / editor_frame_selection (F-key parity)",
+				"editor_get_3d_camera / editor_set_3d_camera_transform",
 				"set_nodes_transform / select_nodes",
 				"open_path_in_filesystem / set_main_screen",
 			]
@@ -336,12 +373,6 @@ func _agent_workflow_guide(params: Dictionary) -> Dictionary:
 				"Control roots", "set_anchor_preset", "set_theme_*",
 				"wire_signal_to_new_method for Button.pressed",
 				"click_button_by_text",
-			]
-		"playtest":
-			guide["focus"] = [
-				"playtest_report (one-shot play + errors + optional screenshot/asserts)",
-				"play_scene", "get_game_screenshot", "simulate_key/action",
-				"get_game_scene_tree", "assert_node_state", "stop_scene",
 			]
 		"assets", "import":
 			guide["focus"] = [
@@ -441,9 +472,12 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"apply_environment_preset", "add_mesh_instance", "setup_lighting", "setup_camera_3d",
 				"setup_environment", "setup_world_environment", "set_material_3d", "add_gridmap", "export_mesh_library",
 				"add_reflection_probe", "add_decal", "add_voxel_gi", "bake_voxel_gi", "add_lightmap_gi",
-				"request_lightmap_bake", "setup_csg_box/sphere/cylinder", "setup_path_3d", "set_render_layers",
+				"request_lightmap_bake", "setup_csg_box/sphere/cylinder", "csg_set_operation", "csg_bake_to_mesh_instance",
+				"mesh_create_trimesh_static_body", "mesh_create_convex_collision",
+				"setup_path_3d", "set_render_layers",
 				"add_fog_volume", "set_environment_fog", "add_occluder_instance_3d",
 				"find_skeletons", "list_skeleton_bones", "create_bone_map", "add_bone_attachment", "setup_ai_agent_3d",
+				"editor_focus_node", "editor_frame_selection",
 			],
 			"gaps": ["full lightmap UV2 auto-unwrap", "auto LOD generation"],
 		},
@@ -483,6 +517,8 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"instance_scene_as_inherited", "create_scene_from_gltf", "pack_mesh_library_from_scene",
 				"create_atlas_texture", "create_gradient_texture", "create_noise_texture", "create_placeholder_texture",
 				"create_custom_resource_script", "duplicate_resource",
+				"list_resource_dependencies", "find_files_referencing", "remap_resource_references",
+				"list_orphaned_resources", "validate_scene_dependencies",
 				"create_bone_map", "auto_map_bones_by_name", "scan_filesystem", "res_copy_file",
 			],
 			"gaps": ["per-importer full option schemas", "FBX-specific advanced dialog parity"],
@@ -611,10 +647,11 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"run_record_start/stop", "run_log_event", "run_get_events", "run_get_logs",
 				"run_capture_timeline", "run_find_nodes",
 				"get_game_scene_tree", "get_game_node_properties", "assert_node_state",
-				"simulate_*", "capture_frames", "playtest_report",
+				"simulate_*", "capture_frames", "playtest_report", "playtest_sequence",
 				"media_find_ffmpeg", "media_frames_to_video", "media_extract_keyframes",
 				"media_clip_video", "media_contact_sheet",
 				"detect_test_frameworks", "run_gut_tests", "run_gdunit_tests",
+				"audit_scene_tree", "list_scene_signals", "validate_all_scenes",
 			],
 			"gaps": [
 				"standalone CLI run without editor Play (TCP needs running game/autoloads)",
@@ -640,6 +677,8 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_physics_body", "create_physics_body", "setup_collision", "setup_area", "set_area_monitoring",
 				"setup_joint", "add_raycast", "add_shape_cast", "set_physics_material", "add_vehicle_wheel",
 				"setup_soft_body", "add_physical_bone", "setup_physical_bone_simulator",
+				"mesh_create_trimesh_static_body", "mesh_create_convex_collision", "mesh_create_multiple_convex_collisions",
+				"add_collision_shape_from_mesh",
 			],
 			"gaps": ["joint limit fine UI", "test_move debug viz", "full ragdoll auto-generate from skeleton"],
 		},
