@@ -53,20 +53,21 @@ Script `@export` vars appear in `list_property_info` after attach; add/remove vi
 
 Topic: `agent_workflow_guide` with `topic: "inspector"`. Doc: `docs/INSPECTOR_FINE_TUNE.md`.
 
-## Human animation surface
+## Human animation surface (including example → fine-tune)
 
-Work like a person in the Animation / AnimationTree / Skeleton docks:
+Work like a person in the Animation / AnimationTree / Skeleton docks.
 
-1. **Clips:** `list_animations` → `create_animation` / `rename_animation` / `duplicate_animation` / `ensure_reset_animation`
-2. **Tracks & keys:** `add_animation_track` (value|method|audio|bezier|…) → `set_animation_keyframe` / `insert_method_key` / `insert_audio_key`
-3. **Playback:** `animation_player_play` / `seek` / `stop` / `queue` / `set_autoplay` / `set_root_motion_track`
-4. **Libraries:** `list_animation_libraries` / `add_animation_library`
-5. **AnimationTree:** `create_animation_tree` → `add_state_machine_state` → `add_state_machine_transition` → `travel_animation_state` / `set_tree_parameter`
-6. **Blend spaces:** state_type `blend_space_1d|2d` → `add_blend_space_point`
-7. **2D frames:** `sprite_frames_*` + assign to AnimatedSprite2D
-8. **Skeleton3D:** `find_skeletons` → `list_skeleton_bones` → `get_bone_info` / `set_bone_pose`
+**Yes — if the user asks to edit animations based on examples, use MCP to copy and fine-tune:**
 
-Discover by surface: `list_mcp_commands` with `surface: "animation"` or `"skeleton"`.
+1. **Inspect example:** `extract_animations_from_scene` or `list_animations` + **`dump_animation`**
+2. **Copy:** **`apply_example_animation`** (from `.tscn` or open player) or `copy_animation_to_player`
+3. **Retarget paths:** `remap_animation_track_paths`
+4. **Timing:** `scale_animation_time`, `offset_animation_keys`, `crop_animation`
+5. **Keys:** `set_animation_keyframe`, `set_bezier_key`
+6. **Verify:** `compare_animations`, `sample_animation_at_time`, `animation_player_play` + playtest
+
+Also: clips create/rename/duplicate, tracks, AnimationTree, Skeleton, SpriteFrames.  
+`list_animation_fine_tune_tools` · `agent_workflow_guide topic=animation` · `docs/ANIMATION_FINE_TUNE.md`.
 
 ## Coverage honesty
 
