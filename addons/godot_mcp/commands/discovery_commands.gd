@@ -139,16 +139,30 @@ func _domains() -> Dictionary:
 		"2d": {
 			"description": "2D masterpiece production: cameras, lights, tiles, pixel presets, Skeleton2D, MeshInstance2D",
 			"examples": [
+				"pipeline_2d_pixel_game",
+				"pipeline_2d_tilemap_level",
 				"apply_pixel_2d_project_preset",
 				"setup_skeleton_2d",
 				"setup_two_bone_ik_2d",
 				"setup_mesh_instance_2d",
+				"setup_tilemap_layer_stack",
 				"tileset_add_scenes_collection_source",
 				"tilemap_stamp_pattern",
+				"setup_canvas_draw_node",
 				"setup_camera_2d",
 				"setup_canvas_modulate",
 			],
-			"workflow": "pixel preset → scene/camera → tiles/sprites/mesh2d → skeleton2d IK → lights → playtest",
+			"workflow": "pipeline_2d_pixel_game → tilemap stack → character/shapes → skeleton2d IK → lights/draw → playtest",
+		},
+		"shapes": {
+			"description": "Shape2D/Shape3D resources and collision assignment",
+			"examples": ["create_shape_resource", "setup_collision_from_shape_resource", "assign_shape_to_collision"],
+			"workflow": "create_shape_resource → setup_collision_from_shape_resource / assign_shape_to_collision",
+		},
+		"viewports": {
+			"description": "SubViewport minimaps, ViewportTexture, BackBufferCopy",
+			"examples": ["setup_subviewport_2d_world", "setup_viewport_texture_rect", "setup_back_buffer_copy"],
+			"workflow": "setup_subviewport_2d_world → setup_viewport_texture_rect on HUD",
 		},
 	}
 

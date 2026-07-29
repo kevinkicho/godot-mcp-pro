@@ -12,6 +12,8 @@ func get_commands() -> Dictionary:
 		"pipeline_nav_debug_route": _pipeline_nav_debug_route,
 		"pipeline_character_locomotion": _pipeline_character_locomotion,
 		"pipeline_greybox_to_playable": _pipeline_greybox_to_playable,
+		"pipeline_2d_pixel_game": _pipeline_2d_pixel_game,
+		"pipeline_2d_tilemap_level": _pipeline_2d_tilemap_level,
 	}
 
 
@@ -23,6 +25,8 @@ func _list_pipelines(_params: Dictionary) -> Dictionary:
 			"pipeline_nav_debug_route": "Bake nav + query path + draw debug + enable debug",
 			"pipeline_character_locomotion": "Humanoid or simple AnimationTree locomotion",
 			"pipeline_greybox_to_playable": "Greybox room → collision → nav → playtest",
+			"pipeline_2d_pixel_game": "Pixel preset + scaffold + input + optional main scene shell",
+			"pipeline_2d_tilemap_level": "TileSet + multi TileMapLayer stack + optional camera",
 		},
 		"hint": "Prefer pipelines for multi-dock human workflows; use atomic tools for fine control",
 	})
@@ -234,4 +238,84 @@ func _pipeline_greybox_to_playable(params: Dictionary) -> Dictionary:
 		"pipeline": "greybox_to_playable",
 		"steps": steps,
 		"next": ["validate_level_playable", "pipeline_prepare_level_lighting", "pipeline_nav_debug_route"],
+	})
+
+
+func _pipeline_2d_pixel_game(params: Dictionary) -> Dictionary:
+	## Pixel project preset + scaffold + input map — agent first-hour 2D game shell.
+	var steps: Array = []
+	var preset: String = optional_string(params, "pixel_preset", "classic_pixel")
+	var genre: String = optional_string(params, "genre", "2d")
+	var input_preset: String = optional_string(params, "input_preset", "platformer_2d")
+
+	steps.append({"pixel": await _exec("apply_pixel_2d_project_preset", {
+		"preset": preset,
+		"viewport_width": int(params.get("viewport_width", 0)),
+		"viewport_height": int(params.get("viewport_height", 0)),
+	})})
+	if optional_bool(params, "scaffold", true):
+		steps.append({"scaffold": await _exec("scaffold_project_defaults", {
+			"genre": genre,
+			"project_name": optional_string(params, "project_name", ""),
+			"viewport_width": int(params.get("viewport_width", 0)),
+			"viewport_height": int(params.get("viewport_height", 0)),
+			"input_preset": input_preset,
+			"setup_input": optional_bool(params, "setup_input", true),
+			"main_scene": optional_string(params, "main_scene", "res://scenes/main.tscn"),
+		})})
+	elif optional_bool(params, "setup_input", true):
+		steps.append({"input": await _exec("create_input_map_preset", {"preset": input_preset})})
+
+	return success({
+		"pipeline": "2d_pixel_game",
+		"pixel_preset": preset,
+		"input_preset": input_preset,
+		"steps": steps,
+		"next": [
+			"pipeline_2d_tilemap_level",
+			"setup_character_2d",
+			"setup_camera_2d",
+			"playtest_report",
+		],
+	})
+
+
+func _pipeline_2d_tilemap_level(params: Dictionary) -> Dictionary:
+	## Create TileSet (optional) + multi-layer stack + optional camera.
+	var steps: Array = []
+	var tileset_path: String = optional_string(params, "tileset_path", "res://tiles/world_tileset.tres")
+	var parent_path: String = optional_string(params, "parent_path", ".")
+
+	if optional_bool(params, "create_tileset", true):
+		steps.append({"tileset": await _exec("tileset_create", {
+			"path": tileset_path,
+			"tile_size": int(params.get("tile_size", 16)),
+			"overwrite": optional_bool(params, "overwrite_tileset", false),
+		})})
+	var texture_path: String = optional_string(params, "texture_path", "")
+	if not texture_path.is_empty():
+		steps.append({"atlas": await _exec("tileset_add_atlas_source", {
+			"tileset_path": tileset_path,
+			"texture_path": texture_path,
+		})})
+
+	steps.append({"stack": await _exec("setup_tilemap_layer_stack", {
+		"parent_path": parent_path,
+		"tileset_path": tileset_path,
+		"root_name": optional_string(params, "root_name", "TileMap"),
+		"create_root": optional_bool(params, "create_root", true),
+		"names": params.get("layer_names", ["Ground", "Walls", "Decor"]),
+	})})
+
+	if optional_bool(params, "add_camera", true):
+		steps.append({"camera": await _exec("setup_camera_2d", {
+			"parent_path": parent_path,
+			"make_current": true,
+		})})
+
+	return success({
+		"pipeline": "2d_tilemap_level",
+		"tileset_path": tileset_path,
+		"steps": steps,
+		"next": ["tilemap_paint_cells", "tileset_add_scene_tile", "setup_navigation_region mode=2d"],
 	})

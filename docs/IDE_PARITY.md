@@ -22,6 +22,12 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | 2D Skeleton / IK | `setup_skeleton_2d` / `add_bone_2d` / `setup_two_bone_ik_2d` |
 | 2D Mesh | `setup_mesh_instance_2d` / `convert_sprite_to_mesh_instance_2d` / MultiMesh2D |
 | Pixel project pack | `apply_pixel_2d_project_preset` (stretch, nearest, snap, AA) |
+| Shape resources | `create_shape_resource` / `setup_collision_from_shape_resource` |
+| Custom `_draw` | `setup_canvas_draw_node` / canvas draw recipes |
+| SubViewport minimap | `setup_subviewport_2d_world` + `setup_viewport_texture_rect` |
+| Scene instances | `instance_packed_scene` / `set_editable_instance` / make local |
+| TileMapLayer stacks | `setup_tilemap_layer_stack` |
+| 2D pipelines | `pipeline_2d_pixel_game` / `pipeline_2d_tilemap_level` |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |

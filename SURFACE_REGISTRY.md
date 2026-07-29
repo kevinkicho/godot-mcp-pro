@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.56.0**  
+Plugin version: **1.57.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1257
-- **Command modules:** 150
+- **Registered plugin commands:** 1294
+- **Command modules:** 156
 
 ## Commands by module
 
@@ -25,7 +25,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `batch_editor_calls`
 - `agent_headless_status`
 
-### agent_pipeline_commands (6)
+### agent_pipeline_commands (8)
 
 - `list_agent_pipelines`
 - `pipeline_prepare_level_lighting`
@@ -33,6 +33,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `pipeline_nav_debug_route`
 - `pipeline_character_locomotion`
 - `pipeline_greybox_to_playable`
+- `pipeline_2d_pixel_game`
+- `pipeline_2d_tilemap_level`
 
 ### ai_system_commands (8)
 
@@ -207,6 +209,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_audio_bus_layout_preset`
 - `list_audio_generator_tools`
 
+### audio_polyphony_commands (4)
+
+- `setup_polyphonic_player`
+- `set_audio_player_polyphony`
+- `create_sfx_pool_script`
+- `list_audio_polyphony_tools`
+
 ### autoload_depth_commands (5)
 
 - `list_autoloads`
@@ -250,6 +259,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_camera_3d_params`
 - `camera_make_current`
 - `list_camera_depth_tools`
+
+### canvas_draw_recipe_commands (4)
+
+- `list_canvas_draw_recipes`
+- `create_canvas_draw_script`
+- `setup_canvas_draw_node`
+- `list_canvas_draw_tools`
 
 ### character_system_commands (10)
 
@@ -1272,6 +1288,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_scene_flow_recipes`
 - `set_main_scene`
 
+### scene_instance_depth_commands (7)
+
+- `set_editable_instance`
+- `get_instance_info`
+- `setup_instance_placeholder`
+- `make_scene_instance_local`
+- `instance_packed_scene`
+- `batch_set_owners`
+- `list_scene_instance_tools`
+
 ### scene_stream_commands (6)
 
 - `create_stream_manager_script`
@@ -1335,7 +1361,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_shader_include_library_preset`
 - `list_shader_include_tools`
 
-### skeleton_2d_commands (23)
+### shape_resource_commands (6)
+
+- `create_shape_resource`
+- `list_shape_resource_types`
+- `assign_shape_to_collision`
+- `setup_collision_from_shape_resource`
+- `batch_create_shape_resources`
+- `list_shape_resource_tools`
+
+### skeleton_2d_commands (24)
 
 - `find_skeletons_2d`
 - `setup_skeleton_2d`
@@ -1350,6 +1385,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_modification_stack_2d`
 - `setup_two_bone_ik_2d`
 - `set_two_bone_ik_2d_target`
+- `setup_fabrik_ik_2d`
 - `list_modification_stack_2d`
 - `set_bone_2d_local_pose_override`
 - `list_skeleton_2d_tools`
@@ -1430,6 +1466,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `apply_stylebox_to_panel`
 - `list_stylebox_tools`
 
+### subviewport_render_commands (7)
+
+- `setup_subviewport_container`
+- `setup_subviewport_2d_world`
+- `setup_viewport_texture_rect`
+- `setup_sprite_from_subviewport`
+- `setup_back_buffer_copy`
+- `set_subviewport_update_mode`
+- `list_subviewport_render_tools`
+
 ### terrain_mesh_commands (4)
 
 - `create_heightmap_terrain`
@@ -1504,6 +1550,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tilemap_paint_cells`
 - `used_cells`
 - `used_cells`
+
+### tilemap_layer_stack_commands (6)
+
+- `setup_tilemap_layer`
+- `setup_tilemap_layer_stack`
+- `list_tilemap_layers`
+- `assign_tileset_to_layers`
+- `set_tilemap_layer_props`
+- `list_tilemap_layer_stack_tools`
 
 ### tileset_atlas_depth_commands (6)
 

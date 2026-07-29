@@ -20,6 +20,7 @@ func get_commands() -> Dictionary:
 		"setup_modification_stack_2d": _setup_modification_stack_2d,
 		"setup_two_bone_ik_2d": _setup_two_bone_ik_2d,
 		"set_two_bone_ik_2d_target": _set_two_bone_ik_2d_target,
+		"setup_fabrik_ik_2d": _setup_fabrik_ik_2d,
 		"list_modification_stack_2d": _list_modification_stack_2d,
 		"set_bone_2d_local_pose_override": _set_local_pose_override,
 		"list_skeleton_2d_tools": _list_tools,
@@ -518,6 +519,60 @@ func _list_modification_stack_2d(params: Dictionary) -> Dictionary:
 		"strength": stack.get("strength") if "strength" in stack else 1.0,
 		"modification_count": count,
 		"modifications": mods,
+	})
+
+
+func _setup_fabrik_ik_2d(params: Dictionary) -> Dictionary:
+	## SkeletonModification2DFABRIK when available (chain IK beyond two bones).
+	var r0 := require_string(params, "skeleton_path")
+	if r0[1] != null:
+		return r0[1]
+	var sk := _find_skeleton_2d(r0[0])
+	if sk == null:
+		return error_not_found("Skeleton2D at '%s'" % r0[0])
+	if not ClassDB.class_exists("SkeletonModification2DFABRIK"):
+		return error_internal("SkeletonModification2DFABRIK not available in this Godot build")
+	var stack := _ensure_stack(sk)
+	if stack == null:
+		return error_internal("Could not create SkeletonModificationStack2D")
+	var fab: Resource = ClassDB.instantiate("SkeletonModification2DFABRIK")
+	if "enabled" in fab:
+		fab.set("enabled", optional_bool(params, "enabled", true))
+	if params.has("target_path") or params.has("target_nodepath"):
+		var tp: String = optional_string(params, "target_path", optional_string(params, "target_nodepath", ""))
+		var target := find_node_by_path(tp)
+		if target:
+			if "target_nodepath" in fab:
+				fab.set("target_nodepath", sk.get_path_to(target))
+			elif fab.has_method("set_target_node"):
+				fab.call("set_target_node", sk.get_path_to(target))
+	if params.has("fabrik_chain_length") and fab.has_method("set_fabrik_chain_length"):
+		fab.call("set_fabrik_chain_length", int(params["fabrik_chain_length"]))
+	elif params.has("chain_length") and fab.has_method("set_fabrik_chain_length"):
+		fab.call("set_fabrik_chain_length", int(params["chain_length"]))
+	# Optional joint bone indices
+	if params.has("joint_indices") and params["joint_indices"] is Array and fab.has_method("set_fabrik_joint_bone_index"):
+		var joints: Array = params["joint_indices"]
+		if fab.has_method("set_fabrik_chain_length"):
+			fab.call("set_fabrik_chain_length", joints.size())
+		for i in joints.size():
+			fab.call("set_fabrik_joint_bone_index", i, int(joints[i]))
+	var count: int = int(stack.get("modification_count")) if "modification_count" in stack else 0
+	if stack.has_method("set_modification"):
+		stack.set("modification_count", count + 1)
+		stack.call("set_modification", count, fab)
+	elif stack.has_method("add_modification"):
+		stack.call("add_modification", fab)
+	else:
+		return error_internal("Cannot add modification to stack")
+	if "enabled" in stack:
+		stack.set("enabled", true)
+	mark_current_scene_unsaved()
+	return success({
+		"skeleton_path": r0[0],
+		"modification_index": count,
+		"class": "SkeletonModification2DFABRIK",
+		"hint": "Tune chain joints via describe_class SkeletonModification2DFABRIK + update_property if needed",
 	})
 
 

@@ -507,7 +507,7 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"setup_mesh_instance_2d", "convert_sprite_to_mesh_instance_2d", "setup_multimesh_instance_2d",
 				"sprite_frames_*", "setup_ai_agent_2d", "setup_hitbox/hurtbox",
 			],
-			"gaps": ["custom CanvasItem _draw recipes (use create_script + execute_editor_script)", "full FABRIK/CCDIK 2D stack beyond TwoBoneIK"],
+			"gaps": ["CCDIK 2D if engine exposes it (FABRIK covered via setup_fabrik_ik_2d)"],
 		},
 		"tutorials/3d": {
 			"status": "strong",

@@ -4,6 +4,40 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.57.0 — 2026-07-29
+
+**Structural expansion** — shape resources, canvas `_draw` recipes, SubViewport render targets, scene-instance depth, TileMapLayer stacks, audio polyphony, 2D pipelines, FABRIK 2D IK.
+
+### Shapes
+- `create_shape_resource`, `batch_create_shape_resources`, `list_shape_resource_types`
+- `assign_shape_to_collision`, `setup_collision_from_shape_resource`
+
+### Canvas draw recipes
+- `list_canvas_draw_recipes`, `create_canvas_draw_script`, `setup_canvas_draw_node`
+- Recipes: grid, crosshair, circle_ring, rect_border, polyline, health_bar, debug_bounds, radial_sector, dashed_line
+
+### SubViewport / screen
+- `setup_subviewport_container`, `setup_subviewport_2d_world`
+- `setup_viewport_texture_rect`, `setup_sprite_from_subviewport`
+- `setup_back_buffer_copy`, `set_subviewport_update_mode`
+
+### Scene instances
+- `instance_packed_scene`, `set_editable_instance`, `get_instance_info`
+- `setup_instance_placeholder`, `make_scene_instance_local`, `batch_set_owners`
+
+### TileMapLayer stacks
+- `setup_tilemap_layer`, `setup_tilemap_layer_stack`, `list_tilemap_layers`
+- `assign_tileset_to_layers`, `set_tilemap_layer_props`
+
+### Audio polyphony
+- `setup_polyphonic_player`, `set_audio_player_polyphony`, `create_sfx_pool_script`
+
+### Pipelines + 2D IK
+- `pipeline_2d_pixel_game`, `pipeline_2d_tilemap_level`
+- `setup_fabrik_ik_2d` (when ClassDB has SkeletonModification2DFABRIK)
+
+---
+
 ## v1.56.0 — 2026-07-29
 
 **2D masterpiece stretch** — Skeleton2D/Bone2D/rest/2D IK, MeshInstance2D, pixel-game presets, TileSet scenes-as-tiles + patterns. Aimed at full agent 2D production surface (docs tutorials/2d + 2d_skeletons).

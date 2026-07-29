@@ -147,6 +147,17 @@ Full agent path for production 2D games (pixel + skeletal + tiles + mesh):
 - **Tile scenes/patterns:** `tileset_add_scenes_collection_source`, `tileset_add_scene_tile`, `tileset_add_pattern_from_rect`, **`tilemap_stamp_pattern`**
 - Discovery domain: **`list_tools_by_domain domain=2d`** · `agent_workflow_guide topic=2d`
 
+## v1.57+ — structural production surface
+
+- **Shapes:** `create_shape_resource` / `setup_collision_from_shape_resource` (shared Circle/Capsule/Box… `.tres`)
+- **Custom draw:** `list_canvas_draw_recipes` → **`setup_canvas_draw_node`** (grid, health_bar, FOV cone, …)
+- **SubViewport:** minimap/portal via `setup_subviewport_2d_world` + `setup_viewport_texture_rect` / BackBufferCopy
+- **Instances:** `instance_packed_scene`, `set_editable_instance`, `make_scene_instance_local`, placeholders
+- **Tile layers:** **`setup_tilemap_layer_stack`** (Ground/Walls/Decor) + assign tileset
+- **SFX:** `setup_polyphonic_player`, `create_sfx_pool_script`
+- **Pipelines:** **`pipeline_2d_pixel_game`**, **`pipeline_2d_tilemap_level`**
+- **FABRIK 2D:** `setup_fabrik_ik_2d` when available
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

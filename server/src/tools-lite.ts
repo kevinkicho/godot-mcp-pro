@@ -4022,6 +4022,168 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     description: 'List TileSet scenes-as-tiles + pattern tools',
     inputSchema: emptyProps,
   },
+  // ── v1.57 structural ──
+  {
+    name: 'create_shape_resource',
+    description:
+      'Create Shape2D/Shape3D .tres (circle, capsule, box, sphere, rectangle, …) for shared collision',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        type: { type: 'string' },
+        radius: { type: 'number' },
+        height: { type: 'number' },
+        size: { type: 'object' },
+        overwrite: { type: 'boolean' },
+      },
+      required: ['path', 'type'],
+    },
+  },
+  {
+    name: 'setup_collision_from_shape_resource',
+    description: 'Add CollisionShape2D/3D under parent using shape_path or inline type',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        shape_path: { type: 'string' },
+        type: { type: 'string' },
+        radius: { type: 'number' },
+        height: { type: 'number' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_canvas_draw_node',
+    description:
+      'Create Node2D with _draw recipe (grid|health_bar|crosshair|circle_ring|radial_sector|…)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        recipe: { type: 'string' },
+        script_path: { type: 'string' },
+        name: { type: 'string' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_subviewport_2d_world',
+    description: 'Standalone SubViewport + optional World/Camera2D for minimap/portal render',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        size: { type: 'object' },
+        create_world_root: { type: 'boolean' },
+        add_camera: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_viewport_texture_rect',
+    description: 'TextureRect showing a SubViewport via ViewportTexture (HUD minimap)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        viewport_path: { type: 'string' },
+        name: { type: 'string' },
+      },
+      required: ['viewport_path'],
+    },
+  },
+  {
+    name: 'instance_packed_scene',
+    description: 'Instance a PackedScene under parent; optional editable children',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        scene_path: { type: 'string' },
+        parent_path: { type: 'string' },
+        name: { type: 'string' },
+        position: { type: 'object' },
+        editable: { type: 'boolean' },
+      },
+      required: ['scene_path'],
+    },
+  },
+  {
+    name: 'set_editable_instance',
+    description: 'Toggle editable children on a scene instance (Scene dock parity)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        editable: { type: 'boolean' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'setup_tilemap_layer_stack',
+    description: 'Create multi TileMapLayer stack (Ground/Walls/Decor) with optional TileSet',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        tileset_path: { type: 'string' },
+        names: { type: 'array', items: { type: 'string' } },
+        root_name: { type: 'string' },
+        create_root: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_2d_pixel_game',
+    description: 'Compose pixel preset + project scaffold + input map for a new 2D game',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        pixel_preset: { type: 'string' },
+        input_preset: { type: 'string' },
+        viewport_width: { type: 'number' },
+        viewport_height: { type: 'number' },
+        scaffold: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_2d_tilemap_level',
+    description: 'Create TileSet + TileMapLayer stack + optional Camera2D',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        tileset_path: { type: 'string' },
+        texture_path: { type: 'string' },
+        parent_path: { type: 'string' },
+        layer_names: { type: 'array' },
+        add_camera: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'setup_polyphonic_player',
+    description: 'AudioStreamPlayer* with max_polyphony for overlapping SFX',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        dimension: { type: 'string', description: '2d|3d|plain' },
+        max_polyphony: { type: 'number' },
+        stream_path: { type: 'string' },
+      },
+      required: [],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */

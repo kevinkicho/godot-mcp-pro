@@ -1,6 +1,6 @@
 # Godot SDK / docs → MCP structural expansion
 
-**As of:** v1.54 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage` + `get_agent_capability_map`
+**As of:** v1.57 · Official tutorials index (Godot 4.x docs) · live `list_docs_coverage` + `get_agent_capability_map`
 
 ## What we audited
 
@@ -73,6 +73,14 @@ Official [Tutorials](https://docs.godotengine.org/en/stable/tutorials/index.html
 | 4 Theme type depth + dialogue graph CRUD | **shipped** |
 | 5 Debugger intel + performance budgets | **shipped** |
 | 6 VisualShader presets + tile custom data | **shipped** |
+
+## v1.56–1.57 delivery
+
+| Wave | Status |
+|------|--------|
+| Skeleton2D / Mesh2D / pixel / scene tiles (1.56) | **shipped** |
+| Shape resources, `_draw` recipes, SubViewport, instances | **shipped** (1.57) |
+| TileMapLayer stacks, SFX polyphony, 2D pipelines, FABRIK | **shipped** (1.57) |
 
 ## Related
 
