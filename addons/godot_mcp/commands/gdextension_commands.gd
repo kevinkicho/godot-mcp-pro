@@ -10,6 +10,8 @@ func get_commands() -> Dictionary:
 		"list_gdextension_files": _list_gdextension_files,
 		"get_gdextension_info": _get_gdextension_info,
 		"run_gdextension_scons_build": _run_gdextension_scons_build,
+		"clone_godot_cpp": _clone_godot_cpp,
+		"setup_gdextension_full": _setup_gdextension_full,
 	}
 
 
@@ -304,4 +306,68 @@ func _run_gdextension_scons_build(params: Dictionary) -> Dictionary:
 		"ok": exit_code == 0,
 		"output": log_text,
 		"hint": "godot-cpp must exist under the extension folder. Clone matching Godot version before building.",
+	})
+
+
+func _clone_godot_cpp(params: Dictionary) -> Dictionary:
+	## Clone godotengine/godot-cpp into extension folder (requires git on PATH).
+	var folder: String = optional_string(params, "folder", "res://extension")
+	if not folder.begins_with("res://"):
+		folder = "res://" + folder.trim_prefix("/")
+	var abs_dir := ProjectSettings.globalize_path(folder)
+	DirAccess.make_dir_recursive_absolute(abs_dir)
+	var dest := abs_dir.path_join("godot-cpp")
+	if DirAccess.dir_exists_absolute(dest) and not optional_bool(params, "force", false):
+		return success({
+			"path": folder.path_join("godot-cpp"),
+			"already_exists": true,
+			"hint": "force=true to remove and re-clone",
+		})
+	if DirAccess.dir_exists_absolute(dest) and optional_bool(params, "force", false):
+		# Best-effort remove (may fail if locked)
+		OS.execute("cmd" if OS.get_name() == "Windows" else "rm",
+			PackedStringArray(["/C", "rmdir /s /q \"%s\"" % dest] if OS.get_name() == "Windows" else ["-rf", dest]),
+			[], true, false)
+	var branch: String = optional_string(params, "branch", "4.3")
+	var url: String = optional_string(params, "url", "https://github.com/godotengine/godot-cpp.git")
+	var args := PackedStringArray([
+		"clone", "--depth", "1", "-b", branch, "--recurse-submodules", url, dest,
+	])
+	var output: Array = []
+	var code := OS.execute("git", args, output, true, false)
+	return success({
+		"folder": folder.path_join("godot-cpp"),
+		"branch": branch,
+		"exit_code": code,
+		"ok": code == 0,
+		"output": "\n".join(PackedStringArray(output)),
+		"next": "run_gdextension_scons_build folder=%s" % folder,
+	})
+
+
+func _setup_gdextension_full(params: Dictionary) -> Dictionary:
+	## Scaffold + optional godot-cpp clone + optional scons build in one agent step.
+	var created := _create_gdextension_project(params)
+	if created.has("error"):
+		return created
+	var folder: String = optional_string(params, "folder", "res://extension")
+	var steps: Array = [{"create": created.get("result", created)}]
+	if optional_bool(params, "clone_godot_cpp", true):
+		var cl := _clone_godot_cpp({
+			"folder": folder,
+			"branch": optional_string(params, "branch", "4.3"),
+			"force": optional_bool(params, "force_clone", false),
+		})
+		steps.append({"clone": cl.get("result", cl)})
+	if optional_bool(params, "build", false):
+		var b := _run_gdextension_scons_build({
+			"folder": folder,
+			"platform": optional_string(params, "platform", ""),
+			"target": optional_string(params, "target", "template_debug"),
+		})
+		steps.append({"build": b.get("result", b)})
+	return success({
+		"folder": folder,
+		"steps": steps,
+		"hint": "build=true requires toolchain; clone needs git",
 	})

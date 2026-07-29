@@ -12,6 +12,7 @@ func get_commands() -> Dictionary:
 		"create_matchmaking_client_script": _create_matchmaking_client_script,
 		"create_input_buffer_netcode_script": _create_input_buffer_netcode_script,
 		"create_lag_compensation_helper_script": _create_lag_compensation_helper_script,
+		"create_webrtc_ice_config_script": _create_webrtc_ice_config,
 		"list_webrtc_recipes": _list_webrtc_recipes,
 	}
 
@@ -21,14 +22,17 @@ func _list_webrtc_recipes(_params: Dictionary) -> Dictionary:
 		"recipes": [
 			{"id": "webrtc_p2p", "tools": ["create_webrtc_multiplayer_template", "create_signaling_server_script"]},
 			{"id": "matchmaking", "tools": ["create_matchmaking_client_script", "create_signaling_server_script"]},
+			{"id": "ice_turn", "tools": ["create_webrtc_ice_config_script"]},
 			{"id": "netcode", "tools": ["create_input_buffer_netcode_script", "create_lag_compensation_helper_script"]},
 		],
 		"honesty": [
 			"WebRTC in Godot requires WebRTCMultiplayerPeer + a signaling channel (WebSocket/HTTP).",
 			"Full GGPO-style rollback is not provided; input buffer is a practical mid-tier netcode base.",
 			"Matchmaking here is a project-neutral lobby room protocol, not a commercial relay.",
+			"TURN credentials are supplied by your infra — MCP scaffolds ICE config only.",
 		],
 		"flow": [
+			"create_webrtc_ice_config_script (STUN/TURN urls)",
 			"create_signaling_server_script (or host external)",
 			"create_webrtc_multiplayer_template on both peers",
 			"exchange offer/answer via signaling",
@@ -454,3 +458,78 @@ static func rtt_rewind_time(now: float, rtt_sec: float) -> float:
 	if w.has("error"):
 		return w
 	return success({"path": w["path"], "class_name": "LagCompensation"})
+
+
+func _create_webrtc_ice_config(params: Dictionary) -> Dictionary:
+	## Project-neutral ICE/STUN/TURN config helper used by WebRTC peers.
+	var path: String = optional_string(params, "path", "res://scripts/webrtc_ice_config.gd")
+	var stun: Array = params.get("stun_servers", ["stun:stun.l.google.com:19302"])
+	var turn_url: String = optional_string(params, "turn_url", "")
+	var turn_user: String = optional_string(params, "turn_username", "")
+	var turn_pass: String = optional_string(params, "turn_password", "")
+	var content := """extends RefCounted
+class_name WebRTCIceConfig
+## MCP ICE configuration — STUN always; TURN optional (set project settings or args).
+
+static func default_stun() -> PackedStringArray:
+	return PackedStringArray(["stun:stun.l.google.com:19302"])
+
+static func build_ice_servers(
+	stun_servers: PackedStringArray = default_stun(),
+	turn_url: String = "",
+	turn_username: String = "",
+	turn_password: String = ""
+) -> Array:
+	var servers: Array = []
+	for s in stun_servers:
+		servers.append({"urls": [s]})
+	if not turn_url.is_empty():
+		servers.append({
+			"urls": [turn_url],
+			"username": turn_username,
+			"credential": turn_password,
+		})
+	return servers
+
+static func apply_to_peer(peer: WebRTCMultiplayerPeer, ice_servers: Array = []) -> void:
+	if ice_servers.is_empty():
+		ice_servers = build_ice_servers()
+	if peer.has_method("set_ice_servers"):
+		peer.call("set_ice_servers", ice_servers)
+	peer.set_meta("mcp_ice_servers", ice_servers)
+
+static func from_project_settings() -> Array:
+	var stun = ProjectSettings.get_setting("mcp/webrtc_stun", default_stun())
+	var turn := str(ProjectSettings.get_setting("mcp/webrtc_turn_url", ""))
+	var user := str(ProjectSettings.get_setting("mcp/webrtc_turn_user", ""))
+	var pass := str(ProjectSettings.get_setting("mcp/webrtc_turn_pass", ""))
+	var arr := PackedStringArray()
+	if stun is PackedStringArray:
+		arr = stun
+	elif stun is Array:
+		for s in stun:
+			arr.append(str(s))
+	else:
+		arr = default_stun()
+	return build_ice_servers(arr, turn, user, pass)
+"""
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
+	if w.has("error"):
+		return w
+	if optional_bool(params, "write_project_settings", false):
+		if stun is Array:
+			var psa := PackedStringArray()
+			for s in stun:
+				psa.append(str(s))
+			ProjectSettings.set_setting("mcp/webrtc_stun", psa)
+		if not turn_url.is_empty():
+			ProjectSettings.set_setting("mcp/webrtc_turn_url", turn_url)
+			ProjectSettings.set_setting("mcp/webrtc_turn_user", turn_user)
+			ProjectSettings.set_setting("mcp/webrtc_turn_pass", turn_pass)
+		ProjectSettings.save()
+	return success({
+		"path": w.get("path", path),
+		"stun": stun,
+		"turn_configured": not turn_url.is_empty(),
+		"hint": "Pass TURN url/user/pass from your relay; commercial matchmaking not included",
+	})

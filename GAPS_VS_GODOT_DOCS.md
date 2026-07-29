@@ -5,7 +5,7 @@
 > Live tool: **`list_docs_coverage`**. Command inventory: **[SURFACE_REGISTRY.md](SURFACE_REGISTRY.md)**.
 
 Source map: [godotengine/godot-docs](https://github.com/godotengine/godot-docs) (`tutorials/`, `getting_started/`, class reference).  
-Compared against this fork’s plugin surface: **~692** registered methods, **68** modules, **v1.38.0**.
+Compared against this fork’s plugin surface: **~735** registered methods, **71** modules, **v1.40.0**.
 
 **Goal:** agent-driven game production that feels like a human using the editor — not 1:1 with every docs page or ClassDB method.
 
@@ -51,9 +51,9 @@ Compared against this fork’s plugin surface: **~692** registered methods, **68
 | IO / save | **Partial** | Config/JSON/user:// + save managers; encryption thin |
 | Platform | **Partial** | Android best; iOS/console thin |
 | Plugins / GDExtension | **Partial** | scaffold; no godot-cpp auto-build |
-| Rendering advanced | **Partial** | env/lights/GI partial; compositor/SDFGI thin |
+| Rendering advanced | **Strong** (1.40) | SDFGI/SSAO/SSR/glow/SSIL + lightmap mesh flags + compositor |
 | Best practices | **Partial** | workflow guide + analyzers |
-| Migrating | **Thin** | version + search/edit only |
+| Migrating | **Partial** (1.40) | scan + conservative renames; not full scene converter |
 | Math | **classdb_only** | intentional |
 | Class reference | **Strong (lookup)** | `describe_class` family — not one tool per method |
 

@@ -41,6 +41,10 @@ func get_commands() -> Dictionary:
 		"sprite_frames_add_animation": _sprite_frames_add_animation,
 		"sprite_frames_add_frame": _sprite_frames_add_frame,
 		"sprite_frames_assign": _sprite_frames_assign,
+		# Bezier handle fine-tune + retarget helper
+		"set_bezier_key": _set_bezier_key,
+		"get_bezier_key_info": _get_bezier_key_info,
+		"apply_bone_map_to_skeleton": _apply_bone_map_to_skeleton,
 	}
 
 
@@ -1009,4 +1013,154 @@ func _set_root_motion_track(params: Dictionary) -> Dictionary:
 		"node_path": r0[0],
 		"root_motion_track": str(node.get("root_motion_track")),
 		"old": str(old),
+	})
+
+
+func _set_bezier_key(params: Dictionary) -> Dictionary:
+	## Insert/update a Bezier track key with in/out handles (Animation editor parity).
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var r1 := require_string(params, "animation")
+	if r1[1] != null:
+		return r1[1]
+	var player := _find_animation_player(r0[0])
+	if player == null:
+		return error_not_found("AnimationPlayer")
+	var anim := player.get_animation(r1[0])
+	if anim == null:
+		return error_not_found("Animation")
+	var track_index: int = int(params.get("track_index", -1))
+	var track_path: String = optional_string(params, "track_path", "")
+	if track_index < 0:
+		if track_path.is_empty():
+			return error_invalid_params("track_index or track_path required")
+		for i in anim.get_track_count():
+			if anim.track_get_type(i) == Animation.TYPE_BEZIER and str(anim.track_get_path(i)) == track_path:
+				track_index = i
+				break
+		if track_index < 0:
+			track_index = anim.add_track(Animation.TYPE_BEZIER)
+			anim.track_set_path(track_index, NodePath(track_path))
+	if anim.track_get_type(track_index) != Animation.TYPE_BEZIER:
+		return error_invalid_params("Track is not TYPE_BEZIER")
+	var time: float = float(params.get("time", 0.0))
+	var value: float = float(params.get("value", 0.0))
+	var in_handle := Vector2(float(params.get("in_handle_x", params.get("in_x", -0.25))), float(params.get("in_handle_y", params.get("in_y", 0.0))))
+	var out_handle := Vector2(float(params.get("out_handle_x", params.get("out_x", 0.25))), float(params.get("out_handle_y", params.get("out_y", 0.0))))
+	var key_idx: int
+	if anim.has_method("bezier_track_insert_key"):
+		key_idx = anim.bezier_track_insert_key(track_index, time, value, in_handle, out_handle)
+	else:
+		key_idx = anim.track_insert_key(track_index, time, value)
+		if anim.has_method("bezier_track_set_key_in_handle"):
+			anim.bezier_track_set_key_in_handle(track_index, key_idx, in_handle)
+			anim.bezier_track_set_key_out_handle(track_index, key_idx, out_handle)
+	if params.has("key_index") and anim.has_method("bezier_track_set_key_value"):
+		key_idx = int(params["key_index"])
+		anim.bezier_track_set_key_value(track_index, key_idx, value)
+		if anim.has_method("bezier_track_set_key_in_handle"):
+			anim.bezier_track_set_key_in_handle(track_index, key_idx, in_handle)
+			anim.bezier_track_set_key_out_handle(track_index, key_idx, out_handle)
+	mark_current_scene_unsaved()
+	return success({
+		"animation": r1[0],
+		"track_index": track_index,
+		"key_index": key_idx,
+		"time": time,
+		"value": value,
+		"in_handle": {"x": in_handle.x, "y": in_handle.y},
+		"out_handle": {"x": out_handle.x, "y": out_handle.y},
+	})
+
+
+func _get_bezier_key_info(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var r1 := require_string(params, "animation")
+	if r1[1] != null:
+		return r1[1]
+	var track_index: int = int(params.get("track_index", 0))
+	var player := _find_animation_player(r0[0])
+	if player == null:
+		return error_not_found("AnimationPlayer")
+	var anim := player.get_animation(r1[0])
+	if anim == null:
+		return error_not_found("Animation")
+	if track_index < 0 or track_index >= anim.get_track_count():
+		return error_invalid_params("Invalid track_index")
+	if anim.track_get_type(track_index) != Animation.TYPE_BEZIER:
+		return error_invalid_params("Not a bezier track")
+	var keys: Array = []
+	var kc := anim.track_get_key_count(track_index)
+	for i in kc:
+		var entry := {
+			"key_index": i,
+			"time": anim.track_get_key_time(track_index, i),
+		}
+		if anim.has_method("bezier_track_get_key_value"):
+			entry["value"] = anim.bezier_track_get_key_value(track_index, i)
+		if anim.has_method("bezier_track_get_key_in_handle"):
+			var ih: Vector2 = anim.bezier_track_get_key_in_handle(track_index, i)
+			var oh: Vector2 = anim.bezier_track_get_key_out_handle(track_index, i)
+			entry["in_handle"] = {"x": ih.x, "y": ih.y}
+			entry["out_handle"] = {"x": oh.x, "y": oh.y}
+		keys.append(entry)
+	return success({
+		"animation": r1[0],
+		"track_index": track_index,
+		"path": str(anim.track_get_path(track_index)),
+		"keys": keys,
+		"count": keys.size(),
+	})
+
+
+func _apply_bone_map_to_skeleton(params: Dictionary) -> Dictionary:
+	## Apply BoneMap profile names as metadata on Skeleton3D bones (retarget prep).
+	var r0 := require_string(params, "skeleton_path")
+	if r0[1] != null:
+		return r0[1]
+	var map_path: String = optional_string(params, "bone_map_path", "")
+	if map_path.is_empty():
+		return error_invalid_params("bone_map_path to BoneMap .tres required")
+	if not map_path.begins_with("res://"):
+		map_path = "res://" + map_path.trim_prefix("/")
+	var bm = load(map_path)
+	if bm == null or not (bm is BoneMap):
+		return error_not_found("BoneMap at %s" % map_path)
+	var root := get_edited_root()
+	if root == null:
+		return error_no_scene()
+	var node := find_node_by_path(r0[0])
+	if node == null or not (node is Skeleton3D):
+		return error_not_found("Skeleton3D")
+	var sk: Skeleton3D = node
+	var applied: Array = []
+	# BoneMap maps profile bone name -> skeleton bone name
+	if bm.profile:
+		for i in bm.profile.get_bone_size() if bm.profile.has_method("get_bone_size") else 0:
+			pass
+	# Iterate known mappings via get_skeleton_bone_name if available
+	if bm.has_method("get_skeleton_bone_name") and bm.profile and bm.profile.has_method("get_bone_size"):
+		for i in range(bm.profile.get_bone_size()):
+			var profile_name: StringName = bm.profile.get_bone_name(i) if bm.profile.has_method("get_bone_name") else StringName()
+			if str(profile_name).is_empty():
+				continue
+			var sk_name: StringName = bm.get_skeleton_bone_name(profile_name)
+			if str(sk_name).is_empty():
+				continue
+			var bi := sk.find_bone(str(sk_name))
+			if bi >= 0:
+				sk.set_bone_meta(bi, "retarget_profile_bone", str(profile_name))
+				applied.append({"profile": str(profile_name), "skeleton_bone": str(sk_name), "index": bi})
+	# Fallback: store whole map path on skeleton
+	sk.set_meta("mcp_bone_map", map_path)
+	mark_current_scene_unsaved()
+	return success({
+		"skeleton": r0[0],
+		"bone_map_path": map_path,
+		"mapped": applied.size(),
+		"bones": applied,
+		"hint": "Full Animation Retargeting importer is editor-side; this stamps profile metadata for agents/scripts",
 	})

@@ -286,8 +286,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"list_animations", "create_animation", "add_animation_track", "set_animation_keyframe",
 				"insert_method_key", "insert_audio_key", "animation_player_play", "ensure_reset_animation",
 				"create_animation_tree", "travel_animation_state", "add_blend_space_point", "sprite_frames_*",
+				"set_bezier_key", "get_bezier_key_info", "create_bone_map", "apply_bone_map_to_skeleton",
 			],
-			"gaps": ["visual Bezier handle editor", "full retarget wizard UI"],
+			"gaps": ["full Animation Retargeting importer UI parity"],
 		},
 		"tutorials/assets_pipeline": {
 			"status": "strong",
@@ -317,18 +318,27 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"tools": [
 				"create_input_map_preset", "get_input_actions", "set_input_action", "remove_input_action",
 				"list_input_action_events", "add_input_action_event", "simulate_*",
+				"create_joypad_input_map_preset", "add_joypad_binding", "list_joypads",
+				"set_action_deadzone", "get_action_strength_info", "list_joypad_button_names",
 			],
-			"gaps": ["joypad mapping wizard", "InputEventAction strength tooling"],
+			"gaps": ["OS-level controller remapping UI outside Godot"],
 		},
 		"tutorials/io": {
-			"status": "partial",
-			"tools": ["res_*", "config_file_get/set", "json_read/write", "user_list_dir", "user_read_text", "user_write_text"],
-			"gaps": ["encrypted save helpers", "HTTPRequest tools"],
+			"status": "strong",
+			"tools": [
+				"res_*", "config_file_get/set", "json_read/write", "user_list_dir", "user_read_text", "user_write_text",
+				"create_encrypted_save_manager_script", "create_enhanced_save_manager_script",
+			],
+			"gaps": ["cloud save backends", "HTTPRequest as dedicated IO surface"],
 		},
 		"tutorials/i18n": {
 			"status": "strong",
-			"tools": ["get_locale", "set_locale", "add_translation", "translate_string", "load_csv_translations", "load_po_translation", "list_translations"],
-			"gaps": ["extract strings from scenes/scripts automatically"],
+			"tools": [
+				"get_locale", "set_locale", "add_translation", "translate_string",
+				"load_csv_translations", "load_po_translation", "list_translations",
+				"extract_translatable_strings", "export_pot_template",
+			],
+			"gaps": ["auto-submit to translation platforms"],
 		},
 		"tutorials/navigation": {
 			"status": "strong",
@@ -373,13 +383,14 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["visual BT editor UI", "full utility AI / GOAP planner"],
 		},
 		"networking_webrtc": {
-			"status": "partial",
+			"status": "strong",
 			"tools": [
 				"create_webrtc_multiplayer_template", "create_signaling_server_script",
 				"create_matchmaking_client_script", "create_input_buffer_netcode_script",
-				"create_lag_compensation_helper_script", "list_webrtc_recipes",
+				"create_lag_compensation_helper_script", "create_webrtc_ice_config_script",
+				"list_webrtc_recipes",
 			],
-			"gaps": ["commercial relay/TURN automation", "full GGPO rollback simulation"],
+			"gaps": ["hosted commercial matchmaking service", "full GGPO rollback simulation"],
 		},
 		"shaders_vfx": {
 			"status": "strong",
@@ -433,10 +444,11 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"tools": [
 				"get_performance_monitors", "get_editor_performance", "capture_performance_sample",
 				"capture_performance_timeline", "get_render_info", "list_performance_monitor_names",
+				"export_performance_report", "get_gpu_profiling_hints",
 				"analyze_scene_complexity", "run_stress_test",
 				"debugger_get_status", "list_debugger_errors", "set_debug_project_settings",
 			],
-			"gaps": ["GPU frame debugger UI export", "CPU profiler flame charts"],
+			"gaps": ["native GPU frame debugger graph (engine UI only)", "CPU flame chart PNG export"],
 		},
 		"tutorials/physics": {
 			"status": "strong",
@@ -461,9 +473,15 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": ["console platforms", "full iOS Xcode pipeline"],
 		},
 		"tutorials/rendering": {
-			"status": "partial",
-			"tools": ["setup_environment", "setup_lighting", "set_material_3d", "add_reflection_probe", "add_decal", "add_voxel_gi", "set_render_layers"],
-			"gaps": ["SDFGI bake controls", "compositor effects", "lightmap bake automation"],
+			"status": "strong",
+			"tools": [
+				"setup_environment", "setup_lighting", "set_material_3d", "add_reflection_probe", "add_decal",
+				"add_voxel_gi", "bake_voxel_gi", "set_render_layers",
+				"configure_sdfgi", "configure_ssao", "configure_ssr", "configure_glow", "configure_ssil",
+				"set_mesh_lightmap_params", "add_lightmap_gi", "request_lightmap_bake",
+				"setup_compositor", "add_compositor_effect", "apply_environment_preset",
+			],
+			"gaps": ["full automatic UV2 unwrap for all mesh importers", "vendor GPU captures"],
 		},
 		"tutorials/shaders": {
 			"status": "strong",
@@ -482,17 +500,19 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"set_control_size_flags", "item_list_*", "tree_*", "option_button_set_items", "popup_menu_set_items",
 				"richtext_set_bbcode", "setup_window", "setup_accept_dialog", "setup_file_dialog",
 				"setup_subviewport", "setup_video_stream_player", "setup_progress_bar", "setup_texture_progress_bar",
+				"theme_set_type_*", "theme_list_types", "theme_get_type_info", "assign_theme_to_control",
 				"connect_signal",
 			],
-			"gaps": ["theme type full resource editor"],
+			"gaps": ["Theme editor visual stylebox graph UI"],
 		},
 		"tutorials/plugins": {
-			"status": "partial",
+			"status": "strong",
 			"tools": [
 				"create_editor_plugin", "list_project_plugins", "create_gdextension_project",
+				"clone_godot_cpp", "run_gdextension_scons_build", "setup_gdextension_full",
 				"list_gdextension_files", "execute_editor_script", "describe_class EditorPlugin",
 			],
-			"gaps": ["plugin marketplace packaging", "automated godot-cpp clone/build"],
+			"gaps": ["plugin marketplace packaging", "CI matrix for all target platforms"],
 		},
 		"tutorials/xr": {
 			"status": "strong",
@@ -516,9 +536,13 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 			"gaps": [],
 		},
 		"tutorials/migrating": {
-			"status": "thin",
-			"tools": ["get_godot_version", "search_in_files", "edit_script"],
-			"gaps": ["automated 3→4 migrator"],
+			"status": "partial",
+			"tools": [
+				"get_godot_version", "search_in_files", "edit_script",
+				"scan_godot3_patterns", "list_migration_replacements",
+				"apply_migration_replacements", "get_migration_guide",
+			],
+			"gaps": ["full scene format auto-convert (use Godot project converter)"],
 		},
 		"classes/* (class reference)": {
 			"status": "strong",

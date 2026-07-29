@@ -41,6 +41,7 @@ Full docs live under **[`docs/`](docs/README.md)**:
 | **[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)** | Add commands, ship versions |
 | **[docs/DOCS_COVERAGE_ANALYSIS.md](docs/DOCS_COVERAGE_ANALYSIS.md)** | MCP ↔ Godot docs/SDK coverage analysis |
 | **[docs/INSPECTOR_FINE_TUNE.md](docs/INSPECTOR_FINE_TUNE.md)** | Full node & parameter fine-tune for agents |
+| **[docs/SURFACE_EXPANSION.md](docs/SURFACE_EXPANSION.md)** | Closing remaining Godot docs surface gaps |
 
 ### Reference
 

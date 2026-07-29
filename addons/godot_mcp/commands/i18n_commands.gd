@@ -15,6 +15,8 @@ func get_commands() -> Dictionary:
 		"load_csv_translations": _load_csv_translations,
 		"load_po_translation": _load_po_translation,
 		"list_translations": _list_translations,
+		"extract_translatable_strings": _extract_translatable_strings,
+		"export_pot_template": _export_pot_template,
 	}
 
 
@@ -228,3 +230,125 @@ func _list_translations(_params: Dictionary) -> Dictionary:
 		"loaded_locales": Array(locales),
 		"count": locales.size(),
 	})
+
+
+func _extract_translatable_strings(params: Dictionary) -> Dictionary:
+	## Scan scenes/scripts for user-facing strings (tr(), text=, placeholder_text, bbcode).
+	var root_path: String = optional_string(params, "path", "res://")
+	if not root_path.begins_with("res://"):
+		root_path = "res://" + root_path.trim_prefix("/")
+	var max_files: int = clampi(optional_int(params, "max_files", 300), 1, 2000)
+	var include_addons: bool = optional_bool(params, "include_addons", false)
+	var keys: Dictionary = {}  # key -> {sources:[]}
+	var files: Array = []
+	_collect_files(root_path, files, max_files, include_addons)
+	var tr_re := RegEx.new()
+	tr_re.compile("tr\\(\\s*[\"']([^\"']+)[\"']")
+	var text_re := RegEx.new()
+	text_re.compile("(?:text|placeholder_text|tooltip_text|title|bbcode_text)\\s*=\\s*[\"']([^\"']{2,})[\"']")
+	for fpath in files:
+		var content := _read_text(fpath)
+		if content.is_empty():
+			continue
+		for re in [tr_re, text_re]:
+			for m in re.search_all(content):
+				var s := m.get_string(1).strip_edges()
+				if s.is_empty() or s.begins_with("res://") or s.is_valid_float():
+					continue
+				if not keys.has(s):
+					keys[s] = {"key": s, "sources": []}
+				var srcs: Array = keys[s]["sources"]
+				if srcs.size() < 5 and not (fpath in srcs):
+					srcs.append(fpath)
+	var out: Array = []
+	for k in keys:
+		out.append(keys[k])
+	out.sort_custom(func(a, b): return str(a.get("key", "")) < str(b.get("key", "")))
+	return success({
+		"count": out.size(),
+		"strings": out,
+		"scanned_files": files.size(),
+		"hint": "export_pot_template or write CSV keys then load_csv_translations",
+	})
+
+
+func _export_pot_template(params: Dictionary) -> Dictionary:
+	## Write a minimal gettext .pot from extract results or provided keys.
+	var out_path: String = optional_string(params, "path", "res://locale/messages.pot")
+	if not out_path.begins_with("res://"):
+		out_path = "res://" + out_path.trim_prefix("/")
+	var strings: Array = []
+	if params.has("strings") and params["strings"] is Array:
+		strings = params["strings"]
+	else:
+		var ext := _extract_translatable_strings(params)
+		if ext.has("error"):
+			return ext
+		var res: Dictionary = ext.get("result", ext)
+		for item in res.get("strings", []):
+			if item is Dictionary:
+				strings.append(item.get("key", ""))
+			else:
+				strings.append(str(item))
+	var abs := ProjectSettings.globalize_path(out_path)
+	DirAccess.make_dir_recursive_absolute(abs.get_base_dir())
+	var f := FileAccess.open(out_path, FileAccess.WRITE)
+	if f == null:
+		return error_internal("Cannot write %s" % out_path)
+	f.store_line("# MCP-generated POT template")
+	f.store_line("msgid \"\"")
+	f.store_line("msgstr \"\"")
+	f.store_line("\"Content-Type: text/plain; charset=UTF-8\\n\"")
+	f.store_line("")
+	var n := 0
+	var seen := {}
+	for s in strings:
+		var key := str(s)
+		if key.is_empty() or seen.has(key):
+			continue
+		seen[key] = true
+		var esc := key.replace("\\", "\\\\").replace("\"", "\\\"")
+		f.store_line("msgid \"%s\"" % esc)
+		f.store_line("msgstr \"\"")
+		f.store_line("")
+		n += 1
+	f.close()
+	EditorInterface.get_resource_filesystem().scan()
+	return success({"path": out_path, "entries": n})
+
+
+func _collect_files(dir_path: String, out: Array, max_n: int, include_addons: bool) -> void:
+	if out.size() >= max_n:
+		return
+	var dir := DirAccess.open(dir_path)
+	if dir == null:
+		return
+	dir.list_dir_begin()
+	var name := dir.get_next()
+	while not name.is_empty():
+		if name.begins_with("."):
+			name = dir.get_next()
+			continue
+		var full: String = dir_path.rstrip("/") + "/" + name if dir_path != "res://" else "res://" + name
+		if dir.current_is_dir():
+			if name == ".godot":
+				pass
+			elif name == "addons" and not include_addons:
+				pass
+			else:
+				_collect_files(full, out, max_n, include_addons)
+		elif name.ends_with(".gd") or name.ends_with(".tscn") or name.ends_with(".cs"):
+			out.append(full)
+		name = dir.get_next()
+	dir.list_dir_end()
+
+
+func _read_text(path: String) -> String:
+	if not FileAccess.file_exists(path):
+		return ""
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return ""
+	var t := f.get_as_text()
+	f.close()
+	return t

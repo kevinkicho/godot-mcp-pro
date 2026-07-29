@@ -11,6 +11,7 @@ func get_commands() -> Dictionary:
 		"setup_settings_menu": _setup_settings_menu,
 		"setup_save_slot_menu": _setup_save_slot_menu,
 		"create_enhanced_save_manager_script": _create_enhanced_save_manager,
+		"create_encrypted_save_manager_script": _create_encrypted_save_manager,
 		"list_settings_save_recipes": _list_recipes,
 	}
 
@@ -23,6 +24,7 @@ func _list_recipes(_params: Dictionary) -> Dictionary:
 		],
 		"flow_save": [
 			"create_enhanced_save_manager_script (or create_save_manager_script)",
+			"create_encrypted_save_manager_script for FileAccess encrypted stores",
 			"setup_save_slot_menu",
 		],
 	})
@@ -369,6 +371,89 @@ func autosave(data: Dictionary, meta: Dictionary = {}) -> Error:
 		var aname := optional_string(params, "autoload_name", "SaveManager")
 		al = ensure_autoload(aname, w["path"], true)
 	return success({"path": w["path"], "autoload_added": al})
+
+
+func _create_encrypted_save_manager(params: Dictionary) -> Dictionary:
+	## FileAccess encrypted user saves (AES via password). Project-neutral scaffold.
+	var path: String = optional_string(params, "path", "res://scripts/encrypted_save_manager.gd")
+	var content := """extends Node
+## MCP EncryptedSaveManager — FileAccess open_encrypted_with_pass on user://saves.
+signal save_completed(slot: String)
+signal load_completed(slot: String, data: Dictionary)
+
+const SAVE_DIR := "user://saves"
+@export var password: String = "change-me-in-project-settings"
+
+func _ready() -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(SAVE_DIR))
+	if ProjectSettings.has_setting("mcp/save_password"):
+		password = str(ProjectSettings.get_setting("mcp/save_password"))
+
+func _slot_path(slot: String) -> String:
+	return SAVE_DIR.path_join(slot + ".esav")
+
+func save_game(data: Dictionary, slot: String = "slot0") -> Error:
+	var p := _slot_path(slot)
+	var f := FileAccess.open_encrypted_with_pass(p, FileAccess.WRITE, password)
+	if f == null:
+		return FileAccess.get_open_error()
+	f.store_string(JSON.stringify(data))
+	f.close()
+	save_completed.emit(slot)
+	return OK
+
+func load_game(slot: String = "slot0") -> Dictionary:
+	var p := _slot_path(slot)
+	if not FileAccess.file_exists(p):
+		return {}
+	var f := FileAccess.open_encrypted_with_pass(p, FileAccess.READ, password)
+	if f == null:
+		push_error("Encrypted load failed: %s" % error_string(FileAccess.get_open_error()))
+		return {}
+	var text := f.get_as_text()
+	f.close()
+	var parsed = JSON.parse_string(text)
+	var data: Dictionary = parsed if parsed is Dictionary else {}
+	load_completed.emit(slot, data)
+	return data
+
+func has_save(slot: String = "slot0") -> bool:
+	return FileAccess.file_exists(_slot_path(slot))
+
+func delete_save(slot: String) -> void:
+	var p := _slot_path(slot)
+	if FileAccess.file_exists(p):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(p))
+
+func list_slots() -> Array:
+	var out: Array = []
+	var dir := DirAccess.open(SAVE_DIR)
+	if dir == null:
+		return out
+	dir.list_dir_begin()
+	var n := dir.get_next()
+	while not n.is_empty():
+		if n.ends_with(".esav"):
+			out.append(n.get_basename())
+		n = dir.get_next()
+	dir.list_dir_end()
+	return out
+"""
+	var w := write_script_file(path, content, optional_bool(params, "overwrite", false))
+	if w.has("error"):
+		return w
+	var al := false
+	if optional_bool(params, "add_autoload", true):
+		al = ensure_autoload(optional_string(params, "autoload_name", "SaveManager"), w.get("path", path), true)
+	if optional_bool(params, "set_project_password", false):
+		var pw: String = optional_string(params, "password", "change-me")
+		ProjectSettings.set_setting("mcp/save_password", pw)
+		ProjectSettings.save()
+	return success({
+		"path": w.get("path", path),
+		"autoload_added": al,
+		"hint": "Set password via mcp/save_password project setting or @export; not cloud-backed",
+	})
 
 
 func _setup_save_slot_menu(params: Dictionary) -> Dictionary:

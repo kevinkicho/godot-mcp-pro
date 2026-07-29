@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.39.0**  
+Plugin version: **1.40.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 697
-- **Command modules:** 68
+- **Registered plugin commands:** 735
+- **Command modules:** 71
 
 ## Commands by module
 
@@ -48,7 +48,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_android_preset_info`
 - `deploy_to_android`
 
-### animation_commands (33)
+### animation_commands (36)
 
 - `list_animations`
 - `create_animation`
@@ -83,6 +83,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `sprite_frames_add_animation`
 - `sprite_frames_add_frame`
 - `sprite_frames_assign`
+- `set_bezier_key`
+- `get_bezier_key_info`
+- `apply_bone_map_to_skeleton`
 
 ### animation_tree_commands (20)
 
@@ -317,14 +320,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_camera_shake_script`
 - `list_gameplay_templates`
 
-### gdextension_commands (4)
+### gdextension_commands (6)
 
 - `create_gdextension_project`
 - `list_gdextension_files`
 - `get_gdextension_info`
 - `run_gdextension_scons_build`
+- `clone_godot_cpp`
+- `setup_gdextension_full`
 
-### i18n_commands (9)
+### i18n_commands (11)
 
 - `get_locale`
 - `set_locale`
@@ -335,6 +340,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `load_csv_translations`
 - `load_po_translation`
 - `list_translations`
+- `extract_translatable_strings`
+- `export_pot_template`
 
 ### import_3d_commands (11)
 
@@ -396,6 +403,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `user_write_text`
 - `user_delete_path`
 
+### joypad_commands (7)
+
+- `list_joypads`
+- `create_joypad_input_map_preset`
+- `add_joypad_binding`
+- `set_action_deadzone`
+- `get_action_strength_info`
+- `list_joypad_button_names`
+- `event`
+
 ### material_2d_commands (12)
 
 - `set_canvas_item_modulate`
@@ -419,6 +436,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `media_clip_video`
 - `media_contact_sheet`
 - `media_probe`
+
+### migration_commands (4)
+
+- `scan_godot3_patterns`
+- `list_migration_replacements`
+- `apply_migration_replacements`
+- `get_migration_guide`
 
 ### modern_render_commands (6)
 
@@ -546,7 +570,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `agent_production_status`
 - `create_input_map_preset`
 
-### profiling_commands (6)
+### profiling_commands (9)
 
 - `get_performance_monitors`
 - `get_editor_performance`
@@ -554,6 +578,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `capture_performance_timeline`
 - `get_render_info`
 - `list_performance_monitor_names`
+- `export_performance_report`
+- `get_gpu_profiling_hints`
+- `editor_snapshot`
 
 ### project_commands (16)
 
@@ -588,6 +615,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `add_dialogue_graph_node`
 - `list_dialogue_graph_nodes`
 - `list_quest_recipes`
+
+### render_gi_commands (7)
+
+- `configure_sdfgi`
+- `configure_ssao`
+- `configure_ssr`
+- `configure_glow`
+- `configure_ssil`
+- `set_mesh_lightmap_params`
+- `list_gi_tools`
 
 ### resource_commands (6)
 
@@ -721,13 +758,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_open_scripts`
 - `validate_script`
 
-### settings_save_commands (6)
+### settings_save_commands (7)
 
 - `create_settings_resource_script`
 - `create_settings_manager_script`
 - `setup_settings_menu`
 - `setup_save_slot_menu`
 - `create_enhanced_save_manager_script`
+- `create_encrypted_save_manager_script`
 - `list_settings_save_recipes`
 
 ### shader_commands (9)
@@ -786,7 +824,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_placeholder_texture`
 - `create_curve_texture`
 
-### theme_commands (10)
+### theme_commands (18)
 
 - `create_theme`
 - `set_theme_color`
@@ -798,6 +836,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_focus_neighbors`
 - `set_control_size_flags`
 - `set_control_mouse_filter`
+- `theme_set_type_color`
+- `theme_set_type_constant`
+- `theme_set_type_font_size`
+- `theme_set_type_stylebox`
+- `theme_list_types`
+- `theme_clear_type`
+- `theme_get_type_info`
+- `assign_theme_to_control`
 
 ### tilemap_commands (13)
 
@@ -889,13 +935,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `assign_visual_shader_material`
 - `visual_shader_add_preset_fresnel`
 
-### webrtc_multiplayer_commands (6)
+### webrtc_multiplayer_commands (7)
 
 - `create_webrtc_multiplayer_template`
 - `create_signaling_server_script`
 - `create_matchmaking_client_script`
 - `create_input_buffer_netcode_script`
 - `create_lag_compensation_helper_script`
+- `create_webrtc_ice_config_script`
 - `list_webrtc_recipes`
 
 ### xr_commands (15)

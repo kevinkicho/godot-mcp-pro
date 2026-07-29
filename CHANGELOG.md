@@ -4,6 +4,48 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.40.0 — 2026-07-28
+
+**Surface expansion** — close remaining docs-area gaps so agents can operate more of the Godot SDK tutorial surface.
+
+### Rendering / GI
+- `configure_sdfgi`, `configure_ssao`, `configure_ssr`, `configure_glow`, `configure_ssil`
+- `set_mesh_lightmap_params` (+ optional UV2 unwrap request)
+- `list_gi_tools` (module `render_gi_commands`)
+
+### Input / joypad
+- `create_joypad_input_map_preset` (platformer, twin_stick, racing, xbox_ui)
+- `add_joypad_binding`, `list_joypads`, `list_joypad_button_names`
+- `set_action_deadzone`, `get_action_strength_info`
+
+### I18n
+- `extract_translatable_strings` (scan `tr()`, `text=`, etc.)
+- `export_pot_template`
+
+### Theme resource editor
+- `theme_set_type_color/constant/font_size/stylebox`, `theme_list_types`, `theme_get_type_info`, `theme_clear_type`, `assign_theme_to_control`
+
+### Saves / IO
+- `create_encrypted_save_manager_script` (`FileAccess.open_encrypted_with_pass`)
+
+### Animation / retarget
+- `set_bezier_key`, `get_bezier_key_info`, `apply_bone_map_to_skeleton`
+
+### GDExtension
+- `clone_godot_cpp`, `setup_gdextension_full` (scaffold + clone + optional scons)
+
+### Migration (3→4 aids)
+- `scan_godot3_patterns`, `list_migration_replacements`, `apply_migration_replacements`, `get_migration_guide`
+
+### Performance / WebRTC
+- `export_performance_report`, `get_gpu_profiling_hints`
+- `create_webrtc_ice_config_script` (STUN/TURN project settings)
+
+### Coverage map
+- `list_docs_coverage` statuses updated (rendering/io/i18n/inputs/plugins/webrtc/migrating)
+
+---
+
 ## v1.39.0 — 2026-07-28
 
 **Inspector fine-tune** — agents can discover and set every editor-visible node/resource parameter.

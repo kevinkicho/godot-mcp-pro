@@ -14,6 +14,15 @@ func get_commands() -> Dictionary:
 		"set_focus_neighbors": _set_focus_neighbors,
 		"set_control_size_flags": _set_control_size_flags,
 		"set_control_mouse_filter": _set_control_mouse_filter,
+		# Theme *resource* type editing (not only Control overrides)
+		"theme_set_type_color": _theme_set_type_color,
+		"theme_set_type_constant": _theme_set_type_constant,
+		"theme_set_type_font_size": _theme_set_type_font_size,
+		"theme_set_type_stylebox": _theme_set_type_stylebox,
+		"theme_list_types": _theme_list_types,
+		"theme_clear_type": _theme_clear_type,
+		"theme_get_type_info": _theme_get_type_info,
+		"assign_theme_to_control": _assign_theme_to_control,
 	}
 
 
@@ -545,3 +554,159 @@ func _set_control_mouse_filter(params: Dictionary) -> Dictionary:
 			c.mouse_filter = int(params.get("mouse_filter", 0))
 	mark_current_scene_unsaved()
 	return success({"node_path": r0[0], "mouse_filter": mf})
+
+
+func _load_theme(path: String) -> Theme:
+	if not path.begins_with("res://"):
+		path = "res://" + path.trim_prefix("/")
+	if not ResourceLoader.exists(path):
+		return null
+	return load(path) as Theme
+
+
+func _theme_list_types(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	if path.is_empty():
+		return error_invalid_params("path to Theme .tres required")
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	var types: PackedStringArray = theme.get_type_list()
+	return success({"path": path, "types": Array(types), "count": types.size()})
+
+
+func _theme_get_type_info(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	var theme_type: String = optional_string(params, "theme_type", "Button")
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	var colors: Array = []
+	for n in theme.get_color_list(theme_type):
+		var c: Color = theme.get_color(n, theme_type)
+		colors.append({"name": n, "color": "#" + c.to_html()})
+	var constants: Array = []
+	for n in theme.get_constant_list(theme_type):
+		constants.append({"name": n, "value": theme.get_constant(n, theme_type)})
+	var font_sizes: Array = []
+	for n in theme.get_font_size_list(theme_type):
+		font_sizes.append({"name": n, "size": theme.get_font_size(n, theme_type)})
+	var styles: Array = []
+	for n in theme.get_stylebox_list(theme_type):
+		var sb = theme.get_stylebox(n, theme_type)
+		styles.append({"name": n, "class": sb.get_class() if sb else null})
+	return success({
+		"path": path,
+		"theme_type": theme_type,
+		"colors": colors,
+		"constants": constants,
+		"font_sizes": font_sizes,
+		"styleboxes": styles,
+	})
+
+
+func _theme_set_type_color(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	var theme_type: String = optional_string(params, "theme_type", "Button")
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var color_s: String = optional_string(params, "color", "#ffffff")
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	theme.set_color(name_r[0], theme_type, Color.html(color_s) if color_s.begins_with("#") else Color(color_s))
+	var err := ResourceSaver.save(theme, path if path.begins_with("res://") else "res://" + path)
+	if err != OK:
+		return error_internal(error_string(err))
+	return success({"path": path, "theme_type": theme_type, "name": name_r[0], "color": color_s})
+
+
+func _theme_set_type_constant(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	var theme_type: String = optional_string(params, "theme_type", "Button")
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	theme.set_constant(name_r[0], theme_type, int(params.get("value", 0)))
+	ResourceSaver.save(theme, path if path.begins_with("res://") else "res://" + path)
+	return success({"path": path, "theme_type": theme_type, "name": name_r[0], "value": int(params.get("value", 0))})
+
+
+func _theme_set_type_font_size(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	var theme_type: String = optional_string(params, "theme_type", "Label")
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	theme.set_font_size(name_r[0], theme_type, int(params.get("size", 16)))
+	ResourceSaver.save(theme, path if path.begins_with("res://") else "res://" + path)
+	return success({"path": path, "theme_type": theme_type, "name": name_r[0], "size": int(params.get("size", 16))})
+
+
+func _theme_set_type_stylebox(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	var theme_type: String = optional_string(params, "theme_type", "Button")
+	var name_r := require_string(params, "name")
+	if name_r[1] != null:
+		return name_r[1]
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	var sb := StyleBoxFlat.new()
+	var bg: String = optional_string(params, "bg_color", "#333333")
+	sb.bg_color = Color.html(bg) if bg.begins_with("#") else Color(bg)
+	var border: int = optional_int(params, "border_width", 0)
+	if border > 0:
+		sb.set_border_width_all(border)
+		var bc: String = optional_string(params, "border_color", "#ffffff")
+		sb.border_color = Color.html(bc) if bc.begins_with("#") else Color(bc)
+	var radius: int = optional_int(params, "corner_radius", 4)
+	sb.set_corner_radius_all(radius)
+	var pad: int = optional_int(params, "padding", 8)
+	sb.set_content_margin_all(pad)
+	theme.set_stylebox(name_r[0], theme_type, sb)
+	ResourceSaver.save(theme, path if path.begins_with("res://") else "res://" + path)
+	return success({"path": path, "theme_type": theme_type, "name": name_r[0], "style": "StyleBoxFlat"})
+
+
+func _theme_clear_type(params: Dictionary) -> Dictionary:
+	var path: String = optional_string(params, "path", "")
+	var theme_type: String = optional_string(params, "theme_type", "")
+	if theme_type.is_empty():
+		return error_invalid_params("theme_type required")
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	theme.clear_type(theme_type)
+	ResourceSaver.save(theme, path if path.begins_with("res://") else "res://" + path)
+	return success({"path": path, "cleared_type": theme_type})
+
+
+func _assign_theme_to_control(params: Dictionary) -> Dictionary:
+	var r0 := require_string(params, "node_path")
+	if r0[1] != null:
+		return r0[1]
+	var path: String = optional_string(params, "theme_path", optional_string(params, "path", ""))
+	if path.is_empty():
+		return error_invalid_params("theme_path required")
+	var theme := _load_theme(path)
+	if theme == null:
+		return error_not_found(path)
+	var node := find_node_by_path(r0[0])
+	if node == null or not node is Control:
+		return error_not_found("Control at %s" % r0[0])
+	var c: Control = node
+	var undo := get_undo_redo()
+	undo.create_action("MCP: Assign theme")
+	undo.add_do_property(c, "theme", theme)
+	undo.add_undo_property(c, "theme", c.theme)
+	undo.commit_action()
+	mark_current_scene_unsaved()
+	return success({"node_path": r0[0], "theme_path": path})
