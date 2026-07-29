@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "description": "Hand-authored critical path specs for high-value tools. Live suite runs these first.",
+  "paths": [
+    {
+      "id": "discovery_health",
+      "steps": [
+        {"tool": "list_agent_domains", "params": {}, "expect": "success"},
+        {"tool": "list_command_domains", "params": {}, "expect": "success"},
+        {"tool": "get_production_surface_report", "params": {}, "expect": "success"},
+        {"tool": "list_out_of_scope_surfaces", "params": {}, "expect": "success"},
+        {"tool": "list_surface_registry", "params": {}, "expect": "success"}
+      ]
+    },
+    {
+      "id": "classdb_escape",
+      "steps": [
+        {"tool": "describe_class", "params": {"class_name": "Node"}, "expect": "success"},
+        {"tool": "list_class_methods", "params": {"class_name": "Node2D"}, "expect": "success_or_error"}
+      ]
+    },
+    {
+      "id": "list_tools_samples",
+      "steps": [
+        {"tool": "list_humanoid_recipes", "params": {}, "expect": "success"},
+        {"tool": "list_avatar_identity_tools", "params": {}, "expect": "success"},
+        {"tool": "list_avatar_mesh_tools", "params": {}, "expect": "success"},
+        {"tool": "list_retarget_import_depth_tools", "params": {}, "expect": "success"},
+        {"tool": "list_performance_autofix_tools", "params": {}, "expect": "success"},
+        {"tool": "list_filesystem_bulk_tools", "params": {}, "expect": "success"},
+        {"tool": "list_multiplayer_prediction_tools", "params": {}, "expect": "success"},
+        {"tool": "list_cloud_settings_accessibility_tools", "params": {}, "expect": "success"},
+        {"tool": "list_dialogue_runtime_depth_tools", "params": {}, "expect": "success"},
+        {"tool": "list_light_2d_occlusion_depth_tools", "params": {}, "expect": "success"}
+      ]
+    },
+    {
+      "id": "safe_math_expression",
+      "steps": [
+        {"tool": "evaluate_expression", "params": {"expression": "2+2"}, "expect": "success"}
+      ]
+    },
+    {
+      "id": "project_info_readonly",
+      "steps": [
+        {"tool": "get_project_info", "params": {}, "expect": "success"},
+        {"tool": "list_autoloads", "params": {}, "expect": "success_or_error"}
+      ]
+    }
+  ]
+}

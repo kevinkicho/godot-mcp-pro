@@ -62,6 +62,25 @@ npm run build
 - `game-runtime-bridge.ts` — offline TCP bridge  
 - `web-playwright.ts` — optional HTML5 probe  
 
+## Test the tool surface
+
+Offline (no Godot) — structural integrity + per-tool specs for **every** registered command:
+
+```powershell
+python tests/run_all_static.py
+# or
+.\scripts\run-tool-tests.ps1
+```
+
+Live (editor + plugin enabled):
+
+```
+run_critical_path_validation
+run_tool_validation_suite mode=all_safe write_report=true
+```
+
+See **[tests/README.md](../tests/README.md)** for L1–L5 coverage honesty (smoke contracts vs full semantic intent).
+
 ## Ship a version
 
 1. Bump `addons/godot_mcp/plugin.cfg` `version`  
@@ -73,7 +92,13 @@ npm run build
 .\scripts\export-surface-registry.ps1
 ```
 
-5. Install + verify:
+5. Run tool surface tests:
+
+```powershell
+python tests/run_all_static.py
+```
+
+6. Install + verify:
 
 ```powershell
 .\scripts\update-install.ps1

@@ -29,7 +29,7 @@ func get_commands() -> Dictionary:
 		"get_layer_names": _get_layer_names,
 		# bulk / snapshot (merged from project_settings_bulk_commands)
 		"list_project_settings_by_prefix": _list_project_settings_by_prefix,
-		"batch_set_project_settings": _batch_set_project_settings_dict,
+		"batch_set_project_settings": _set_project_settings_bulk,
 		"get_project_settings_snapshot": _get_project_settings_snapshot,
 	}
 
@@ -544,6 +544,45 @@ func _set_project_settings_bulk(params: Dictionary) -> Dictionary:
 		else:
 			applied.append(str(key))
 	return success({"applied": applied, "count": applied.size(), "errors": errors})
+
+
+func _list_project_settings_by_prefix(params: Dictionary) -> Dictionary:
+	var prefix: String = optional_string(params, "prefix", "")
+	if prefix.is_empty():
+		return error_invalid_params("prefix required e.g. application/")
+	var max_n: int = clampi(optional_int(params, "max", 200), 1, 1000)
+	var out: Array = []
+	for prop in ProjectSettings.get_property_list():
+		var pname: String = prop.get("name", "")
+		if pname.is_empty() or not pname.begins_with(prefix):
+			continue
+		if not ProjectSettings.has_setting(pname):
+			continue
+		out.append({
+			"key": pname,
+			"value": _serialize_setting(ProjectSettings.get_setting(pname)),
+		})
+		if out.size() >= max_n:
+			break
+	return success({"prefix": prefix, "settings": out, "count": out.size()})
+
+
+func _get_project_settings_snapshot(params: Dictionary) -> Dictionary:
+	## Snapshot commonly needed project settings for agents (or by prefixes[]).
+	var prefixes: Array = params.get("prefixes", [
+		"application/", "display/", "physics/", "rendering/", "input/", "audio/",
+	])
+	if not prefixes is Array or prefixes.is_empty():
+		prefixes = ["application/"]
+	var snap := {}
+	for pref in prefixes:
+		var sub := _list_project_settings_by_prefix({
+			"prefix": str(pref),
+			"max": optional_int(params, "max_per_prefix", 100),
+		})
+		if sub.has("result"):
+			snap[str(pref)] = sub["result"].get("settings", [])
+	return success({"snapshot": snap, "prefix_count": prefixes.size()})
 
 
 func _clear_project_setting(params: Dictionary) -> Dictionary:

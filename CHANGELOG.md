@@ -4,6 +4,26 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.69.1 — 2026-07-29
+
+**Tool surface test suite** - structural + smoke contracts for every registered command + live validation harness.
+
+### Offline (no Godot)
+- `tests/generate_catalog.py` - inventory all tools → `tool_catalog.json` / `tool_specs.json`
+- `tests/structural/test_surface_integrity.py` - uniqueness, handlers, registry coverage
+- `tests/smoke/run_static_smoke.py` - per-tool contract checks
+- `python tests/run_all_static.py` / `.\scripts\run-tool-tests.ps1`
+
+### Live (editor plugin)
+- `list_tool_validation_plan`, `validate_tool_contract`, `validate_tools_batch`
+- `run_tool_validation_suite` (all_safe / empty_params / scene_gated)
+- `run_critical_path_validation`, `export_tool_validation_report`
+
+### Docs
+- `tests/README.md` - layered L1–L5 strategy and honesty about semantic coverage
+
+---
+
 ## v1.69.0 — 2026-07-29
 
 **All remaining critical maps** - dialogue/cinematic, cloud/settings/a11y, net prediction, 2D lights, filesystem bulk, perf autofix.

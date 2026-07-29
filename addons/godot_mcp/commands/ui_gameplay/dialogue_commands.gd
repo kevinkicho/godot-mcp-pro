@@ -10,7 +10,7 @@ func get_commands() -> Dictionary:
 		"create_dialogue_resource": _create_dialogue_resource,
 		"create_cutscene_resource": _create_cutscene_resource,
 		"create_dialogue_runner_script": _create_dialogue_runner_script,
-		"create_cutscene_player_script": _create_cutscene_player_script,
+		# create_cutscene_player_script canonical in cutscene_commands
 		"list_dialogue_recipes": _list_dialogue_recipes,
 	}
 

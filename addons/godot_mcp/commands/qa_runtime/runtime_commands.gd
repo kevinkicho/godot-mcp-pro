@@ -16,7 +16,7 @@ func get_commands() -> Dictionary:
 		"start_recording": _start_recording,
 		"stop_recording": _stop_recording,
 		"replay_recording": _replay_recording,
-		"find_nodes_by_script": _find_nodes_by_script,
+		"find_game_nodes_by_script": _find_nodes_by_script,
 		"get_autoload": _get_autoload,
 		"batch_get_properties": _batch_get_properties,
 		"find_ui_elements": _find_ui_elements,

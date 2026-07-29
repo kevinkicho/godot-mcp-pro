@@ -9,7 +9,7 @@ func get_commands() -> Dictionary:
 		"export_input_map_json": _export_json,
 		"import_input_map_json": _import_json,
 		"list_input_map_actions_detail": _list_detail,
-		"clear_input_action_events": _clear_events,
+		# clear_input_action_events lives in input_map_commands (canonical)
 		"list_input_map_io_tools": _list_tools,
 	}
 

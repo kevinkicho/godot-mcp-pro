@@ -11,7 +11,7 @@ func get_commands() -> Dictionary:
 		"setup_flow_container": _setup_flow_container,
 		"setup_center_container": _setup_center_container,
 		"setup_aspect_ratio_container": _setup_aspect_ratio_container,
-		"setup_subviewport_container": _setup_subviewport_container,
+		# setup_subviewport_container canonical in subviewport_render_commands
 		"tab_container_add_page": _tab_container_add_page,
 		"list_ui_container_depth_tools": _list_tools,
 	}

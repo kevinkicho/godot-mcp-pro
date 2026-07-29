@@ -10,7 +10,7 @@ func get_commands() -> Dictionary:
 		"create_achievement_manager_script": _create_achievements,
 		"create_day_night_cycle_script": _create_day_night,
 		"create_feature_flags_script": _create_flags,
-		"create_accessibility_settings_script": _create_a11y,
+		# create_accessibility_settings_script canonical in cloud_settings_accessibility_commands
 		"create_websocket_client_script": _create_ws,
 		"list_runtime_systems_tools": _list_tools,
 	}

@@ -6,11 +6,11 @@ extends "res://addons/godot_mcp/commands/base_command.gd"
 
 func get_commands() -> Dictionary:
 	return {
-		"setup_spring_arm_3d": _setup_spring_arm_3d,
+		# setup_spring_arm_3d canonical in spring_arm_camera_commands
 		"setup_remote_transform_3d": _setup_remote_transform_3d,
 		"setup_visible_on_screen_notifier_3d": _setup_visible_on_screen_notifier_3d,
 		"setup_marker_2d": _setup_marker_2d,
-		"setup_marker_3d": _setup_marker_3d,
+		# setup_marker_3d canonical in structure_3d_commands
 		"setup_ray_cast_query_script": _setup_ray_cast_query_script,
 		"list_groups_in_scene": _list_groups_in_scene,
 		"add_node_to_group": _add_node_to_group,

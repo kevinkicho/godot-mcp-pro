@@ -6,8 +6,7 @@ extends "res://addons/godot_mcp/commands/base_command.gd"
 
 func get_commands() -> Dictionary:
 	return {
-		"list_autoloads": _list_autoloads,
-		"remove_autoload": _remove_autoload,
+		# list_autoloads / remove_autoload canonical in project_commands
 		"set_autoload": _set_autoload,
 		"rename_autoload": _rename_autoload,
 		"list_autoload_depth_tools": _list_tools,

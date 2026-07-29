@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://godot-mcp-pro.local/schemas/tool_spec.json",
+  "title": "MCP Tool Spec",
+  "type": "object",
+  "required": ["id", "module", "domain", "risk", "smoke_kind", "assertions", "expected"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "module": { "type": "string" },
+    "domain": { "type": "string" },
+    "risk": { "type": "string", "enum": ["low", "medium", "high"] },
+    "needs_scene": { "type": "boolean" },
+    "needs_runtime": { "type": "boolean" },
+    "smoke_kind": {
+      "type": "string",
+      "enum": ["empty_params", "list_empty", "scene_gated", "runtime_gated", "destructive_gated", "mutate_minimal"]
+    },
+    "required_params": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "smoke_params": { "type": "object" },
+    "expected": {
+      "type": "object",
+      "properties": {
+        "success_or_structured_error": { "type": "boolean" },
+        "no_crash": { "type": "boolean" },
+        "result_keys_any_of": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "assertions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "status": { "type": "string" },
+    "manual_review": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

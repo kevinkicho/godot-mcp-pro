@@ -15,7 +15,7 @@ func get_commands() -> Dictionary:
 		"assign_canvas_item_material": _assign_canvas_item_material,
 		"set_label_text": _set_label_text,
 		"set_button_text": _set_button_text,
-		"setup_label": _setup_label,
+		# setup_label canonical in label_richtext_commands
 		"setup_button": _setup_button,
 		"setup_texture_rect": _setup_texture_rect,
 	}

@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.69.0**  
+Plugin version: **1.69.1**  
 
 ## Honesty
 
@@ -12,31 +12,31 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 ## Totals
 
 - **Registered plugin commands:** 1686
-- **Command modules:** 221
+- **Command modules:** 222
 - **Domains:** 21
 
 ## Commands by domain
 
-- **2d** - 140 commands
+- **2d** - 139 commands
 - **3d** - 62 commands
 - **agent** - 58 commands
-- **ai** - 32 commands
+- **ai** - 30 commands
 - **animation** - 226 commands
-- **assets** - 95 commands
+- **assets** - 94 commands
 - **audio** - 37 commands
 - **editor** - 40 commands
 - **export** - 48 commands
-- **input** - 32 commands
+- **input** - 31 commands
 - **navigation** - 19 commands
 - **network** - 56 commands
 - **physics** - 56 commands
-- **project** - 65 commands
-- **qa_runtime** - 111 commands
+- **project** - 64 commands
+- **qa_runtime** - 119 commands
 - **rendering** - 62 commands
 - **scene** - 132 commands
 - **scripting** - 110 commands
 - **shaders_vfx** - 72 commands
-- **ui_gameplay** - 206 commands
+- **ui_gameplay** - 204 commands
 - **xr** - 27 commands
 
 ## Commands by module
@@ -69,9 +69,8 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `level_playtest_route`
 - `list_level_design_tools`
 
-### 2d / light_2d_depth_commands (5)
+### 2d / light_2d_depth_commands (4)
 
-- `setup_canvas_modulate`
 - `setup_light_occluder_2d`
 - `setup_point_light_2d_node`
 - `set_point_light_2d_params`
@@ -437,13 +436,11 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `create_blackboard_utility_script`
 - `list_utility_ai_tools`
 
-### ai / utility_node_commands (10)
+### ai / utility_node_commands (8)
 
-- `setup_spring_arm_3d`
 - `setup_remote_transform_3d`
 - `setup_visible_on_screen_notifier_3d`
 - `setup_marker_2d`
-- `setup_marker_3d`
 - `setup_ray_cast_query_script`
 - `list_groups_in_scene`
 - `add_node_to_group`
@@ -801,7 +798,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `get_import_options_for_path`
 - `list_import_schema_tools`
 
-### assets / material_2d_commands (12)
+### assets / material_2d_commands (11)
 
 - `set_canvas_item_modulate`
 - `set_canvas_item_self_modulate`
@@ -812,7 +809,6 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `assign_canvas_item_material`
 - `set_label_text`
 - `set_button_text`
-- `setup_label`
 - `setup_button`
 - `setup_texture_rect`
 
@@ -1075,12 +1071,11 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `add_input_action_event`
 - `clear_input_action_events`
 
-### input / input_map_io_commands (5)
+### input / input_map_io_commands (4)
 
 - `export_input_map_json`
 - `import_input_map_json`
 - `list_input_map_actions_detail`
-- `clear_input_action_events`
 - `list_input_map_io_tools`
 
 ### input / input_record_commands (3)
@@ -1299,10 +1294,8 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `batch_create_shape_resources`
 - `list_shape_resource_tools`
 
-### project / autoload_depth_commands (5)
+### project / autoload_depth_commands (3)
 
-- `list_autoloads`
-- `remove_autoload`
 - `set_autoload`
 - `rename_autoload`
 - `list_autoload_depth_tools`
@@ -1344,7 +1337,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `batch_set_node_groups`
 - `list_group_layer_tools`
 
-### project / project_commands (27)
+### project / project_commands (28)
 
 - `get_project_info`
 - `get_filesystem_tree`
@@ -1372,6 +1365,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `list_project_settings_by_prefix`
 - `batch_set_project_settings`
 - `get_project_settings_snapshot`
+- `value`
 - `value`
 
 ### project / save_game_state_commands (8)
@@ -1505,7 +1499,7 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `start_recording`
 - `stop_recording`
 - `replay_recording`
-- `find_nodes_by_script`
+- `find_game_nodes_by_script`
 - `get_autoload`
 - `batch_get_properties`
 - `find_ui_elements`
@@ -1516,13 +1510,12 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `move_to`
 - `watch_signals`
 
-### qa_runtime / runtime_systems_commands (7)
+### qa_runtime / runtime_systems_commands (6)
 
 - `create_game_logger_script`
 - `create_achievement_manager_script`
 - `create_day_night_cycle_script`
 - `create_feature_flags_script`
-- `create_accessibility_settings_script`
 - `create_websocket_client_script`
 - `list_runtime_systems_tools`
 
@@ -1540,6 +1533,18 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `run_gut_tests`
 - `run_gdunit_tests`
 - `list_test_recipes`
+
+### qa_runtime / tool_validation_commands (9)
+
+- `list_tool_validation_plan`
+- `validate_tool_contract`
+- `validate_tools_batch`
+- `run_tool_validation_suite`
+- `run_critical_path_validation`
+- `export_tool_validation_report`
+- `list_tool_validation_tools`
+- `params`
+- `registered`
 
 ### rendering / camera_attributes_commands (7)
 
@@ -2136,12 +2141,11 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `create_simple_cutscene_json`
 - `list_cutscene_tools`
 
-### ui_gameplay / dialogue_commands (5)
+### ui_gameplay / dialogue_commands (4)
 
 - `create_dialogue_resource`
 - `create_cutscene_resource`
 - `create_dialogue_runner_script`
-- `create_cutscene_player_script`
 - `list_dialogue_recipes`
 
 ### ui_gameplay / dialogue_graph_depth_commands (8)
@@ -2307,14 +2311,13 @@ Modules live under addons/godot_mcp/commands/<domain>/ (recursive auto-discover)
 - `theme_copy_type`
 - `list_theme_type_depth_tools`
 
-### ui_gameplay / ui_container_depth_commands (8)
+### ui_gameplay / ui_container_depth_commands (7)
 
 - `setup_tab_container`
 - `setup_split_container`
 - `setup_flow_container`
 - `setup_center_container`
 - `setup_aspect_ratio_container`
-- `setup_subviewport_container`
 - `tab_container_add_page`
 - `list_ui_container_depth_tools`
 

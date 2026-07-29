@@ -6,7 +6,7 @@ extends "res://addons/godot_mcp/commands/base_command.gd"
 
 func get_commands() -> Dictionary:
 	return {
-		"setup_canvas_modulate": _setup_canvas_modulate,
+		# setup_canvas_modulate canonical in scene_2d_commands
 		"setup_light_occluder_2d": _setup_light_occluder_2d,
 		"setup_point_light_2d_node": _setup_point_light_2d,
 		"set_point_light_2d_params": _set_point_light_2d_params,

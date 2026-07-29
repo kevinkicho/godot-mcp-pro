@@ -1,0 +1,23 @@
+{
+  "generated": "2026-07-29",
+  "plugin_version": "1.69.1",
+  "tools": 1628,
+  "unique_names": 1628,
+  "modules": 222,
+  "domains": 21,
+  "duplicates": 0,
+  "missing_handlers": 0,
+  "by_risk": {
+    "high": 32,
+    "low": 793,
+    "medium": 803
+  },
+  "by_smoke_kind": {
+    "destructive_gated": 23,
+    "empty_params": 664,
+    "mutate_minimal": 484,
+    "runtime_gated": 102,
+    "scene_gated": 355
+  },
+  "integrity_ok": true
+}
