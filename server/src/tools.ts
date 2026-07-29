@@ -1,7 +1,11 @@
 /**
  * MCP tool definitions for agent-driven Godot production.
  * CLI tools always available; editor tools appear when the plugin connects.
+ *
+ * Category map: see tool-groups.ts (connection, run_probe, media, web, tests, production).
  */
+
+export { TOOL_GROUPS, toolsInGroup } from './tool-groups.js';
 
 export type ToolDef = {
   name: string;

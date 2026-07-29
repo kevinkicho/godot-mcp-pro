@@ -45,37 +45,11 @@ func _list_quest_recipes(_params: Dictionary) -> Dictionary:
 
 
 func _write_json(path: String, data: Dictionary, overwrite: bool) -> Dictionary:
-	if not path.begins_with("res://"):
-		path = "res://" + path.trim_prefix("/")
-	if FileAccess.file_exists(path) and not overwrite:
-		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
-	var derr := ensure_parent_dir(path)
-	if not derr.is_empty():
-		return derr
-	var f := FileAccess.open(path, FileAccess.WRITE)
-	if f == null:
-		return error_internal("Cannot write %s" % path)
-	f.store_string(JSON.stringify(data, "\t"))
-	f.close()
-	EditorInterface.get_resource_filesystem().update_file(path)
-	return {"path": path}
+	return write_json_file(path, data, overwrite)
 
 
 func _write_script(path: String, content: String, overwrite: bool) -> Dictionary:
-	if not path.begins_with("res://"):
-		path = "res://" + path.trim_prefix("/")
-	if FileAccess.file_exists(path) and not overwrite:
-		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
-	var derr := ensure_parent_dir(path)
-	if not derr.is_empty():
-		return derr
-	var f := FileAccess.open(path, FileAccess.WRITE)
-	if f == null:
-		return error_internal("Cannot write %s" % path)
-	f.store_string(content)
-	f.close()
-	EditorInterface.get_resource_filesystem().update_file(path)
-	return {"path": path}
+	return write_script_file(path, content, overwrite)
 
 
 func _create_quest_resource(params: Dictionary) -> Dictionary:

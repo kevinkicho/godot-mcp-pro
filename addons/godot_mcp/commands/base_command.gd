@@ -1,12 +1,34 @@
 @tool
 extends Node
 
+const ScriptIO := preload("res://addons/godot_mcp/utils/script_io.gd")
+const RuntimeTcpClient := preload("res://addons/godot_mcp/utils/runtime_tcp_client.gd")
+
 var editor_plugin: EditorPlugin
 
 
 ## Override in subclasses: return {"method_name": Callable}
 func get_commands() -> Dictionary:
 	return {}
+
+
+## Shared script/json writers (prefer these over per-module _write_script copies).
+func write_script_file(path: String, content: String, overwrite: bool = false) -> Dictionary:
+	var r := ScriptIO.write_text(path, content, overwrite)
+	if r.get("error", false):
+		if int(r.get("code", 0)) == -32000:
+			return error(-32000, str(r.get("message", "")), {"suggestion": r.get("suggestion", "overwrite=true")})
+		return error_internal(str(r.get("message", "write failed")))
+	return r
+
+
+func write_json_file(path: String, data: Dictionary, overwrite: bool = false) -> Dictionary:
+	var r := ScriptIO.write_json(path, data, overwrite)
+	if r.get("error", false):
+		if int(r.get("code", 0)) == -32000:
+			return error(-32000, str(r.get("message", "")), {"suggestion": r.get("suggestion", "overwrite=true")})
+		return error_internal(str(r.get("message", "write failed")))
+	return r
 
 
 ## Helper: return a success result
@@ -311,123 +333,23 @@ func send_game_command(command: String, params: Dictionary = {}, timeout_sec: fl
 	return out
 
 
-func _runtime_ports() -> Array:
-	var ports: Array = []
-	# Prefer port advertised by game
-	var port_file := get_game_user_dir() + "/mcp_runtime_port"
-	if FileAccess.file_exists(port_file):
-		var f := FileAccess.open(port_file, FileAccess.READ)
-		if f:
-			var p := int(f.get_as_text().strip_edges())
-			f.close()
-			if p >= 6510 and p <= 6514:
-				ports.append(p)
-	# Also try default user path
-	var alt := OS.get_user_data_dir() + "/mcp_runtime_port"
-	if FileAccess.file_exists(alt):
-		var f2 := FileAccess.open(alt, FileAccess.READ)
-		if f2:
-			var p2 := int(f2.get_as_text().strip_edges())
-			f2.close()
-			if p2 >= 6510 and p2 <= 6514 and not ports.has(p2):
-				ports.append(p2)
-	for p3 in range(6510, 6515):
-		if not ports.has(p3):
-			ports.append(p3)
-	return ports
-
-
-func _runtime_token() -> String:
-	var t := OS.get_environment("MCP_RUNTIME_TOKEN")
-	if t.is_empty() and ProjectSettings.has_setting("mcp/runtime_token"):
-		t = str(ProjectSettings.get_setting("mcp/runtime_token", ""))
-	return t
-
-
 func _send_game_command_tcp(command: String, params: Dictionary, timeout_sec: float) -> Dictionary:
-	var ports := _runtime_ports()
-	var last_err := "no connection"
-	var token := _runtime_token()
-	# Retry a few times on queue_full (multi-agent contention)
-	var max_attempts := 3
-	for attempt in max_attempts:
-		for port in ports:
-			var peer := StreamPeerTCP.new()
-			var err := peer.connect_to_host("127.0.0.1", int(port))
-			if err != OK:
-				last_err = "connect %d: %s" % [port, error_string(err)]
-				continue
-			var connect_deadline := Time.get_ticks_msec() + 800
-			while Time.get_ticks_msec() < connect_deadline:
-				peer.poll()
-				var st := peer.get_status()
-				if st == StreamPeerTCP.STATUS_CONNECTED:
-					break
-				if st == StreamPeerTCP.STATUS_ERROR:
-					break
-				await get_tree().process_frame
-			peer.poll()
-			if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-				peer.disconnect_from_host()
-				last_err = "port %d not connected" % port
-				continue
-			var req_id := Time.get_ticks_msec() % 1000000
-			var payload := {"id": req_id, "command": command, "params": params}
-			if not token.is_empty():
-				payload["token"] = token
-			var line := JSON.stringify(payload) + "\n"
-			peer.put_data(line.to_utf8_buffer())
-			var buf := ""
-			var deadline := Time.get_ticks_msec() + int(timeout_sec * 1000.0)
-			while Time.get_ticks_msec() < deadline:
-				peer.poll()
-				if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-					last_err = "disconnected during wait"
-					break
-				var n := peer.get_available_bytes()
-				if n > 0:
-					var got: Array = peer.get_data(n)
-					if got.size() < 2 or got[0] != OK:
-						await get_tree().process_frame
-						continue
-					var chunk: PackedByteArray = got[1]
-					buf += chunk.get_string_from_utf8()
-					var nl := buf.find("\n")
-					if nl >= 0:
-						var resp_line := buf.substr(0, nl).strip_edges()
-						peer.disconnect_from_host()
-						var parsed = JSON.parse_string(resp_line)
-						if parsed == null or not parsed is Dictionary:
-							return error_internal("Invalid TCP JSON from game")
-						if parsed.get("ok", false) == false:
-							var code := str(parsed.get("code", ""))
-							if code == "queue_full" and attempt < max_attempts - 1:
-								await get_tree().create_timer(0.05 * (attempt + 1)).timeout
-								last_err = "queue_full retry"
-								break  # retry outer
-							return error(-32000, str(parsed.get("error", "runtime error")), {
-								"transport": "tcp",
-								"port": port,
-								"code": code,
-								"queue_depth": parsed.get("queue_depth", 0),
-							})
-						var data = parsed.get("data", {})
-						if data is Dictionary:
-							data["_transport"] = "tcp"
-							data["_port"] = port
-							data["_queue_depth"] = parsed.get("queue_depth", 0)
-							var ok_out := success(data)
-							ok_out["_tcp_ok"] = true
-							return ok_out
-						var ok2 := success({"value": data, "_transport": "tcp", "_port": port})
-						ok2["_tcp_ok"] = true
-						return ok2
-				await get_tree().process_frame
-			peer.disconnect_from_host()
-			if last_err == "queue_full retry":
-				continue
-			last_err = "timeout on port %d" % port
-	return {"_tcp_ok": false, "error": last_err}
+	var r: Dictionary = await RuntimeTcpClient.call_command(
+		get_tree(), command, params, timeout_sec, get_game_user_dir()
+	)
+	if r.get("ok", false):
+		var data = r.get("data", {})
+		var ok_out := success(data if data is Dictionary else {"value": data})
+		ok_out["_tcp_ok"] = true
+		return ok_out
+	if r.has("code"):
+		return error(-32000, str(r.get("error", "runtime error")), {
+			"transport": "tcp",
+			"port": r.get("port", 0),
+			"code": r.get("code", ""),
+			"queue_depth": r.get("queue_depth", 0),
+		})
+	return {"_tcp_ok": false, "error": str(r.get("error", "tcp failed"))}
 
 
 func is_shader_resource_path(path: String) -> bool:

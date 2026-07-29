@@ -4,6 +4,23 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.36.0 — 2026-07-28
+
+**Refactor** — structure after the 1.29–1.35 feature sprint (behavior unchanged).
+
+### GDScript
+- `utils/runtime_tcp_server.gd` — TCP listen/queue/auth extracted from `mcp_game_inspector_service.gd`
+- `utils/runtime_tcp_client.gd` — editor TCP client used by `base_command.send_game_command`
+- `utils/script_io.gd` + `base_command.write_script_file` / `write_json_file`
+- Command modules delegate `_write_script` / `_write_json` to shared helpers
+- Inspector ~200 lines thinner; base_command TCP client simplified
+
+### Server
+- `tool-groups.ts` — category map for LITE/CLI tool surface
+- Re-export from `tools.ts`
+
+---
+
 ## v1.35.0 — 2026-07-28
 
 **Runtime TCP hardening + Playwright video path fix.**
