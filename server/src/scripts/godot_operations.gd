@@ -71,6 +71,14 @@ func _init():
             get_uid(params)
         "resave_resources":
             resave_resources(params)
+        "write_file":
+            write_file(params)
+        "set_project_setting":
+            set_project_setting_op(params)
+        "get_project_info":
+            get_project_info_op(params)
+        "create_script":
+            create_script_op(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -1181,3 +1189,51 @@ func save_scene(params):
             printerr("Failed to save scene: " + str(error))
     else:
         printerr("Failed to pack scene: " + str(result))
+
+func write_file(params):
+    var path = params.get("path", "")
+    var content = params.get("content", "")
+    if path.is_empty():
+        log_error("path required")
+        quit(1)
+    if not path.begins_with("res://"):
+        path = "res://" + path.trim_prefix("/")
+    var abs_path = ProjectSettings.globalize_path(path)
+    DirAccess.make_dir_recursive_absolute(abs_path.get_base_dir())
+    var f = FileAccess.open(path, FileAccess.WRITE)
+    if f == null:
+        log_error("Cannot write " + path)
+        quit(1)
+    f.store_string(str(content))
+    f.close()
+    log_info("Wrote file: " + path)
+
+func set_project_setting_op(params):
+    var key = params.get("key", "")
+    if key.is_empty():
+        log_error("key required")
+        quit(1)
+    var value = params.get("value")
+    ProjectSettings.set_setting(key, value)
+    var err = ProjectSettings.save()
+    if err != OK:
+        log_error("Failed to save project settings")
+        quit(1)
+    log_info("Set project setting: " + key)
+
+func get_project_info_op(params):
+    var info = {
+        "project_name": ProjectSettings.get_setting("application/config/name", ""),
+        "main_scene": ProjectSettings.get_setting("application/run/main_scene", ""),
+        "project_path": ProjectSettings.globalize_path("res://"),
+        "godot_version": Engine.get_version_info(),
+    }
+    print(JSON.stringify(info))
+
+func create_script_op(params):
+    var path = params.get("path", "")
+    var content = params.get("content", "extends Node\n\nfunc _ready() -> void:\n\tpass\n")
+    if path.is_empty():
+        log_error("path required")
+        quit(1)
+    write_file({"path": path, "content": content})

@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-28  
-Plugin version: **1.40.0**  
+Plugin version: **1.41.0**  
 
 ## Honesty
 
@@ -10,17 +10,20 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 735
+- **Registered plugin commands:** 766
 - **Command modules:** 71
 
 ## Commands by module
 
-### agent_commands (4)
+### agent_commands (7)
 
 - `health_check`
 - `agent_workflow_guide`
 - `list_docs_coverage`
 - `list_surface_registry`
+- `agent_ensure_ready`
+- `batch_editor_calls`
+- `agent_headless_status`
 
 ### ai_system_commands (8)
 
@@ -220,7 +223,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `setup_line_edit`
 - `setup_text_edit`
 
-### csharp_commands (13)
+### csharp_commands (16)
 
 - `get_csharp_project_info`
 - `create_csharp_script`
@@ -231,6 +234,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `run_dotnet_build`
 - `run_godot_csharp_build`
 - `get_last_build_log`
+- `create_csharp_node_script`
+- `check_dotnet_sdk`
+- `list_csharp_partial_classes`
 - `errors`
 - `warnings`
 - `errors`
@@ -258,7 +264,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_cutscene_player_script`
 - `list_dialogue_recipes`
 
-### editor_commands (13)
+### editor_commands (19)
 
 - `get_editor_errors`
 - `get_output_log`
@@ -273,8 +279,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_auto_dismiss`
 - `get_editor_camera`
 - `set_editor_camera`
+- `open_path_in_filesystem`
+- `edit_resource_path`
+- `open_script_in_editor`
+- `get_open_scripts_info`
+- `set_main_screen`
+- `distraction_free_mode`
 
-### export_commands (13)
+### export_commands (16)
 
 - `list_export_presets`
 - `export_project`
@@ -288,6 +300,9 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `export_and_verify`
 - `list_export_templates`
 - `duplicate_export_preset`
+- `verify_export_ready`
+- `get_export_template_guide`
+- `get_export_templates_path`
 - `has_matching_template`
 
 ### filesystem_commands (8)
@@ -582,7 +597,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_gpu_profiling_hints`
 - `editor_snapshot`
 
-### project_commands (16)
+### project_commands (24)
 
 - `get_project_info`
 - `get_filesystem_tree`
@@ -590,6 +605,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `search_in_files`
 - `get_project_settings`
 - `set_project_setting`
+- `get_project_setting`
+- `set_project_settings`
+- `clear_project_setting`
+- `has_project_setting`
+- `search_project_settings`
+- `get_project_feature_list`
+- `set_project_feature`
 - `uid_to_project_path`
 - `project_path_to_uid`
 - `add_autoload`
@@ -600,6 +622,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_project_settings_keys`
 - `set_layer_names`
 - `get_layer_names`
+- `value`
 
 ### quest_system_commands (12)
 
@@ -861,7 +884,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `used_cells`
 - `used_cells`
 
-### tileset_commands (11)
+### tileset_commands (19)
 
 - `tileset_create`
 - `tileset_add_atlas_source`
@@ -874,6 +897,14 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `tileset_add_terrain`
 - `tileset_set_tile_terrain`
 - `tileset_get_terrains`
+- `tileset_create_tile`
+- `tileset_remove_tile`
+- `tileset_list_atlas_tiles`
+- `tileset_get_tile_data`
+- `tileset_set_tile_z_index`
+- `tileset_set_tile_probability`
+- `tileset_set_atlas_margins`
+- `tileset_create_alternative_tile`
 
 ### tween_commands (3)
 

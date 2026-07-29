@@ -9,6 +9,75 @@ export const CLI_TOOLS: ToolDef[] = [
     inputSchema: emptyProps,
   },
   {
+    name: 'agent_ensure_ready',
+    description:
+      'Make agent production-ready: optional launch_editor(project_path)+wait, ensure_runtime_autoloads, open main scene. Call first every session.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        project_path: { type: 'string', description: 'Launch editor if not connected' },
+        wait_ms: { type: 'number', description: 'Max wait for WebSocket after launch (default 45000)' },
+        ensure_runtime_autoloads: { type: 'boolean' },
+        open_main_if_empty: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'batch_call_editor',
+    description:
+      'Run multiple plugin commands in one call: calls=[{method,params},…]. Reduces round-trips. stop_on_error default true.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        calls: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              method: { type: 'string' },
+              params: { type: 'object' },
+            },
+          },
+        },
+        stop_on_error: { type: 'boolean' },
+      },
+      required: ['calls'],
+    },
+  },
+  {
+    name: 'agent_headless_status',
+    description: 'What works with/without plugin connected — IDE parity map for agents.',
+    inputSchema: emptyProps,
+  },
+  {
+    name: 'write_project_file',
+    description:
+      'Write a res:// file via headless Godot (works offline with project_path). Prefer create_script/edit_script when plugin connected.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        project_path: { type: 'string' },
+        path: { type: 'string', description: 'res://…' },
+        content: { type: 'string' },
+      },
+      required: ['path', 'content'],
+    },
+  },
+  {
+    name: 'headless_set_project_setting',
+    description: 'Set a ProjectSettings key via editor or headless Godot (needs project_path if offline).',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        project_path: { type: 'string' },
+        key: { type: 'string' },
+        value: {},
+      },
+      required: ['key'],
+    },
+  },
+  {
     name: 'runtime_ping',
     description:
       'Ping MCPGameInspector runtime TCP (6510-6514). Works with editor Play or standalone game that has runtime autoloads.',
@@ -274,11 +343,11 @@ export const CLI_TOOLS: ToolDef[] = [
   {
     name: 'call_editor',
     description:
-      'Call any plugin command by name when editor is connected. Use list_mcp_commands or health_check first. Preferred escape hatch in --lite mode.',
+      'Call ANY registered plugin command by name (full IDE surface ~700+ methods). Escape hatch for lite mode and missing typed schemas. Prefer list_mcp_commands / agent_ensure_ready first.',
     inputSchema: {
       type: 'object',
       properties: {
-        method: { type: 'string', description: 'e.g. get_scene_tree, play_scene, update_property' },
+        method: { type: 'string', description: 'e.g. get_scene_tree, update_property, tileset_list_atlas_tiles' },
         params: { type: 'object' },
       },
       required: ['method'],

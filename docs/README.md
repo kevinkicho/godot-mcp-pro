@@ -18,6 +18,7 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [DOCS_COVERAGE_ANALYSIS.md](DOCS_COVERAGE_ANALYSIS.md) | MCP ↔ official Godot docs / SDK surface map |
 | [INSPECTOR_FINE_TUNE.md](INSPECTOR_FINE_TUNE.md) | Full node/parameter fine-tune for agents |
 | [SURFACE_EXPANSION.md](SURFACE_EXPANSION.md) | v1.40 docs-gap tools (GI, joypad, i18n, …) |
+| [HEADLESS_AGENT.md](HEADLESS_AGENT.md) | IDE-parity agent sessions without friction |
 
 ### Root reference (not under `docs/`)
 

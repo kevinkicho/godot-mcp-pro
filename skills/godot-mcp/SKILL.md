@@ -12,14 +12,15 @@ You control Godot through the **godot** MCP server (open Pro bridge). This is th
 
 ## First actions every session
 
-1. Call **`health_check`** (or `get_connection_status`).
-2. If `editor_connected` / `ready_for_agent_production` is false:
-   - Ask the user to open their Godot 4 project with **Godot MCP Pro** plugin enabled, **or**
-   - Call `launch_editor` with their `project_path`, then wait and re-check.
-3. Call **`agent_workflow_guide`** when starting a non-trivial production task.
-4. For API unknowns: **`describe_class`** (full ClassDB / class-reference surface).
-5. For docs-area map: **`list_docs_coverage`** (every official tutorials/* topic → tools).
-6. After copying assets: **`scan_filesystem`** → **`wait_for_import`** → then scene work.
+1. Call **`agent_ensure_ready`** with `project_path` when known (launches editor, waits, ensures runtime autoloads, opens main scene).
+2. Call **`health_check`** if ensure is unavailable; confirm `ready_for_agent_production`.
+3. If still offline: user enables plugin, or `launch_editor` + wait + re-check.
+4. Call **`agent_workflow_guide`** for non-trivial production.
+5. Unknown APIs: **`describe_class`**; full command list: **`list_mcp_commands`** / **`call_editor`**.
+6. Docs map: **`list_docs_coverage`**.
+7. After assets: **`scan_filesystem`** → **`wait_for_import`** / **`ensure_imported`**.
+
+**Headless IDE parity:** With the plugin connected you have the full human editor surface (inspector fine-tune, import, play, export). Use **`call_editor`** for any registered method not in the typed tool list. Batch with **`batch_call_editor`**. Offline scaffolding: `write_project_file`, headless `create_scene`/`add_node`, `run_project`. See `docs/HEADLESS_AGENT.md`.
 
 ## Production loop (default)
 

@@ -15,6 +15,9 @@ func get_commands() -> Dictionary:
 		"run_dotnet_build": _run_dotnet_build,
 		"run_godot_csharp_build": _run_godot_csharp_build,
 		"get_last_build_log": _get_last_build_log,
+		"create_csharp_node_script": _create_csharp_node_script,
+		"check_dotnet_sdk": _check_dotnet_sdk,
+		"list_csharp_partial_classes": _list_csharp_partial_classes,
 	}
 
 const _BUILD_LOG_PATH := "user://mcp_last_build_log.txt"
@@ -444,3 +447,111 @@ func _get_last_build_log(_params: Dictionary) -> Dictionary:
 		parsed["exists"] = true
 		return success(parsed)
 	return success({"exists": true, "raw": text})
+
+
+func _check_dotnet_sdk(_params: Dictionary) -> Dictionary:
+	var output: Array = []
+	var code := OS.execute("dotnet", PackedStringArray(["--list-sdks"]), output, true, false)
+	var sdks := "\n".join(PackedStringArray(output))
+	var ver_out: Array = []
+	var vcode := OS.execute("dotnet", PackedStringArray(["--version"]), ver_out, true, false)
+	return success({
+		"dotnet_on_path": code == 0 or vcode == 0,
+		"version": "\n".join(PackedStringArray(ver_out)).strip_edges(),
+		"sdks": sdks,
+		"exit_code": code,
+		"hint": "Install .NET SDK matching Godot's major if missing",
+	})
+
+
+func _create_csharp_node_script(params: Dictionary) -> Dictionary:
+	## Richer C# Node template with _Ready/_Process and Export fields.
+	var class_name_str: String = optional_string(params, "class_name", "MyNode")
+	if not class_name_str.is_valid_identifier():
+		class_name_str = "MyNode"
+	var base: String = optional_string(params, "base", "Node")
+	var path: String = optional_string(params, "path", "res://scripts/%s.cs" % class_name_str)
+	if not path.begins_with("res://"):
+		path = "res://" + path.trim_prefix("/")
+	if not path.ends_with(".cs"):
+		path += ".cs"
+	var ns: String = optional_string(params, "namespace", "")
+	var with_process: bool = optional_bool(params, "with_process", true)
+	var exports: Array = params.get("exports", [])
+	var export_lines := ""
+	if exports is Array:
+		for e in exports:
+			if e is Dictionary:
+				var et := str(e.get("type", "float"))
+				var en := str(e.get("name", "Value"))
+				export_lines += "\t[Export] public %s %s { get; set; }\n" % [et, en]
+			elif e is String:
+				export_lines += "\t[Export] public float %s { get; set; }\n" % str(e)
+	var process_block := ""
+	if with_process:
+		process_block = """
+	public override void _Process(double delta)
+	{
+	}
+"""
+	var body := """using Godot;
+
+%s
+public partial class %s : %s
+{
+%s
+	public override void _Ready()
+	{
+	}
+%s
+}
+""" % [
+		("namespace %s;\n" % ns) if not ns.is_empty() else "",
+		class_name_str,
+		base,
+		export_lines,
+		process_block,
+	]
+	var abs := ProjectSettings.globalize_path(path)
+	DirAccess.make_dir_recursive_absolute(abs.get_base_dir())
+	if FileAccess.file_exists(path) and not optional_bool(params, "overwrite", false):
+		return error(-32000, "Exists: %s" % path, {"suggestion": "overwrite=true"})
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return error_internal("Cannot write %s" % path)
+	f.store_string(body)
+	f.close()
+	EditorInterface.get_resource_filesystem().update_file(path)
+	return success({
+		"path": path,
+		"class_name": class_name_str,
+		"base": base,
+		"hint": "run_godot_csharp_build or run_dotnet_build after adding scripts",
+	})
+
+
+func _list_csharp_partial_classes(params: Dictionary) -> Dictionary:
+	## Grep .cs for "public partial class" declarations.
+	var max_n: int = clampi(optional_int(params, "max", 100), 1, 500)
+	var files: Array = []
+	_scan_for_ext("res://", ".cs", files, 500, not optional_bool(params, "include_addons", false))
+	var classes: Array = []
+	var re := RegEx.new()
+	re.compile(" partial class\\s+(\\w+)\\s*:\\s*(\\w+)")
+	for path in files:
+		if classes.size() >= max_n:
+			break
+		var f := FileAccess.open(path, FileAccess.READ)
+		if f == null:
+			continue
+		var text := f.get_as_text()
+		f.close()
+		for m in re.search_all(text):
+			classes.append({
+				"class": m.get_string(1),
+				"base": m.get_string(2),
+				"path": path,
+			})
+			if classes.size() >= max_n:
+				break
+	return success({"classes": classes, "count": classes.size(), "files_scanned": files.size()})

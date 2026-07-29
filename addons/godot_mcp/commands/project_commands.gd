@@ -10,6 +10,13 @@ func get_commands() -> Dictionary:
 		"search_in_files": _search_in_files,
 		"get_project_settings": _get_project_settings,
 		"set_project_setting": _set_project_setting,
+		"get_project_setting": _get_project_setting,
+		"set_project_settings": _set_project_settings_bulk,
+		"clear_project_setting": _clear_project_setting,
+		"has_project_setting": _has_project_setting,
+		"search_project_settings": _search_project_settings,
+		"get_project_feature_list": _get_project_feature_list,
+		"set_project_feature": _set_project_feature,
 		"uid_to_project_path": _uid_to_project_path,
 		"project_path_to_uid": _project_path_to_uid,
 		"add_autoload": _add_autoload,
@@ -486,6 +493,151 @@ func _list_project_settings_keys(params: Dictionary) -> Dictionary:
 			break
 	keys.sort()
 	return success({"keys": keys, "count": keys.size(), "filter": filter, "capped": keys.size() >= max_n})
+
+
+func _get_project_setting(params: Dictionary) -> Dictionary:
+	var r := require_string(params, "key")
+	if r[1] != null:
+		return r[1]
+	var key: String = r[0]
+	if not ProjectSettings.has_setting(key):
+		return error_not_found("Setting '%s'" % key, "Use search_project_settings or list_project_settings_keys")
+	var value = ProjectSettings.get_setting(key)
+	return success({
+		"key": key,
+		"value": _serialize_setting(value),
+		"raw_type": typeof(value),
+		"type_name": type_string(typeof(value)),
+	})
+
+
+func _serialize_setting(value: Variant) -> Variant:
+	match typeof(value):
+		TYPE_VECTOR2, TYPE_VECTOR2I, TYPE_VECTOR3, TYPE_VECTOR3I, TYPE_COLOR:
+			const PP := preload("res://addons/godot_mcp/utils/property_parser.gd")
+			return PP.serialize_value(value)
+		TYPE_PACKED_STRING_ARRAY:
+			var a: Array = []
+			for x in value:
+				a.append(str(x))
+			return a
+		TYPE_DICTIONARY, TYPE_ARRAY:
+			return value
+		_:
+			return value
+
+
+func _set_project_settings_bulk(params: Dictionary) -> Dictionary:
+	if not params.has("settings") or not params["settings"] is Dictionary:
+		return error_invalid_params("settings Dictionary required {key: value, ...}")
+	var settings: Dictionary = params["settings"]
+	var applied: Array = []
+	var errors: Array = []
+	for key in settings:
+		var one := _set_project_setting({"key": str(key), "value": settings[key]})
+		if one.has("error"):
+			errors.append({"key": key, "error": one["error"]})
+		else:
+			applied.append(str(key))
+	return success({"applied": applied, "count": applied.size(), "errors": errors})
+
+
+func _clear_project_setting(params: Dictionary) -> Dictionary:
+	var r := require_string(params, "key")
+	if r[1] != null:
+		return r[1]
+	var key: String = r[0]
+	if not ProjectSettings.has_setting(key):
+		return error_not_found(key)
+	ProjectSettings.set_setting(key, null)
+	# Some versions use clear
+	if ProjectSettings.has_method("clear"):
+		ProjectSettings.clear(key)
+	var err := ProjectSettings.save()
+	if err != OK:
+		return error_internal(error_string(err))
+	return success({"key": key, "cleared": true})
+
+
+func _has_project_setting(params: Dictionary) -> Dictionary:
+	var r := require_string(params, "key")
+	if r[1] != null:
+		return r[1]
+	return success({"key": r[0], "exists": ProjectSettings.has_setting(r[0])})
+
+
+func _search_project_settings(params: Dictionary) -> Dictionary:
+	## Search keys and stringified values (Project Settings dialog search).
+	var query: String = optional_string(params, "query", optional_string(params, "filter", "")).to_lower()
+	if query.is_empty():
+		return error_invalid_params("query required")
+	var max_n: int = clampi(optional_int(params, "max", 100), 1, 500)
+	var include_values: bool = optional_bool(params, "include_values", true)
+	var hits: Array = []
+	for prop in ProjectSettings.get_property_list():
+		var pname: String = prop.get("name", "")
+		if pname.is_empty():
+			continue
+		var match_key := pname.to_lower().contains(query)
+		var match_val := false
+		var val_s := ""
+		if include_values and ProjectSettings.has_setting(pname):
+			val_s = str(ProjectSettings.get_setting(pname))
+			match_val = val_s.to_lower().contains(query)
+		if match_key or match_val:
+			var entry := {"key": pname, "match": "key" if match_key else "value"}
+			if include_values:
+				entry["value"] = val_s.left(200)
+			hits.append(entry)
+			if hits.size() >= max_n:
+				break
+	return success({"query": query, "hits": hits, "count": hits.size()})
+
+
+func _get_project_feature_list(_params: Dictionary) -> Dictionary:
+	var features: Array = []
+	if ProjectSettings.has_setting("application/config/features"):
+		var f = ProjectSettings.get_setting("application/config/features")
+		if f is PackedStringArray:
+			for x in f:
+				features.append(str(x))
+		elif f is Array:
+			for x in f:
+				features.append(str(x))
+	return success({
+		"features": features,
+		"count": features.size(),
+		"hint": "Feature tags drive export filters and platform code paths",
+	})
+
+
+func _set_project_feature(params: Dictionary) -> Dictionary:
+	var r := require_string(params, "feature")
+	if r[1] != null:
+		return r[1]
+	var feature: String = r[0]
+	var remove: bool = optional_bool(params, "remove", false)
+	var features: PackedStringArray = PackedStringArray()
+	if ProjectSettings.has_setting("application/config/features"):
+		var f = ProjectSettings.get_setting("application/config/features")
+		if f is PackedStringArray:
+			features = f
+		elif f is Array:
+			for x in f:
+				features.append(str(x))
+	var arr: Array = []
+	for x in features:
+		arr.append(str(x))
+	if remove:
+		arr.erase(feature)
+	elif not (feature in arr):
+		arr.append(feature)
+	var out := PackedStringArray()
+	for x in arr:
+		out.append(str(x))
+	ProjectSettings.set_setting("application/config/features", out)
+	ProjectSettings.save()
+	return success({"features": arr, "removed": remove, "feature": feature})
 
 
 func _layer_setting_prefix(kind: String) -> String:

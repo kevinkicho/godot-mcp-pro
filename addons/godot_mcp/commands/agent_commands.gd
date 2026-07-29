@@ -10,6 +10,9 @@ func get_commands() -> Dictionary:
 		"agent_workflow_guide": _agent_workflow_guide,
 		"list_docs_coverage": _list_docs_coverage,
 		"list_surface_registry": _list_surface_registry,
+		"agent_ensure_ready": _agent_ensure_ready,
+		"batch_editor_calls": _batch_editor_calls,
+		"agent_headless_status": _agent_headless_status,
 	}
 
 
@@ -93,8 +96,121 @@ func _health_check(_params: Dictionary) -> Dictionary:
 			"open_scenes": get_open_scene_paths(),
 			"playing": playing,
 		},
+		"headless_parity": {
+			"principle": "When plugin is connected, agents have human-IDE control plane (scenes, inspector, play, import, export).",
+			"fine_tune": "list_property_info recurse_resources + update_property covers every inspector field",
+			"methods": "call_node_method / execute_editor_script for ClassDB long-tail",
+			"offline_cli": "launch_editor, run_project, headless create_scene/add_node via GODOT_PATH",
+		},
 		"issues": issues,
-		"agent_hint": "Call agent_workflow_guide for the recommended production loop.",
+		"agent_hint": "Call agent_ensure_ready then agent_workflow_guide for the production loop.",
+	})
+
+
+func _agent_ensure_ready(params: Dictionary) -> Dictionary:
+	## One-shot readiness: health + optional autoloads + open main scene shell.
+	var health := _health_check({})
+	var h: Dictionary = health.get("result", health)
+	var actions: Array = []
+	var router = get_parent()
+	if optional_bool(params, "ensure_runtime_autoloads", true) and router and router.has_method("execute"):
+		var methods: Array = router.get_available_methods() if router.has_method("get_available_methods") else []
+		if "ensure_runtime_autoloads" in methods:
+			var r = await router.execute("ensure_runtime_autoloads", {})
+			actions.append({"ensure_runtime_autoloads": r})
+		else:
+			actions.append({
+				"ensure_runtime_autoloads": "command not registered — enable run_session module",
+			})
+	if optional_bool(params, "open_main_if_empty", true):
+		var root := get_edited_root()
+		if root == null:
+			var main_scene: String = str(ProjectSettings.get_setting("application/run/main_scene", ""))
+			if not main_scene.is_empty() and ResourceLoader.exists(main_scene):
+				EditorInterface.open_scene_from_path(main_scene)
+				actions.append({"opened_main_scene": main_scene})
+			else:
+				actions.append({"open_scene": "none — create_scene or set main scene"})
+	health = _health_check({})
+	h = health.get("result", health)
+	return success({
+		"ready": bool(h.get("ready_for_agent_production", false)),
+		"health": h,
+		"actions": actions,
+		"next": [
+			"agent_workflow_guide",
+			"list_property_info / get_scene_tree",
+			"playtest_report when content ready",
+		],
+	})
+
+
+func _batch_editor_calls(params: Dictionary) -> Dictionary:
+	## Run multiple plugin commands in order (reduces round-trips for agents).
+	if not params.has("calls") or not params["calls"] is Array:
+		return error_invalid_params("calls: Array of {method, params}")
+	var calls: Array = params["calls"]
+	var stop_on_error: bool = optional_bool(params, "stop_on_error", true)
+	var router = get_parent()
+	if router == null or not router.has_method("execute"):
+		return error_internal("No command router with execute()")
+	var results: Array = []
+	for i in range(mini(calls.size(), 50)):
+		var c = calls[i]
+		if not c is Dictionary:
+			results.append({"index": i, "error": "call must be Dictionary"})
+			if stop_on_error:
+				break
+			continue
+		var method: String = str(c.get("method", c.get("command", "")))
+		var cparams: Dictionary = c.get("params", {})
+		if cparams == null:
+			cparams = {}
+		if method.is_empty():
+			results.append({"index": i, "error": "method required"})
+			if stop_on_error:
+				break
+			continue
+		if method == "batch_editor_calls":
+			results.append({"index": i, "error": "nested batch_editor_calls not allowed"})
+			if stop_on_error:
+				break
+			continue
+		var one: Dictionary = await router.execute(method, cparams)
+		results.append({"index": i, "method": method, "result": one})
+		if stop_on_error and one is Dictionary and one.has("error"):
+			break
+	return success({
+		"results": results,
+		"count": results.size(),
+		"hint": "Prefer typed MCP tools when available; batch for multi-step dock workflows",
+	})
+
+
+func _agent_headless_status(_params: Dictionary) -> Dictionary:
+	## What works without UI clicks vs needs Play / import.
+	return success({
+		"with_plugin_connected": {
+			"full_ide_parity": true,
+			"scenes_nodes_scripts": true,
+			"inspector_fine_tune": true,
+			"import_wait": true,
+			"playtest_screenshots": true,
+			"export": true,
+		},
+		"without_plugin_mcp_server_only": {
+			"launch_editor": true,
+			"run_project_cli": true,
+			"headless_create_scene_add_node": true,
+			"runtime_tcp_if_game_running": true,
+			"undo_redo_inspector": false,
+		},
+		"recommended": [
+			"Start Godot with project + plugin enabled",
+			"agent_ensure_ready",
+			"Never hand-edit project.godot when tools exist",
+			"use call_editor for any registered plugin method in lite mode",
+		],
 	})
 
 

@@ -4,6 +4,37 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.41.0 — 2026-07-28
+
+**Headless IDE parity + remaining tool surfaces** — agents can operate like a human in the editor with fewer round-trips and offline fallbacks.
+
+### Agent readiness (no friction)
+- `agent_ensure_ready` — launch editor + wait, `ensure_runtime_autoloads`, open main scene
+- `batch_editor_calls` / `batch_call_editor` — multi-command dock workflows in one request
+- `agent_headless_status` — what works with/without plugin
+- Server: `write_project_file`, `headless_set_project_setting` via `godot_operations.gd`
+- Headless ops: `write_file`, `set_project_setting`, `get_project_info`, `create_script`
+
+### Project Settings surface
+- `get_project_setting`, `set_project_settings` (bulk), `clear_project_setting`, `has_project_setting`
+- `search_project_settings`, `get_project_feature_list`, `set_project_feature`
+
+### TileSet atlas depth
+- `tileset_create_tile`, `tileset_remove_tile`, `tileset_list_atlas_tiles`, `tileset_get_tile_data`
+- `tileset_set_tile_z_index`, `tileset_set_tile_probability`, `tileset_set_atlas_margins`
+- `tileset_create_alternative_tile`
+
+### C# / export / editor docks
+- `create_csharp_node_script`, `check_dotnet_sdk`, `list_csharp_partial_classes`
+- `verify_export_ready`, `get_export_template_guide`, `get_export_templates_path`
+- `open_path_in_filesystem`, `edit_resource_path`, `open_script_in_editor`, `get_open_scripts_info`
+- `set_main_screen`, `distraction_free_mode`
+
+### Docs
+- Headless principle reinforced in health_check / agent_headless_status
+
+---
+
 ## v1.40.0 — 2026-07-28
 
 **Surface expansion** — close remaining docs-area gaps so agents can operate more of the Godot SDK tutorial surface.

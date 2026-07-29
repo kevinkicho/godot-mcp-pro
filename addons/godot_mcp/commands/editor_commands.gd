@@ -17,6 +17,12 @@ func get_commands() -> Dictionary:
 		"set_auto_dismiss": _set_auto_dismiss,
 		"get_editor_camera": _get_editor_camera,
 		"set_editor_camera": _set_editor_camera,
+		"open_path_in_filesystem": _open_path_in_filesystem,
+		"edit_resource_path": _edit_resource_path,
+		"open_script_in_editor": _open_script_in_editor,
+		"get_open_scripts_info": _get_open_scripts_info,
+		"set_main_screen": _set_main_screen,
+		"distraction_free_mode": _distraction_free_mode,
 	}
 
 
@@ -685,3 +691,78 @@ func _set_auto_dismiss(params: Dictionary) -> Dictionary:
 		"auto_dismiss": enabled,
 		"message": "Auto-dismiss dialogs %s" % ("enabled" if enabled else "disabled"),
 	})
+
+
+func _open_path_in_filesystem(params: Dictionary) -> Dictionary:
+	## Select path in FileSystem dock (human navigation).
+	var path: String = optional_string(params, "path", "res://")
+	if not path.begins_with("res://") and not path.begins_with("user://"):
+		path = "res://" + path.trim_prefix("/")
+	EditorInterface.get_file_system_dock().navigate_to_path(path)
+	return success({"path": path, "navigated": true})
+
+
+func _edit_resource_path(params: Dictionary) -> Dictionary:
+	var res := require_res_path(params, "path")
+	if res[1] != null:
+		return res[1]
+	var path: String = res[0]
+	if not ResourceLoader.exists(path):
+		return error_not_found(path)
+	var r = load(path)
+	if r == null:
+		return error_internal("Failed to load %s" % path)
+	EditorInterface.edit_resource(r)
+	return success({"path": path, "type": r.get_class()})
+
+
+func _open_script_in_editor(params: Dictionary) -> Dictionary:
+	var res := require_res_path(params, "path")
+	if res[1] != null:
+		return res[1]
+	var path: String = res[0]
+	var line: int = optional_int(params, "line", 0)
+	if not ResourceLoader.exists(path) and not FileAccess.file_exists(path):
+		return error_not_found(path)
+	var scr = load(path)
+	if scr is Script:
+		if line > 0 and EditorInterface.has_method("edit_script"):
+			EditorInterface.edit_script(scr, line)
+		else:
+			EditorInterface.edit_resource(scr)
+		return success({"path": path, "line": line})
+	# Text open as file
+	if EditorInterface.has_method("edit_script"):
+		var gds := load(path) as GDScript
+		if gds:
+			EditorInterface.edit_script(gds, maxi(line, 1))
+			return success({"path": path, "line": line})
+	return error_invalid_params("Not a Script resource: %s" % path)
+
+
+func _get_open_scripts_info(_params: Dictionary) -> Dictionary:
+	var scripts: Array = []
+	if EditorInterface.has_method("get_script_editor"):
+		var se = EditorInterface.get_script_editor()
+		if se and se.has_method("get_open_scripts"):
+			for s in se.get_open_scripts():
+				if s is Script:
+					scripts.append({"path": s.resource_path, "class": s.get_class()})
+	return success({"open_scripts": scripts, "count": scripts.size()})
+
+
+func _set_main_screen(params: Dictionary) -> Dictionary:
+	## Switch main editor screen: 2D, 3D, Script, AssetLib, …
+	var name_s: String = optional_string(params, "name", "3D")
+	if EditorInterface.has_method("set_main_screen_editor"):
+		EditorInterface.set_main_screen_editor(name_s)
+		return success({"main_screen": name_s})
+	return error_internal("set_main_screen_editor not available")
+
+
+func _distraction_free_mode(params: Dictionary) -> Dictionary:
+	var enabled: bool = optional_bool(params, "enabled", true)
+	if EditorInterface.has_method("set_distraction_free_mode"):
+		EditorInterface.set_distraction_free_mode(enabled)
+		return success({"distraction_free": enabled})
+	return error_internal("API not available")

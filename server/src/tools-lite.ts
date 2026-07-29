@@ -3,6 +3,33 @@ import { emptyProps } from './tool-types.js';
 
 export const LITE_EDITOR_TOOLS: ToolDef[] = [
   {
+    name: 'agent_ensure_ready',
+    description:
+      'Session start: launch editor if needed, ensure runtime autoloads, open main scene. Prefer before production work.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        project_path: { type: 'string' },
+        wait_ms: { type: 'number' },
+        ensure_runtime_autoloads: { type: 'boolean' },
+        open_main_if_empty: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'batch_call_editor',
+    description: 'Run multiple plugin methods in one request: calls=[{method,params}]',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        calls: { type: 'array', items: { type: 'object' } },
+        stop_on_error: { type: 'boolean' },
+      },
+      required: ['calls'],
+    },
+  },
+  {
     name: 'agent_production_status',
     description:
       'Dashboard: plugin version, command count, open scene, import scanning, play state, recommended production loop. Prefer after health_check.',

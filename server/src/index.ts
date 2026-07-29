@@ -37,7 +37,7 @@ import {
 const DEBUG = process.env.DEBUG === 'true';
 const PREFERRED_PORT = parseInt(process.env.GODOT_MCP_PORT || '6505', 10);
 const LITE = parseLiteMode(process.argv);
-const SERVER_VERSION = '1.40.0';
+const SERVER_VERSION = '1.41.0';
 
 function log(msg: string): void {
   if (DEBUG) console.error(`[SERVER] ${msg}`);
@@ -216,11 +216,75 @@ class GodotMcpProServer {
         return this.editorCall(method, params);
       }
 
+      case 'batch_call_editor':
+      case 'batch_editor_calls': {
+        if (this.bridge.isConnected()) {
+          return this.editorCall('batch_editor_calls', args);
+        }
+        return textResult(this.offlineHint(), true);
+      }
+
+      case 'agent_ensure_ready': {
+        // Launch editor if offline + project_path, poll connection, then plugin ensure.
+        const projectPath = pick(args, 'project_path', 'projectPath', 'path');
+        if (!this.bridge.isConnected() && projectPath) {
+          try {
+            await this.cli.launchEditor(projectPath);
+          } catch (err) {
+            return textResult(
+              `launch_editor failed: ${err instanceof Error ? err.message : String(err)}`,
+              true,
+            );
+          }
+          const waitMs = typeof args.wait_ms === 'number' ? args.wait_ms : 45_000;
+          const start = Date.now();
+          while (!this.bridge.isConnected() && Date.now() - start < waitMs) {
+            await new Promise((r) => setTimeout(r, 1000));
+          }
+        }
+        if (!this.bridge.isConnected()) {
+          return jsonResult(
+            {
+              ready: false,
+              editor_connected: false,
+              hint: this.offlineHint(),
+              suggestion:
+                'Open Godot with the MCP plugin, or pass project_path to agent_ensure_ready to launch and wait.',
+            },
+            true,
+          );
+        }
+        return this.editorCall('agent_ensure_ready', args);
+      }
+
+      case 'agent_headless_status':
+        if (this.bridge.isConnected()) {
+          return this.editorCall('agent_headless_status', args);
+        }
+        return jsonResult({
+          editor_connected: false,
+          with_plugin_connected: { full_ide_parity: false },
+          without_plugin_mcp_server_only: {
+            launch_editor: true,
+            run_project_cli: true,
+            headless_ops: true,
+            runtime_tcp_if_game_running: true,
+          },
+          hint: this.offlineHint(),
+        });
+
       case 'list_mcp_commands':
         if (this.bridge.isConnected()) {
           return this.editorCall('list_mcp_commands', {});
         }
         return textResult(this.offlineHint(), true);
+
+      case 'write_project_file':
+      case 'headless_write_file':
+        return this.handleHeadlessWriteFile(args);
+
+      case 'headless_set_project_setting':
+        return this.handleHeadlessSetSetting(args);
 
       case 'launch_editor':
         return this.handleLaunchEditor(args);
@@ -697,6 +761,52 @@ class GodotMcpProServer {
       project_path: 'res://',
     });
     return textResult(out || 'UIDs updated');
+  }
+
+  private async handleHeadlessWriteFile(args: Record<string, unknown>) {
+    const path = pick(args, 'path', 'file_path');
+    const content = args.content != null ? String(args.content) : '';
+    if (!path) return textResult('path required', true);
+    let projectPath = pick(args, 'project_path', 'projectPath');
+    if (!projectPath && this.bridge.isConnected()) {
+      const info = await this.bridge.call('get_project_info', {});
+      if (info.ok && info.result && typeof info.result === 'object') {
+        projectPath = String((info.result as { project_path?: string }).project_path || '');
+      }
+    }
+    if (!projectPath) {
+      return textResult('project_path required for write_project_file when editor offline', true);
+    }
+    try {
+      const out = await this.cli.runOperation(projectPath, 'write_file', { path, content });
+      if (this.bridge.isConnected()) {
+        await this.bridge.call('reload_project', {}).catch(() => undefined);
+      }
+      return textResult(out || `Wrote ${path}`);
+    } catch (err) {
+      return textResult(err instanceof Error ? err.message : String(err), true);
+    }
+  }
+
+  private async handleHeadlessSetSetting(args: Record<string, unknown>) {
+    const key = pick(args, 'key');
+    if (!key) return textResult('key required', true);
+    if (this.bridge.isConnected()) {
+      return this.editorCall('set_project_setting', { key, value: args.value });
+    }
+    const projectPath = pick(args, 'project_path', 'projectPath');
+    if (!projectPath) {
+      return textResult('project_path required when editor offline', true);
+    }
+    try {
+      const out = await this.cli.runOperation(projectPath, 'set_project_setting', {
+        key,
+        value: args.value,
+      });
+      return textResult(out || `Set ${key}`);
+    } catch (err) {
+      return textResult(err instanceof Error ? err.message : String(err), true);
+    }
   }
 
   async start(): Promise<void> {

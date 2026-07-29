@@ -16,6 +16,9 @@ func get_commands() -> Dictionary:
 		"export_and_verify": _export_and_verify,
 		"list_export_templates": _list_export_templates,
 		"duplicate_export_preset": _duplicate_export_preset,
+		"verify_export_ready": _verify_export_ready,
+		"get_export_template_guide": _get_export_template_guide,
+		"get_export_templates_path": _get_export_templates_path,
 	}
 
 
@@ -472,3 +475,76 @@ func _duplicate_export_preset(params: Dictionary) -> Dictionary:
 	if err != OK:
 		return error_internal(error_string(err))
 	return success({"index": idx, "name": new_name, "source_section": section})
+
+
+func _get_export_templates_path(_params: Dictionary) -> Dictionary:
+	var templates_path := OS.get_data_dir().path_join("export_templates")
+	return success({
+		"templates_dir": templates_path,
+		"exists": DirAccess.dir_exists_absolute(templates_path),
+		"editor_data_dir": OS.get_data_dir(),
+	})
+
+
+func _get_export_template_guide(_params: Dictionary) -> Dictionary:
+	var godot_ver: Dictionary = Engine.get_version_info()
+	var full := "%s.%s.%s" % [godot_ver.get("major", 0), godot_ver.get("minor", 0), godot_ver.get("patch", 0)]
+	return success({
+		"editor_version": godot_ver,
+		"expected_template_folder": full,
+		"install_steps": [
+			"Open Godot Editor → Editor → Manage Export Templates…",
+			"Download and install templates matching this editor version",
+			"Or download from https://godotengine.org/download and extract into export_templates/",
+			"list_export_templates to verify",
+		],
+		"templates_dir": OS.get_data_dir().path_join("export_templates"),
+		"agent_note": "Godot does not provide a stable plugin API to download templates; agents guide humans or open the manager UI.",
+		"cli_hint": "Some builds: open Editor → Manage Export Templates. No official headless download flag.",
+	})
+
+
+func _verify_export_ready(params: Dictionary) -> Dictionary:
+	## Preflight: templates present + preset export_path + godot binary.
+	var issues: Array = []
+	var templates := _list_export_templates({})
+	var tdata: Dictionary = templates.get("result", templates)
+	var has_tpl: bool = bool(tdata.get("has_matching_template", false))
+	if not has_tpl:
+		issues.append({
+			"severity": "error",
+			"message": "No matching export templates for this editor",
+			"suggestion": "get_export_template_guide + install templates",
+		})
+	var presets_path := "res://export_presets.cfg"
+	if not FileAccess.file_exists(presets_path):
+		issues.append({
+			"severity": "error",
+			"message": "No export_presets.cfg — create_export_preset first",
+		})
+	else:
+		var cfg := ConfigFile.new()
+		cfg.load(presets_path)
+		var idx := 0
+		var any_path := false
+		while cfg.has_section("preset.%d" % idx):
+			var ep := str(cfg.get_value("preset.%d" % idx, "export_path", ""))
+			if not ep.is_empty():
+				any_path = true
+			idx += 1
+		if not any_path:
+			issues.append({
+				"severity": "warning",
+				"message": "Presets exist but export_path empty on all",
+			})
+	var ready := true
+	for i in issues:
+		if str(i.get("severity", "")) == "error":
+			ready = false
+	return success({
+		"ready": ready,
+		"has_matching_template": has_tpl,
+		"issues": issues,
+		"templates": tdata,
+		"hint": "run_export / export_and_verify when ready=true",
+	})

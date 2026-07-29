@@ -17,6 +17,14 @@ func get_commands() -> Dictionary:
 		"tileset_add_terrain": _tileset_add_terrain,
 		"tileset_set_tile_terrain": _tileset_set_tile_terrain,
 		"tileset_get_terrains": _tileset_get_terrains,
+		"tileset_create_tile": _tileset_create_tile,
+		"tileset_remove_tile": _tileset_remove_tile,
+		"tileset_list_atlas_tiles": _tileset_list_atlas_tiles,
+		"tileset_get_tile_data": _tileset_get_tile_data,
+		"tileset_set_tile_z_index": _tileset_set_tile_z_index,
+		"tileset_set_tile_probability": _tileset_set_tile_probability,
+		"tileset_set_atlas_margins": _tileset_set_atlas_margins,
+		"tileset_create_alternative_tile": _tileset_create_alternative_tile,
 	}
 
 
@@ -415,3 +423,187 @@ func _tileset_get_terrains(params: Dictionary) -> Dictionary:
 			"terrains": terrains,
 		})
 	return success({"tileset_path": res_path[0], "terrain_sets": sets, "count": sets.size()})
+
+
+func _atlas_from(params: Dictionary) -> Dictionary:
+	var res_path := require_res_path(params, "tileset_path")
+	if res_path[1] != null:
+		return {"error": res_path[1]}
+	var ts: TileSet = load(res_path[0]) as TileSet
+	if ts == null:
+		return {"error": error_not_found("TileSet")}
+	var source_id: int = int(params.get("source_id", 0))
+	var src := ts.get_source(source_id)
+	if src == null or not src is TileSetAtlasSource:
+		return {"error": error_not_found("Atlas source_id %d" % source_id)}
+	return {"ts": ts, "path": res_path[0], "atlas": src as TileSetAtlasSource, "source_id": source_id}
+
+
+func _tileset_create_tile(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var coords := Vector2i(int(params.get("atlas_x", 0)), int(params.get("atlas_y", 0)))
+	if atlas.has_tile(coords) and not optional_bool(params, "overwrite", true):
+		return error_invalid_params("Tile exists at %s" % str(coords))
+	if not atlas.has_tile(coords):
+		atlas.create_tile(coords)
+	var err := ResourceSaver.save(a["ts"], a["path"])
+	if err != OK:
+		return error_internal(error_string(err))
+	return success({"source_id": a["source_id"], "atlas_coords": {"x": coords.x, "y": coords.y}})
+
+
+func _tileset_remove_tile(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var coords := Vector2i(int(params.get("atlas_x", 0)), int(params.get("atlas_y", 0)))
+	if not atlas.has_tile(coords):
+		return error_not_found("tile %s" % str(coords))
+	atlas.remove_tile(coords)
+	ResourceSaver.save(a["ts"], a["path"])
+	return success({"removed": {"x": coords.x, "y": coords.y}, "source_id": a["source_id"]})
+
+
+func _tileset_list_atlas_tiles(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var max_n: int = clampi(optional_int(params, "max", 500), 1, 5000)
+	var tiles: Array = []
+	var count := atlas.get_tiles_count()
+	for i in range(count):
+		if tiles.size() >= max_n:
+			break
+		var coords: Vector2i = atlas.get_tile_id(i)
+		var alts: Array = []
+		# alternative_id 0 is base
+		var alt_count := atlas.get_alternative_tiles_count(coords)
+		for ai in range(alt_count):
+			alts.append(atlas.get_alternative_tile_id(coords, ai))
+		tiles.append({
+			"atlas_coords": {"x": coords.x, "y": coords.y},
+			"alternatives": alts,
+			"alternative_count": alt_count,
+		})
+	return success({
+		"source_id": a["source_id"],
+		"tiles": tiles,
+		"count": tiles.size(),
+		"tiles_total": count,
+		"texture_region_size": {"x": atlas.texture_region_size.x, "y": atlas.texture_region_size.y},
+	})
+
+
+func _tileset_get_tile_data(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var coords := Vector2i(int(params.get("atlas_x", 0)), int(params.get("atlas_y", 0)))
+	var alt: int = int(params.get("alternative", 0))
+	if not atlas.has_tile(coords):
+		return error_not_found("tile")
+	var td: TileData = atlas.get_tile_data(coords, alt)
+	if td == null:
+		return error_not_found("TileData")
+	return success({
+		"atlas_coords": {"x": coords.x, "y": coords.y},
+		"alternative": alt,
+		"modulate": td.modulate.to_html(),
+		"z_index": td.z_index,
+		"y_sort_origin": td.y_sort_origin,
+		"probability": td.probability if "probability" in td else null,
+		"terrain_set": td.terrain_set,
+		"terrain": td.terrain,
+		"flip_h": td.flip_h,
+		"flip_v": td.flip_v,
+		"transpose": td.transpose,
+	})
+
+
+func _tileset_set_tile_z_index(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var coords := Vector2i(int(params.get("atlas_x", 0)), int(params.get("atlas_y", 0)))
+	if not atlas.has_tile(coords):
+		atlas.create_tile(coords)
+	var td: TileData = atlas.get_tile_data(coords, int(params.get("alternative", 0)))
+	td.z_index = int(params.get("z_index", 0))
+	ResourceSaver.save(a["ts"], a["path"])
+	return success({"atlas_coords": {"x": coords.x, "y": coords.y}, "z_index": td.z_index})
+
+
+func _tileset_set_tile_probability(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var coords := Vector2i(int(params.get("atlas_x", 0)), int(params.get("atlas_y", 0)))
+	if not atlas.has_tile(coords):
+		return error_not_found("tile")
+	var td: TileData = atlas.get_tile_data(coords, int(params.get("alternative", 0)))
+	if "probability" in td:
+		td.probability = float(params.get("probability", 1.0))
+	ResourceSaver.save(a["ts"], a["path"])
+	return success({"atlas_coords": {"x": coords.x, "y": coords.y}, "probability": td.get("probability") if "probability" in td else null})
+
+
+func _tileset_set_atlas_margins(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	if params.has("margins"):
+		var m = params["margins"]
+		if m is Dictionary:
+			atlas.margins = Vector2i(int(m.get("x", 0)), int(m.get("y", 0)))
+	if params.has("separation"):
+		var s = params["separation"]
+		if s is Dictionary:
+			atlas.separation = Vector2i(int(s.get("x", 0)), int(s.get("y", 0)))
+	if params.has("texture_region_size"):
+		var t = params["texture_region_size"]
+		if t is Dictionary:
+			atlas.texture_region_size = Vector2i(int(t.get("x", 16)), int(t.get("y", 16)))
+	ResourceSaver.save(a["ts"], a["path"])
+	return success({
+		"source_id": a["source_id"],
+		"margins": {"x": atlas.margins.x, "y": atlas.margins.y},
+		"separation": {"x": atlas.separation.x, "y": atlas.separation.y},
+		"texture_region_size": {"x": atlas.texture_region_size.x, "y": atlas.texture_region_size.y},
+	})
+
+
+func _tileset_create_alternative_tile(params: Dictionary) -> Dictionary:
+	var a := _atlas_from(params)
+	if a.has("error"):
+		return a["error"]
+	var atlas: TileSetAtlasSource = a["atlas"]
+	var coords := Vector2i(int(params.get("atlas_x", 0)), int(params.get("atlas_y", 0)))
+	if not atlas.has_tile(coords):
+		atlas.create_tile(coords)
+	var alt_id: int = int(params.get("alternative_id", -1))
+	var new_id: int
+	if alt_id < 0:
+		new_id = atlas.create_alternative_tile(coords)
+	else:
+		new_id = atlas.create_alternative_tile(coords, alt_id)
+	var td: TileData = atlas.get_tile_data(coords, new_id)
+	if td and optional_bool(params, "flip_h", false):
+		td.flip_h = true
+	if td and optional_bool(params, "flip_v", false):
+		td.flip_v = true
+	if td and optional_bool(params, "transpose", false):
+		td.transpose = true
+	ResourceSaver.save(a["ts"], a["path"])
+	return success({
+		"atlas_coords": {"x": coords.x, "y": coords.y},
+		"alternative_id": new_id,
+	})
