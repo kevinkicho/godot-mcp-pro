@@ -412,9 +412,9 @@ func _list_docs_coverage(_params: Dictionary) -> Dictionary:
 				"detect_test_frameworks", "run_gut_tests", "run_gdunit_tests",
 			],
 			"gaps": [
-				"game-side WebSocket transport (still file IPC)",
-				"standalone CLI run without editor Play",
-				"Playwright only for web exports (not desktop)",
+				"standalone CLI run without editor Play (TCP needs running game/autoloads)",
+				"Playwright only for web exports (not desktop Play)",
+				"deep GPU frame debugger export",
 			],
 		},
 

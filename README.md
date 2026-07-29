@@ -39,6 +39,7 @@ Full docs live under **[`docs/`](docs/README.md)**:
 | **[docs/COMMAND_SURFACE.md](docs/COMMAND_SURFACE.md)** | Categories and discovery |
 | **[docs/PRODUCTION_SYSTEMS.md](docs/PRODUCTION_SYSTEMS.md)** | Characters, AI, quests, multiplayer, VFX |
 | **[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)** | Add commands, ship versions |
+| **[docs/DOCS_COVERAGE_ANALYSIS.md](docs/DOCS_COVERAGE_ANALYSIS.md)** | MCP ↔ Godot docs/SDK coverage analysis |
 
 ### Reference
 
@@ -47,8 +48,9 @@ Full docs live under **[`docs/`](docs/README.md)**:
 | [FORK.md](FORK.md) | Fork notes, remotes, vs upstream |
 | [SURFACE_REGISTRY.md](SURFACE_REGISTRY.md) | Generated full command list |
 | [CHANGELOG.md](CHANGELOG.md) | Version history |
-| [GAPS_VS_GODOT_DOCS.md](GAPS_VS_GODOT_DOCS.md) | Coverage honesty |
-| [DOCS_SURFACE_100.md](DOCS_SURFACE_100.md) | Official docs areas → tools |
+| [GAPS_VS_GODOT_DOCS.md](GAPS_VS_GODOT_DOCS.md) | Short docs-area gap heatmap |
+| [DOCS_SURFACE_100.md](DOCS_SURFACE_100.md) | Coverage honesty summary |
+| [docs/DOCS_COVERAGE_ANALYSIS.md](docs/DOCS_COVERAGE_ANALYSIS.md) | Full official-docs crosswalk |
 | [skills/godot-mcp/SKILL.md](skills/godot-mcp/SKILL.md) | Agent skill |
 | [addons/godot_mcp/skills.md](addons/godot_mcp/skills.md) | In-plugin skill notes |
 

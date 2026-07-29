@@ -15,6 +15,7 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [COMMAND_SURFACE.md](COMMAND_SURFACE.md) | Command categories and how to discover tools |
 | [PRODUCTION_SYSTEMS.md](PRODUCTION_SYSTEMS.md) | Characters, AI, quests, multiplayer, VFX, settings, BT |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Add commands, ship versions, regenerate registry |
+| [DOCS_COVERAGE_ANALYSIS.md](DOCS_COVERAGE_ANALYSIS.md) | MCP ↔ official Godot docs / SDK surface map |
 
 ### Root reference (not under `docs/`)
 
@@ -24,8 +25,8 @@ Plugin version: see [`../addons/godot_mcp/plugin.cfg`](../addons/godot_mcp/plugi
 | [../FORK.md](../FORK.md) | Fork lineage, remotes, what changed vs upstream |
 | [../SURFACE_REGISTRY.md](../SURFACE_REGISTRY.md) | Full list of registered plugin commands (generated) |
 | [../CHANGELOG.md](../CHANGELOG.md) | Version history |
-| [../GAPS_VS_GODOT_DOCS.md](../GAPS_VS_GODOT_DOCS.md) | Coverage honesty vs official Godot docs |
-| [../DOCS_SURFACE_100.md](../DOCS_SURFACE_100.md) | Docs-area → tools map |
+| [../GAPS_VS_GODOT_DOCS.md](../GAPS_VS_GODOT_DOCS.md) | Short gap heatmap vs official Godot docs |
+| [../DOCS_SURFACE_100.md](../DOCS_SURFACE_100.md) | Coverage honesty summary |
 | [../skills/godot-mcp/SKILL.md](../skills/godot-mcp/SKILL.md) | Agent skill for Grok / coding agents |
 | [../addons/godot_mcp/skills.md](../addons/godot_mcp/skills.md) | In-plugin skill notes |
 
