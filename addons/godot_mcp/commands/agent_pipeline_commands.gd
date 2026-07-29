@@ -15,6 +15,8 @@ func get_commands() -> Dictionary:
 		"pipeline_2d_pixel_game": _pipeline_2d_pixel_game,
 		"pipeline_2d_tilemap_level": _pipeline_2d_tilemap_level,
 		"pipeline_pre_ship_check": _pipeline_pre_ship_check,
+		"pipeline_3d_character_tps": _pipeline_3d_character_tps,
+		"pipeline_multiplayer_enet": _pipeline_multiplayer_enet,
 	}
 
 
@@ -29,6 +31,8 @@ func _list_pipelines(_params: Dictionary) -> Dictionary:
 			"pipeline_2d_pixel_game": "Pixel preset + scaffold + input + optional main scene shell",
 			"pipeline_2d_tilemap_level": "TileSet + multi TileMapLayer stack + optional camera",
 			"pipeline_pre_ship_check": "Best practices + scene audit + export ready + optional playtest",
+			"pipeline_3d_character_tps": "CharacterBody3D motion preset + SpringArm TPS camera rig",
+			"pipeline_multiplayer_enet": "ENet host/join scripts + optional MultiplayerSpawner",
 		},
 		"hint": "Prefer pipelines for multi-dock human workflows; use atomic tools for fine control",
 	})
@@ -349,4 +353,72 @@ func _pipeline_pre_ship_check(params: Dictionary) -> Dictionary:
 		"pipeline": "pre_ship_check",
 		"steps": steps,
 		"next": ["run_export", "get_export_signing_checklist", "analyze_performance_budget"],
+	})
+
+
+func _pipeline_3d_character_tps(params: Dictionary) -> Dictionary:
+	var steps: Array = []
+	var parent_path: String = optional_string(params, "parent_path", ".")
+	var body_path: String = optional_string(params, "body_path", "")
+	if body_path.is_empty() and optional_bool(params, "setup_character", true):
+		steps.append({"character": await _exec("setup_character_3d", {
+			"parent_path": parent_path,
+			"name": optional_string(params, "name", "Player"),
+		})})
+		# Agent may need to resolve path; try common
+		body_path = optional_string(params, "name", "Player")
+	if not body_path.is_empty():
+		steps.append({"motion": await _exec("apply_character_body_preset", {
+			"node_path": body_path,
+			"preset": optional_string(params, "motion_preset", "third_person_3d"),
+		})})
+		steps.append({"camera_rig": await _exec("setup_third_person_camera_rig", {
+			"parent_path": body_path,
+			"spring_length": float(params.get("spring_length", 4.0)),
+			"pitch_degrees": float(params.get("pitch_degrees", -20)),
+			"height": float(params.get("camera_height", 1.6)),
+		})})
+	if optional_bool(params, "environment", false):
+		steps.append({"sky": await _exec("create_procedural_sky", {
+			"path": optional_string(params, "sky_path", "res://env/sky.tres"),
+			"overwrite": optional_bool(params, "overwrite", true),
+		})})
+		steps.append({"env": await _exec("create_environment_resource", {
+			"path": optional_string(params, "env_path", "res://env/world_env.tres"),
+			"sky_path": optional_string(params, "sky_path", "res://env/sky.tres"),
+			"overwrite": optional_bool(params, "overwrite", true),
+		})})
+		steps.append({"assign_env": await _exec("assign_environment_to_world", {
+			"environment_path": optional_string(params, "env_path", "res://env/world_env.tres"),
+			"parent_path": parent_path,
+		})})
+	return success({
+		"pipeline": "3d_character_tps",
+		"body_path": body_path,
+		"steps": steps,
+		"next": ["create_fps_controller_script", "pipeline_character_locomotion", "playtest_report"],
+	})
+
+
+func _pipeline_multiplayer_enet(params: Dictionary) -> Dictionary:
+	var steps: Array = []
+	var net_path: String = optional_string(params, "net_script", "res://scripts/enet_multiplayer.gd")
+	steps.append({"enet": await _exec("create_enet_multiplayer_script", {
+		"path": net_path,
+		"overwrite": optional_bool(params, "overwrite", false),
+		"add_autoload": optional_bool(params, "add_autoload", false),
+	})})
+	steps.append({"bootstrap": await _exec("create_multiplayer_bootstrap_script", {
+		"path": optional_string(params, "bootstrap_script", "res://scripts/multiplayer_bootstrap.gd"),
+		"overwrite": optional_bool(params, "overwrite", false),
+	})})
+	if optional_bool(params, "setup_spawner", true):
+		steps.append({"spawner": await _exec("setup_multiplayer_spawner_basic", {
+			"parent_path": optional_string(params, "parent_path", "."),
+			"spawnable_scene": optional_string(params, "player_scene", ""),
+		})})
+	return success({
+		"pipeline": "multiplayer_enet",
+		"steps": steps,
+		"next": ["setup_multiplayer_synchronizer", "add_replication_property", "playtest host/join"],
 	})

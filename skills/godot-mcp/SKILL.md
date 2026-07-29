@@ -168,6 +168,18 @@ Full agent path for production 2D games (pixel + skeletal + tiles + mesh):
 - **Ship gate:** **`pipeline_pre_ship_check`**
 - **Coverage %:** see `docs/COVERAGE_SCORECARD.md` · live `list_docs_coverage`
 
+## v1.59+ — character, environment, TPS, net, audio FX
+
+- **Motion:** **`apply_character_body_preset`** platformer_2d|topdown_2d|fps_3d|third_person_3d
+- **TPS camera:** **`setup_third_person_camera_rig`** / `setup_spring_arm_3d`
+- **World look:** `create_procedural_sky` → `create_environment_resource` → `assign_environment_to_world` / FogVolume
+- **Audio FX:** `add_audio_bus_effect_typed type=reverb|compressor|eq6|…`
+- **ENet:** `create_enet_multiplayer_script` + **`pipeline_multiplayer_enet`**
+- **Pipelines:** **`pipeline_3d_character_tps`**, `pipeline_pre_ship_check`
+- **Settings bulk:** `batch_set_project_settings` / `list_project_settings_by_prefix`
+- **AnimPlayer:** autoplay, libraries, speed, status
+- **PhysicsMaterial + occlusion culling** helpers
+
 ## Human-like inspector fine-tuning (full parameter control)
 
 Work like a person in the Inspector / Scene dock. **Every editor-visible property** on a node or nested Resource is readable and writable:

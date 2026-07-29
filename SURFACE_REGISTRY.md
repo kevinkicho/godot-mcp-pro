@@ -1,7 +1,7 @@
 # Godot MCP Pro - Tool Surface Registry
 
 Generated: 2026-07-29  
-Plugin version: **1.58.0**  
+Plugin version: **1.59.0**  
 
 ## Honesty
 
@@ -10,8 +10,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 
 ## Totals
 
-- **Registered plugin commands:** 1320
-- **Command modules:** 161
+- **Registered plugin commands:** 1365
+- **Command modules:** 170
 
 ## Commands by module
 
@@ -25,7 +25,7 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `batch_editor_calls`
 - `agent_headless_status`
 
-### agent_pipeline_commands (9)
+### agent_pipeline_commands (11)
 
 - `list_agent_pipelines`
 - `pipeline_prepare_level_lighting`
@@ -36,6 +36,8 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `pipeline_2d_pixel_game`
 - `pipeline_2d_tilemap_level`
 - `pipeline_pre_ship_check`
+- `pipeline_3d_character_tps`
+- `pipeline_multiplayer_enet`
 
 ### ai_system_commands (8)
 
@@ -114,6 +116,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `animation_library_import_from_scene`
 - `list_animation_library_tools`
 
+### animation_player_depth_commands (7)
+
+- `set_animation_player_autoplay`
+- `set_animation_player_speed`
+- `list_animation_player_libraries`
+- `assign_animation_library`
+- `get_animation_player_status`
+- `animation_player_stop`
+- `list_animation_player_depth_tools`
+
 ### animation_transfer_commands (24)
 
 - `dump_animation`
@@ -191,6 +203,15 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `resource_load_threaded_status`
 - `resource_load_threaded_get`
 - `list_async_resource_tools`
+
+### audio_bus_effect_depth_commands (6)
+
+- `list_audio_bus_effect_types`
+- `add_audio_bus_effect_typed`
+- `set_audio_bus_effect_params`
+- `list_audio_bus_effects`
+- `remove_audio_bus_effect_at`
+- `list_audio_bus_effect_depth_tools`
 
 ### audio_commands (15)
 
@@ -274,6 +295,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `create_canvas_draw_script`
 - `setup_canvas_draw_node`
 - `list_canvas_draw_tools`
+
+### character_body_depth_commands (4)
+
+- `set_character_body_motion`
+- `get_character_body_info`
+- `apply_character_body_preset`
+- `list_character_body_depth_tools`
 
 ### character_system_commands (10)
 
@@ -523,6 +551,16 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `get_project_feature_tags`
 - `get_agent_environment_report`
 - `list_engine_runtime_info_tools`
+
+### environment_sky_commands (7)
+
+- `create_environment_resource`
+- `create_procedural_sky`
+- `create_panorama_sky`
+- `assign_environment_to_world`
+- `setup_fog_volume`
+- `set_environment_fog_params`
+- `list_environment_sky_tools`
 
 ### export_commands (16)
 
@@ -916,6 +954,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `configure_multiplayer_spawner_limits`
 - `list_multiplayer_interest_tools`
 
+### multiplayer_peer_commands (4)
+
+- `create_enet_multiplayer_script`
+- `create_multiplayer_bootstrap_script`
+- `setup_multiplayer_spawner_basic`
+- `list_multiplayer_peer_tools`
+
 ### multiplayer_runtime_commands (6)
 
 - `create_multiplayer_lobby_ui`
@@ -991,6 +1036,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `nodes`
 - `selected`
 
+### occlusion_culling_commands (4)
+
+- `setup_occluder_instance_3d`
+- `set_occlusion_culling_project`
+- `create_box_occluder_3d`
+- `list_occlusion_culling_tools`
+
 ### particle_commands (11)
 
 - `create_particles`
@@ -1061,6 +1113,12 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `list_physics_debug_tools`
 - `position`
 - `normal`
+
+### physics_material_resource_commands (3)
+
+- `create_physics_material`
+- `assign_physics_material`
+- `list_physics_material_tools`
 
 ### pixel_2d_preset_commands (6)
 
@@ -1134,6 +1192,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `set_layer_names`
 - `get_layer_names`
 - `value`
+
+### project_settings_bulk_commands (4)
+
+- `list_project_settings_by_prefix`
+- `batch_set_project_settings`
+- `get_project_settings_snapshot`
+- `list_project_settings_bulk_tools`
 
 ### quality_preset_commands (5)
 
@@ -1473,6 +1538,13 @@ See list_docs_coverage, DOCS_SURFACE_100.md, GAPS_VS_GODOT_DOCS.md.
 - `soft_body_pin_point`
 - `soft_body_get_info`
 - `list_softbody_depth_tools`
+
+### spring_arm_camera_commands (4)
+
+- `setup_spring_arm_3d`
+- `setup_third_person_camera_rig`
+- `set_spring_arm_params`
+- `list_spring_arm_camera_tools`
 
 ### spring_bone_commands (3)
 

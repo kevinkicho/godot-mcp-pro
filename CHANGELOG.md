@@ -4,6 +4,37 @@ All notable changes to Godot MCP Pro will be documented in this file.
 
 ---
 
+## v1.59.0 — 2026-07-29
+
+**Full production push** — CharacterBody motion, Environment/Sky/Fog, SpringArm TPS, audio bus effects, ENet multiplayer peers, project settings bulk, AnimationPlayer depth, PhysicsMaterial, occlusion culling, TPS/multiplayer pipelines.
+
+### Character motion
+- `set_character_body_motion`, `get_character_body_info`, `apply_character_body_preset` (platformer_2d|topdown_2d|fps_3d|third_person_3d)
+
+### Environment / sky / fog
+- `create_environment_resource`, `create_procedural_sky`, `create_panorama_sky`
+- `assign_environment_to_world`, `setup_fog_volume`, `set_environment_fog_params`
+
+### Camera TPS
+- `setup_spring_arm_3d`, `setup_third_person_camera_rig`, `set_spring_arm_params`
+
+### Audio effects
+- `list_audio_bus_effect_types`, `add_audio_bus_effect_typed`, `set_audio_bus_effect_params`, `list_audio_bus_effects`
+
+### Multiplayer peers
+- `create_enet_multiplayer_script`, `create_multiplayer_bootstrap_script`, `setup_multiplayer_spawner_basic`
+
+### Project / animation / physics / occlusion
+- Bulk project settings list/set/snapshot
+- AnimationPlayer autoplay/speed/libraries/status/stop
+- `create_physics_material` / `assign_physics_material`
+- OccluderInstance3D + project occlusion toggle
+
+### Pipelines
+- `pipeline_3d_character_tps`, `pipeline_multiplayer_enet`
+
+---
+
 ## v1.58.0 — 2026-07-29
 
 **Coverage scorecard + pathfinding/materials/fonts/engine info/resource format + pre-ship pipeline.**

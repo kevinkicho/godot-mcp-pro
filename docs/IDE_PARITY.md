@@ -33,6 +33,11 @@ agent_workflow_guide topic=production|humanoid|level|animation|audio|editor
 | LabelSettings / fonts | `create_label_settings` / `create_font_file_resource` |
 | Pre-ship gate | `pipeline_pre_ship_check` |
 | Coverage % | [COVERAGE_SCORECARD.md](COVERAGE_SCORECARD.md) |
+| CharacterBody motion | `apply_character_body_preset` / `set_character_body_motion` |
+| TPS SpringArm rig | `setup_third_person_camera_rig` |
+| Environment / Sky / Fog | `create_environment_resource` / `create_procedural_sky` / `setup_fog_volume` |
+| ENet multiplayer | `create_enet_multiplayer_script` / `pipeline_multiplayer_enet` |
+| Audio bus FX typed | `add_audio_bus_effect_typed` |
 | 3D GridMap | gridmap_* |
 | Mesh → collision | `mesh_create_trimesh_static_body` / convex (Mesh menu) |
 | CSG greybox | setup_csg_* + `csg_set_operation` + `csg_bake_to_mesh_instance` |

@@ -174,6 +174,16 @@ func _domains() -> Dictionary:
 			"examples": ["create_standard_material_3d", "set_standard_material_params", "assign_material_3d_to_mesh"],
 			"workflow": "create_standard_material_3d → assign_material_3d_to_mesh",
 		},
+		"character": {
+			"description": "CharacterBody2D/3D motion presets and TPS camera rigs",
+			"examples": ["apply_character_body_preset", "set_character_body_motion", "setup_third_person_camera_rig", "pipeline_3d_character_tps"],
+			"workflow": "setup_character_3d → apply_character_body_preset → setup_third_person_camera_rig",
+		},
+		"environment": {
+			"description": "Environment, Sky, FogVolume resources",
+			"examples": ["create_environment_resource", "create_procedural_sky", "setup_fog_volume", "assign_environment_to_world"],
+			"workflow": "create_procedural_sky → create_environment_resource → assign_environment_to_world",
+		},
 	}
 
 

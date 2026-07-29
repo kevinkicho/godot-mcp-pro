@@ -1,6 +1,6 @@
 # Coverage scorecard (honest agent production %)
 
-**As of:** plugin **v1.58** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
+**As of:** plugin **v1.59** · live registry via `list_surface_registry` / `SURFACE_REGISTRY.md`  
 **Refresh:** `list_docs_coverage` in editor · `.\scripts\export-surface-registry.ps1`
 
 ---
@@ -23,41 +23,41 @@
 
 | Layer | Estimate | Confidence | Notes |
 |-------|---------:|:----------:|-------|
-| **Docs-area weighted depth** | **~92–94%** | High | Almost all tutorial folders **strong**; platform/migrate still partial |
-| **Scene / inspector / scripts** | **~95%** | High | Core production path is mature |
+| **Docs-area weighted depth** | **~94–96%** | High | Character/env/audio FX/net peer gaps closed; platform/migrate remain |
+| **Scene / inspector / scripts** | **~96%** | High | Core production path is mature |
 | **Playtest / runtime / QA** | **~90%** | High | Sequences, asserts, fix loops; GPU debugger still engine-only |
-| **2D production (pixel→ship)** | **~92%** | High | Skeleton2D, mesh2d, tiles, pixel presets, layers, draw recipes |
-| **3D production** | **~88%** | Med | GI/LOD/lightmap/CSG strong; per-DCC importer polish remains |
-| **Animation / skeleton** | **~88%** | Med | Tree recipes, Bezier Cartesian, retarget pipelines; no visual graph UI |
-| **Physics / collision** | **~90%** | High | Bodies, shapes-as-resources, joints, ragdoll, debug ray |
-| **Navigation / AI pathing** | **~88%** | Med | Navmesh + **AStarGrid2D** recipes; live replan viz thinner |
+| **2D production (pixel→ship)** | **~93%** | High | Skeleton2D, mesh2d, tiles, pixel, layers, draw, CharacterBody presets |
+| **3D production** | **~92%** | High | TPS rig, Environment/Sky/Fog, occlusion, PBR; DCC polish remains |
+| **Animation / skeleton** | **~90%** | Med | Player libraries/autoplay + Tree/Bezier/retarget; no visual graph UI |
+| **Physics / collision** | **~92%** | High | Bodies, PhysicsMaterial resources, shapes, joints, ragdoll |
+| **Navigation / AI pathing** | **~88%** | Med | Navmesh + AStarGrid2D; live replan viz thinner |
 | **Assets / import** | **~88%** | Med | Stage/wait/presets/schemas; every importer option UI not mirrored |
 | **UI / theme / fonts** | **~88%** | Med | Theme depth, StyleBox, LabelSettings/FontFile; Theme editor graph N/A |
-| **Audio / music** | **~85%** | Med | Buses, music controller, polyphony, generator; no DAW graph |
-| **Multiplayer / net** | **~80%** | Med | Spawner/sync/RPC/interest/WebRTC templates; no hosted matchmaking |
-| **Rendering advanced** | **~85%** | Med | SDFGI/SSAO/SSR/glow/compositor/lightmap; vendor GPU captures N/A |
+| **Audio / music** | **~90%** | High | Typed bus effects (reverb/EQ/compressor…), polyphony, music |
+| **Multiplayer / net** | **~85%** | Med | ENet host/join scripts + spawner + interest/WebRTC; no hosted MM |
+| **Rendering advanced** | **~88%** | Med | Env/Sky/Fog + GI/compositor/lightmap; vendor GPU captures N/A |
 | **Shaders / VFX** | **~82%** | Med | Text + VisualShader presets + particles; full VS node catalog N/A |
 | **XR** | **~80%** | Med | OpenXR maps + passthrough helpers; vendor AR kits partial |
-| **Export / ship** | **~85%** | Med | Presets, Android, signing checklist; iOS notarization needs macOS |
+| **Export / ship** | **~88%** | Med | Pre-ship pipeline + presets/signing; iOS needs macOS |
 | **Platform (iOS/console)** | **~45%** | High | Intentionally limited (vendor SDKs) |
 | **Migration 3→4** | **~40%** | High | Scan/replace helpers; full converter is Godot’s job |
 | **ClassDB method-for-method** | **~N/A (~lookup 100%)** | High | **Not a goal** — discovery via `describe_class` is complete |
-| **Agent discoverability of tools** | **~85%** | Med | Domains/search/examples/lite; still easy to miss long-tail |
+| **Agent discoverability of tools** | **~88%** | Med | Domains/search/examples/lite/pipelines; long tail via call_editor |
 
 ### Composite “can agents ship a real game via MCP?”
 
 | Genre | Estimate |
 |-------|---------:|
-| 2D pixel platformer / top-down | **~93%** |
-| 2D tile RPG with dialogue/quests | **~90%** |
-| 3D greybox → playable prototype | **~88%** |
-| 3D character + retarget + locomotion | **~85%** |
-| Multiplayer prototype | **~78%** |
+| 2D pixel platformer / top-down | **~94%** |
+| 2D tile RPG with dialogue/quests | **~91%** |
+| 3D greybox → playable prototype | **~92%** |
+| 3D character + TPS + locomotion | **~90%** |
+| Multiplayer prototype | **~85%** |
 | XR prototype | **~75%** |
 | Console-ready ship | **~50%** (platform/vendor limits) |
 
-**Overall agent production readiness (all genres blended): ~88–92%.**  
-**Remaining ~8–12%** is mostly: platform/vendor, visual editors (VS/Theme/Anim graphs), hosted net services, and long-tail polish — not missing core docks.
+**Overall agent production readiness (all genres blended): ~91–94%.**  
+**Remaining ~6–9%** is mostly: platform/vendor SDKs, visual editors (VS/Theme/Anim graphs), hosted matchmaking, and long-tail polish — not missing core docks.
 
 ---
 
@@ -97,8 +97,8 @@ Escape hatches that already count as coverage for long tail:
 
 | Snapshot | Value |
 |----------|------:|
-| Plugin commands (v1.58) | ~1320 |
-| Modules | ~161 |
+| Plugin commands (v1.59) | ~1365 |
+| Modules | ~170 |
 | Lite MCP tools | 300+ typed + `call_editor` |
 | Domains (`list_agent_domains`) | 20+ |
 

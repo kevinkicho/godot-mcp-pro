@@ -4266,6 +4266,121 @@ export const LITE_EDITOR_TOOLS: ToolDef[] = [
     description: 'Honest docs-area coverage map + depth score (not 100% ClassDB)',
     inputSchema: emptyProps,
   },
+  // ── v1.59 ──
+  {
+    name: 'apply_character_body_preset',
+    description: 'CharacterBody2D/3D motion pack: platformer_2d|topdown_2d|fps_3d|third_person_3d',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        node_path: { type: 'string' },
+        preset: { type: 'string' },
+      },
+      required: ['node_path'],
+    },
+  },
+  {
+    name: 'setup_third_person_camera_rig',
+    description: 'Pivot + SpringArm3D + Camera3D TPS rig under character',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        spring_length: { type: 'number' },
+        pitch_degrees: { type: 'number' },
+        height: { type: 'number' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'create_environment_resource',
+    description: 'Create Environment .tres (sky bg, ambient, glow/SSAO/SDFGI flags)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        sky_path: { type: 'string' },
+        glow_enabled: { type: 'boolean' },
+        sdfgi_enabled: { type: 'boolean' },
+      },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'create_procedural_sky',
+    description: 'Create Sky resource with ProceduralSkyMaterial',
+    inputSchema: {
+      type: 'object',
+      properties: { path: { type: 'string' }, overwrite: { type: 'boolean' } },
+      required: ['path'],
+    },
+  },
+  {
+    name: 'create_enet_multiplayer_script',
+    description: 'ENet host_game/join_game multiplayer helper script',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        path: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_3d_character_tps',
+    description: 'CharacterBody3D + motion preset + SpringArm TPS camera (+ optional env)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        parent_path: { type: 'string' },
+        body_path: { type: 'string' },
+        spring_length: { type: 'number' },
+        environment: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'pipeline_multiplayer_enet',
+    description: 'ENet scripts + bootstrap + optional MultiplayerSpawner',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        player_scene: { type: 'string' },
+        add_autoload: { type: 'boolean' },
+        setup_spawner: { type: 'boolean' },
+      },
+      required: [],
+    },
+  },
+  {
+    name: 'add_audio_bus_effect_typed',
+    description: 'Add typed AudioEffect (reverb|compressor|eq6|limiter|…) to a bus',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        bus: { type: 'string' },
+        type: { type: 'string' },
+        room_size: { type: 'number' },
+        threshold: { type: 'number' },
+      },
+      required: ['type'],
+    },
+  },
+  {
+    name: 'batch_set_project_settings',
+    description: 'Set many ProjectSettings keys at once from a dictionary',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        settings: { type: 'object' },
+        save: { type: 'boolean' },
+      },
+      required: ['settings'],
+    },
+  },
 ];
 
 /** Tools that should prefer the live editor plugin when connected */
